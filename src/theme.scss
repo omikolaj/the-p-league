@@ -1,0 +1,14 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$the-p-league-primary: mat-palette($mat-grey, 700, 300, 900);
+$the-p-league-accent: mat-palette($mat-blue-grey, 400);
+$the-p-league-warn: mat-palette($mat-red, 500);
+
+$the-p-league-theme: mat-dark-theme(
+  $the-p-league-primary,
+  $the-p-league-accent,
+  $the-p-league-warn
+);
+
+@include angular-material-theme($the-p-league-theme);
