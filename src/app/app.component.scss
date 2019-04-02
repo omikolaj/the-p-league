@@ -1,0 +1,7 @@
+@import 'src/theme.scss';
+
+//Example how to use different color palattes
+$foreground: map-get($the-p-league-theme, foreground);
+.disabled-text {
+  color: mat-color($foreground, disabled-text);
+}
