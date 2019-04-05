@@ -1,24 +1,25 @@
 
 // // Custom Theming for Angular Material
 // // For more information: https://material.angular.io/guide/theming
-// @import '~@angular/material/theming';
+@import '~@angular/material/theming';
 // // Plus imports for other components in your app.
 
 // // Include the common styles for Angular Material. We include this here so that you only
 // // have to load a single css file for Angular Material in your app.
 // // Be sure that you only ever include this mixin once!
-// @include mat-core();
+@include mat-core();
 
 // // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // // hue. Available color palettes: https://material.io/design/color/
 // $the-p-league-primary: mat-palette($mat-grey, 700, 300, 900);
 // $the-p-league-accent: mat-palette($mat-blue-grey, 400);
-
-// // The warn palette is optional (defaults to red).
 // $the-p-league-warn: mat-palette($mat-red, 500);
 
-// // Create the theme object (a Sass map containing all of the palettes).
+// // // The warn palette is optional (defaults to red).
+// // $the-p-league-warn: mat-palette($mat-red, 500);
+
+// // // Create the theme object (a Sass map containing all of the palettes).
 // $the-p-league-theme: mat-dark-theme(
 //   $the-p-league-primary,
 //   $the-p-league-accent, 
@@ -31,8 +32,28 @@
 // @include angular-material-theme($the-p-league-theme);
 
 /* You can add global styles to this file, and also import other style files */
-@import "theme.scss";
+@import 'themes/dark-theme.scss';
+
+@import 'app/static//about/about.component.scss-theme.scss';
+
+
+@include angular-material-theme($the-p-league-theme);
+
+@mixin custom-components-theme($theme){
+  @include p-league-about-component-theme($theme)
+}
+
+.dark-theme {
+  @include angular-material-theme($the-p-league-theme);
+  @include custom-components-theme($the-p-league-theme);
+}
 
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  line-height: 1.5; 
+}
+
+
