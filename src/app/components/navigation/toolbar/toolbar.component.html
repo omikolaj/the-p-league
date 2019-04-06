@@ -1,7 +1,18 @@
-<mat-toolbar color="primary">
-  <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="onToggleSidenav()"
-    *ngIf="isHandset$ | async">    
-    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-  </button>  
-  <span>{{appTitle}}</span>
-</mat-toolbar>
+<div class="toolbar" [class.mat-elevation-z7]="true">
+
+  <mat-toolbar color="primary">
+
+    <button style="position: absolute" type="button" aria-label="Toggle sidenav" mat-icon-button (click)="onToggleSidenav()"
+      *ngIf="isHandset$ | async">
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+
+    <span routerLink="" class="branding center-logo">
+      <img [src]="logo" />
+    </span>
+
+    <!-- <span>{{appTitle}}</span> -->
+
+  </mat-toolbar>
+
+</div>

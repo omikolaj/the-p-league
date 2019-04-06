@@ -21,5 +21,16 @@
         }
       }
     }
+    h1{
+      background-image: -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        color-stop(0.52, mat-color($primary, lighter)),
+        color-stop(0.76, mat-color($primary, default))
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
 }

@@ -1,0 +1,28 @@
+@import '~@angular/material/theming';
+
+@mixin p-league-dash-component-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  app-dash {
+    .dashboard-card{
+      background: mat-color($primary, default);
+    }
+
+    .mat-h1{
+      background-image: -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        color-stop(0.22, mat-color($primary, default)),
+        color-stop(0.76, mat-color($primary, lighter))
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+}

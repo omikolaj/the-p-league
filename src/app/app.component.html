@@ -1,11 +1,11 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="dark-theme">
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav [autoFocus]="true" #drawer class="sidenav" mode="push">
-      <app-sidenav-list [appTitle]="title" (sideNavClose)="drawer.close()"></app-sidenav-list>
+    <mat-sidenav id="side-nav-width" [autoFocus]="true" #drawer class="sidenav" mode="push">
+      <app-sidenav-list [logo]="logo" [appTitle]="title" (sideNavClose)="drawer.close()"></app-sidenav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-      <app-toolbar [appTitle]="title" (sidenavToggle)="drawer.toggle()"></app-toolbar>
+      <app-toolbar [logo]=logo [appTitle]="title" (sidenavToggle)="drawer.toggle()"></app-toolbar>
       <main>
         <router-outlet></router-outlet>
       </main>
