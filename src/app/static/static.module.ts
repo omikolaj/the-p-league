@@ -5,7 +5,7 @@ import { StaticRoutingModule } from './static.routing';
 import { MatGridListModule, MatCardModule, MatMenuModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { LayoutModule } from '@angular/cdk/layout';
 import { DashComponent } from './about/dash/dash.component';
-import { AngularMaterialModule } from '../angular-material/angular-material.module';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -13,7 +13,7 @@ import { AngularMaterialModule } from '../angular-material/angular-material.modu
   imports: [
     CommonModule,
     StaticRoutingModule,
-    AngularMaterialModule,
+    SharedModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,

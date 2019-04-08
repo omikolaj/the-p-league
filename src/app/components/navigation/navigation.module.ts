@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { AngularMaterialModule } from 'src/app/angular-material/angular-material.module';
+import { SharedModule } from '../../shared/shared.module';
 import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
 
 @NgModule({
@@ -12,10 +12,10 @@ import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
   imports: [
     CommonModule,
     LayoutModule,
-    AngularMaterialModule
+    SharedModule
   ],
   exports:[
-    ToolbarComponent, SidenavListComponent, AngularMaterialModule
+    ToolbarComponent, SidenavListComponent, SharedModule
   ]
 })
 export class NavigationModule { }

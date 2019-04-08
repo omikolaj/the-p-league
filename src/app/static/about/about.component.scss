@@ -1,3 +1,5 @@
+@import '../../../styles-variables.scss';
+
 h1 {
   text-align: center;
   font-size: 3em;
@@ -25,31 +27,32 @@ h1 {
   position: relative;
   margin: 8px;
 
-  .actions {
-    text-align: center;
-    margin: 50px;
-    z-index: 1;
+  // Responsible for styling the buttons nested inside of the background class
+  // .actions {
+  //   text-align: center;
+  //   margin: 50px;
+  //   z-index: 1;
 
-    span {
-      display: inline-block;
-      font-weight: bold;
-      padding: 20px 10px 30px 10px;
-    }
+  //   span {
+  //     display: inline-block;
+  //     font-weight: bold;
+  //     padding: 20px 10px 30px 10px;
+  //   }
 
-    a {
-      margin: 0 5px 10px 0;
+  //   a {
+  //     margin: 0 5px 10px 0;
 
-      &.actions-main {
-        text-transform: uppercase;
-        padding: 3px 24px;
-      }
+  //     &.actions-main {
+  //       text-transform: uppercase;
+  //       padding: 3px 24px;
+  //     }
 
-      fa-icon {
-        position: relative;
-        bottom: 1px;
-      }
-    }
-  }
+  //     fa-icon {
+  //       position: relative;
+  //       bottom: 1px;
+  //     }
+  //   }
+  // }
 
   .get-started {
     max-width: 700px;
@@ -95,5 +98,80 @@ h1 {
 
   .container {
     position: relative;
+  }
+}
+
+.actions {
+  text-align: center;
+  margin: 50px;
+  z-index: 1;
+
+  span {
+    display: inline-block;
+    font-weight: bold;
+    padding: 20px 10px 30px 10px;
+  }
+
+  a {
+    margin: 0 5px 10px 0;
+
+    &.actions-main {
+      text-transform: uppercase;
+      padding: 3px 24px;
+    }
+
+    fa-icon {
+      position: relative;
+      bottom: 1px;
+    }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, md)) {
+  .background {
+    .actions {
+      margin: 50px 0;
+    }
+    .get-started {
+      width: auto;
+    }
+  }
+  .follow-releases {
+    width: auto;
+
+    img {
+      max-width: 100%;
+    }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, sm)) {
+  .background {
+    padding: 40px 0 0 0;
+
+    h1 {
+      line-height: 1em;
+    }
+
+    .actions {
+      margin: 40px 0 0 0;
+
+      span {
+        padding: 10px 0 20px 0;
+      }
+
+      a {
+        width: 100%;
+      }
+    }
+
+    .get-started {
+      width: auto;
+      margin: 40px auto 40px auto;
+    }
+  }
+
+  .follow-releases {
+    margin: 0 auto 40px auto;
   }
 }

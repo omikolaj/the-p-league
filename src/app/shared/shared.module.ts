@@ -41,6 +41,33 @@ import {
   MAT_RIPPLE_GLOBAL_OPTIONS,
 } from '@angular/material';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import {  
+  faPlayCircle,
+  faRocket,
+  faBasketballBall
+} from '@fortawesome/free-solid-svg-icons';
+
+import {
+  faGithub,
+  faMediumM,
+  faTwitter,
+  faInstagram,
+  faYoutube
+} from '@fortawesome/free-brands-svg-icons';
+
+library.add(
+  faGithub,
+  faMediumM,
+  faTwitter,
+  faInstagram,
+  faYoutube,
+  faPlayCircle,
+  faRocket,
+  faBasketballBall
+)
+
 // This is used for controling the Angular ripples effect globally
 // https://material.angular.io/components/ripple/api
 const globalRippleConfig: RippleGlobalOptions = {
@@ -90,6 +117,7 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTooltipModule,
     MatTreeModule,
     
+    FontAwesomeModule
   ],
   exports: [
     CommonModule,
@@ -129,6 +157,8 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
+
+    FontAwesomeModule
   ]
 })
-export class AngularMaterialModule { }
+export class SharedModule { }

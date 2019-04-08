@@ -4,9 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationModule } from './components/navigation/navigation.module';
-import { AngularMaterialModule } from './angular-material/angular-material.module';
 import { StaticModule } from './static/static.module';
-
 
 @NgModule({
   declarations: [

@@ -9,6 +9,45 @@
       <main>
         <router-outlet></router-outlet>
       </main>
+
+      <div class="footer">
+          <div class="row">
+            <div class="col-sm-12 links">
+              <a href="https://github.com/omikolaj/the-p-league" target="_blank">
+                <fa-icon [icon]="['fab','github']"></fa-icon>
+                <span>Github</span>
+              </a>
+              <a href="" target="_blank">
+                <fa-icon [icon]="['fab','twitter']"></fa-icon>
+                <span>Twitter</span>
+              </a>
+              <a href=""
+                 target="_blank">
+                <fa-icon [icon]="['fab','youtube']"></fa-icon>
+                <span>Youtube</span>
+              </a>
+              <a href="" target="_blank">
+                <fa-icon [icon]="['fab','instagram']"></fa-icon>
+                <span>Instagram</span>
+              </a>
+              <a href="" target="_blank">
+                <fa-icon icon="play-circle"></fa-icon>
+                <span>Slides</span>
+              </a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 signature">
+              &#169; <span class="year" data-testid="footer-year">{{year}}</span> - The P League
+              <br class="d-block d-sm-none">
+              <a [matTooltip]="test"
+                 matTooltipPosition="before"
+                 href="http://www.clevelandfitnessclub.com/">
+              <fa-icon icon="basketball-ball"></fa-icon>
+              </a>
+            </div>
+          </div>
+        </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

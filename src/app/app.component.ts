@@ -8,4 +8,5 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title: string = 'The P League';
   logo = '../../../../assets/logo_no_title.png';
+  year = new Date().getFullYear();
 }
