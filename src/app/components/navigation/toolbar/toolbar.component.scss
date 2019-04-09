@@ -17,13 +17,13 @@
   .branding {
     cursor: pointer;
     overflow: hidden;
-    padding-top: 4px;
+    // padding-top: 4px; // This was causing the logo to be to low to the bottom edge of the navigation bar
     text-overflow: ellipsis;
   }
 
   img {
     position: relative;
-    top: 2px;
+    top: 0px;
     width: 48px;
     height: 48px;
   }

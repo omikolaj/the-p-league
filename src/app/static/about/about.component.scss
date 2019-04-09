@@ -15,6 +15,15 @@ h1 {
   text-align: center;
 }
 
+.basketball{
+  display: block;
+  text-align: center;
+  margin: auto;
+}
+
+.fa-spin{
+  animation: fa-spin 7s infinite linear;
+}
 
 .info{
   text-align: left;
