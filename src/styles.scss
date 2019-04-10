@@ -37,7 +37,6 @@
 @import 'themes/dark-theme.scss';
 
 @import 'app/static/about/about.component.scss-theme.scss';
-@import 'app/static/about/dash//dash.component.scss-theme.scss';
 @import 'app/components/navigation/sidenav-list/sidenav-list.component.scss-theme.scss';
 @import 'app/app.component.scss-theme.scss';
 
@@ -45,8 +44,7 @@
 @include angular-material-theme($the-p-league-theme);
 
 @mixin custom-components-theme($theme){
-  @include p-league-about-component-theme($theme);
-  @include p-league-dash-component-theme($theme);
+  @include p-league-about-component-theme($theme);  
   @include p-league-sidenav-component-theme($theme);
   @include p-league-app-component-theme($theme);
 }

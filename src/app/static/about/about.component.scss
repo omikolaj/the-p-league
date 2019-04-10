@@ -17,12 +17,27 @@ h1 {
 
 .basketball{
   display: block;
-  text-align: center;
+  text-align: right;
   margin: auto;
 }
 
-.fa-spin{
-  animation: fa-spin 7s infinite linear;
+.ball {
+  border-radius: 50%;
+  background-color: transparent;
+
+  animation: bounce 0.8s;
+  animation-direction: alternate;
+  animation-timing-function: cubic-bezier(.5,.05,1,.84);
+  animation-iteration-count: infinite;
+}
+
+@keyframes bounce {
+  from { transform: translate3d(0, 0, 0);     }
+  to   { transform: translate3d(0, 50px, 0); }
+}
+
+.animations{
+
 }
 
 .info{
@@ -35,6 +50,8 @@ h1 {
   padding: 6px 0 0 0;
   position: relative;
   margin: 8px;
+
+  
 
   // Responsible for styling the buttons nested inside of the background class
   // .actions {

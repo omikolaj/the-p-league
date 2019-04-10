@@ -4,12 +4,11 @@ import { AboutComponent } from './about/about.component';
 import { StaticRoutingModule } from './static.routing';
 import { MatGridListModule, MatCardModule, MatMenuModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { LayoutModule } from '@angular/cdk/layout';
-import { DashComponent } from './about/dash/dash.component';
 import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
-  declarations: [AboutComponent, DashComponent],
+  declarations: [AboutComponent],
   imports: [
     CommonModule,
     StaticRoutingModule,
