@@ -25,7 +25,7 @@ h1 {
   border-radius: 50%;
   background-color: transparent;
 
-  animation: bounce 0.8s;
+  animation: bounce 1.0s;
   animation-direction: alternate;
   animation-timing-function: cubic-bezier(.5,.05,1,.84);
   animation-iteration-count: infinite;
@@ -33,7 +33,7 @@ h1 {
 
 @keyframes bounce {
   from { transform: translate3d(0, 0, 0);     }
-  to   { transform: translate3d(0, 50px, 0); }
+  to   { transform: translate3d(0, 45px, 0); }
 }
 
 .animations{
@@ -144,6 +144,7 @@ h1 {
     &.actions-main {
       text-transform: uppercase;
       padding: 3px 24px;
+      cursor: pointer;
     }
 
     fa-icon {

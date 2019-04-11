@@ -6,8 +6,8 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <app-toolbar [logo]=logo [appTitle]="title" (sidenavToggle)="drawer.toggle()"></app-toolbar>
-      <main>
-        <router-outlet></router-outlet>
+      <main [@routeAnimations]="prepareRoute(outlet)">
+        <router-outlet #outlet="outlet"></router-outlet>
       </main>
 
       <div class="footer">

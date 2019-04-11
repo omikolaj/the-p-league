@@ -4,6 +4,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { SharedModule } from '../../shared/shared.module';
 import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [    
@@ -12,7 +13,8 @@ import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
   imports: [
     CommonModule,
     LayoutModule,
-    SharedModule
+    SharedModule,
+    RouterModule
   ],
   exports:[
     ToolbarComponent, SidenavListComponent, SharedModule

@@ -1,5 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes, sequence, query, stagger, group, animateChild } from '@angular/animations';
+import { Component, OnInit } from '@angular/core';
+import 
+{ 
+  trigger,
+  state,
+  style,
+  transition, 
+  animate, 
+  keyframes, 
+  query, 
+  stagger, 
+  group, 
+  animateChild 
+} from '@angular/animations';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-about',
@@ -11,7 +24,7 @@ import { trigger, state, style, transition, animate, keyframes, sequence, query,
         group([          
           query('h1, .center, .info, .animations', [
             style({opacity: 0}),
-            stagger(200, [
+            stagger(290, [
               animate('1.8s ease-in-out', style({ opacity: 1}))
             ])
           ], {optional: true}),
@@ -49,7 +62,7 @@ import { trigger, state, style, transition, animate, keyframes, sequence, query,
 export class AboutComponent implements OnInit {
   isIn: boolean = false;
   pulsingState: string = 'inactive';
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.isIn = true;
@@ -60,7 +73,7 @@ export class AboutComponent implements OnInit {
     this.isIn = false;
   }
 
-  onDonePulsing($event){
+  onDonePulsing(){
     this.pulsingState = this.pulsingState === 'active' ? 'inactive' : 'active';
   }
 

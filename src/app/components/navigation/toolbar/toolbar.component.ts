@@ -18,7 +18,8 @@ export class ToolbarComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(
+    private breakpointObserver: BreakpointObserver) {}
 
   onToggleSidenav(): void {
     this.sidenavToggle.emit();
