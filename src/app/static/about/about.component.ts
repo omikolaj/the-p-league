@@ -26,7 +26,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '../../core/animations/route.animation
           query('h1, .center, .info, .animations', [
             style({opacity: 0}),
             stagger(290, [
-              animate('1.8s ease-in-out', style({ opacity: 1}))
+              animate('1s ease-in-out', style({ opacity: 1}))
             ])
           ], {optional: true}),
           query('@fadeInOut', animateChild(), { optional: true })         
@@ -37,7 +37,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from '../../core/animations/route.animation
       state('fadeIn', style({ opacity: 1})),
       transition(':enter', [
         style({ opacity: 0 }),        
-          animate('1.8s ease-in-out', keyframes([
+          animate('1s ease-in-out', keyframes([
             style({ opacity: .0, offset: .2 }),
             style({ opacity: .2, offset: .6 }),
             style({ opacity: .4, offset: .8 }),
