@@ -1,46 +1,57 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div class="dark-theme">
+<div class="dark-theme theme-wrapper">
+
   <mat-sidenav-container class="sidenav-container">
+
     <mat-sidenav id="side-nav-width" [autoFocus]="true" #drawer class="sidenav" mode="push">
       <app-sidenav-list [logo]="logo" [appTitle]="title" (sideNavClose)="drawer.close()"></app-sidenav-list>
     </mat-sidenav>
+
     <mat-sidenav-content>
+      
+        <div class="wrapper">
+
       <app-toolbar [logo]=logo [appTitle]="title" (sidenavToggle)="drawer.toggle()"></app-toolbar>
-      <main [@routeAnimations]="prepareRoute(outlet)">
+
+      <main class="content" [@routeAnimations]="prepareRoute(outlet)">
         <router-outlet #outlet="outlet"></router-outlet>
       </main>
 
-      <div class="footer">
-        <div class="row">
-          <div class="col-sm-12 links">
-            <a href="https://twitter.com/thepleague1?lang=en" target="_blank">
-              <fa-icon [icon]="['fab','twitter']"></fa-icon>
-              <span>Twitter</span>
-            </a>
-            <a href="https://www.instagram.com/the.p.league/" target="_blank">
-              <fa-icon [icon]="['fab','instagram']"></fa-icon>
-              <span>Instagram</span>
-            </a>
-            <a href="" target="_blank">
-              <fa-icon icon="play-circle"></fa-icon>
-              <span>Slides</span>              
-            </a>
-            <a href="https://github.com/omikolaj/the-p-league" target="_blank">
-              <fa-icon [icon]="['fab','github']"></fa-icon>
-              <span>Github</span>
-            </a>
+        <div class="footer">
+          <div class="row">
+            <div class="col-sm-12 links">
+              <a href="https://twitter.com/thepleague1?lang=en" target="_blank">
+                <fa-icon [icon]="['fab','twitter']"></fa-icon>
+                <span>Twitter</span>
+              </a>
+              <a href="https://www.instagram.com/the.p.league/" target="_blank">
+                <fa-icon [icon]="['fab','instagram']"></fa-icon>
+                <span>Instagram</span>
+              </a>
+              <a href="" target="_blank">
+                <fa-icon icon="play-circle"></fa-icon>
+                <span>Slides</span>
+              </a>
+              <a href="https://github.com/omikolaj/the-p-league" target="_blank">
+                <fa-icon [icon]="['fab','github']"></fa-icon>
+                <span>Github</span>
+              </a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 signature">
+              &#169; <span class="year" data-testid="footer-year">{{year}}</span> - The P League
+              <br class="d-block d-sm-none">
+              <a [matTooltip]="test" matTooltipPosition="before" href="http://www.clevelandfitnessclub.com/">
+                <!-- <fa-icon [icon]="['fas','basketball-ball']" size="4x" [spin]="syncRunning"></fa-icon> -->
+              </a>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12 signature">
-            &#169; <span class="year" data-testid="footer-year">{{year}}</span> - The P League
-            <br class="d-block d-sm-none">
-            <a [matTooltip]="test" matTooltipPosition="before" href="http://www.clevelandfitnessclub.com/">
-              <!-- <fa-icon [icon]="['fas','basketball-ball']" size="4x" [spin]="syncRunning"></fa-icon> -->
-            </a>
-          </div>
-        </div>
+
       </div>
+
     </mat-sidenav-content>
+
   </mat-sidenav-container>
+
 </div>

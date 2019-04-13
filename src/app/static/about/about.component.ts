@@ -12,7 +12,8 @@ import
   group, 
   animateChild 
 } from '@angular/animations';
-import { Router } from '@angular/router';
+
+import { ROUTE_ANIMATIONS_ELEMENTS } from '../../core/animations/route.animations';
 
 @Component({
   selector: 'app-about',
@@ -60,9 +61,10 @@ import { Router } from '@angular/router';
   ]
 })
 export class AboutComponent implements OnInit {
+  routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   isIn: boolean = false;
-  pulsingState: string = 'inactive';
-  constructor(private router: Router) { }
+  pulsingState: string = 'inactive';  
+  constructor() { }
 
   ngOnInit() {
     this.isIn = true;

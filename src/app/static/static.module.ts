@@ -5,8 +5,9 @@ import { StaticRoutingModule } from './static.routing';
 import { MatGridListModule, MatCardModule, MatMenuModule, MatIconModule, MatButtonModule, MatInputModule, MatSelectModule, MatRadioModule } from '@angular/material';
 import { LayoutModule } from '@angular/cdk/layout';
 import { SharedModule } from '../shared/shared.module';
-import { TeamSignupFormComponent } from './team-signup-form/team-signup-form.component';
+
 import { ReactiveFormsModule } from '@angular/forms';
+import { TeamSignupFormComponent } from './about/components/team-signup-form/team-signup-form.component';
 
 
 @NgModule({

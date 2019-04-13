@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { trigger, transition, style, query, animateChild, group, animate } from '@angular/animations';
+import { trigger, transition, style, query, animateChild, group, animate, keyframes, stagger, sequence } from '@angular/animations';
+import { routeAnimations } from './core/animations/route.animations'
 
 @Component({
   selector: 'app-root',
@@ -8,30 +9,7 @@ import { trigger, transition, style, query, animateChild, group, animate } from 
   styleUrls: ['./app.component.scss'],
   animations: [
     trigger('routeAnimations', [
-      transition('AboutPage <=> TeamSignUpPage', [
-        style({position: 'relative'}),
-        query(':enter, :leave', [
-          style({
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%'
-          })
-        ]),
-        query(':enter', [
-          style({ left: '-100%'})
-        ]),
-        query(':leave', animateChild()),
-        group([
-          query(':leave', [
-            animate('2s ease-out', style({ left: '100%' }))
-          ]),
-          query(':enter', [
-            animate('2s ease-out', style({ left: '0%' }))
-          ])
-        ]),
-        query(':enter', animateChild())
-      ])
+      transition('AboutPage <=> TeamSignUpPage', routeAnimations)
     ])
   ]
 })

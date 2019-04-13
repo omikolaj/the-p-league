@@ -1,9 +1,9 @@
 <div [@flyInOut]="isIn ? 'in' : 'out'">
   <div class="container">
-    <h1 class="welcome-title">WELCOME</h1>
+    <h1 [ngClass]="routeAnimationsElements" class="welcome-title">WELCOME</h1>
   </div>
 
-  <div [@fadeInOut]="isIn ? 'in' : 'out'" class="background">
+  <div [@fadeInOut]="isIn ? 'in' : 'out'" class="background" [ngClass]="routeAnimationsElements">
     <div class="gradient">
       <div class="container">
         <div style="height: 350px;"></div>
@@ -12,23 +12,23 @@
   </div>
 
   <div class="container">
-    <span class="app-gradient center" style="display: block; font-size: x-large;"
+    <span [ngClass]="routeAnimationsElements" class="app-gradient center" style="display: block; font-size: x-large;"
      >LET'S COMPETE</span>
-    <p class="info">At The P League, we’re all about fun and competitive sports. We
+    <p [ngClass]="routeAnimationsElements" class="info">At The P League, we’re all about fun and competitive sports. We
       will provide men’s & women’s basketball leagues. We encourage you to sign up for one of three day leagues that we
       run! Our days are Thursdays, Fridays, Saturdays and Sundays. Do you think you and your team can ball? Sign up
       now!!</p>
   </div><br>
   <div class="container">
-    <span class="app-gradient center" style="display: block; font-size: x-large;"
+    <span [ngClass]="routeAnimationsElements" class="app-gradient center" style="display: block; font-size: x-large;"
      >ABOUT THE P LEAGUE</span><br>
-    <span class="app-gradient animations" style="display: block; text-align: center; font-size: larger"
+    <span [ngClass]="routeAnimationsElements" class="app-gradient animations" style="display: block; text-align: center; font-size: larger"
       >Let's keep it simple and play ball </span>
     <div>
-      <fa-icon [@pulsing]="pulsingState" (@pulsing.done)="onDonePulsing($event)" class="basketball ball" [icon]="['fas','basketball-ball']" size="2x" ></fa-icon>
+      <fa-icon [ngClass]="routeAnimationsElements" [@pulsing]="pulsingState" (@pulsing.done)="onDonePulsing($event)" class="basketball ball" [icon]="['fas','basketball-ball']" size="2x" ></fa-icon>
     </div>
 
-    <ul class="animations">
+    <ul [ngClass]="routeAnimationsElements" class="animations">
       <li>
         <p>Each league will have 8-20 teams</p>
       </li>

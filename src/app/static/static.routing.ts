@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AboutComponent } from './about/about.component';
-import { TeamSignupFormComponent } from './team-signup-form/team-signup-form.component';
+import { TeamSignupFormComponent } from './about/components/team-signup-form/team-signup-form.component';
+
 
 const routes: Routes = [
   {

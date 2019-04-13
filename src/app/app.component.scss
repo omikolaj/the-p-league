@@ -10,10 +10,6 @@ $foreground: map-get($the-p-league-theme, foreground);
   height: 100%;  
 }
 
-main{
-  min-height: calc(100vh - 244px)
-}
-
 .sidenav {
   width: 200px;
 }
@@ -32,73 +28,94 @@ main{
   width: 250px;
 }
 
-.footer {
-  flex: 0 0 auto;
-  padding: 0 15px;
-  text-align: center;
+.theme-wrapper{
+  height: 100%;
+  width: 100%;
+}
 
-  .row {
-    padding: 10px 0;
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
 
-    .links {
-      a {
-        transition: padding 0.5s;
-        display: inline-block;
-        padding: 20px 5px;
+  .content {
+    flex: 1 0 auto;
+    overflow: hidden;
+  }
 
-        &:hover {
-          text-decoration: none;
-        }
+  .footer {
+    flex: 0 0 auto;
+    padding: 0 15px;
+    text-align: center;
 
-        fa-icon {
-          font-size: 30px;
-          width: 35px;
-        }
+    .row {
+      padding: 10px 0;
 
-        span {
+      .links {
+        a {
+          transition: padding 0.5s;
           display: inline-block;
-          width: 75px;
-          padding: 0 0 0 3px;
-          overflow: hidden;
-          text-align: left;
-          white-space: nowrap;
-          transition: width 0.5s;
-        }
-      }
+          padding: 20px 5px;
 
-      @media (min-width: map-get($grid-breakpoints, lg)) {
-        a {
-          padding: 20px 10px;
-        }
-      }
+          &:hover {
+            text-decoration: none;
+          }
 
-      @media (max-width: map-get($grid-breakpoints, md)) {
-        a {
-          padding: 20px;
+          fa-icon {
+            font-size: 30px;
+            width: 35px;
+          }
 
           span {
-            width: 0;
-            padding: 0;
+            display: inline-block;
+            width: 75px;
+            padding: 0 0 0 3px;
+            overflow: hidden;
+            text-align: left;
+            white-space: nowrap;
+            transition: width 0.5s;
+          }
+        }
+
+        @media (min-width: map-get($grid-breakpoints, lg)) {
+          a {
+            padding: 20px 10px;
+          }
+        }
+
+        @media (max-width: map-get($grid-breakpoints, md)) {
+          a {
+            padding: 20px;
+
+            span {
+              width: 0;
+              padding: 0;
+            }
+          }
+        }
+
+        @media (max-width: map-get($grid-breakpoints, sm)) {
+          a {
+            padding: 20px 5px;
           }
         }
       }
 
-      @media (max-width: map-get($grid-breakpoints, sm)) {
-        a {
-          padding: 20px 5px;
-        }
-      }
-    }
+      @media (min-width: map-get($grid-breakpoints, sm)) {
+        .signature {
+          position: relative;
 
-    @media (min-width: map-get($grid-breakpoints, sm)) {
-      .signature {
-        position: relative;
-
-        a {
-          position: absolute;
-          right: 15px;
+          a {
+            position: absolute;
+            right: 15px;
+          }
         }
       }
     }
   }
 }
+
