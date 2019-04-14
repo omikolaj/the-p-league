@@ -5,9 +5,10 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationModule } from './components/navigation/navigation.module';
 import { StaticModule } from './static/static.module';
-import { MatInputModule, MatButtonModule, MatSelectModule, MatRadioModule, MatCardModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from './core/core.module';
+import { MerchandiseService } from './core/services/merchandise/merchandise.service';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -16,10 +17,12 @@ import { CoreModule } from './core/core.module';
   imports: [
     // angular
     BrowserModule,   
-    BrowserAnimationsModule,
+    BrowserAnimationsModule,    
+    ReactiveFormsModule,
     
     // core & shared    
     NavigationModule,
+    SharedModule,
 
     // features
     StaticModule,
@@ -27,20 +30,10 @@ import { CoreModule } from './core/core.module';
 
     // app
     AppRoutingModule,
-
-    MatInputModule,
-
-    MatButtonModule,
-
-    MatSelectModule,
-
-    MatRadioModule,
-
-    MatCardModule,
-
-    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    MerchandiseService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

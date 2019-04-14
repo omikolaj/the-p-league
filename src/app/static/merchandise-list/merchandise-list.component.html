@@ -1,0 +1,21 @@
+<div style="margin-top: 75px; padding: 0 10px;">    
+  <h1 [ngClass]="routeAnimationsElements">Gear Up!</h1>
+  <span>ADMIN ONLY UPLOAD. Will be hidden soon</span>
+  <button 
+    mat-raised-button 
+    [ngClass]="routeAnimationsElements"
+    color="accent" 
+    type="button"
+    (click)="fileInput.click()"
+  >Upload Gear</button>
+  <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none"> 
+
+  <app-merchandise-item
+    [ngClass]="routeAnimationsElements"
+    class="list-item"
+    *ngFor="let gearItem of gearItems$ | async"
+    [gearItem]="gearItem"
+  >
+  </app-merchandise-item>
+
+</div>

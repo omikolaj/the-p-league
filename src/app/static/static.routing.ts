@@ -3,8 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AboutComponent } from './about/about.component';
 import { TeamSignupFormComponent } from './about/components/team-signup-form/team-signup-form.component';
-import { MerchandiseComponent } from './merchandise/merchandise.component';
+
 import { GalleryComponent } from './gallery/gallery.component';
+import { MerchandiseListComponent } from './merchandise-list/merchandise-list.component';
 
 
 const routes: Routes = [
@@ -20,8 +21,8 @@ const routes: Routes = [
   },
   {
     path: 'merchandise',
-    component: MerchandiseComponent,
-    data: { animation: 'MerchandisePage' }
+    component: MerchandiseListComponent,
+    data: { animation: 'MerchandiseListPage' }
   },
   {
     path: 'gallery',

@@ -1,0 +1,54 @@
+<mat-card class="gear-item">
+
+    <mat-card-header>
+
+      <mat-card-title>
+
+        <div>
+            <h3 style="margin-top: 15px;">
+              {{ gearItem.name }}
+            </h3>
+        </div>      
+
+      </mat-card-title>
+
+      <mat-card-subtitle>
+        <div>
+           {{ gearItem.inStock ? 'In stock' : 'Out of stock'}}
+        </div>
+      </mat-card-subtitle>
+
+    </mat-card-header>
+
+    <img 
+      mat-card-image
+      [src]="gearItem.imageUrl !== null ? gearItem.imageUrl : defaultImgURL"
+      alt="Gear Item"
+    >
+    
+    <mat-card-content>
+
+      <div>
+          <div class="gear-sizes">
+
+            <span class="sizes">Available Sizes:</span>
+
+            <br>
+
+            <mat-chip-list [selectable]="false">
+                <mat-chip id="chip" *ngFor="let size of gearItem.sizes |  sizeEnumToSize">
+                  {{ size }}                  
+                </mat-chip>
+            </mat-chip-list>
+              
+          </div>
+          <h2>${{ gearItem.price }}</h2>
+      </div>      
+
+    </mat-card-content>
+
+    <mat-card-actions>
+          
+    </mat-card-actions>
+
+  </mat-card>

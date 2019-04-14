@@ -1,0 +1,39 @@
+.gear-item{    
+  padding: 0px;
+  margin: 1.5rem 0 1.5rem 0;
+  box-sizing: border-box;
+}
+
+mat-card-title h2{
+  padding: 1rem 1rem .5rem 0rem;
+}
+
+.sizes{
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+mat-card-content p,
+mat-card-content h2,
+mat-card-content .gear-sizes{
+  padding: .5rem 1rem .5rem 1rem;
+}
+
+.gear-buttons button{
+  margin-left: 1rem;
+  margin-bottom: .5rem;
+}
+
+.movie-card-image{
+width: 100%;
+height: auto;
+cursor: pointer;
+}
+
+.gear-item-image{
+  width: 100%;
+  height: auto;
+  cursor: default;
+}
+
+
