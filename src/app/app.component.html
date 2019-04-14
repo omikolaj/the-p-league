@@ -2,8 +2,22 @@
 
   <mat-sidenav-container class="sidenav-container">
 
-    <mat-sidenav id="side-nav-width" [autoFocus]="true" #drawer class="sidenav" mode="push">
-      <app-sidenav-list [logo]="logo" [appTitle]="title" (sideNavClose)="drawer.close()"></app-sidenav-list>
+    <mat-sidenav
+      id="side-nav-width" 
+      [autoFocus]="true" 
+      (openedStart)="sideNavList.sideNavOpening()" 
+      (closedStart)="sideNavList.sideNavClosing()" 
+      #drawer 
+      class="sidenav" 
+      mode="push">
+      
+      <app-sidenav-list 
+        #sideNavList 
+        [logo]="logo" 
+        [appTitle]="title" 
+        (sideNavClose)="drawer.close()">
+      </app-sidenav-list>
+
     </mat-sidenav>
 
     <mat-sidenav-content>

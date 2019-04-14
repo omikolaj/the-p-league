@@ -8,10 +8,12 @@ import { SharedModule } from '../shared/shared.module';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { TeamSignupFormComponent } from './about/components/team-signup-form/team-signup-form.component';
+import { MerchandiseComponent } from './merchandise/merchandise.component';
+import { GalleryComponent } from './gallery/gallery.component';
 
 
 @NgModule({
-  declarations: [AboutComponent, TeamSignupFormComponent],
+  declarations: [AboutComponent, TeamSignupFormComponent, MerchandiseComponent, GalleryComponent],
   imports: [
     CommonModule,
     StaticRoutingModule,

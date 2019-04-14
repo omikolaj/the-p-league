@@ -9,7 +9,7 @@ import { routeAnimations } from './core/animations/route.animations'
   styleUrls: ['./app.component.scss'],
   animations: [
     trigger('routeAnimations', [
-      transition('AboutPage <=> TeamSignUpPage', routeAnimations)
+      transition('AboutPage <=> TeamSignUpPage', routeAnimations)      
     ])
   ]
 })
@@ -21,4 +21,5 @@ export class AppComponent {
   prepareRoute(outlet: RouterOutlet){
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
+
 }

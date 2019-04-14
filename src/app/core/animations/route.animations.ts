@@ -31,7 +31,7 @@ export const routeAnimations = [
           position: 'static'
         }),
         animate(
-          '.5s ease-in-out',
+          '.3s ease-in-out',
           style({ transform: 'translateY(0%)', opacity: 1 })
         )
       ],

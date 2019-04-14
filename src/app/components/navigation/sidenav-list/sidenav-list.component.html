@@ -1,10 +1,7 @@
-<!-- <mat-toolbar color="primary">  
-  
-</mat-toolbar> -->
 <div class="branding"><img [src]="logo" />
   <span class="app-title">{{appTitle}}</span></div>
-<mat-nav-list>
-    <a mat-list-item href="#">Link 1</a>
-    <a mat-list-item href="#">Link 2</a>
-    <a mat-list-item href="#">Link 3</a>
+<mat-nav-list [@sideNavLink]="sideNavAnimationState">
+    <a mat-list-item (click)="onSideNavLinkClick()" href="https://playpass.com/cleveland-fitness-club/12-team-basketball-schedule-r344505" target="_blank">Schedule</a>
+    <a mat-list-item (click)="onSideNavLinkClick()" routerLink="/merchandise">Merchandise</a>
+    <a mat-list-item (click)="onSideNavLinkClick()" routerLink="/gallery">Gallery</a>
 </mat-nav-list>
