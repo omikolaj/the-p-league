@@ -1,41 +1,59 @@
-<h1 mat-dialog-title class="post-it-title">TITLE</h1>
-<!-- <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+<h1 mat-dialog-title class="gear-item-title">{{ editMode ? 'Edit Item' : 'New Gear' }}</h1>
+
+<form [formGroup]="gearItemForm" (ngSubmit)="onSubmit()">
+
   <mat-horizontal-stepper>
+
     <mat-step>
-      <ng-template matStepLabel>Title</ng-template>      
+
+      <ng-template matStepLabel>Info</ng-template>
+
       <mat-form-field>
-        <input matInput placeholder="Movie Title" formControlName="movieTitle" cdkFocusInitial>
-        <mat-error *ngIf="postForm.get('movieTitle').invalid">You must enter a value</mat-error>
+        <input matInput placeholder="Name of the item" formControlName="name" cdkFocusInitial>
+        <mat-error *ngIf="gearItemForm.get('name').invalid">You must enter a <strong>name</strong></mat-error>
       </mat-form-field>
+
       <mat-form-field>
-        <input matInput placeholder="Post Title" formControlName="postTitle">
-        <mat-error *ngIf="postForm.get('postTitle').invalid">You must enter a value</mat-error>
+        <input matInput placeholder="Price" formControlName="price">
+        <mat-error *ngIf="gearItemForm.get('price').invalid">You must enter a <strong>price</strong></mat-error>
       </mat-form-field>
-      <div>
-        <button mat-button type="button" (click)="onNoClick()">Cancel</button>
-        <button mat-button matStepperNext type="button">Next</button>
+
+      <div class="action-buttons">
+        <button mat-raised-button color="warn" type="button" (click)="onCancel()">Cancel</button>
+        <button mat-raised-button color="accent" matStepperNext type="button">Next</button>
       </div>
+
     </mat-step>
+
     <mat-step>
+
       <ng-template matStepLabel>Details</ng-template>
+
       <mat-form-field>
-        <mat-select placeholder="Movie Rating" formControlName="rating" required>
+        <mat-select placeholder="Sizes" formControlName="sizes" required>
           <mat-option>--</mat-option>
-          <mat-option *ngFor="let rating of ratings | ratingToArray; let i=index" [value]="i">
+          <!-- <mat-option *ngFor="let rating of ratings | ratingToArray; let i=index" [value]="i">
             {{rating}}
-          </mat-option>
+          </mat-option> -->
         </mat-select>
-        <mat-error *ngIf="postForm.get('rating').invalid">Please select a rating</mat-error>
+        <!-- <mat-error *ngIf="gearItemForm.get('rating').invalid">Please select a rating</mat-error> -->
       </mat-form-field>
+
       <mat-form-field>
-        <textarea matInput placeholder="Description" formControlName="description"></textarea>
-        <mat-error *ngIf="postForm.get('description').invalid">You must enter a value</mat-error>
-      </mat-form-field>
-      <input type="file" (change)="onFileSelected($event)">   
-      <div>
-        <button mat-button matStepperPrevious type="button">Back</button>
-        <button mat-button [disabled]="!postForm.valid">{{editMode ? 'Update' : 'Post it'}}</button>
+        <input matInput placeholder="In stock" formControlName="inStock">
+        <mat-error *ngIf="gearItemForm.get('inStock').invalid">You must enter a <strong>value</strong></mat-error>
+      </mat-form-field> 
+
+      <button class="action-buttons" mat-raised-button color="accent" (click)="fileUpload.click()"   type="button">Images</button>
+      <input #fileUpload type="file" (change)="onFileSelected($event)" style="display: none;">   
+
+      <div class="action-buttons">
+        <button mat-raised-button color="warn" matStepperPrevious type="button">Back</button>
+        <button mat-raised-button color="accent" [disabled]="!gearItemForm.valid">{{editMode ? 'Update' : 'Upload'}}</button>
       </div>
+
     </mat-step>
+
   </mat-horizontal-stepper>
-</form> -->
+  
+</form>

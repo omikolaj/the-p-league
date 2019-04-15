@@ -1,0 +1,19 @@
+.gear-item-title{
+  padding-left: 24px;
+}
+
+.action-buttons{
+  margin-top: 15px;
+}
+
+.mat-form-field{
+  width: 100%;
+}
+
+// Necessary to overwrite dynamically 
+//generated styling that is applied to angular material components
+:host /deep/ .mat-horizontal-content-container{
+  padding-left: 0 ;
+  padding-right: 0 ;
+  padding-bottom: 24px ;
+}

@@ -13,7 +13,8 @@ export class MerchandiseDialogService {
 
   openMerchandiseDialog(dialog: MatDialog): void{
     const dialogRef = dialog.open(MerchandiseDialogComponent, {
-      width: '375px'
+      width: '90%',
+      maxWidth: '450px'      
     });
 
     dialogRef.afterClosed().subscribe(() => {

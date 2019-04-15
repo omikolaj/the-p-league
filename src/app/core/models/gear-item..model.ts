@@ -1,4 +1,5 @@
 export interface GearItem{
+  ID?: number,
   name: string,
   price: number,
   sizes: Size[],
