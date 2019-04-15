@@ -28,6 +28,7 @@
 
       <main class="content" [@routeAnimations]="prepareRoute(outlet)">
         <router-outlet #outlet="outlet"></router-outlet>
+        <router-outlet name="modal"></router-outlet>
       </main>
 
         <div class="footer">

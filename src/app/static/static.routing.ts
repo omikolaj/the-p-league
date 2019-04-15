@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 import { AboutComponent } from './about/about.component';
 import { TeamSignupFormComponent } from './about/components/team-signup-form/team-signup-form.component';
-
-import { GalleryComponent } from './gallery/gallery.component';
-import { MerchandiseListComponent } from './merchandise-list/merchandise-list.component';
-
+import { GalleryGridListComponent } from './gallery/gallery-grid-list.component';
+import { MerchandiseListComponent } from './merchandise/merchandise-list/merchandise-list.component';
+import { MerchandiseDialogContainerComponent } from './merchandise/merchandise-dialog-container/merchandise-dialog-container.component';
 
 const routes: Routes = [
   {
@@ -20,14 +18,16 @@ const routes: Routes = [
     data: { animation: 'TeamSignUpPage'}
   },
   {
-    path: 'merchandise',
-    component: MerchandiseListComponent,
-    data: { animation: 'MerchandiseListPage' }
+    path: 'merchandise', children: [
+      { path: '', component: MerchandiseListComponent, data: { animation: 'MerchandiseListPage' } },
+      { path: 'new', component: MerchandiseDialogContainerComponent, outlet: 'modal' },
+      // { path: ':id/edit', component: MerchandiseDialogContainerComponent, outlet: 'modal' }
+    ]    
   },
   {
     path: 'gallery',
-    component: GalleryComponent,
-    data: { animation: 'GalleryPage' }
+    component: GalleryGridListComponent,
+    data: { animation: 'GalleryGridListPage' }
   }
 ];
 

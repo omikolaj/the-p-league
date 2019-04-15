@@ -3,6 +3,7 @@ import { GearItem } from 'src/app/core/models/gear-item..model';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { Observable } from 'rxjs';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-merchandise-list',
@@ -13,10 +14,18 @@ export class MerchandiseListComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gearItems$: Observable<GearItem[]>;
 
-  constructor(private merchandiseService: MerchandiseService) { }
+  constructor(
+    private merchandiseService: MerchandiseService,
+    private router: Router,
+    private route: ActivatedRoute
+    ) { }
 
   ngOnInit() {
     this.gearItems$ = this.merchandiseService.fetchAllGearItems();
+  }
+
+  onAddGearItems(){
+    this.router.navigate([{ outlets: { modal: ['new'] } }], { relativeTo: this.route });
   }
 
 }

@@ -1,0 +1,25 @@
+<div style="margin-top: 75px">
+
+  <mat-grid-list cols="2" rowHeight="2:1">
+
+      <mat-grid-tile [ngClass]="routeAnimationsElements" *ngFor="let leaguePicture of leaguePictures$ | async" [colspan]="leaguePicture.cols"
+        [rowspan]="leaguePicture.rows">
+
+        <!-- <mat-grid-tile-header>
+        {{ leaguePicture.name }}
+      </mat-grid-tile-header> -->
+
+        <img [src]="leaguePicture.URL" alt="The P League Snapshot">
+
+        <!-- <mat-grid-tile-footer>
+        #{{ leaguePicture.hashTag }}
+      </mat-grid-tile-footer> -->
+
+      </mat-grid-tile>      
+
+  </mat-grid-list>
+
+  <mat-paginator [length]="7" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+
+</div>

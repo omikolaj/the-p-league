@@ -1,0 +1,41 @@
+<h1 mat-dialog-title class="post-it-title">TITLE</h1>
+<!-- <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+  <mat-horizontal-stepper>
+    <mat-step>
+      <ng-template matStepLabel>Title</ng-template>      
+      <mat-form-field>
+        <input matInput placeholder="Movie Title" formControlName="movieTitle" cdkFocusInitial>
+        <mat-error *ngIf="postForm.get('movieTitle').invalid">You must enter a value</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Post Title" formControlName="postTitle">
+        <mat-error *ngIf="postForm.get('postTitle').invalid">You must enter a value</mat-error>
+      </mat-form-field>
+      <div>
+        <button mat-button type="button" (click)="onNoClick()">Cancel</button>
+        <button mat-button matStepperNext type="button">Next</button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Details</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="Movie Rating" formControlName="rating" required>
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let rating of ratings | ratingToArray; let i=index" [value]="i">
+            {{rating}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="postForm.get('rating').invalid">Please select a rating</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        <mat-error *ngIf="postForm.get('description').invalid">You must enter a value</mat-error>
+      </mat-form-field>
+      <input type="file" (change)="onFileSelected($event)">   
+      <div>
+        <button mat-button matStepperPrevious type="button">Back</button>
+        <button mat-button [disabled]="!postForm.valid">{{editMode ? 'Update' : 'Post it'}}</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</form> -->

@@ -6,9 +6,9 @@
     [ngClass]="routeAnimationsElements"
     color="accent" 
     type="button"
-    (click)="fileInput.click()"
+    (click)="onAddGearItems()"
   >Upload Gear</button>
-  <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none"> 
+  <!-- <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none">  -->
 
   <app-merchandise-item
     [ngClass]="routeAnimationsElements"
@@ -17,5 +17,8 @@
     [gearItem]="gearItem"
   >
   </app-merchandise-item>
+  
+  <mat-paginator [length]="7" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
 
 </div>
