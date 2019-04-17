@@ -1,10 +1,10 @@
-import { Component, OnInit, Predicate } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Size, GearItem } from 'src/app/core/models/gear-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { tap } from 'rxjs/operators';
-import { MatDialogRef, MatChip } from '@angular/material';
+import { MatDialogRef } from '@angular/material';
 import { GearSize } from 'src/app/core/models/gear-size.model';
 
 import {ThemePalette} from '@angular/material/core';
