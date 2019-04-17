@@ -30,19 +30,23 @@
       <ng-template matStepLabel>Details</ng-template>
 
       <mat-form-field>
-        <mat-select placeholder="Sizes" formControlName="sizes" required>
-          <mat-option>--</mat-option>
-          <!-- <mat-option *ngFor="let rating of ratings | ratingToArray; let i=index" [value]="i">
-            {{rating}}
-          </mat-option> -->
-        </mat-select>
-        <!-- <mat-error *ngIf="gearItemForm.get('rating').invalid">Please select a rating</mat-error> -->
+
+        <mat-chip-list [multiple]="true" [selectable]="true">
+          
+          <mat-chip 
+            [selected]="gearSize.available"  
+            (click)="gearSize.available = !gearSize.available; onSelectedChipSize(gearSize)"  
+            [color]="gearSize.color"                     
+            *ngFor="let gearSize of gearSizes">{{ sizeEnum[gearSize.size] }}  
+          </mat-chip>
+
+        </mat-chip-list>
+
+        <mat-error *ngIf="gearItemForm.get('sizes').invalid">Please select a size</mat-error>
+
       </mat-form-field>
 
-      <mat-form-field>
-        <input matInput placeholder="In stock" formControlName="inStock">
-        <mat-error *ngIf="gearItemForm.get('inStock').invalid">You must enter a <strong>value</strong></mat-error>
-      </mat-form-field> 
+      <mat-slide-toggle (change)="onSlideChange()" [labelPosition]="'after'" formControlName="inStock" color="accent"  style="display: block;">{{ isInStock ? 'In stock' : 'Out of stock' }}</mat-slide-toggle>
 
       <button class="action-buttons" mat-raised-button color="accent" (click)="fileUpload.click()"   type="button">Images</button>
       <input #fileUpload type="file" (change)="onFileSelected($event)" style="display: none;">   
@@ -55,5 +59,5 @@
     </mat-step>
 
   </mat-horizontal-stepper>
-  
+
 </form>

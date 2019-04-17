@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GearItem } from 'src/app/core/models/gear-item..model';
+import { GearItem } from 'src/app/core/models/gear-item.model';
 
 @Component({
   selector: 'app-merchandise-item',

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GearItem } from 'src/app/core/models/gear-item..model';
+import { GearItem } from 'src/app/core/models/gear-item.model';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { Observable } from 'rxjs';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';

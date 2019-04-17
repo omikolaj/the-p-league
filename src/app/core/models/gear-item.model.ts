@@ -1,8 +1,10 @@
+import { GearSize } from './gear-size.model';
+
 export interface GearItem{
   ID?: number,
   name: string,
   price: number,
-  sizes: Size[],
+  sizes: GearSize[],
   inStock: boolean,
   imageUrl?: string
 }
@@ -17,3 +19,4 @@ export enum Size{
   XXL = 6,
   ALL = 10
 }
+

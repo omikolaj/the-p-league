@@ -11,7 +11,7 @@
 }
 
 // Necessary to overwrite dynamically 
-//generated styling that is applied to angular material components
+// generated styling that is applied to angular material components
 :host /deep/ .mat-horizontal-content-container{
   padding-left: 0 ;
   padding-right: 0 ;
