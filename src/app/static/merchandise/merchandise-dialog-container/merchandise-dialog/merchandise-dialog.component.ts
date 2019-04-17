@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Predicate } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Size, GearItem } from 'src/app/core/models/gear-item.model';
 import { ActivatedRoute } from '@angular/router';
@@ -68,11 +68,10 @@ export class MerchandiseDialogComponent implements OnInit {
 
   onSelectedChipSize(gearSize: GearSize){
     console.log('GearSize is: ', gearSize)
-    if(this.selectedChipGearSizes.find(gS => gS.size === gearSize.size)){
-      // Loop through all GearSize objects in the array, and return all of their size values
-      // then return indexOf the currently selected GearSize size value      
-      const index = this.selectedChipGearSizes.map(s => s.size).indexOf(gearSize.size);
-      this.selectedChipGearSizes.splice(index, 1);
+    const predicate: (gs: GearSize) => boolean = (gS: GearSize) => gS.size === gearSize.size;
+    this.selectedChipGearSizes.forEach(predicate);
+    if(this.selectedChipGearSizes.find(predicate)){
+      this.selectedChipGearSizes = this.selectedChipGearSizes.filter(predicate)
       console.log('Selected chip sizes in the if: ', this.selectedChipGearSizes);
     }
     else{
