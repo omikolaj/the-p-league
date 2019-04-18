@@ -6,8 +6,10 @@ import { MerchandiseService } from 'src/app/core/services/merchandise/merchandis
 import { tap } from 'rxjs/operators';
 import { MatDialogRef } from '@angular/material';
 import { GearSize } from 'src/app/core/models/gear-size.model';
+import { v4 as uuid } from 'uuid';
 
 import {ThemePalette} from '@angular/material/core';
+import { StoreImage } from 'src/app/core/models/store-image.model';
 export interface ChipColor {
   name: string;
   color: ThemePalette;
@@ -23,7 +25,7 @@ export class MerchandiseDialogComponent implements OnInit {
   editMode: boolean = false; 
   gearItemForm: FormGroup;  
   selectedFileFormData: FormData;
-  selectedFilesForUpload: any;  
+  storeImages: StoreImage[] = [];  
   
   selectedChipGearSizes: GearSize[] = [];
   gearSizes: GearSize[] = [];  
@@ -67,19 +69,16 @@ export class MerchandiseDialogComponent implements OnInit {
   }
 
   onSelectedChipSize(gearSize: GearSize){
-    console.log('GearSize is: ', gearSize)
     const predicate: (gs: GearSize) => boolean = (gS: GearSize) => gS.size === gearSize.size;
     this.selectedChipGearSizes.forEach(predicate);
     if(this.selectedChipGearSizes.find(predicate)){
       this.selectedChipGearSizes = this.selectedChipGearSizes.filter(predicate)
-      console.log('Selected chip sizes in the if: ', this.selectedChipGearSizes);
     }
     else{
       this.selectedChipGearSizes = [
         ...this.selectedChipGearSizes,
         gearSize
       ]
-      console.log('Selected chip sizes in else: ', this.selectedChipGearSizes);
     }
   }
 
@@ -87,8 +86,20 @@ export class MerchandiseDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onFileSelected(event){
-    this.selectedFilesForUpload = <File>event.target.files;
+  onFileSelected(event){    
+    const length = event.target.files.length < 3 ? event.target.files.length : 3;    
+    const filesObj = <File>event.target.files
+
+    for (let index = 0; index < length; index++) {
+      this.storeImages = [
+        ...this.storeImages,
+        { ID: uuid() ,name: filesObj[index].name, size: filesObj[index].size, type: filesObj[index].type }
+      ];      
+    }
+  }
+
+  onRemoveImage(image: StoreImage){   
+    this.storeImages = this.storeImages.filter(i => i.ID !== image.ID);
   }
 
   initForm(): void{
@@ -116,7 +127,7 @@ export class MerchandiseDialogComponent implements OnInit {
     this.gearItemForm = this.fb.group({
       name: this.fb.control(name, Validators.required),
       price: this.fb.control(price, Validators.required),
-      sizes: this.fb.control(sizes, Validators.required),
+      sizes: this.fb.control(sizes),
       inStock: this.fb.control(inStock),
       imageUrl: this.fb.control(imageUrl)
     })

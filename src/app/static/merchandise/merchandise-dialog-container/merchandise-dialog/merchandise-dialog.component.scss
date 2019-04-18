@@ -17,3 +17,15 @@
   padding-right: 0 ;
   padding-bottom: 24px ;
 }
+
+:host /deep/ .mat-form-field.mat-focused .mat-form-field-label{
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:host /deep/ .mat-chip-list-stacked .mat-chip-list-wrapper .mat-standard-chip {
+  width: auto;
+}
+
+:host /deep/ .mat-chip-list-wrapper{
+  align-items: flex-end;
+}
