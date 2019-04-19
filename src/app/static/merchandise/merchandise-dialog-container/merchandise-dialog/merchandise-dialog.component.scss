@@ -4,10 +4,29 @@
 
 .action-buttons{
   margin-top: 15px;
+  display: flex;
+}
+
+.action-buttons .post-button{
+  margin-left: auto;
+  
 }
 
 .mat-form-field{
   width: 100%;
+}
+
+#imagesToUploadContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  flex-flow: column;
+  justify-content: space-evenly;
+}
+
+.right-align {
+  text-align: right;
 }
 
 // Necessary to overwrite dynamically 
@@ -23,9 +42,26 @@
 }
 
 :host /deep/ .mat-chip-list-stacked .mat-chip-list-wrapper .mat-standard-chip {
-  width: auto;
+  width: auto;  
 }
 
-:host /deep/ .mat-chip-list-wrapper{
-  align-items: flex-end;
+// :host /deep/ #sizes .mat-form-field-underline{
+//   display: none;
+// }
+
+.upload-image-chips{
+  padding-bottom: 20px;
+}
+
+// .gear-sizes{
+//   display: flex;
+//   justify-content: center;
+// }
+
+// :host /deep/ #sizes .mat-form-field-label-wrapper{
+//   text-align: center;
+// }
+
+mat-slide-toggle{
+  padding-left: 10px;
 }

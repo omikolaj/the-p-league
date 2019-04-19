@@ -25,7 +25,7 @@ export class MerchandiseDialogComponent implements OnInit {
   editMode: boolean = false; 
   gearItemForm: FormGroup;  
   selectedFileFormData: FormData;
-  storeImages: StoreImage[] = [];  
+  gearItemImages: StoreImage[] = [];  
   
   selectedChipGearSizes: GearSize[] = [];
   gearSizes: GearSize[] = [];  
@@ -89,17 +89,37 @@ export class MerchandiseDialogComponent implements OnInit {
   onFileSelected(event){    
     const length = event.target.files.length < 3 ? event.target.files.length : 3;    
     const filesObj = <File>event.target.files
+    
+    // If we already have items in the array
+    if(this.gearItemImages.length > 0){
+      // Copy over the old array and create a new reference to the new array
+      this.gearItemImages = [...this.gearItemImages];
+      // Loop through the total number of images that user is trying to upload
+      // and replace the first item in the array with the first item from the user
+      // defined array
+      for (let index = 0; index < length; index++) {
+        this.gearItemImages.splice(index, 1, { ID: uuid(), name: filesObj[index].name, size: filesObj[index].size, type: filesObj[index].type });        
+      }
+    }
+    // we have a clean array
+    else{
+      for (let index = 0; index < length; index++) {
+        this.gearItemImages = [
+          ...this.gearItemImages,
+          { ID: uuid(), name: filesObj[index].name, size: filesObj[index].size, type: filesObj[index].type }
+        ];      
+      }
+    }
+  }
 
-    for (let index = 0; index < length; index++) {
-      this.storeImages = [
-        ...this.storeImages,
-        { ID: uuid() ,name: filesObj[index].name, size: filesObj[index].size, type: filesObj[index].type }
-      ];      
+  hideIfEmpty(){    
+    if(this.gearItemImages.length === 0){
+      return 'none';
     }
   }
 
   onRemoveImage(image: StoreImage){   
-    this.storeImages = this.storeImages.filter(i => i.ID !== image.ID);
+    this.gearItemImages = this.gearItemImages.filter(i => i.ID !== image.ID);
   }
 
   initForm(): void{

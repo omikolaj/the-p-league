@@ -11,10 +11,10 @@ export class StoreImageViewPipe implements PipeTransform {
 
     for (let index = 0; index < storeImages.length; index++) {
       let viewImage = Object.assign({}, storeImages[index]);
-      viewImage.name = viewImage.name = viewImage.name.slice(0, 4) + viewImage.ID.slice(0, 4);
+      viewImage.name = viewImage.name = viewImage.name.slice(0, 12);
       viewImagesArr = [...viewImagesArr, viewImage];
     }
-    return viewImagesArr;
+    return viewImagesArr.reverse();
   }
 
 }

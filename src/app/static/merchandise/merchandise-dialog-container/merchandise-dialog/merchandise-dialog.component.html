@@ -14,12 +14,14 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput placeholder="Price" formControlName="price">
+        <input class="right-align" matInput type="number" placeholder="Price" formControlName="price">
+        <span matPrefix>$&nbsp;</span>
+        <span matSuffix>.00</span>
         <mat-error *ngIf="gearItemForm.get('price').invalid">You must enter a <strong>price</strong></mat-error>
       </mat-form-field>
 
       <div class="action-buttons">
-        <button mat-raised-button color="warn" type="button" (click)="onCancel()">Cancel</button>
+        <button style="margin-right: 5px" mat-raised-button color="warn" type="button" (click)="onCancel()">Cancel</button>
         <button mat-raised-button color="accent" matStepperNext type="button">Next</button>
       </div>
 
@@ -29,20 +31,21 @@
 
       <ng-template matStepLabel>Details</ng-template>
 
-      <mat-form-field>
+      <mat-form-field id="sizes">
 
-        <mat-chip-list #chipList [multiple]="true" [selectable]="true">
+        <mat-chip-list class="gear-sizes" #chipList [multiple]="true" [selectable]="true">
           
           <mat-chip 
             [selected]="gearSize.available"  
             (click)="gearSize.available = !gearSize.available; onSelectedChipSize(gearSize)"  
             [color]="gearSize.color"                     
             *ngFor="let gearSize of gearSizes">{{ sizeEnum[gearSize.size] }}  
-          </mat-chip>
+          </mat-chip>          
           <input 
-            placeholder="Click on all of the available sizes"
+            placeholder="Select available sizes"
             [matChipInputFor]="chipList"
             style="display: none;"
+            class="gear-size-label"
             >
 
         </mat-chip-list>
@@ -53,27 +56,31 @@
 
       <!-- <mat-form-field> -->
 
-          <mat-chip-list #imageUploadList class="mat-chip-list-stacked">            
+        <div id="imagesToUploadContainer">
+        
+          <mat-chip-list [ngStyle]="{ 'display': hideIfEmpty() }" #imageUploadList class="mat-chip-list-stacked upload-image-chips"> 
 
             <mat-chip               
               [removable]="true"
               (removed)="onRemoveImage(storeImage)"                                  
-              *ngFor="let storeImage of storeImages | storeImageView">{{ storeImage.name }}  
+              *ngFor="let storeImage of gearItemImages | storeImageView">{{ storeImage.name }}  
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
 
-            <button class="action-buttons" mat-raised-button color="accent" (click)="fileUpload.click()"   type="button">Images</button>
-            <input #fileUpload type="file" multiple="multiple" (change)="onFileSelected($event)" style="display: none;"> 
+          </mat-chip-list>           
 
-            <mat-slide-toggle (change)="onSlideChange()" [labelPosition]="'after'" formControlName="inStock" color="accent"  style="display: block;">{{ isInStock ? 'In stock' : 'Out of stock' }}</mat-slide-toggle>
+        </div>            
 
-          </mat-chip-list>  
-  
+        <mat-slide-toggle (change)="onSlideChange()" [labelPosition]="'after'" formControlName="inStock" color="accent"  style="display: block;">{{ isInStock ? 'In stock' : 'Out of stock' }}</mat-slide-toggle>
+
         <!-- </mat-form-field> -->
 
       <div class="action-buttons">
-        <button mat-raised-button color="warn" matStepperPrevious type="button">Back</button>
-        <button mat-raised-button color="accent" [disabled]="!gearItemForm.valid">{{editMode ? 'Update' : 'Upload'}}</button>
+        <button style="align-self: flex-end; margin-right: 5px;" mat-raised-button color="warn" matStepperPrevious type="button">Back</button>
+        <button class="action-buttons" mat-raised-button color="accent" (click)="fileUpload.click()" type="button">Images</button>
+            <input #fileUpload type="file" multiple="multiple" (change)="onFileSelected($event)"  style="display: none;">        
+        <button class="post-button" style="align-self: flex-end;" mat-raised-button color="accent" [disabled]="!gearItemForm.valid">{{editMode ? 'Update' : 'Post'}}</button>
+        
       </div>
 
     </mat-step>
