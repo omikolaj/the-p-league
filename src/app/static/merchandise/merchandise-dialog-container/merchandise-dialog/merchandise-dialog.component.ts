@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Size, GearItem } from 'src/app/core/models/gear-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { tap } from 'rxjs/operators';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatChipInputEvent, MatAutocomplete } from '@angular/material';
 import { GearSize } from 'src/app/core/models/gear-size.model';
 import { v4 as uuid } from 'uuid';
 
@@ -30,7 +30,7 @@ export class MerchandiseDialogComponent implements OnInit {
   selectedChipGearSizes: GearSize[] = [];
   gearSizes: GearSize[] = [];  
   isInStock: boolean = true;
-  sizeEnum = Size;  
+  sizeEnum = Size; 
 
   constructor(
     private fb: FormBuilder,
@@ -68,18 +68,23 @@ export class MerchandiseDialogComponent implements OnInit {
     this.isInStock = !this.isInStock;
   }
 
-  onSelectedChipSize(gearSize: GearSize){
+  onSelectedChipSize(gearSize: GearSize, form){
+    console.log('form value is ', form.get('sizes'));    
     const predicate: (gs: GearSize) => boolean = (gS: GearSize) => gS.size === gearSize.size;
     this.selectedChipGearSizes.forEach(predicate);
     if(this.selectedChipGearSizes.find(predicate)){
       this.selectedChipGearSizes = this.selectedChipGearSizes.filter(predicate)
+      console.log('inside of IF: ', this.selectedChipGearSizes);
     }
     else{
       this.selectedChipGearSizes = [
         ...this.selectedChipGearSizes,
         gearSize
       ]
+      console.log('inside of ELSE: ', this.selectedChipGearSizes);
     }
+    // Manually re-validate the control
+    form.controls['sizes'].updateValueAndValidity();
   }
 
   onCancel(){
@@ -122,6 +127,14 @@ export class MerchandiseDialogComponent implements OnInit {
     this.gearItemImages = this.gearItemImages.filter(i => i.ID !== image.ID);
   }
 
+  requireSizes() : ValidatorFn{
+    return (control: AbstractControl): {[key: string]: any} | null => {      
+      const anySelectedSizes = this.selectedChipGearSizes.filter(gS => gS.available === true)
+      console.log('Inside of require sizes. Control value is: ', control, anySelectedSizes)
+      return anySelectedSizes.length > 0 ? null : { 'invalidSize': { value: 'Please select a size' } };
+    }
+  }
+
   initForm(): void{
     let name: string = '';
     let price: number = null;
@@ -147,11 +160,9 @@ export class MerchandiseDialogComponent implements OnInit {
     this.gearItemForm = this.fb.group({
       name: this.fb.control(name, Validators.required),
       price: this.fb.control(price, Validators.required),
-      sizes: this.fb.control(sizes),
+      sizes: this.fb.control(sizes, this.requireSizes()),
       inStock: this.fb.control(inStock),
       imageUrl: this.fb.control(imageUrl)
     })
-
   }
-
 }

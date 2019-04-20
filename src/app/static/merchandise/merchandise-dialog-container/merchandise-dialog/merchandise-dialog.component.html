@@ -10,14 +10,14 @@
 
       <mat-form-field>
         <input matInput placeholder="Name of the item" formControlName="name" cdkFocusInitial>
-        <mat-error *ngIf="gearItemForm.get('name').invalid">You must enter a <strong>name</strong></mat-error>
+        <mat-error *ngIf="gearItemForm.get('name').invalid && gearItemForm.get('name').touched">You must enter a <strong>name</strong></mat-error>
       </mat-form-field>
 
       <mat-form-field>
         <input class="right-align" matInput type="number" placeholder="Price" formControlName="price">
         <span matPrefix>$&nbsp;</span>
         <span matSuffix>.00</span>
-        <mat-error *ngIf="gearItemForm.get('price').invalid">You must enter a <strong>price</strong></mat-error>
+        <mat-error *ngIf="gearItemForm.get('price').invalid && gearItemForm.get('price').touched">You must enter a <strong>price</strong></mat-error>
       </mat-form-field>
 
       <div class="action-buttons">
@@ -33,28 +33,34 @@
 
       <mat-form-field id="sizes">
 
-        <mat-chip-list class="gear-sizes" #chipList [multiple]="true" [selectable]="true">
+      <mat-chip-list formControlName="sizes" class="gear-sizes" #chipList [multiple]="true" [selectable]="true">
           
           <mat-chip 
             [selected]="gearSize.available"  
-            (click)="gearSize.available = !gearSize.available; onSelectedChipSize(gearSize)"  
+            (click)="gearSize.available = !gearSize.available; onSelectedChipSize(gearSize, gearItemForm)"  
             [color]="gearSize.color"                     
             *ngFor="let gearSize of gearSizes">{{ sizeEnum[gearSize.size] }}  
-          </mat-chip>          
-          <input 
-            placeholder="Select available sizes"
+          </mat-chip>
+
+        </mat-chip-list>
+        <!-- <input
+            matInput
+            formControlName="sizes"
+            placeholder="Gear sizes..."
+            class="gear-size-label"
+          > -->
+          <input
+            matInput
+            formControlName="sizes"
+            placeholder="Gear sizes..."
             [matChipInputFor]="chipList"
             style="display: none;"
             class="gear-size-label"
-            >
+          >
 
-        </mat-chip-list>
-
-        <!-- <mat-error *ngIf="gearItemForm.get('sizes').invalid">Please select a size</mat-error> -->
+        <mat-error *ngIf="gearItemForm.get('sizes').invalid && gearItemForm.get('sizes').touched">Please mark a size</mat-error>
 
       </mat-form-field>
-
-      <!-- <mat-form-field> -->
 
         <div id="imagesToUploadContainer">
         
@@ -73,14 +79,13 @@
 
         <mat-slide-toggle (change)="onSlideChange()" [labelPosition]="'after'" formControlName="inStock" color="accent"  style="display: block;">{{ isInStock ? 'In stock' : 'Out of stock' }}</mat-slide-toggle>
 
-        <!-- </mat-form-field> -->
-
       <div class="action-buttons">
         <button style="align-self: flex-end; margin-right: 5px;" mat-raised-button color="warn" matStepperPrevious type="button">Back</button>
+
         <button class="action-buttons" mat-raised-button color="accent" (click)="fileUpload.click()" type="button">Images</button>
-            <input #fileUpload type="file" multiple="multiple" (change)="onFileSelected($event)"  style="display: none;">        
-        <button class="post-button" style="align-self: flex-end;" mat-raised-button color="accent" [disabled]="!gearItemForm.valid">{{editMode ? 'Update' : 'Post'}}</button>
-        
+            <input #fileUpload type="file" multiple="multiple" (change)="onFileSelected($event)"  style="display: none;">
+
+        <button class="post-button" style="align-self: flex-end;" mat-raised-button color="accent" [disabled]="!gearItemForm.valid">{{editMode ? 'Update' : 'Post'}}</button>        
       </div>
 
     </mat-step>
