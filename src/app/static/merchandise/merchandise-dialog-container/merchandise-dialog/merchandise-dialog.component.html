@@ -43,12 +43,7 @@
           </mat-chip>
 
         </mat-chip-list>
-        <!-- <input
-            matInput
-            formControlName="sizes"
-            placeholder="Gear sizes..."
-            class="gear-size-label"
-          > -->
+
           <input
             matInput
             formControlName="sizes"
@@ -58,7 +53,7 @@
             class="gear-size-label"
           >
 
-        <mat-error *ngIf="gearItemForm.get('sizes').invalid && gearItemForm.get('sizes').touched">Please mark a size</mat-error>
+        <mat-error *ngIf="gearItemForm.get('sizes').invalid && gearItemForm.get('sizes').touched">Please select a size</mat-error>
 
       </mat-form-field>
 

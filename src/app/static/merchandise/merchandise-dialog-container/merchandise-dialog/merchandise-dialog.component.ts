@@ -10,6 +10,7 @@ import { v4 as uuid } from 'uuid';
 
 import {ThemePalette} from '@angular/material/core';
 import { StoreImage } from 'src/app/core/models/store-image.model';
+// import { requireSizes } from './merchandise-dialog.validators';
 export interface ChipColor {
   name: string;
   color: ThemePalette;
@@ -52,6 +53,7 @@ export class MerchandiseDialogComponent implements OnInit {
   ngOnInit() {
     const outlet = 'modal';
 
+    // Checks to see if we are in edit mode and grabs the id from the url
     this.route.firstChild.children
       .filter(r => r.outlet === outlet)
       .map(r => r.params.subscribe(
@@ -64,24 +66,26 @@ export class MerchandiseDialogComponent implements OnInit {
     this.initForm();
   }
 
+  // Controls the text that displays next the slide toggle
   onSlideChange(){
     this.isInStock = !this.isInStock;
   }
 
-  onSelectedChipSize(gearSize: GearSize, form){
-    console.log('form value is ', form.get('sizes'));    
-    const predicate: (gs: GearSize) => boolean = (gS: GearSize) => gS.size === gearSize.size;
-    this.selectedChipGearSizes.forEach(predicate);
-    if(this.selectedChipGearSizes.find(predicate)){
-      this.selectedChipGearSizes = this.selectedChipGearSizes.filter(predicate)
-      console.log('inside of IF: ', this.selectedChipGearSizes);
+  onSelectedChipSize(gearSize: GearSize, form){           
+    // If item found in existing array
+    if(this.selectedChipGearSizes.find((gS: GearSize) => gS.size === gearSize.size)){        
+      this.selectedChipGearSizes = this.selectedChipGearSizes.filter((gS: GearSize) => gS.size !== gearSize.size)   
+      console.log("[IF] selected chip gear sizes: ", this.selectedChipGearSizes);      
     }
+    // If new item
     else{
+      const gearSizeObj: GearSize = Object.assign({}, gearSize);
+      gearSizeObj.available = true;
       this.selectedChipGearSizes = [
         ...this.selectedChipGearSizes,
-        gearSize
-      ]
-      console.log('inside of ELSE: ', this.selectedChipGearSizes);
+        gearSizeObj
+      ]      
+      console.log('[ELSE] Selected Chip Size Is: ', this.selectedChipGearSizes);
     }
     // Manually re-validate the control
     form.controls['sizes'].updateValueAndValidity();
@@ -117,24 +121,19 @@ export class MerchandiseDialogComponent implements OnInit {
     }
   }
 
+  // Hides the div html control that hosts uploaded images if user has not yet uploaded any images
   hideIfEmpty(){    
     if(this.gearItemImages.length === 0){
       return 'none';
     }
   }
 
+  // Removes user defined image from the uploaded array of images
   onRemoveImage(image: StoreImage){   
     this.gearItemImages = this.gearItemImages.filter(i => i.ID !== image.ID);
   }
 
-  requireSizes() : ValidatorFn{
-    return (control: AbstractControl): {[key: string]: any} | null => {      
-      const anySelectedSizes = this.selectedChipGearSizes.filter(gS => gS.available === true)
-      console.log('Inside of require sizes. Control value is: ', control, anySelectedSizes)
-      return anySelectedSizes.length > 0 ? null : { 'invalidSize': { value: 'Please select a size' } };
-    }
-  }
-
+  // Initializes the form based on the 'editMode' the component is in
   initForm(): void{
     let name: string = '';
     let price: number = null;
@@ -164,5 +163,13 @@ export class MerchandiseDialogComponent implements OnInit {
       inStock: this.fb.control(inStock),
       imageUrl: this.fb.control(imageUrl)
     })
+  }
+  
+  // Validator for the form control 'sizes'
+  requireSizes() : ValidatorFn{
+    return (control: AbstractControl): {[key: string]: any} | null => {      
+      const anySelectedSizes = this.selectedChipGearSizes.filter(gS => gS.available === true)      
+      return anySelectedSizes.length > 0 ? null : { 'invalidSize': { value: 'Please select a size' } };
+    }
   }
 }
