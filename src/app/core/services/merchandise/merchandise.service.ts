@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { GearItem, Size } from '../../models/gear-item.model';
-import { GearSize } from '../../models/gear-size.model';
+import { GearItem } from '../../models/gear-item.model';
+import { flatMap,  } from 'rxjs/operators';
+import { Size } from '../../models/gear-size.model';
 
 @Injectable({
   providedIn: 'root'
@@ -66,4 +67,10 @@ export class MerchandiseService {
     return this.gearItems$;
 
   } 
+
+  findGearItem(ID: number): Observable<GearItem>{
+    return this.gearItems$.pipe(
+      flatMap((gearItems: GearItem[]) => gearItems.filter((gearItem: GearItem) => gearItem.ID === ID))      
+    )    
+  }
 }

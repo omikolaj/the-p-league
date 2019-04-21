@@ -23,6 +23,7 @@
   flex-wrap: wrap;
   flex-flow: column;
   justify-content: space-evenly;
+  margin-top: 10px;
 }
 
 .right-align {
@@ -50,7 +51,11 @@
 // }
 
 .upload-image-chips{
-  padding-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+:host /deep/ #imagesToUploadContainer mat-form-field div:nth-child(2){
+  display:none;
 }
 
 // .gear-sizes{

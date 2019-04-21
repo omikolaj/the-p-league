@@ -1,8 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Size } from '../../models/gear-item.model';
-import { forEach } from '@angular/router/src/utils/collection';
-import { map } from 'rxjs/operators';
-import { GearSize } from '../../models/gear-size.model';
+import { GearSize, Size } from '../../models/gear-size.model';
 
 const ALL: string = "ALL";
 const NONE: string = "NONE";
@@ -17,9 +14,6 @@ export class SizeEnumToSizePipe implements PipeTransform {
 
     if(sizeData.length > 1){      
       for (let index = 0; index < sizeData.length; index++) {
-        let sorted = sizeData.sort((a, b) => {
-          return a.size - b.size;
-        })        
         sizeArray.push(Size[sizeData[index].size]);        
       }
     }

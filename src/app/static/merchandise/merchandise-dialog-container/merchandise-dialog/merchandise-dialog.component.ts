@@ -1,15 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
-import { Size, GearItem } from 'src/app/core/models/gear-item.model';
+import { GearItem } from 'src/app/core/models/gear-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
-import { tap } from 'rxjs/operators';
-import { MatDialogRef, MatChipInputEvent, MatAutocomplete } from '@angular/material';
-import { GearSize } from 'src/app/core/models/gear-size.model';
+import { MatDialogRef } from '@angular/material';
+import { GearSize, Size } from 'src/app/core/models/gear-size.model';
 import { v4 as uuid } from 'uuid';
 
 import {ThemePalette} from '@angular/material/core';
-import { StoreImage } from 'src/app/core/models/store-image.model';
+import { GearImage } from 'src/app/core/models/gear-image.model';
 // import { requireSizes } from './merchandise-dialog.validators';
 export interface ChipColor {
   name: string;
@@ -22,13 +21,12 @@ export interface ChipColor {
   styleUrls: ['./merchandise-dialog.component.scss']
 })
 export class MerchandiseDialogComponent implements OnInit {  
-  gearItemID: number; 
+  gearItem: GearItem; 
   editMode: boolean = false; 
   gearItemForm: FormGroup;  
   selectedFileFormData: FormData;
-  gearItemImages: StoreImage[] = [];  
+  gearItemImages: GearImage[] = [];  
   
-  selectedChipGearSizes: GearSize[] = [];
   gearSizes: GearSize[] = [];  
   isInStock: boolean = true;
   sizeEnum = Size; 
@@ -59,11 +57,15 @@ export class MerchandiseDialogComponent implements OnInit {
       .map(r => r.params.subscribe(
         (params) => {
           this.editMode = params['id'] != null;
-          this.gearItemID = +params['id'];
+          this.merchandiseService.findGearItem(+params['id']).subscribe(gearItem => this.gearItem = gearItem);
         }        
       ))
-
     this.initForm();
+  }
+
+  onSubmit(){
+    const a = this.gearItemForm.controls['images'].setValue(this.gearItemImages);
+    console.log('in submit', this.gearItemForm);
   }
 
   // Controls the text that displays next the slide toggle
@@ -71,24 +73,8 @@ export class MerchandiseDialogComponent implements OnInit {
     this.isInStock = !this.isInStock;
   }
 
-  onSelectedChipSize(gearSize: GearSize, form){           
-    // If item found in existing array
-    if(this.selectedChipGearSizes.find((gS: GearSize) => gS.size === gearSize.size)){        
-      this.selectedChipGearSizes = this.selectedChipGearSizes.filter((gS: GearSize) => gS.size !== gearSize.size)   
-      console.log("[IF] selected chip gear sizes: ", this.selectedChipGearSizes);      
-    }
-    // If new item
-    else{
-      const gearSizeObj: GearSize = Object.assign({}, gearSize);
-      gearSizeObj.available = true;
-      this.selectedChipGearSizes = [
-        ...this.selectedChipGearSizes,
-        gearSizeObj
-      ]      
-      console.log('[ELSE] Selected Chip Size Is: ', this.selectedChipGearSizes);
-    }
-    // Manually re-validate the control
-    form.controls['sizes'].updateValueAndValidity();
+  onSelectedChipSize(){    
+    this.gearItemForm.controls['sizes'].updateValueAndValidity();
   }
 
   onCancel(){
@@ -99,8 +85,8 @@ export class MerchandiseDialogComponent implements OnInit {
     const length = event.target.files.length < 3 ? event.target.files.length : 3;    
     const filesObj = <File>event.target.files
     
-    // If we already have items in the array
-    if(this.gearItemImages.length > 0){
+    // If we have 3 items in the array
+    if(this.gearItemImages.length === 3){
       // Copy over the old array and create a new reference to the new array
       this.gearItemImages = [...this.gearItemImages];
       // Loop through the total number of images that user is trying to upload
@@ -108,6 +94,24 @@ export class MerchandiseDialogComponent implements OnInit {
       // defined array
       for (let index = 0; index < length; index++) {
         this.gearItemImages.splice(index, 1, { ID: uuid(), name: filesObj[index].name, size: filesObj[index].size, type: filesObj[index].type });        
+      }
+    }
+    // If we more than 0 and less than 3 so either 1 or 2 images uploaded
+    else if(this.gearItemImages.length > 0 && this.gearItemImages.length < 3){      
+      this.gearItemImages = [...this.gearItemImages];      
+      // Loop through the total number of images that user is trying to upload
+      // and add the first user image to the exisiting array until you reach length of 3
+      // then start replacing the first item in the array
+      for (let index = 0; index < length; index++) {
+        if(this.gearItemImages.length < 3){
+          this.gearItemImages = [...this.gearItemImages, { ID: uuid(), name: filesObj[index].name, size: filesObj[index].size, type: filesObj[index].type }]
+        }
+        // If the on hand image array already has 3 items, start replacing existing items with user defined items
+        else{
+          for (let index = 0; index < length; index++) {
+            this.gearItemImages.splice(index, 1, { ID: uuid(), name: filesObj[index].name, size: filesObj[index].size, type: filesObj[index].type });        
+          }
+        }
       }
     }
     // we have a clean array
@@ -121,6 +125,11 @@ export class MerchandiseDialogComponent implements OnInit {
     }
   }
 
+  // Removes user defined image from the uploaded array of images
+  onRemoveImage(image: GearImage){   
+    this.gearItemImages = this.gearItemImages.filter(i => i.ID !== image.ID);
+  }
+
   // Hides the div html control that hosts uploaded images if user has not yet uploaded any images
   hideIfEmpty(){    
     if(this.gearItemImages.length === 0){
@@ -128,48 +137,48 @@ export class MerchandiseDialogComponent implements OnInit {
     }
   }
 
-  // Removes user defined image from the uploaded array of images
-  onRemoveImage(image: StoreImage){   
-    this.gearItemImages = this.gearItemImages.filter(i => i.ID !== image.ID);
+  onUploadedImages(){
+    if(this.gearItemImages.length === 0){
+      return '10px';
+    }
+    else{
+      return '0px';
+    }
   }
 
   // Initializes the form based on the 'editMode' the component is in
   initForm(): void{
     let name: string = '';
     let price: number = null;
-    let sizes: GearSize[] = null;
-    let inStock = this.isInStock;
-    let imageUrl: string = '';
+    let sizes: GearSize[] = this.gearSizes;
+    let images: GearImage[] = [];
+    let inStock = this.isInStock;    
 
     if(this.editMode){
-      let gearItem: GearItem;
-
-      this.merchandiseService.gearItems$.pipe(
-        tap(arr => gearItem = arr.find(g => g.ID === this.gearItemID))
-      )
+      let gearItem: GearItem = Object.assign({}, this.gearItem);
 
        name = gearItem.name;
        price = gearItem.price;
        sizes = gearItem.sizes;
        inStock = gearItem.inStock;
-       imageUrl = gearItem.imageUrl;
+       images = gearItem.images;
 
     }
 
     this.gearItemForm = this.fb.group({
       name: this.fb.control(name, Validators.required),
       price: this.fb.control(price, Validators.required),
-      sizes: this.fb.control(sizes, this.requireSizes()),
+      sizes: this.fb.control(sizes, this.requireSize()),
       inStock: this.fb.control(inStock),
-      imageUrl: this.fb.control(imageUrl)
+      images: this.fb.control(images)
     })
   }
   
   // Validator for the form control 'sizes'
-  requireSizes() : ValidatorFn{
-    return (control: AbstractControl): {[key: string]: any} | null => {      
-      const anySelectedSizes = this.selectedChipGearSizes.filter(gS => gS.available === true)      
-      return anySelectedSizes.length > 0 ? null : { 'invalidSize': { value: 'Please select a size' } };
+  requireSize(): ValidatorFn{
+    return (control: AbstractControl): {[key: string]: any} | null => {     
+      const anySelectedSizes = control.value.filter(gS => gS.available === true);   
+      return anySelectedSizes.length > 0 ? null : { 'invalidSize': { value: control.value } };
     }
   }
 }

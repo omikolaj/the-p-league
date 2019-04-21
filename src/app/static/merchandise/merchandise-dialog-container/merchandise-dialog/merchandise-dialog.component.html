@@ -33,13 +33,13 @@
 
       <mat-form-field id="sizes">
 
-      <mat-chip-list formControlName="sizes" class="gear-sizes" #chipList [multiple]="true" [selectable]="true">
+      <mat-chip-list formControlName="sizes" #chipList [multiple]="true" [selectable]="true">
           
-          <mat-chip 
+          <mat-chip
+            *ngFor="let gearSize of gearItemForm.controls['sizes'].value"
             [selected]="gearSize.available"  
-            (click)="gearSize.available = !gearSize.available; onSelectedChipSize(gearSize, gearItemForm)"  
-            [color]="gearSize.color"                     
-            *ngFor="let gearSize of gearSizes">{{ sizeEnum[gearSize.size] }}  
+            (click)="gearSize.available = !gearSize.available; onSelectedChipSize()"  
+            [color]="gearSize.color">{{ sizeEnum[gearSize.size] }}  
           </mat-chip>
 
         </mat-chip-list>
@@ -55,22 +55,22 @@
 
         <mat-error *ngIf="gearItemForm.get('sizes').invalid && gearItemForm.get('sizes').touched">Please select a size</mat-error>
 
-      </mat-form-field>
-
+      </mat-form-field>     
+      
         <div id="imagesToUploadContainer">
         
-          <mat-chip-list [ngStyle]="{ 'display': hideIfEmpty() }" #imageUploadList class="mat-chip-list-stacked upload-image-chips"> 
+          <mat-chip-list formControlName="images" [ngStyle]="{ 'display': hideIfEmpty() }" #imageUploadList class="mat-chip-list-stacked upload-image-chips"> 
 
             <mat-chip               
               [removable]="true"
-              (removed)="onRemoveImage(storeImage)"                                  
-              *ngFor="let storeImage of gearItemImages | storeImageView">{{ storeImage.name }}  
+              (removed)="onRemoveImage(gearImage)"                                  
+              *ngFor="let gearImage of gearItemImages | gearImageView">{{ gearImage.name }}  
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
 
-          </mat-chip-list>           
+          </mat-chip-list>
 
-        </div>            
+        </div>
 
         <mat-slide-toggle (change)="onSlideChange()" [labelPosition]="'after'" formControlName="inStock" color="accent"  style="display: block;">{{ isInStock ? 'In stock' : 'Out of stock' }}</mat-slide-toggle>
 
