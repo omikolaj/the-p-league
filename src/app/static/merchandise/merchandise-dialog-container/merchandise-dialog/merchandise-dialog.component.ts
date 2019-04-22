@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
 import { GearItem } from 'src/app/core/models/gear-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
@@ -9,6 +9,7 @@ import { v4 as uuid } from 'uuid';
 
 import {ThemePalette} from '@angular/material/core';
 import { GearImage } from 'src/app/core/models/gear-image.model';
+import { trigger, style, group, query, transition, stagger, animate, state } from '@angular/animations';
 // import { requireSizes } from './merchandise-dialog.validators';
 export interface ChipColor {
   name: string;
@@ -18,7 +19,24 @@ export interface ChipColor {
 @Component({
   selector: 'app-merchandise-dialog',
   templateUrl: './merchandise-dialog.component.html',
-  styleUrls: ['./merchandise-dialog.component.scss']
+  styleUrls: ['./merchandise-dialog.component.scss'],  
+  animations: [
+    trigger('imageUpload', [
+      transition('* => *', [
+          query(':enter',[
+            style({opacity: 0, transform: 'translateY(-100%)'}),
+            stagger(290, [              
+              animate('.3s ease-in-out', style({ opacity: 1, transform: 'translateY(-3%)' }))
+            ]
+          )
+        ], { optional: true }),
+        query(':leave', [
+          style({opacity: 1, transform: 'translateX(0)'}),
+          animate('.3s cubic-bezier(.34,-0.39,.7,1.5)', style({ opacity: 0, transform: 'translateX(-30%)' }))
+        ], { optional: true })                
+      ]),      
+    ])
+  ]
 })
 export class MerchandiseDialogComponent implements OnInit {  
   gearItem: GearItem; 
@@ -63,9 +81,27 @@ export class MerchandiseDialogComponent implements OnInit {
     this.initForm();
   }
 
-  onSubmit(){
-    const a = this.gearItemForm.controls['images'].setValue(this.gearItemImages);
-    console.log('in submit', this.gearItemForm);
+  // This function is used to return the gear element ID. The *ngFor structural directive is using trackBy: function attribute, which helps *ngFor understand when to re-render the entire array or re-use elements. By default the trackByFn returns the object in the array reference. If you use pure functions and immutable arrays, then you always return a new array. Thus we need to provide our own way of saying, 'Don't use object references to evaluate if you should re-render and object, rather use this unique ID'.
+  trackByImageFn(index: number, element: GearImage){
+    return element ? element.ID : null;
+  }
+
+  onSubmit(){    
+    console.log('in submit', this.gearItemForm);  
+    if(this.editMode){
+      // edit
+    }
+    else{
+      const newGearItem: GearItem = {
+        name: this.gearItemForm.value.name,
+        price: this.gearItemForm.value.price,
+        sizes: this.gearItemForm.value.sizes,
+        inStock: this.gearItemForm.value.inStock,
+        images: this.gearItemForm.value.images
+      }
+      this.selectedFileFormData.append('newGearItem', JSON.stringify(newGearItem));
+      this.merchandiseService.createGearItem(this.selectedFileFormData);      
+    }
   }
 
   // Controls the text that displays next the slide toggle
@@ -123,25 +159,17 @@ export class MerchandiseDialogComponent implements OnInit {
         ];      
       }
     }
+    this.gearItemForm.controls['images'].setValue(this.gearItemImages); 
   }
 
   // Removes user defined image from the uploaded array of images
-  onRemoveImage(image: GearImage){   
+  onRemoveImage(image: GearImage){
     this.gearItemImages = this.gearItemImages.filter(i => i.ID !== image.ID);
   }
 
   // Hides the div html control that hosts uploaded images if user has not yet uploaded any images
   hideIfEmpty(){    
     if(this.gearItemImages.length === 0){
-      return 'none';
-    }
-  }
-
-  onUploadedImages(){
-    if(this.gearItemImages.length === 0){
-      return '10px';
-    }
-    else{
       return '0px';
     }
   }

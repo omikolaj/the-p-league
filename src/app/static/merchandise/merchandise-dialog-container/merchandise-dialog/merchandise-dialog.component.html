@@ -57,14 +57,14 @@
 
       </mat-form-field>     
       
-        <div id="imagesToUploadContainer">
+        <div id="imagesToUploadContainer" [@imageUpload]="gearItemImages.length">
         
-          <mat-chip-list formControlName="images" [ngStyle]="{ 'display': hideIfEmpty() }" #imageUploadList class="mat-chip-list-stacked upload-image-chips"> 
+          <mat-chip-list  formControlName="images" [ngStyle]="{ 'margin-bottom': hideIfEmpty() }" #imageUploadList class="mat-chip-list-stacked upload-image-chips"> 
 
-            <mat-chip               
+            <mat-chip   
               [removable]="true"
               (removed)="onRemoveImage(gearImage)"                                  
-              *ngFor="let gearImage of gearItemImages | gearImageView">{{ gearImage.name }}  
+              *ngFor="let gearImage of gearItemImages | gearImageView; trackBy:trackByImageFn">{{ gearImage.name }}  
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
 

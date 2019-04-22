@@ -73,4 +73,9 @@ export class MerchandiseService {
       flatMap((gearItems: GearItem[]) => gearItems.filter((gearItem: GearItem) => gearItem.ID === ID))      
     )    
   }
+
+  createGearItem(newGearItem: FormData): Observable<any>{
+    // create HTTP request to the backend to create a new item
+    return of({})
+  }
 }
