@@ -6,8 +6,7 @@ import { GearImage } from '../../models/gear-image.model';
 })
 export class GearImageViewPipe implements PipeTransform {
 
-  transform(gearImages: GearImage[]): GearImage[] {   
-    console.log('[INSIDE OF PIPE]', gearImages)    
+  transform(gearImages: GearImage[]): GearImage[] {    
     let viewImagesArr: GearImage[] = [];    
 
     for (let index = 0; index < gearImages.length; index++) {

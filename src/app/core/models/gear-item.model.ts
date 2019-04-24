@@ -7,6 +7,5 @@ export interface GearItem{
   price: number,
   sizes: GearSize[],
   images?: GearImage[],
-  inStock: boolean,
-  imageUrl?: string
+  inStock: boolean
 }

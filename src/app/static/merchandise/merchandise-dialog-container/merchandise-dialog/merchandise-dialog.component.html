@@ -31,30 +31,21 @@
 
       <ng-template matStepLabel>Details</ng-template>
 
-      <mat-form-field id="sizes">
+      <mat-form-field id="sizes">        
+        <mat-placeholder class="placeholder">Gear sizes...</mat-placeholder>
 
-      <mat-chip-list formControlName="sizes" #chipList [multiple]="true" [selectable]="true">
-          
-          <mat-chip
-            *ngFor="let gearSize of gearItemForm.controls['sizes'].value"
+        <mat-chip-list formArrayName="sizes" #chipList [multiple]="true" [selectable]="true">
+
+          <mat-chip #chipRef  
+            *ngFor="let gearSize of gearItemForm.controls['sizes'].value; let i=index"                    
             [selected]="gearSize.available"  
             (click)="gearSize.available = !gearSize.available; onSelectedChipSize()"  
             [color]="gearSize.color">{{ sizeEnum[gearSize.size] }}  
           </mat-chip>
 
         </mat-chip-list>
-
-          <input
-            matInput
-            formControlName="sizes"
-            placeholder="Gear sizes..."
-            [matChipInputFor]="chipList"
-            style="display: none;"
-            class="gear-size-label"
-          >
-
-        <mat-error *ngIf="gearItemForm.get('sizes').invalid && gearItemForm.get('sizes').touched">Please select a size</mat-error>
-
+        
+        <mat-error *ngIf="sizes.invalid && sizes.touched">Please select a size</mat-error>
       </mat-form-field>     
       
         <div id="imagesToUploadContainer" [@imageUpload]="gearItemImages.length">

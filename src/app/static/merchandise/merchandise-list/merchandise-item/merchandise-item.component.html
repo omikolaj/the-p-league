@@ -22,9 +22,15 @@
 
     <img 
       mat-card-image
-      [src]="gearItem.imageUrl !== null ? gearItem.imageUrl : defaultImgURL"
+      [src]="defaultImgURL"
       alt="Gear Item"
     >
+
+    <!-- <img 
+      mat-card-image
+      [src]="gearItem.imageUrl !== null ? gearItem.imageUrl : defaultImgURL"
+      alt="Gear Item"
+    > -->
     
     <mat-card-content>
 
@@ -36,8 +42,10 @@
             <br>
 
             <mat-chip-list [selectable]="false">
-                <mat-chip id="chip" *ngFor="let size of gearItem.sizes |  sizeEnumToSize">
-                  {{ size }}                  
+                <mat-chip id="chip" 
+                  *ngFor="let gearSize of gearItem.sizes"
+                  color="warn">
+                  {{ sizes[gearSize.size] }}               
                 </mat-chip>
             </mat-chip-list>
               
@@ -48,7 +56,8 @@
     </mat-card-content>
 
     <mat-card-actions>
-          
+      <button mat-button (click)="onEditGearItem()">EDIT</button>
+      <button mat-button (click)="onDeleteGearItem()">DELETE</button>
     </mat-card-actions>   
 
   </mat-card>

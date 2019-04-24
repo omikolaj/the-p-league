@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormGroupDirective } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormArray } from '@angular/forms';
 import { GearItem } from 'src/app/core/models/gear-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatChipList } from '@angular/material';
 import { GearSize, Size } from 'src/app/core/models/gear-size.model';
 import { v4 as uuid } from 'uuid';
-
 import {ThemePalette} from '@angular/material/core';
 import { GearImage } from 'src/app/core/models/gear-image.model';
-import { trigger, style, group, query, transition, stagger, animate, state } from '@angular/animations';
-// import { requireSizes } from './merchandise-dialog.validators';
+import { trigger, style, query, transition, stagger, animate } from '@angular/animations';
+
 export interface ChipColor {
   name: string;
   color: ThemePalette;
@@ -38,13 +37,18 @@ export interface ChipColor {
     ])
   ]
 })
-export class MerchandiseDialogComponent implements OnInit {  
+export class MerchandiseDialogComponent implements OnInit {
+  @ViewChild('chipList') chipList: MatChipList;
+
   gearItem: GearItem; 
   editMode: boolean = false; 
   gearItemForm: FormGroup;  
   selectedFileFormData: FormData;
   gearItemImages: GearImage[] = [];  
   
+  get sizes(): FormArray {
+    return this.gearItemForm.get('sizes') as FormArray;
+  }
   gearSizes: GearSize[] = [];  
   isInStock: boolean = true;
   sizeEnum = Size; 
@@ -57,12 +61,12 @@ export class MerchandiseDialogComponent implements OnInit {
   ) {
     // Initialize all of the available gear sizes
     this.gearSizes = [
-      { size: Size.XS, available: false, color: 'accent' },
-      { size: Size.S, available: false, color: 'accent' },
-      { size: Size.M, available: false, color: 'accent' },
-      { size: Size.L, available: false, color: 'accent' },
-      { size: Size.XL, available: false, color: 'accent' },
-      { size: Size.XXL, available: false, color: 'accent' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.L, available: false, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: false, color: 'warn' },
     ]
   }
 
@@ -79,10 +83,13 @@ export class MerchandiseDialogComponent implements OnInit {
         }        
       ))
     this.initForm();
+
+    this.gearItemForm.get('sizes').statusChanges.subscribe(status => 
+      this.chipList.errorState = status === 'INVALID' ? true : false)
   }
 
   // This function is used to return the gear element ID. The *ngFor structural directive is using trackBy: function attribute, which helps *ngFor understand when to re-render the entire array or re-use elements. By default the trackByFn returns the object in the array reference. If you use pure functions and immutable arrays, then you always return a new array. Thus we need to provide our own way of saying, 'Don't use object references to evaluate if you should re-render and object, rather use this unique ID'.
-  trackByImageFn(index: number, element: GearImage){
+  trackByImageFn(element: GearImage){
     return element ? element.ID : null;
   }
 
@@ -109,7 +116,7 @@ export class MerchandiseDialogComponent implements OnInit {
     this.isInStock = !this.isInStock;
   }
 
-  onSelectedChipSize(){    
+  onSelectedChipSize(){        
     this.gearItemForm.controls['sizes'].updateValueAndValidity();
   }
 
@@ -180,33 +187,49 @@ export class MerchandiseDialogComponent implements OnInit {
     let price: number = null;
     let sizes: GearSize[] = this.gearSizes;
     let images: GearImage[] = [];
-    let inStock = this.isInStock;    
+    let inStock = this.isInStock;
+    let sizesForm = []   
 
     if(this.editMode){
       let gearItem: GearItem = Object.assign({}, this.gearItem);
 
-       name = gearItem.name;
-       price = gearItem.price;
-       sizes = gearItem.sizes;
-       inStock = gearItem.inStock;
-       images = gearItem.images;
+      name = gearItem.name;
+      price = gearItem.price;
+      // sizes in this context represent the individual gearItem sizes, and if they are available or not
+      sizes = gearItem.sizes;        
 
+      inStock = gearItem.inStock;
+      images = gearItem.images;
+      console.log('[EDITMODE]', gearItem)
+    }    
+
+    for (let index = 0; index < this.gearSizes.length; index++) {
+      sizesForm.push(
+        this.fb.control(sizes[index])
+      )   
     }
-
+    
     this.gearItemForm = this.fb.group({
       name: this.fb.control(name, Validators.required),
       price: this.fb.control(price, Validators.required),
-      sizes: this.fb.control(sizes, this.requireSize()),
+      sizes: this.fb.array(sizesForm, this.requireSize()),
       inStock: this.fb.control(inStock),
       images: this.fb.control(images)
-    })
+    },)
+    console.log('[GEARITEMFORM]', this.gearItemForm)
   }
   
   // Validator for the form control 'sizes'
   requireSize(): ValidatorFn{
-    return (control: AbstractControl): {[key: string]: any} | null => {     
-      const anySelectedSizes = control.value.filter(gS => gS.available === true);   
-      return anySelectedSizes.length > 0 ? null : { 'invalidSize': { value: control.value } };
+    return (control: AbstractControl): {[key: string]: any} | null => {           
+      const anySelectedSizes = control.value.filter(gS => gS.available === true);              
+      if(anySelectedSizes.length > 0){
+        control.markAsTouched();
+        return null
+      }
+      else{        
+        return { 'invalidSize': { value: control.value } };
+      }
     }
   }
 }

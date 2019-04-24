@@ -21,7 +21,7 @@ const routes: Routes = [
     path: 'merchandise', children: [
       { path: '', component: MerchandiseListComponent, data: { animation: 'MerchandiseListPage' } },
       { path: 'new', component: MerchandiseDialogContainerComponent, outlet: 'modal' },
-      // { path: ':id/edit', component: MerchandiseDialogContainerComponent, outlet: 'modal' }
+      { path: ':id/edit', component: MerchandiseDialogContainerComponent, outlet: 'modal' }
     ]    
   },
   {
