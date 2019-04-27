@@ -3,18 +3,17 @@ import { GearImage } from '../../models/gear-image.model';
 
 @Pipe({
   name: 'gearImageView',
+  pure: false
 })
 export class GearImageViewPipe implements PipeTransform {
 
-  transform(gearImages: GearImage[]): GearImage[] {    
-    let viewImagesArr: GearImage[] = [];    
-
-    for (let index = 0; index < gearImages.length; index++) {
-      let viewImage = Object.assign({}, gearImages[index]);
-      viewImage.name = viewImage.name.slice(0, 27);
-      viewImagesArr = [...viewImagesArr, viewImage];
+  transform(gearImages: GearImage[]): GearImage[] {
+    for (let index = 0; index < gearImages.length; index++) {      
+      let gearImage = gearImages[index];
+      gearImage.name = gearImage.name.slice(0, 27);
+      gearImages.splice(index, 1, gearImage)
     }
-    return viewImagesArr;
+    return gearImages;
   }
 
 }

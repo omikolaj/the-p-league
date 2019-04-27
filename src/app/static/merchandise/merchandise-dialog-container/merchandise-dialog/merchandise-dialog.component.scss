@@ -71,3 +71,7 @@ mat-slide-toggle{
   padding-left: 10px;
   display: inline-block !important;
 }
+
+:host /deep/ .mat-horizontal-content-container{
+  padding-bottom: 0px !important;
+}

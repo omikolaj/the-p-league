@@ -12,7 +12,7 @@ import { Size } from 'src/app/core/models/gear-size.model';
 })
 export class MerchandiseItemComponent implements OnInit {
   @Input() gearItem: GearItem;
-  defaultImgURL: string = "../../../../assets/default_gear.png"
+  defaultImgURL: string = "../../../../assets/IMG_5585.JPG"
   sizes = Size;
   constructor(
     private router: Router,

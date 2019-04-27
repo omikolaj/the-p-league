@@ -30,22 +30,41 @@
     <mat-step>
 
       <ng-template matStepLabel>Details</ng-template>
-
-      <mat-form-field id="sizes">        
+      
+      <mat-form-field floatLabel="always">        
         <mat-placeholder class="placeholder">Gear sizes...</mat-placeholder>
+        <mat-chip-list #chipList formControlName="sizes" [errorStateMatcher]="noSizesSelectedStateMatcher" [multiple]="true"
+          [selectable]="true">          
+          <ng-container [formGroup]="gearItemForm.controls.sizes.value.gearSizesGroup">
+            <ng-container formArrayName="gearSizesArray" class="mat-chip-list-container">
+              <ng-container *ngFor="let gearSizeControl of gearItemForm.controls.sizes.value.gearSizesGroup.controls.gearSizesArray.controls">
+                
+                  <mat-chip [selected]="gearSizeControl.controls.gearSize.value.available"
+                    (click)="gearSizeControl.controls.gearSize.value.available = !gearSizeControl.controls.gearSize.value.available; onSelectedChipSize()"
+                    [color]="gearSizeControl.controls.gearSize.value.color">{{sizeEnum[gearSizeControl.controls.gearSize.value.size]}}
+                  </mat-chip>
+                
+              </ng-container> 
+            </ng-container>
+          </ng-container>
+        </mat-chip-list>      
 
-        <mat-chip-list formArrayName="sizes" #chipList [multiple]="true" [selectable]="true">
+        <!-- <mat-chip-list
+          formArrayName="sizes"
+          #chipList 
+          [multiple]="true" 
+          [selectable]="true">
 
-          <mat-chip #chipRef  
-            *ngFor="let gearSize of gearItemForm.controls['sizes'].value; let i=index"                    
-            [selected]="gearSize.available"  
-            (click)="gearSize.available = !gearSize.available; onSelectedChipSize()"  
-            [color]="gearSize.color">{{ sizeEnum[gearSize.size] }}  
+          <mat-chip         
+            *ngFor="let gearSize of gearItemForm.controls['sizes'].value.controls; let i=index"            
+            [selected]="gearSize.value.available"  
+            (click)="gearSize.value.available = !gearSize.value.available; onSelectedChipSize()"  
+            [color]="gearSize.value.color">{{ sizeEnum[gearSize.value.size] }}
           </mat-chip>
 
-        </mat-chip-list>
+        </mat-chip-list> -->
         
-        <mat-error *ngIf="sizes.invalid && sizes.touched">Please select a size</mat-error>
+        <mat-error>Please select a size</mat-error>
       </mat-form-field>     
       
         <div id="imagesToUploadContainer" [@imageUpload]="gearItemImages.length">
@@ -55,7 +74,7 @@
             <mat-chip   
               [removable]="true"
               (removed)="onRemoveImage(gearImage)"                                  
-              *ngFor="let gearImage of gearItemImages | gearImageView; trackBy:trackByImageFn">{{ gearImage.name }}  
+              *ngFor="let gearImage of gearItemImages | gearImageView;">{{ gearImage.name }}  
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
 

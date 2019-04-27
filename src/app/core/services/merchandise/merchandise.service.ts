@@ -23,10 +23,10 @@ export class MerchandiseService {
   fetchAllGearItems(): Observable<GearItem[]>{    
     this.gearItems$ = of([
       { ID: 1, name: 'T-shirt', price: 10, sizes: [
-        { size: Size.L, available: true , color: 'warn' }, 
+        { size: Size.L, available: false , color: 'warn' }, 
         { size: Size.M, available: false, color: 'warn' }, 
         { size: Size.XS, available: false, color: 'warn' },
-        { size: Size.S, available: true , color: 'warn' },
+        { size: Size.S, available: false , color: 'warn' },
         { size: Size.XL, available: true , color: 'warn' },
         { size: Size.XXL, available: true , color: 'warn' },
       ], inStock: true, images: [
@@ -38,7 +38,7 @@ export class MerchandiseService {
         { size: Size.M, available: false, color: 'warn' }, 
         { size: Size.XS, available: false, color: 'warn' },
         { size: Size.S, available: true , color: 'warn' },
-        { size: Size.XL, available: true , color: 'warn' },
+        { size: Size.XL, available: false , color: 'warn' },
         { size: Size.XXL, available: true , color: 'warn' },
       ], inStock: true, images: [
         { ID: "11", name: "image41", size: 12, type: "type", URL: "../../../assets/default_gear.png" },
@@ -49,26 +49,26 @@ export class MerchandiseService {
         { size: Size.L, available: true , color: 'warn' }, 
         { size: Size.M, available: false, color: 'warn' }, 
         { size: Size.XS, available: false, color: 'warn' },
-        { size: Size.S, available: true , color: 'warn' },
-        { size: Size.XL, available: true , color: 'warn' },
-        { size: Size.XXL, available: true , color: 'warn' },
+        { size: Size.S, available: false , color: 'warn' },
+        { size: Size.XL, available: false , color: 'warn' },
+        { size: Size.XXL, available: false , color: 'warn' },
       ], inStock: false, image: [
         { ID: "31", name: "imageerw1", size: 12, type: "type", URL: "../../../assets/default_gear.png" }
       ]},
       { ID: 4, name: 'Pants', price: 20, sizes: [
-        { size: Size.L, available: true , color: 'warn' }, 
+        { size: Size.L, available: false , color: 'warn' }, 
         { size: Size.M, available: false, color: 'warn' }, 
         { size: Size.XS, available: false, color: 'warn' },
-        { size: Size.S, available: true , color: 'warn' },
-        { size: Size.XL, available: true , color: 'warn' },
-        { size: Size.XXL, available: true , color: 'warn' },
+        { size: Size.S, available: false , color: 'warn' },
+        { size: Size.XL, available: false , color: 'warn' },
+        { size: Size.XXL, available: false , color: 'warn' },
       ], inStock: false, images: [
         { ID: "13", name: "image1", size: 12, type: "type", URL: "../../../assets/default_gear.png" }
       ]},
       { ID: 5, name: 'Wrist Band', price: 5, sizes: [
         { size: Size.L, available: true , color: 'warn' }, 
-        { size: Size.M, available: false, color: 'warn' }, 
-        { size: Size.XS, available: false, color: 'warn' },
+        { size: Size.M, available: true, color: 'warn' }, 
+        { size: Size.XS, available: true, color: 'warn' },
         { size: Size.S, available: true , color: 'warn' },
         { size: Size.XL, available: true , color: 'warn' },
         { size: Size.XXL, available: true , color: 'warn' },
