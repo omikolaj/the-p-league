@@ -7,5 +7,6 @@ export interface GearItem{
   price: number,
   sizes: GearSize[],
   images?: GearImage[],
-  inStock: boolean
+  inStock: boolean,
+  formData?: FormData
 }

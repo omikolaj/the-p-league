@@ -16,7 +16,7 @@ import { routeAnimations } from './core/animations/route.animations'
 })
 export class AppComponent {
   title: string = 'The P League';
-  logo = '../../../../assets/logo_no_title.png';
+  logo = '../../../../assets/logo.png';
   year = new Date().getFullYear();
 
   prepareRoute(outlet: RouterOutlet){

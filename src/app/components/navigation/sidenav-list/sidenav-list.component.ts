@@ -22,7 +22,9 @@ export class SidenavListComponent implements OnInit {
   sideNavAnimationState: string = 'out';
   @Output() sideNavClose = new EventEmitter();
   @Input() appTitle: string;
+  // logo gets passed in from the toolbar icon that is in the middle.
   @Input() logo: string;
+  logo_with_title: string = "../../../../assets/logo_no_title.png";
   constructor() { }
 
   ngOnInit() {

@@ -12,7 +12,7 @@ import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent    
   ],
   imports: [
     // angular
@@ -27,9 +27,9 @@ import { SharedModule } from './shared/shared.module';
     // features
     StaticModule,
     CoreModule,
-
+    
     // app
-    AppRoutingModule,
+    AppRoutingModule
   ],
   providers: [
     MerchandiseService

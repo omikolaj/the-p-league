@@ -12,7 +12,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class MerchandiseListComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
-  gearItems$: Observable<GearItem[]>;
+  gearItems: GearItem[];  
 
   constructor(
     private merchandiseService: MerchandiseService,
@@ -21,7 +21,8 @@ export class MerchandiseListComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.gearItems$ = this.merchandiseService.fetchAllGearItems();
+    this.merchandiseService.fetchAllGearItems().subscribe(
+      (gearItems: GearItem[]) => this.gearItems = gearItems);
   }
 
   onAddGearItems(){

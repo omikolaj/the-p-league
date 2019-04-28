@@ -24,8 +24,8 @@
      >ABOUT THE P LEAGUE</span><br>
     <span [ngClass]="routeAnimationsElements" class="app-gradient animations" style="display: block; text-align: center; font-size: larger"
       >Let's keep it simple and play ball </span>
-    <div>
-      <fa-icon [ngClass]="routeAnimationsElements" [@pulsing]="pulsingState" (@pulsing.done)="onDonePulsing($event)" class="basketball ball" [icon]="['fas','basketball-ball']" size="2x" ></fa-icon>
+    <div [ngClass]="routeAnimationsElements">
+      <fa-icon  [@pulsing]="pulsingState" (@pulsing.done)="onDonePulsing($event)" class="basketball ball" [icon]="['fas','basketball-ball']" size="2x" ></fa-icon>
     </div>
 
     <ul [ngClass]="routeAnimationsElements" class="animations">
@@ -61,7 +61,7 @@
       </li>
     </ul>
 
-    <div class="actions">
+    <div [ngClass]="routeAnimationsElements" class="actions">
       <a routerLink="/team-signup" mat-raised-button class="actions-main pulsing" color="accent">Sign Up Your Team Now!
       </a>
     </div>

@@ -1,3 +1,25 @@
 mat-paginator{
   margin: 1.5rem 0 1rem 0;
 }
+
+.heading{
+  text-align: center;
+}
+
+.admin{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.admin span{
+  align-self: center;
+}
+
+.admin button{
+  align-self: center;
+  margin: 16px;
+}

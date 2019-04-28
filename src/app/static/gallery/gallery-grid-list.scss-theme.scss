@@ -5,8 +5,7 @@
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 
-  img{
-    width: 100%;
-    // border:  mat-color($accent, default) solid 3px;
+  :host img{
+    width: 100%;    
   }
 }

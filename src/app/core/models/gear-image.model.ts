@@ -3,5 +3,5 @@ export interface GearImage {
   name: string,
   size: number,
   type: string,
-  URL?: string,
+  url?: string,
 }

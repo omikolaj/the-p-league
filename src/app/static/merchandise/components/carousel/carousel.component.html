@@ -1,0 +1,7 @@
+<ngb-carousel [interval]="50000" [showNavigationArrows]="false">
+  <ng-container *ngFor="let image of images">
+    <ng-template ngbSlide>
+      <img mat-card-image [src]="displayImageSource(image)">        
+    </ng-template>    
+  </ng-container>    
+</ngb-carousel>

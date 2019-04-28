@@ -14,6 +14,8 @@ import { MerchandiseDialogContainerComponent } from './merchandise/merchandise-d
 import { MerchandiseDialogComponent } from './merchandise/merchandise-dialog-container/merchandise-dialog/merchandise-dialog.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MerchandiseDialogService } from './merchandise/merchandise-dialog.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CarouselComponent } from './merchandise/components/carousel/carousel.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { MerchandiseDialogService } from './merchandise/merchandise-dialog.servi
     MerchandiseListComponent,
     MerchandiseItemComponent,
     MerchandiseDialogContainerComponent,
-    MerchandiseDialogComponent
+    MerchandiseDialogComponent,
+    CarouselComponent    
   ],
   entryComponents: [MerchandiseDialogComponent],
   imports: [
@@ -33,8 +36,9 @@ import { MerchandiseDialogService } from './merchandise/merchandise-dialog.servi
     LayoutModule,
     CommonModule,    
     ReactiveFormsModule,
-    CoreModule
-  ],  
+    CoreModule,
+    NgbModule
+  ], 
   providers: [
     MerchandiseDialogService,
     { provide: MatDialogRef, useValue: {} },

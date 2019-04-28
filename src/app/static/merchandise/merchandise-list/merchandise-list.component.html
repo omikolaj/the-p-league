@@ -1,24 +1,18 @@
-<div style="margin-top: 75px; padding: 0 10px;">    
-  <h1 [ngClass]="routeAnimationsElements">Gear Up!</h1>
-  <span>ADMIN ONLY UPLOAD. Will be hidden soon</span>
-  <button 
-    mat-raised-button 
-    [ngClass]="routeAnimationsElements"
-    color="accent" 
-    type="button"
-    (click)="onAddGearItems()"
-  >Upload Gear</button>
-  <!-- <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none">  -->
+<div style="margin-top: 75px; padding: 0 10px;">
+  <h1 [ngClass]="routeAnimationsElements" class="heading">Gear Up!</h1>
+  <div class="admin">
+    <span [ngClass]="routeAnimationsElements">As an admin you can modify your inventory here</span>
+    <button mat-raised-button [ngClass]="routeAnimationsElements" color="accent" type="button"
+      (click)="onAddGearItems()">Upload Gear</button>
+  </div>
 
-  <app-merchandise-item
-    [ngClass]="routeAnimationsElements"
-    class="list-item"
-    *ngFor="let gearItem of gearItems$ | async"
-    [gearItem]="gearItem"
-  >
-  </app-merchandise-item>
-  
+  <ng-container *ngFor="let gearItem of gearItems">
+      <app-merchandise-item
+      class="list-item" [gearItem]="gearItem">
+    </app-merchandise-item>
+  </ng-container>  
+
   <mat-paginator [length]="7" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
-    </mat-paginator>
+  </mat-paginator>
 
 </div>

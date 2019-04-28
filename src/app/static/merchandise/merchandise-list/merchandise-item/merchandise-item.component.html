@@ -1,11 +1,75 @@
-<mat-card class="gear-item">
+<!-- <img 
+      mat-card-image
+      [src]="gearItem.imageUrl !== null ? gearItem.imageUrl : defaultImgURL"
+      alt="Gear Item"
+    > -->
 
-    <mat-card-header>
+    <mat-card class="gear-item" [ngClass]="routeAnimationsElements">
+
+        <mat-card-header>      
+    
+          <mat-card-title>
+    
+            <div>
+                <h3>
+                  {{ gearItem.name }}
+                </h3>
+            </div>      
+    
+          </mat-card-title>
+    
+          <mat-card-subtitle>
+            <div>
+               {{ gearItem.inStock ? 'In stock' : 'Out of stock'}}
+            </div>
+          </mat-card-subtitle>
+    
+        </mat-card-header>
+    
+        <div mat-card-image>
+          <app-carousel [images]="gearItem.images"></app-carousel>
+        </div>
+    
+        <mat-card-content>
+    
+          <div>
+              <div class="gear-sizes">
+    
+                <span class="sizes">Available Sizes:</span>
+    
+                <br>
+                
+                <mat-chip-list [selectable]="false">
+                  <ng-container *ngFor="let gearSize of gearItem.sizes">
+                      <mat-chip id="chip" 
+                        *ngIf="gearSize.available"
+                      >
+                      {{ sizes[gearSize.size] }}               
+                    </mat-chip>
+                  </ng-container>                
+                </mat-chip-list>
+                  
+              </div>
+              <h2 class="price">${{ gearItem.price }}</h2>
+          </div>      
+    
+        </mat-card-content>
+    
+        <mat-card-actions>
+          <button mat-raised-button color="accent" (click)="onEditGearItem()">EDIT</button>
+          <button mat-raised-button color="warn" (click)="onDeleteGearItem()">DELETE</button>
+        </mat-card-actions>   
+    
+      </mat-card>
+
+<!-- <mat-card class="gear-item" [ngClass]="routeAnimationsElements">
+
+    <mat-card-header>      
 
       <mat-card-title>
 
         <div>
-            <h3 style="margin-top: 15px;">
+            <h3>
               {{ gearItem.name }}
             </h3>
         </div>      
@@ -20,19 +84,10 @@
 
     </mat-card-header>
 
-    <img class="store-image"
-      mat-card-image
-      [src]="defaultImgURL"
-      alt="Gear Item"
-    >
+    <div mat-card-image>
+      <app-carousel [images]="gearItem.images"></app-carousel>
+    </div>
 
-
-    <!-- <img 
-      mat-card-image
-      [src]="gearItem.imageUrl !== null ? gearItem.imageUrl : defaultImgURL"
-      alt="Gear Item"
-    > -->
-    
     <mat-card-content>
 
       <div>
@@ -41,16 +96,19 @@
             <span class="sizes">Available Sizes:</span>
 
             <br>
-
+            
             <mat-chip-list [selectable]="false">
-                <mat-chip id="chip" 
-                  *ngFor="let gearSize of gearItem.sizes">
+              <ng-container *ngFor="let gearSize of gearItem.sizes">
+                  <mat-chip id="chip" 
+                    *ngIf="gearSize.available"
+                  >
                   {{ sizes[gearSize.size] }}               
                 </mat-chip>
+              </ng-container>                
             </mat-chip-list>
               
           </div>
-          <h2>${{ gearItem.price }}</h2>
+          <h2 class="price">${{ gearItem.price }}</h2>
       </div>      
 
     </mat-card-content>
@@ -60,4 +118,4 @@
       <button mat-raised-button color="warn" (click)="onDeleteGearItem()">DELETE</button>
     </mat-card-actions>   
 
-  </mat-card>
+  </mat-card> -->

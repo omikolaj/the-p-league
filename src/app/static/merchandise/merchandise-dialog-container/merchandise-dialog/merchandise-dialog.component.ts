@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormArray, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { GearItem } from 'src/app/core/models/gear-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
-import { MatDialogRef, MatChipList } from '@angular/material';
+import { MatDialogRef } from '@angular/material';
 import { GearSize, Size } from 'src/app/core/models/gear-size.model';
 import { v4 as uuid } from 'uuid';
-import {ThemePalette, ErrorStateMatcher} from '@angular/material/core';
+import {ErrorStateMatcher} from '@angular/material/core';
 import { GearImage } from 'src/app/core/models/gear-image.model';
 import { trigger, style, query, transition, stagger, animate } from '@angular/animations';
+import { cloneDeep } from 'lodash';
 
 export class NoSizeErrorStateMatcher implements ErrorStateMatcher{
   isErrorState(control: FormControl, form: FormGroupDirective | NgForm): boolean {
@@ -39,21 +40,11 @@ export class NoSizeErrorStateMatcher implements ErrorStateMatcher{
   ]
 })
 export class MerchandiseDialogComponent implements OnInit {
-  // @ViewChild('chipList') chipList: MatChipList;
-
   gearItem: GearItem; 
   editMode: boolean = false; 
   gearItemForm: FormGroup;  
-  selectedFileFormData: FormData;
-  gearItemImages: GearImage[] = [];  
-  
-  // get sizes(): FormArray {
-  //   return this.gearItemForm.get('sizes') as FormArray;
-  // }
-
-  get gearSizesArray(){
-    return this.gearItemForm.get('sizes').value.gearSizeGroup.value.gearSizesArray as FormArray;    
-  }
+  selectedFileFormData: FormData = new FormData();
+  gearItemImages: GearImage[] = [];    
 
   gearSizes: GearSize[] = [];  
   isInStock: boolean = true;
@@ -85,44 +76,47 @@ export class MerchandiseDialogComponent implements OnInit {
       .map(r => r.params.subscribe(
         (params) => {
           this.editMode = params['id'] != null;
-          this.merchandiseService.findGearItem(+params['id']).subscribe(gearItem => this.gearItem = gearItem);
+          this.merchandiseService.findGearItem(+params['id']).subscribe(gearItem => this.gearItem = cloneDeep(gearItem));
         }        
       ))
     this.initForm();
-
-    // this.gearItemForm.get('sizes').statusChanges.subscribe(status => 
-    //   this.chipList.errorState = status === 'INVALID' ? true : false)
   }
 
-  // This function is used to return the gear element ID. The *ngFor structural directive is using trackBy: function attribute, which helps *ngFor understand when to re-render the entire array or re-use elements. By default the trackByFn returns the object in the array reference. If you use pure functions and immutable arrays, then you always return a new array. Thus we need to provide our own way of saying, 'Don't use object references to evaluate if you should re-render and object, rather use this unique ID'.
-  // trackByImageFn(element: GearImage){
-  //   console.log('[TrackByImage]', element);
-  //   return element ? element : null;
-  // }
-
-  onSubmit(){    
-    console.log('in submit', this.gearItemForm);  
+  onSubmit(){         
+    this.dialogRef.close();  
+    const gearItem = this.gearItemObjectForDelivery();     
     if(this.editMode){
-      // edit
+      this.merchandiseService.updateGearItem(gearItem).subscribe(
+        (update: boolean) => console.log('[GEARITEM UPDATED SUCCESS?: ]', update)
+      )
     }
     else{
-      const newGearItem: GearItem = {
-        name: this.gearItemForm.value.name,
-        price: this.gearItemForm.value.price,
-        sizes: this.gearItemForm.value.sizes,
-        inStock: this.gearItemForm.value.inStock,
-        images: this.gearItemForm.value.images
-      }
-      this.selectedFileFormData.append('newGearItem', JSON.stringify(newGearItem));
-      this.merchandiseService.createGearItem(this.selectedFileFormData);      
+      this.merchandiseService.createGearItem(gearItem).subscribe(
+        (gearItem: GearItem) => console.log('[GEARITEM CREATED]', gearItem)
+      );   
     }
+  }
+
+  gearItemObjectForDelivery(): GearItem{
+    const gearItemForDelivery: GearItem = {
+      ID: this.editMode ? this.gearItem.ID : null,
+      name: this.gearItemForm.value.name,
+      price: this.gearItemForm.value.price,
+      sizes: this.gearItemForm.value.sizes.gearSizesGroup.value.gearSizesArray.map(s => s.gearSize),
+      inStock: this.gearItemForm.value.inStock,
+      images: this.gearItemForm.value.images
+    }
+    this.selectedFileFormData.append('gearItem', JSON.stringify(gearItemForDelivery));
+    gearItemForDelivery.formData = this.selectedFileFormData;
+    return gearItemForDelivery;
   }
 
   // Controls the text that displays next the slide toggle
   onSlideChange(){
     this.isInStock = !this.isInStock;
   }
-
+  
+  // Re-runs the validations for the sizes control which is mat-chip-list to display error messages
   onSelectedChipSize(){        
     this.gearItemForm.controls['sizes'].updateValueAndValidity();
   }
@@ -183,39 +177,40 @@ export class MerchandiseDialogComponent implements OnInit {
     if(index > -1){
       this.gearItemImages.splice(index, 1);
     }
-    console.log('[AFTER REMOVE]', this.gearItemImages)
-    // this.gearItemImages = this.gearItemImages.filter(i => i.ID !== image.ID);
+    console.log('[AFTER REMOVE]', this.gearItemImages)    
   }
 
   // Hides the div html control that hosts uploaded images if user has not yet uploaded any images
-  hideIfEmpty(){    
+  hideIfEmpty(){
+    if(this.gearItemImages === undefined){
+      this.gearItemImages = []
+    }
     if(this.gearItemImages.length === 0){
       return '0px';
     }
   }
 
   // Initializes the form based on the 'editMode' the component is in
-  initForm(): void{
+  initForm(): void{  
     let name: string = '';
-    let price: number = null;
+    let price: number = null;    
     let sizes: GearSize[] = this.gearSizes;
     let images: GearImage[] = [];
     let inStock = this.isInStock;
-    let sizesForm = []   
 
     if(this.editMode){
-      let gearItem: GearItem = Object.assign({}, this.gearItem);
-
-      name = gearItem.name;
-      price = gearItem.price;
+      name = this.gearItem.name;
+      price = this.gearItem.price;       
+      inStock = this.gearItem.inStock;
+      images = this.gearItem.images;
       // sizes in this context represent the individual gearItem sizes, and if they are available or not
-      sizes = gearItem.sizes;  
-      inStock = gearItem.inStock;
-      images = gearItem.images;
+      sizes = this.gearItem.sizes; 
 
-      console.log('[EDITMODE]', gearItem)
-    }    
+      // Set the gearItemImages array to display images for editing
+      this.gearItemImages = this.gearItem.images;
+    }
 
+    const sizesForm = [];    
     for (let index = 0; index < this.gearSizes.length; index++) {
       sizesForm.push(
         this.fb.group({
@@ -240,13 +235,11 @@ export class MerchandiseDialogComponent implements OnInit {
       images: this.fb.control(images)
     })
 
-    console.log('[GEARITEMFORM]', this.gearItemForm)
   }
   
   // Validator for the form control 'sizes'
   requireSize(): ValidatorFn{
-    return (control: AbstractControl): {[key: string]: any} | null => {
-      console.log('[requireSize]', control.value.gearSizesGroup)    
+    return (control: AbstractControl): {[key: string]: any} | null => {       
       const anySelectedSizes = control.value.gearSizesGroup.value.gearSizesArray.filter(gS => gS.gearSize.available === true);                       
       if(anySelectedSizes.length > 0){        
         control.markAsTouched();        
