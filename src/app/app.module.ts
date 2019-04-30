@@ -18,7 +18,7 @@ import { SharedModule } from './shared/shared.module';
     // angular
     BrowserModule,   
     BrowserAnimationsModule,    
-    ReactiveFormsModule,
+    //ReactiveFormsModule,    
     
     // core & shared    
     NavigationModule,

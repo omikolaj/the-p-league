@@ -191,7 +191,7 @@ export class MerchandiseDialogComponent implements OnInit {
   }
 
   // Initializes the form based on the 'editMode' the component is in
-  initForm(): void{  
+  initForm(): void{      
     let name: string = '';
     let price: number = null;    
     let sizes: GearSize[] = this.gearSizes;

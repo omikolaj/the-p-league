@@ -51,7 +51,7 @@ export class MerchandiseService {
         { size: Size.S, available: false , color: 'warn' },
         { size: Size.XL, available: false , color: 'warn' },
         { size: Size.XXL, available: false , color: 'warn' },
-      ], inStock: false, image: [
+      ], inStock: false, images: [
         { ID: "31", name: "imageerw1", size: 12, type: "type", url: "../../../assets/default_gear.png" }
       ]},
       { ID: 4, name: 'Pants', price: 20, sizes: [

@@ -57,6 +57,8 @@ import {
   faYoutube
 } from '@fortawesome/free-brands-svg-icons';
 
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 library.add(
   faGithub,
   faMediumM,
@@ -117,7 +119,9 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTooltipModule,
     MatTreeModule,
     
-    FontAwesomeModule
+    FontAwesomeModule,
+
+    FlexLayoutModule
   ],
   exports: [
     CommonModule,
@@ -158,7 +162,9 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTooltipModule,
     MatTreeModule,
 
-    FontAwesomeModule
+    FontAwesomeModule,
+    
+    FlexLayoutModule
   ]
 })
 export class SharedModule { }

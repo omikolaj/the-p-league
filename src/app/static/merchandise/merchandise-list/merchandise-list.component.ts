@@ -4,6 +4,7 @@ import { MerchandiseService } from 'src/app/core/services/merchandise/merchandis
 import { Observable } from 'rxjs';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
 import { Router, ActivatedRoute } from '@angular/router';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-merchandise-list',
@@ -12,7 +13,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class MerchandiseListComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
-  gearItems: GearItem[];  
+  gearItems: GearItem[] = [];
+  pagedGearItems: GearItem[] = [];
+
+  breakpoint: number = 3;
+  length: number = 0;
+  pageSize: number = 6;
+  pageSizeOptions: number[] = [6, 12, 18, 25];  
+  pageEvent: PageEvent;
 
   constructor(
     private merchandiseService: MerchandiseService,
@@ -20,13 +28,30 @@ export class MerchandiseListComponent implements OnInit {
     private route: ActivatedRoute
     ) { }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.merchandiseService.fetchAllGearItems().subscribe(
       (gearItems: GearItem[]) => this.gearItems = gearItems);
+      
+    this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
+    this.pagedGearItems = this.gearItems.slice(0, this.pageSize);
+    this.length = this.gearItems.length;
   }
 
   onAddGearItems(){
     this.router.navigate([{ outlets: { modal: ['new'] } }], { relativeTo: this.route });
+  }
+
+  OnPageChange(event: PageEvent){
+    let startIndex = event.pageIndex * event.pageSize;
+    let endIndex = startIndex + event.pageSize;
+    if(endIndex > this.length){
+      endIndex = this.length;
+    }
+    this.pagedGearItems = this.gearItems.slice(startIndex, endIndex);
+  }
+
+  onResize(event) { //to adjust to screen size
+    this.breakpoint = (event.target.innerWidth <= 800) ? 1 : 3;
   }
 
 }
