@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { GearItem } from 'src/app/core/models/gear-item.model';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { Observable } from 'rxjs';
@@ -12,6 +12,8 @@ import { PageEvent } from '@angular/material';
   styleUrls: ['./merchandise-list.component.scss']
 })
 export class MerchandiseListComponent implements OnInit {
+  @ViewChild('gearUp') merchandiseCards: ElementRef;
+  
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gearItems: GearItem[] = [];
   pagedGearItems: GearItem[] = [];
@@ -35,6 +37,11 @@ export class MerchandiseListComponent implements OnInit {
     this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
     this.pagedGearItems = this.gearItems.slice(0, this.pageSize);
     this.length = this.gearItems.length;
+  }
+
+  onArrowClick(){
+    const targetELement = this.merchandiseCards.nativeElement as HTMLElement;    
+    targetELement.scrollIntoView({behavior: 'smooth'});
   }
 
   onAddGearItems(){

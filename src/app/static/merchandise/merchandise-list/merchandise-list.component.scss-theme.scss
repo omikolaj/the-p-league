@@ -1,0 +1,36 @@
+@import "~@angular/material/theming";
+
+@mixin p-league-merchandise-list-component-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  app-merchandise-list {
+    .background {
+      color: mat-color($foreground, text);
+      background-color: mat-color($background, background);
+
+      .gradient {
+        &::before {
+          background: linear-gradient(
+            to bottom,
+            mat-color($background, background, 0) 0%,
+            mat-color($background, background, 1) 100%
+          );
+        }
+      }
+    }
+
+    .arrow {
+    position: absolute;
+    bottom: 24px;
+    width: 20px;
+    height: 20px;
+    border-top: 3px solid mat-color($warn, warn);
+    border-right: 3px solid mat-color($warn, warn);
+    right: 19px;
+  }
+  }
+}
