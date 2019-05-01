@@ -3,8 +3,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HeaderService } from 'src/app/core/services/header/header.service';
-import { ScrollDispatcher } from '@angular/cdk/scrolling';
-import { isString } from '@ng-bootstrap/ng-bootstrap/util/util';
+
 
 @Component({
   selector: 'app-toolbar',
@@ -15,6 +14,7 @@ export class ToolbarComponent {
   @Output() sidenavToggle = new EventEmitter();
   @Input() appTitle: string;
   @Input() logo: string;  
+  isSticky: boolean;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -23,16 +23,13 @@ export class ToolbarComponent {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private headerService: HeaderService,
-    private scrollDispatcher: ScrollDispatcher
+    private headerService: HeaderService
     ) 
   {
   }
 
-  ngOnInit(){
-    if(!this.headerService.isSticky){
-      this.scrollDispatcher.scrolled().subscribe(x => console.log('I am scrolling', x));
-    }    
+  ngOnInit(){   
+    this.headerService.isSticky$.subscribe(isSticky => this.isSticky = isSticky);
   }
 
   onToggleSidenav(): void {

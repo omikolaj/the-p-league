@@ -1,6 +1,6 @@
-<div class="toolbar" [class.mat-elevation-z7]="headerService.isSticky" [ngStyle]="{position: headerService.isSticky ? null : 'absolute'}">
+  <div class="toolbar" [class.mat-elevation-z7]="isSticky" [ngStyle]="{position: (isSticky ) ? null : 'absolute'}">
 
-  <mat-toolbar color="primary" [ngStyle]="{backgroundColor: headerService.isSticky ? null : 'transparent'}">
+    <mat-toolbar color="primary" [ngStyle]="{backgroundColor: (isSticky) ? null : 'transparent'}">
 
     <button style="position: absolute" type="button" aria-label="Toggle sidenav" mat-icon-button (click)="onToggleSidenav()"
       *ngIf="isHandset$ | async">

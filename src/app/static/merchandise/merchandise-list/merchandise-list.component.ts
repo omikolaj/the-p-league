@@ -25,6 +25,8 @@ export class MerchandiseListComponent implements OnInit {
   pageSizeOptions: number[] = [6, 12, 18, 25];  
   pageEvent: PageEvent;
 
+  isSticky: boolean;
+
   constructor(
     private merchandiseService: MerchandiseService,    
     private router: Router,
@@ -33,7 +35,8 @@ export class MerchandiseListComponent implements OnInit {
     ) { }
 
   ngOnInit() {       
-    this.headerService.isSticky = false; 
+    this.headerService.setStickyHeaderPosition(false);
+    this.headerService.isSticky$.subscribe(isSticky => this.isSticky = isSticky)
     this.merchandiseService.fetchAllGearItems().subscribe(
       (gearItems: GearItem[]) => this.gearItems = gearItems);
       
@@ -43,7 +46,7 @@ export class MerchandiseListComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.headerService.isSticky = true;
+    this.headerService.setStickyHeaderPosition(true);
   }
 
   onArrowClick(){
