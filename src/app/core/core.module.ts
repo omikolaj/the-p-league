@@ -5,9 +5,12 @@ import { SharedModule } from '../shared/shared.module';
 import { GearImageViewPipe } from './pipes/gear-image-view/gear-image-view.pipe';
 import { ClearElementValueDirective } from './directives/clear-element-value/clear-element-value.directive';
 
-
 @NgModule({
-  declarations: [SizeEnumToSizePipe, GearImageViewPipe, ClearElementValueDirective],
+  declarations: [
+    SizeEnumToSizePipe, 
+    GearImageViewPipe, 
+    ClearElementValueDirective
+  ],
   imports: [
     CommonModule,    
     SharedModule

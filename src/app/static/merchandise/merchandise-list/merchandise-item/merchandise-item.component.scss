@@ -2,6 +2,9 @@
   margin: 1.5rem 0 1.5rem 0;
   box-sizing: border-box;
   max-width: 400px;
+  position: relative;
+  top: 0;
+  transition: top ease 0.3s;
 }
 
 .sizes{
@@ -12,3 +15,8 @@
 .price{
   margin-top: 8px;
 }
+
+.gear-item:hover{
+  top: -15px;
+}
+

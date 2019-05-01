@@ -12,7 +12,7 @@ import { routeAnimations } from './core/animations/route.animations'
       transition('AboutPage <=> TeamSignUpPage', routeAnimations),
       transition('* <=> MerchandiseListPage', routeAnimations)
     ])
-  ]
+  ]  
 })
 export class AppComponent {
   title: string = 'The P League';

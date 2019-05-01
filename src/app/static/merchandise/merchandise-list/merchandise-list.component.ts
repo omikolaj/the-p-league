@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material';
+import { HeaderService } from 'src/app/core/services/header/header.service';
 
 @Component({
   selector: 'app-merchandise-list',
@@ -25,18 +26,24 @@ export class MerchandiseListComponent implements OnInit {
   pageEvent: PageEvent;
 
   constructor(
-    private merchandiseService: MerchandiseService,
+    private merchandiseService: MerchandiseService,    
     private router: Router,
+    private headerService: HeaderService,
     private route: ActivatedRoute
     ) { }
 
-  ngOnInit() {    
+  ngOnInit() {       
+    this.headerService.isSticky = false; 
     this.merchandiseService.fetchAllGearItems().subscribe(
       (gearItems: GearItem[]) => this.gearItems = gearItems);
       
     this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
     this.pagedGearItems = this.gearItems.slice(0, this.pageSize);
     this.length = this.gearItems.length;
+  }
+
+  ngOnDestroy(){
+    this.headerService.isSticky = true;
   }
 
   onArrowClick(){

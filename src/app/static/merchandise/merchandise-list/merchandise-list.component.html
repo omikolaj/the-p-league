@@ -1,21 +1,20 @@
-<div style="margin-top: 50px; ">
-
-    <div class="background " [ngClass]="routeAnimationsElements">
+<div [ngStyle]="{marginTop: headerService.isSticky ? '50px' : '0'}">
+    <div class="background " [ngClass]="routeAnimationsElements">        
         <div class="gradient parallax">
-          <div class="container">              
+          <div class="container">                            
             <div style="height: 350px;"></div>                   
           </div>
-          <div id="arrow-wrapper">      
+          <div  id="arrow-wrapper">      
             <div (click)="onArrowClick()" class="arrow-border">        
               <div class="arrow down"></div>
                <div class="pulse"></div>               
-            </div>    
+            </div>   
           </div>     
         </div>        
       </div>
   
 <div style="padding: 0 10px;">
-  <h1  [ngClass]="routeAnimationsElements" class="heading">Gear Up!</h1>
+  <h2 #gearUp  [ngClass]="routeAnimationsElements" class="heading">The P League Collection</h2>
 
   <div class="admin">
     <span [ngClass]="routeAnimationsElements">As an admin you can modify your inventory here</span>
