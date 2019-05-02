@@ -4,7 +4,7 @@
           <div class="container">                            
             <div style="height: 350px;"></div>                   
           </div>
-          <div  id="arrow-wrapper">      
+          <div cdkScrollable id="arrow-wrapper">      
             <div (click)="onArrowClick()" class="arrow-border">        
               <div class="arrow down"></div>
                <div class="pulse"></div>               
@@ -14,7 +14,7 @@
       </div>
   
 <div style="padding: 0 10px;">
-  <h2 #gearUp  [ngClass]="routeAnimationsElements" class="heading">The P League Collection</h2>
+  <h2 #gearUp [ngClass]="routeAnimationsElements" class="heading">The P League Collection</h2>
 
   <div class="admin">
     <span [ngClass]="routeAnimationsElements">As an admin you can modify your inventory here</span>
