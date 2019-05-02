@@ -1,4 +1,3 @@
-<!-- [ngStyle]="{position: (isSticky ) ? null : 'absolute'}" -->
   <div class="toolbar" [class.mat-elevation-z7]="isSticky" [ngClass]="{'hide-toolbar': hideToolBarHeader }" >   
 
     <mat-toolbar color="primary" [ngStyle]="{backgroundColor: (isSticky) ? null : 'transparent'}">
@@ -12,10 +11,6 @@
       <img [src]="logo" />
     </span>
 
-    <!-- <span>{{appTitle}}</span> -->
-
   </mat-toolbar>
   
 </div>
-
-<p style="position: sticky">Hide ToolBar Header: {{headerService.hideHeader}}</p>

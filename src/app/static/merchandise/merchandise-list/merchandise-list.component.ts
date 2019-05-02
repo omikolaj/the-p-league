@@ -7,6 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material';
 import { HeaderService } from 'src/app/core/services/header/header.service';
 import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
+import { map, throttle, debounce, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-merchandise-list',
@@ -58,7 +59,7 @@ export class MerchandiseListComponent implements OnInit {
 
   onWindowScroll(data: CdkScrollable){
     const scrollTop = data.getElementRef().nativeElement.scrollTop || 0;
-    if(scrollTop > 280 && scrollTop < 300){
+    if(scrollTop > 280){
       this.headerService.hideToolbar(true);      
       console.log('[Inside OnWindowScroll]', scrollTop)
     }    

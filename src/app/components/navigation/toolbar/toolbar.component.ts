@@ -1,24 +1,26 @@
-import { Component, Output, EventEmitter, Input, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectorRef, ViewChild, ElementRef, OnInit, DoCheck } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HeaderService } from 'src/app/core/services/header/header.service';
+import { trigger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styleUrls: ['./toolbar.component.scss'],
+  animations: [
+    
+  ]
 })
-export class ToolbarComponent {
+export class ToolbarComponent implements OnInit{
   @Output() sidenavToggle = new EventEmitter();
   @Input() appTitle: string;
-  @Input() logo: string;  
+  @Input() logo: string; 
+
   isSticky: boolean;
-
   hideToolBarHeader: boolean = false;
-
-  @ViewChild('toolbarDiv') toolbarDiv: ElementRef;
   
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -27,24 +29,19 @@ export class ToolbarComponent {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private cdRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(){   
     this.headerService.isSticky$.subscribe(isSticky => this.isSticky = isSticky);
-    this.headerService.hideToolbarHeader$.subscribe((value) => {
-      
-      this.hideToolBarHeader = true;     
+    this.headerService.hideToolbarHeader$.subscribe((hideToolbar) => {      
+      this.hideToolBarHeader = hideToolbar;  
+      console.log('[Logging from Toolbar]', hideToolbar);
+      if(this.hideToolBarHeader){
+        this.cdRef.detectChanges();        
+      }
     })    
-    // this.headerService.hideToolbarHeaderObservable$.subscribe(
-    //   hideToolbar => {
-    //     console.log('[Inside ToolBarComponent BEFORE]', hideToolbar);
-    //     this.hideToolBarHeader = hideToolbar;
-    //     console.log('[Inside ToolBarComponent AFTER]', this.hideToolBarHeader);
-    //   },
-    //   (e) => console.log('ERROR', e),
-    //   () => console.log('COMPLETED')
-    // )
   }
 
   ngOnDestory(){
@@ -53,10 +50,6 @@ export class ToolbarComponent {
 
   onToggleSidenav(): void {
     this.sidenavToggle.emit();    
-  }
-
-  log(){
-    console.log('logging', this.hideToolBarHeader)
   }
 
 }
