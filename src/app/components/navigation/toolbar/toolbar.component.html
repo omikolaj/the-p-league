@@ -1,4 +1,4 @@
-  <div class="toolbar" [class.mat-elevation-z7]="isSticky" [ngClass]="{'hide-toolbar': hideToolBarHeader }" >   
+  <div [@fadeHeader]="hideToolBarHeader ? 'hide' : 'show'" class="toolbar" [class.mat-elevation-z7]="isSticky"  >      
 
     <mat-toolbar color="primary" [ngStyle]="{backgroundColor: (isSticky) ? null : 'transparent'}">
 
@@ -14,3 +14,5 @@
   </mat-toolbar>
   
 </div>
+
+<!--  -->

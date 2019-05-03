@@ -9,6 +9,7 @@ import { HeaderService } from 'src/app/core/services/header/header.service';
 import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
 import { map, throttle, debounce, debounceTime } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-merchandise-list',
   templateUrl: './merchandise-list.component.html',
@@ -60,9 +61,11 @@ export class MerchandiseListComponent implements OnInit {
   onWindowScroll(data: CdkScrollable){
     const scrollTop = data.getElementRef().nativeElement.scrollTop || 0;
     if(scrollTop > 280){
-      this.headerService.hideToolbar(true);      
-      console.log('[Inside OnWindowScroll]', scrollTop)
-    }    
+      this.headerService.hideToolbar(true);                  
+    }
+    else if(scrollTop < 280){
+      this.headerService.hideToolbar(false);
+    }
   }
 
   ngOnDestroy(){
