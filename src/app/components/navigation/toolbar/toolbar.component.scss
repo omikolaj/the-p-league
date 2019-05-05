@@ -1,3 +1,7 @@
+:host .mat-toolbar {
+  padding-right: 32px;
+}
+
 .sidenav .mat-toolbar {
   background: inherit;
 }
@@ -16,8 +20,7 @@
 
   .branding {
     cursor: pointer;
-    overflow: hidden;
-    // padding-top: 4px; // This was causing the logo to be to low to the bottom edge of the navigation bar
+    overflow: hidden;    
     text-overflow: ellipsis;
   }
 
@@ -30,8 +33,7 @@
 
   .center-logo {
     display: block;
-    margin: 0 auto;
-  }
+  }  
 
   .center {
     text-align: center;
@@ -46,4 +48,10 @@
     font-size: 24px;
   }
 
+}
+
+@media (max-width: 600px){
+  .center-logo {
+    margin: 0 auto;
+  }
 }

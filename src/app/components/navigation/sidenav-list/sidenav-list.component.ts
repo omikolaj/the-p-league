@@ -1,5 +1,6 @@
-import { Component, OnInit, Output, EventEmitter, Input, OnDestroy, HostBinding } from '@angular/core';
-import { trigger, transition, style, state, animate, query, stagger } from '@angular/animations';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { HeaderService } from 'src/app/core/services/header/header.service';
 
 @Component({
   selector: 'app-sidenav-list',
@@ -25,7 +26,11 @@ export class SidenavListComponent implements OnInit {
   // logo gets passed in from the toolbar icon that is in the middle.
   @Input() logo: string;
   logo_with_title: string = "../../../../assets/logo_no_title.png";
-  constructor() { }
+  sidenavListText: string[] = [];
+  
+  constructor(private headerService: HeaderService) {
+    this.sidenavListText = headerService.sidenavText;
+   }
 
   ngOnInit() {
   }

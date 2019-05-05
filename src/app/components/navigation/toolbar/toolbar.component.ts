@@ -1,11 +1,9 @@
-import { Component, Output, EventEmitter, Input, ChangeDetectorRef, ViewChild, ElementRef, OnInit, DoCheck } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectorRef, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map, debounceTime, first, pairwise, skipWhile, take, mergeMap, filter } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map, pairwise, filter } from 'rxjs/operators';
 import { HeaderService } from 'src/app/core/services/header/header.service';
-import { trigger, transition, style, animate, keyframes, state } from '@angular/animations';
-import { includes } from 'lodash';
-
+import { trigger, transition, style, animate, state } from '@angular/animations';
 
 @Component({
   selector: 'app-toolbar',
@@ -31,39 +29,44 @@ export class ToolbarComponent implements OnInit{
   @Input() appTitle: string;
   @Input() logo: string; 
 
+  headerSubscribtion: Subscription;
   isSticky: boolean;
   hideToolBarHeader: boolean = false;
+  headerLinksText: string[] = [];
   
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
-      map(result => result.matches)
+      map(result => {
+        console.log(result.breakpoints)
+        return result.matches;
+      })
     );
 
   constructor(
     private breakpointObserver: BreakpointObserver,
     private headerService: HeaderService,
     private cdRef: ChangeDetectorRef
-  ) { }
+  ) {
+    this.headerLinksText = this.headerService.sidenavText;
+   }
 
   ngOnInit(){   
-    this.headerService.isSticky$.subscribe(isSticky => this.isSticky = isSticky);
-    this.headerService.hideToolbarHeader$.pipe(
-      pairwise(),
-      // if false true hide | if true false show
+    this.headerSubscribtion = this.headerService.isSticky$.subscribe(isSticky => this.isSticky = isSticky);
+    this.headerSubscribtion.add(this.headerService.hideToolbarHeader$.pipe(
+      pairwise(),      
       filter(headerState => {
         return !((headerState[0] === false && headerState[1] === false) || (headerState[0] === true && headerState[1] === true))
       }),
       map(headerState => headerState[1])         
     )    
-    .subscribe((hideToolbar) => {      
-      console.log('inside sub', hideToolbar)
-      this.hideToolBarHeader = hideToolbar;
+    .subscribe((hideToolbar) => {            
+      this.hideToolBarHeader = hideToolbar;      
       this.cdRef.detectChanges(); 
-    })    
+    }))
   }
 
   ngOnDestory(){
-    this.headerService.hideToolbarHeader$.unsubscribe();
+    this.headerSubscribtion.unsubscribe();
   }
 
   onToggleSidenav(): void {

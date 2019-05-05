@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject, from, BehaviorSubject, Subscription } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { GearItem } from '../../models/gear-item.model';
-import { flatMap, map, filter,  } from 'rxjs/operators';
+import { flatMap, map,  } from 'rxjs/operators';
 import { Size } from '../../models/gear-size.model';
 
 @Injectable({

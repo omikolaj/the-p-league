@@ -1,14 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { GearItem } from 'src/app/core/models/gear-item.model';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
-import { Observable } from 'rxjs';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material';
 import { HeaderService } from 'src/app/core/services/header/header.service';
 import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
-import { map, throttle, debounce, debounceTime } from 'rxjs/operators';
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-merchandise-list',
@@ -30,7 +28,7 @@ export class MerchandiseListComponent implements OnInit {
   pageEvent: PageEvent;
 
   isSticky: boolean;
-  scrollingSubscription;
+  scrollingSubscription: Subscription;
 
   constructor(
     private merchandiseService: MerchandiseService,    
@@ -70,6 +68,8 @@ export class MerchandiseListComponent implements OnInit {
 
   ngOnDestroy(){
     this.headerService.setStickyHeaderPosition(true);
+    this.headerService.hideToolbar(false);
+    this.scrollingSubscription.unsubscribe();
   }
 
   onArrowClick(){
