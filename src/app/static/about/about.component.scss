@@ -46,39 +46,60 @@ h1 {
   line-height: 1.75em;
 }
 
+.second-background{
+  padding: 6px 0 0 0;
+  position: relative;
+  margin: 8px;  
+  min-height: 700px;
+  background: url('../../../assets/stadium.jpg') no-repeat center top;
+  background-attachment: fixed; 
+  background-size: cover; 
+  background-size: contain;  
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;    
+    opacity: 0.7;
+    content: '';
+    z-index: 0;
+  }
+
+  .gradient {
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 40%;
+      right: 0;
+      content: '';
+      z-index: 0;
+    }
+  }
+  .gradient-2 {
+    &::before {
+      position: absolute;
+      top: 40%;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      content: '';
+      z-index: 0;
+    }    
+  }
+
+  .container {
+    position: relative;
+  }
+
+}
+
 .background {
   padding: 6px 0 0 0;
   position: relative;
   margin: 8px;
-
-  
-
-  // Responsible for styling the buttons nested inside of the background class
-  // .actions {
-  //   text-align: center;
-  //   margin: 50px;
-  //   z-index: 1;
-
-  //   span {
-  //     display: inline-block;
-  //     font-weight: bold;
-  //     padding: 20px 10px 30px 10px;
-  //   }
-
-  //   a {
-  //     margin: 0 5px 10px 0;
-
-  //     &.actions-main {
-  //       text-transform: uppercase;
-  //       padding: 3px 24px;
-  //     }
-
-  //     fa-icon {
-  //       position: relative;
-  //       bottom: 1px;
-  //     }
-  //   }
-  // }
 
   .get-started {
     max-width: 700px;
