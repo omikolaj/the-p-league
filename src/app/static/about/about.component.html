@@ -3,7 +3,11 @@
     <h1 [ngClass]="routeAnimationsElements" class="welcome-title">WELCOME</h1>
   </div>
 
-  <div [@fadeInOut]="isIn ? 'in' : 'out'" class="background" [ngClass]="routeAnimationsElements">
+  <div
+    [@fadeInOut]="isIn ? 'in' : 'out'"
+    class="background"
+    [ngClass]="routeAnimationsElements"
+  >
     <div class="gradient">
       <div class="container">
         <div style="height: 350px;"></div>
@@ -12,35 +16,53 @@
   </div>
 
   <div class="container">
-    <span [ngClass]="routeAnimationsElements" class="app-gradient center" style="display: block; font-size: x-large;"
-     >LET'S COMPETE</span>
-    <p [ngClass]="routeAnimationsElements" class="info">At The P League, we’re all about fun and competitive sports. We
-      will provide men’s & women’s basketball leagues. We encourage you to sign up for one of three day leagues that we
-      run! Our days are Thursdays, Fridays, Saturdays and Sundays. Do you think you and your team can ball? Sign up
-      now!!</p>
-  </div><br>
+    <span
+      [ngClass]="routeAnimationsElements"
+      class="app-gradient center"
+      style="display: block; font-size: x-large;"
+      >LET'S COMPETE</span
+    >
+    <p [ngClass]="routeAnimationsElements" class="info">
+      At The P League, we’re all about fun and competitive sports. We will
+      provide men’s & women’s basketball leagues. We encourage you to sign up
+      for one of three day leagues that we run! Our days are Thursdays, Fridays,
+      Saturdays and Sundays. Do you think you and your team can ball? Sign up
+      now!!
+    </p>
+  </div>
+  <br />
 
-  <div class="second-background" style="background-image: url(../../../assets/merchanidse_welcome_2.jpg); background-attachment: fixed; background-size: cover; min-height: 700px;">
-
+  <div class="second-background">
     <div class="gradient">
-        <div class="container">          
-        </div>
-      </div>
+      <div class="container"></div>
+    </div>
 
     <div class="gradient-2">
-        <div class="container">          
-        </div>
-      </div>
-
+      <div class="container"></div>
+    </div>
   </div>
 
   <div class="container">
-    <span [ngClass]="routeAnimationsElements" class="app-gradient center" style="display: block; font-size: x-large;"
-     >ABOUT THE P LEAGUE</span><br>
-    <span [ngClass]="routeAnimationsElements" class="app-gradient animations" style="display: block; text-align: center; font-size: larger"
-      >Let's keep it simple and play ball </span>
+    <span
+      [ngClass]="routeAnimationsElements"
+      class="app-gradient center"
+      style="display: block; font-size: x-large;"
+      >ABOUT THE P LEAGUE</span
+    ><br />
+    <span
+      [ngClass]="routeAnimationsElements"
+      class="app-gradient animations"
+      style="display: block; text-align: center; font-size: larger"
+      >Let's keep it simple and play ball
+    </span>
     <div [ngClass]="routeAnimationsElements">
-      <fa-icon  [@pulsing]="pulsingState" (@pulsing.done)="onDonePulsing($event)" class="basketball ball" [icon]="['fas','basketball-ball']" size="2x" ></fa-icon>
+      <fa-icon
+        [@pulsing]="pulsingState"
+        (@pulsing.done)="onDonePulsing($event)"
+        class="basketball ball"
+        [icon]="['fas', 'basketball-ball']"
+        size="2x"
+      ></fa-icon>
     </div>
 
     <ul [ngClass]="routeAnimationsElements" class="animations">
@@ -77,9 +99,13 @@
     </ul>
 
     <div [ngClass]="routeAnimationsElements" class="actions">
-      <a routerLink="/team-signup" mat-raised-button class="actions-main pulsing" color="accent">Sign Up Your Team Now!
+      <a
+        routerLink="/team-signup"
+        mat-raised-button
+        class="actions-main pulsing"
+        color="accent"
+        >Sign Up Your Team Now!
       </a>
     </div>
-
   </div>
 </div>

@@ -24,13 +24,13 @@
     }
 
     .arrow {
-    position: absolute;
-    bottom: 24px;
-    width: 20px;
-    height: 20px;
-    border-top: 3px solid mat-color($warn, warn);
-    border-right: 3px solid mat-color($warn, warn);
-    right: 19px;
-  }
+      position: absolute;
+      bottom: 24px;
+      width: 20px;
+      height: 20px;
+      border-top: 3px solid mat-color($warn, warn);
+      border-right: 3px solid mat-color($warn, warn);
+      right: 19px;
+    }
   }
 }

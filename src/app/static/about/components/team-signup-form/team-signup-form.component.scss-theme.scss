@@ -1,0 +1,30 @@
+@import "~@angular/material/theming";
+
+@mixin p-league-team-signup-form-theme($theme) {
+  $background: map-get($theme, background);
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .gradient {
+    &::before {
+      background: linear-gradient(
+        to bottom,
+        mat-color($background, background, 0) 0%,
+        mat-color($background, background, 1) 100%
+      );
+    }
+  }
+
+  .app-gradient {
+    background-image: -webkit-gradient(
+      linear,
+      left top,
+      right top,
+      color-stop(0.2, mat-color($primary, lighter)),
+      color-stop(-0.24, mat-color($primary, default))
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

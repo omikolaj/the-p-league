@@ -1,4 +1,4 @@
-@import '../../../styles-variables.scss';
+@import "../../../styles-variables.scss";
 
 h1 {
   text-align: center;
@@ -6,16 +6,16 @@ h1 {
   text-transform: uppercase;
 }
 
-.welcome-title{
+.welcome-title {
   margin-top: 82px;
   margin-bottom: 26px;
 }
 
-.center{
+.center {
   text-align: center;
 }
 
-.basketball{
+.basketball {
   display: block;
   text-align: right;
   margin: auto;
@@ -25,45 +25,49 @@ h1 {
   border-radius: 50%;
   background-color: transparent;
 
-  animation: bounce 1.0s;
+  animation: bounce 1s;
   animation-direction: alternate;
-  animation-timing-function: cubic-bezier(.5,.05,1,.84);
+  animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84);
   animation-iteration-count: infinite;
 }
 
 @keyframes bounce {
-  from { transform: translate3d(0, 0, 0);     }
-  to   { transform: translate3d(0, 45px, 0); }
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 45px, 0);
+  }
 }
 
-.animations{
-
+.animations {
 }
 
-.info{
+.info {
   text-align: left;
   margin: 15px;
   line-height: 1.75em;
 }
 
-.second-background{
+.second-background {
   padding: 6px 0 0 0;
   position: relative;
-  margin: 8px;  
+  margin: 8px;
   min-height: 700px;
-  background: url('../../../assets/stadium.jpg') no-repeat center top;
-  background-attachment: fixed; 
-  background-size: cover; 
-  background-size: contain;  
+  background: url(../../../assets/merchanidse_welcome_2.jpg) no-repeat center
+    top;
+  background-attachment: fixed;
+  background-size: cover;
+  min-height: 700px;
 
   &::before {
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    right: 0;    
+    right: 0;
     opacity: 0.7;
-    content: '';
+    content: "";
     z-index: 0;
   }
 
@@ -74,7 +78,7 @@ h1 {
       left: 0;
       bottom: 40%;
       right: 0;
-      content: '';
+      content: "";
       z-index: 0;
     }
   }
@@ -85,15 +89,14 @@ h1 {
       left: 0;
       bottom: 0;
       right: 0;
-      content: '';
+      content: "";
       z-index: 0;
-    }    
+    }
   }
 
   .container {
     position: relative;
   }
-
 }
 
 .background {
@@ -124,10 +127,10 @@ h1 {
     left: 0;
     bottom: 0;
     right: 0;
-    background: url('../../../assets/logo_no_title.png') no-repeat center top;
+    background: url("../../../assets/logo_no_title.png") no-repeat center top;
     background-size: contain;
     opacity: 0.7;
-    content: '';
+    content: "";
     z-index: 0;
   }
 
@@ -138,7 +141,7 @@ h1 {
       left: 0;
       bottom: 0;
       right: 0;
-      content: '';
+      content: "";
       z-index: 0;
     }
   }
@@ -166,6 +169,7 @@ h1 {
       text-transform: uppercase;
       padding: 3px 24px;
       cursor: pointer;
+      text-decoration: none;
     }
 
     fa-icon {
