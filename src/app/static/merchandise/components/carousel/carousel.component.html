@@ -1,7 +1,9 @@
-<ngb-carousel [interval]="50000" [showNavigationArrows]="false">
-  <ng-container *ngFor="let image of images">
+<!-- <ngb-carousel [interval]="5000" [showNavigationArrows]="false">
+  <ng-container *ngFor="let image of images; let i = index">
     <ng-template ngbSlide>
-      <img mat-card-image [src]="displayImageSource(image)">        
-    </ng-template>    
-  </ng-container>    
-</ngb-carousel>
+      <img mat-card-image [src]="displayImageSource(image)" (click)="open(i)" />
+    </ng-template>
+  </ng-container>
+</ngb-carousel> -->
+
+<ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
