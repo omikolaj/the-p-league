@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Subscription, Subject } from "rxjs";
+import { Subscription, Subject, BehaviorSubject } from "rxjs";
 import { filter, map, pairwise } from "rxjs/operators";
 
 @Injectable({
@@ -46,6 +46,7 @@ export class EmitEvent {
 }
 
 export enum Events {
+  None,
   StickyHeader,
   HideScrollbar,
   HideToolbar

@@ -52,7 +52,7 @@ export class ToolbarComponent implements OnInit {
   @Input() logo: string;
 
   headerSubscribtion: Subscription;
-  isSticky: boolean;
+  isSticky: boolean = true;
   hideToolBarHeader: boolean = false;
   headerLinksText: string[] = ["Merchandise", "Gallery"];
 

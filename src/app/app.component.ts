@@ -28,6 +28,8 @@ export class AppComponent implements OnInit {
   window: Element;
   subscription: Subscription;
   hideScrollbar: boolean = false;
+  previousURL: string;
+  currentURL: string = "";
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -42,6 +44,11 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        this.previousURL = this.currentURL;
+        this.currentURL = event.url;
+        if (event.url.includes("modal") || this.previousURL.includes("modal")) {
+          return;
+        }
         const contentContainer =
           document.querySelector(".mat-sidenav-content") || this.window;
         contentContainer.scrollTo(0, 0);
@@ -50,7 +57,7 @@ export class AppComponent implements OnInit {
 
     this.subscription = this.eventbus.on(
       Events.HideScrollbar,
-      event => (this.hideScrollbar = event)
+      (event: boolean) => (this.hideScrollbar = event)
     );
   }
 
