@@ -7,9 +7,6 @@ import {
 } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import Parallax from "parallax-js";
-import { HeaderService } from "src/app/core/services/header/header.service";
-import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/overlay";
-import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-team-signup-form",

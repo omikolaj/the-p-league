@@ -8,6 +8,11 @@ import {
   NgxGalleryAnimation,
   NgxGalleryLayout
 } from "ngx-gallery";
+import {
+  EmitEvent,
+  EventBusService,
+  Events
+} from "src/app/core/services/event-bus/event-bus.service";
 
 @Component({
   selector: "app-carousel",
@@ -24,7 +29,7 @@ export class CarouselComponent implements OnInit {
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
 
-  constructor() {}
+  constructor(private eventbus: EventBusService) {}
 
   ngOnInit() {
     this.galleryOptions = [
@@ -38,7 +43,6 @@ export class CarouselComponent implements OnInit {
         previewCloseOnClick: true,
         previewCloseOnEsc: true,
         previewKeyboardNavigation: true,
-        previewAutoPlay: true,
         previewAutoPlayInterval: 3000,
         previewInfinityMove: true,
         previewZoom: true
@@ -47,7 +51,7 @@ export class CarouselComponent implements OnInit {
       {
         breakpoint: 800,
         width: "100%",
-        height: "600px",
+        height: "360px",
         imagePercent: 80,
         thumbnailsPercent: 20,
         thumbnailsMargin: 20,
@@ -81,5 +85,13 @@ export class CarouselComponent implements OnInit {
       }
     }
     return this.defaultImgURL;
+  }
+
+  onPreviewOpen() {
+    this.eventbus.emit(new EmitEvent(Events.HideScrollbar, true));
+  }
+
+  onPreviewClose() {
+    this.eventbus.emit(new EmitEvent(Events.HideScrollbar, false));
   }
 }

@@ -19,7 +19,6 @@
 
 .col {
   flex: 1;
-  // margin-right: 20px;
 }
 
 .col:last-child {
@@ -27,10 +26,7 @@
 }
 
 .second-background {
-  //padding: 6px 0 0 0;
   position: relative;
-  //margin: 8px;
-  //min-height: 700px;
   background: url(../../../../../assets/hoop.jpg) no-repeat center top;
   background-attachment: fixed;
   background-size: cover;
@@ -156,7 +152,6 @@
 }
 
 form {
-  //margin: 75px auto;
   margin: 0 auto;
   width: 70%;
 }

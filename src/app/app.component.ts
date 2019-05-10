@@ -1,21 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { RouterOutlet, Router, NavigationEnd } from "@angular/router";
-import {
-  trigger,
-  transition,
-  style,
-  query,
-  animateChild,
-  group,
-  animate,
-  keyframes,
-  stagger,
-  sequence
-} from "@angular/animations";
+import { trigger, transition } from "@angular/animations";
 import { routeAnimations } from "./core/animations/route.animations";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { Breakpoints, BreakpointObserver } from "@angular/cdk/layout";
 import { map } from "rxjs/operators";
+import {
+  EventBusService,
+  Events
+} from "./core/services/event-bus/event-bus.service";
 
 @Component({
   selector: "app-root",
@@ -33,10 +26,17 @@ export class AppComponent implements OnInit {
   logo = "../../../../assets/logo.png";
   year = new Date().getFullYear();
   window: Element;
+  subscription: Subscription;
+  hideScrollbar: boolean = false;
+
+  isHandset$: Observable<boolean> = this.breakpointObserver
+    .observe(Breakpoints.Handset)
+    .pipe(map(result => result.matches));
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private router: Router
+    private router: Router,
+    private eventbus: EventBusService
   ) {}
 
   ngOnInit(): void {
@@ -47,11 +47,12 @@ export class AppComponent implements OnInit {
         contentContainer.scrollTo(0, 0);
       }
     });
-  }
 
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches));
+    this.subscription = this.eventbus.on(
+      Events.HideScrollbar,
+      event => (this.hideScrollbar = event)
+    );
+  }
 
   prepareRoute(outlet: RouterOutlet) {
     return (

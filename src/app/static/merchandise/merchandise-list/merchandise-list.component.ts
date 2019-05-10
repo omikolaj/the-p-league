@@ -4,7 +4,11 @@ import { MerchandiseService } from "src/app/core/services/merchandise/merchandis
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { Router, ActivatedRoute } from "@angular/router";
 import { PageEvent } from "@angular/material";
-import { HeaderService } from "src/app/core/services/header/header.service";
+import {
+  EventBusService,
+  EmitEvent,
+  Events
+} from "src/app/core/services/event-bus/event-bus.service";
 import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
 import { Subscription } from "rxjs";
 
@@ -26,22 +30,20 @@ export class MerchandiseListComponent implements OnInit {
   pageSizeOptions: number[] = [6, 12, 18, 25];
   pageEvent: PageEvent;
 
-  isSticky: boolean;
+  isSticky: boolean = false;
   scrollingSubscription: Subscription;
 
   constructor(
     private merchandiseService: MerchandiseService,
     private router: Router,
-    private headerService: HeaderService,
+    private eventbus: EventBusService,
     private route: ActivatedRoute,
     private scroll: ScrollDispatcher
   ) {}
 
   ngOnInit() {
-    this.headerService.setStickyHeaderPosition(false);
-    this.headerService.isSticky$.subscribe(
-      isSticky => (this.isSticky = isSticky)
-    );
+    this.eventbus.emit(new EmitEvent(Events.StickyHeader, this.isSticky));
+
     this.merchandiseService
       .fetchAllGearItems()
       .subscribe((gearItems: GearItem[]) => (this.gearItems = gearItems));
@@ -54,14 +56,23 @@ export class MerchandiseListComponent implements OnInit {
     this.scrollingSubscription = this.scroll
       .scrolled()
       .subscribe((data: CdkScrollable) => {
-        this.headerService.onWindowScroll(data);
+        this.onWindowScroll(data);
       });
   }
 
   ngOnDestroy() {
-    this.headerService.setStickyHeaderPosition(true);
-    this.headerService.hideToolbar(false);
+    this.eventbus.emit(new EmitEvent(Events.StickyHeader, !this.isSticky));
+    this.eventbus.emit(new EmitEvent(Events.HideToolbar, false));
     this.scrollingSubscription.unsubscribe();
+  }
+
+  onWindowScroll(data: CdkScrollable) {
+    const scrollTop = data.getElementRef().nativeElement.scrollTop || 0;
+    if (scrollTop > 280) {
+      this.eventbus.emit(new EmitEvent(Events.HideToolbar, true));
+    } else if (scrollTop < 280) {
+      this.eventbus.emit(new EmitEvent(Events.HideToolbar, false));
+    }
   }
 
   onArrowClick() {

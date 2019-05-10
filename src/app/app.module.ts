@@ -5,7 +5,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationModule } from './components/navigation/navigation.module';
 import { StaticModule } from './static/static.module';
-import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from './core/core.module';
 import { MerchandiseService } from './core/services/merchandise/merchandise.service';
 import { SharedModule } from './shared/shared.module';

@@ -1,4 +1,4 @@
-import { trigger, transition, query, style, sequence, animate, stagger } from '@angular/animations';
+import { query, style, sequence, animate, stagger } from '@angular/animations';
 
 export const ROUTE_ANIMATIONS_ELEMENTS = 'route-animation-elements';
 

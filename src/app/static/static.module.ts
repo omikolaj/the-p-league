@@ -14,7 +14,6 @@ import { MerchandiseDialogContainerComponent } from "./merchandise/merchandise-d
 import { MerchandiseDialogComponent } from "./merchandise/merchandise-dialog-container/merchandise-dialog/merchandise-dialog.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 import { MerchandiseDialogService } from "./merchandise/merchandise-dialog.service";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { CarouselComponent } from "./merchandise/components/carousel/carousel.component";
 import { NgxGalleryModule } from "ngx-gallery";
 
@@ -38,7 +37,6 @@ import { NgxGalleryModule } from "ngx-gallery";
     CommonModule,
     ReactiveFormsModule,
     CoreModule,
-    NgbModule,
     NgxGalleryModule
   ],
   providers: [

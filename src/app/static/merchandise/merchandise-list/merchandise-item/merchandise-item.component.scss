@@ -1,11 +1,16 @@
 .gear-item {
   margin: 1.5rem 0 1.5rem 0;
   box-sizing: border-box;
-  //max-width: 400px;
   position: relative;
   top: 0;
-  width: 360px;
+  width: 300px;
   transition: top ease 0.3s;
+}
+
+@media (min-width: 375px) {
+  .gear-item {
+    width: 360px;
+  }
 }
 
 .sizes {
