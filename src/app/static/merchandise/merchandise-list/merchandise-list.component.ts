@@ -77,11 +77,6 @@ export class MerchandiseListComponent implements OnInit {
       )
       .subscribe();
 
-    // Currently not used
-    //this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
-    //this.pagedGearItems = this.gearItems.slice(0, this.pageSize);
-    //this.length = this.gearItems.length;
-
     this.scrollingSubscription = this.scroll
       .scrolled()
       .subscribe((data: CdkScrollable) => {

@@ -18,15 +18,24 @@ export const galleryOptions = [
   {
     width: "360px",
     height: "400px",
-    imageAnimation: NgxGalleryAnimation.Slide,
+    imageAnimation: NgxGalleryAnimation.Zoom,
     thumbnails: false,
     previewSwipe: true,
     imageSwipe: true,
+    imageArrowsAutoHide: true,
+    previewAutoPlayInterval: 4000,
+    imageAutoPlayInterval: 4000,
     previewCloseOnClick: true,
     previewCloseOnEsc: true,
     previewKeyboardNavigation: true,
-    previewInfinityMove: false,
-    previewZoom: true
+    previewInfinityMove: true,
+    imageInfinityMove: true,
+    previewZoom: true,
+    imageAutoPlay: true,
+    imageAutoPlayPauseOnHover: true,
+    previewAutoPlay: true,
+    previewAutoPlayPauseOnHover: true,
+    imageBullets: true
   },
   // max-width 800
   {
@@ -52,10 +61,7 @@ export const galleryOptions = [
 })
 export class CarouselComponent implements OnInit {
   @Input() images: GearImage[] = [];
-  defaultImgURL: string = "../../../../assets/IMG_5585.JPG";
-  imagess = [1, 2, 3].map(
-    () => `https://picsum.photos/900/500?random&t=${Math.random()}`
-  );
+  defaultImgURL: string = "../../../../assets/default_gear.png";
 
   galleryOptions: NgxGalleryOptions[] = [];
   galleryImages: NgxGalleryImage[] = [];
