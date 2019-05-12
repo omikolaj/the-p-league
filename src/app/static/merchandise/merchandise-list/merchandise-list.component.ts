@@ -1,24 +1,38 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  forwardRef
+} from "@angular/core";
 import { GearItem } from "src/app/core/models/gear-item.model";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { Router, ActivatedRoute } from "@angular/router";
-import { PageEvent } from "@angular/material";
+import {
+  PageEvent,
+  MatPaginator,
+  MatExpansionPanelDescription
+} from "@angular/material";
 import {
   EventBusService,
   EmitEvent,
   Events
 } from "src/app/core/services/event-bus/event-bus.service";
 import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
-import { Subscription } from "rxjs";
+import { Subscription, throwError } from "rxjs";
+import { tap } from "rxjs/operators";
+import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
 
 @Component({
   selector: "app-merchandise-list",
   templateUrl: "./merchandise-list.component.html",
-  styleUrls: ["./merchandise-list.component.scss"]
+  styleUrls: ["./merchandise-list.component.scss"],
+  providers: [PaginatorService]
 })
 export class MerchandiseListComponent implements OnInit {
   @ViewChild("gearUp") merchandiseCards: ElementRef;
+  @ViewChild("paginator") paginator: MatPaginator;
 
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gearItems: GearItem[] = [];
@@ -26,8 +40,8 @@ export class MerchandiseListComponent implements OnInit {
 
   breakpoint: number = 3;
   length: number = 0;
-  pageSize: number = 6;
-  pageSizeOptions: number[] = [6, 12, 18, 25];
+  pageSize: number = 5;
+  pageSizeOptions: number[] = [5, 10, 20, 25];
   pageEvent: PageEvent;
 
   isSticky: boolean = false;
@@ -38,20 +52,35 @@ export class MerchandiseListComponent implements OnInit {
     private router: Router,
     private eventbus: EventBusService,
     private route: ActivatedRoute,
-    private scroll: ScrollDispatcher
+    private scroll: ScrollDispatcher,
+    private paginatorService: PaginatorService
   ) {}
 
   ngOnInit() {
     this.eventbus.emit(new EmitEvent(Events.StickyHeader, this.isSticky));
 
-    this.merchandiseService
-      .fetchAllGearItems()
-      .subscribe((gearItems: GearItem[]) => (this.gearItems = gearItems));
+    this.merchandiseService.gearItemsSubject$
+      .pipe(
+        tap((gearItems: GearItem[]) => {
+          const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
+            [...gearItems],
+            [...this.gearItems],
+            [...this.pagedGearItems],
+            this.pageSize,
+            this.paginator
+          );
+
+          this.length = gearItems.length;
+          this.gearItems = [...gearItems];
+          this.pagedGearItems = pagedItems;
+        })
+      )
+      .subscribe();
 
     // Currently not used
     //this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
-    this.pagedGearItems = this.gearItems.slice(0, this.pageSize);
-    this.length = this.gearItems.length;
+    //this.pagedGearItems = this.gearItems.slice(0, this.pageSize);
+    //this.length = this.gearItems.length;
 
     this.scrollingSubscription = this.scroll
       .scrolled()

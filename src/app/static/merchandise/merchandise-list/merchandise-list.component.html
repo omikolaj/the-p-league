@@ -4,11 +4,11 @@
       <div class="container">
         <div style="height: 350px;"></div>
       </div>
-      <div cdkScrollable id="arrow-wrapper">
-        <div (click)="onArrowClick()" class="arrow-border">
-          <div class="arrow down"></div>
-          <div class="pulse"></div>
-        </div>
+    </div>
+    <div cdkScrollable id="arrow-wrapper">
+      <div (click)="onArrowClick()" class="arrow-border">
+        <div class="arrow down"></div>
+        <div class="pulse"></div>
       </div>
     </div>
   </div>
@@ -41,11 +41,13 @@
     </div>
 
     <mat-paginator
+      #paginator
       [length]="length"
       [pageSize]="pageSize"
       [pageSizeOptions]="pageSizeOptions"
       (page)="pageEvent = OnPageChange($event)"
       (window:resize)="onResize($event)"
+      [showFirstLastButtons]="true"
     >
     </mat-paginator>
   </div>

@@ -55,8 +55,7 @@ mat-paginator {
   }
 
   .parallax {
-    /* The image used */
-    background-image: url("../../../../assets/merchanidse_welcome_4.jpg");
+    background-image: url("src/assets/merchanidse_welcome_4.jpg");
     background-size: cover;
 
     /* Set a specific height */
@@ -95,6 +94,7 @@ mat-paginator {
   left: 50%;
   margin-left: -30px;
   cursor: pointer;
+  bottom: 15px;
 }
 .arrow-border {
   position: relative;

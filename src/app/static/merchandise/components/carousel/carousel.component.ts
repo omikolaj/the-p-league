@@ -14,6 +14,37 @@ import {
   Events
 } from "src/app/core/services/event-bus/event-bus.service";
 
+export const galleryOptions = [
+  {
+    width: "360px",
+    height: "400px",
+    imageAnimation: NgxGalleryAnimation.Slide,
+    thumbnails: false,
+    previewSwipe: true,
+    imageSwipe: true,
+    previewCloseOnClick: true,
+    previewCloseOnEsc: true,
+    previewKeyboardNavigation: true,
+    previewInfinityMove: false,
+    previewZoom: true
+  },
+  // max-width 800
+  {
+    breakpoint: 800,
+    width: "100%",
+    height: "360px",
+    imagePercent: 80,
+    thumbnailsPercent: 20,
+    thumbnailsMargin: 20,
+    thumbnailMargin: 20
+  },
+  // max-width 400
+  {
+    breakpoint: 400,
+    preview: false
+  }
+];
+
 @Component({
   selector: "app-carousel",
   templateUrl: "./carousel.component.html",
@@ -26,56 +57,27 @@ export class CarouselComponent implements OnInit {
     () => `https://picsum.photos/900/500?random&t=${Math.random()}`
   );
 
-  galleryOptions: NgxGalleryOptions[];
-  galleryImages: NgxGalleryImage[];
+  galleryOptions: NgxGalleryOptions[] = [];
+  galleryImages: NgxGalleryImage[] = [];
 
   constructor(private eventbus: EventBusService) {}
 
   ngOnInit() {
-    this.galleryOptions = [
-      {
-        width: "360px",
-        height: "400px",
-        thumbnailsColumns: this.images.length,
-        imageAnimation: NgxGalleryAnimation.Slide,
-        thumbnails: false,
-        previewSwipe: true,
-        previewCloseOnClick: true,
-        previewCloseOnEsc: true,
-        previewKeyboardNavigation: true,
-        previewAutoPlayInterval: 3000,
-        previewInfinityMove: true,
-        previewZoom: true
-      },
-      // max-width 800
-      {
-        breakpoint: 800,
-        width: "100%",
-        height: "360px",
-        imagePercent: 80,
-        thumbnailsPercent: 20,
-        thumbnailsMargin: 20,
-        thumbnailMargin: 20
-      },
-      // max-width 400
-      {
-        breakpoint: 400,
-        preview: false
-      }
-    ];
+    this.galleryOptions = galleryOptions;
+    this.convertToGalleryImages();
+  }
 
-    this.galleryImages = [
-      {
-        small: "../../../../assets/Leo.JPG",
-        medium: "../../../../assets/Leo.JPG",
-        big: "../../../../assets/Leo.JPG"
-      },
-      {
-        small: "../../../../assets/IMG_5585.JPG",
-        medium: "../../../../assets/IMG_5585.JPG",
-        big: "../../../../assets/IMG_5585.JPG"
-      }
-    ];
+  convertToGalleryImages() {
+    for (let index = 0; index < this.images.length; index++) {
+      const image: GearImage = this.images[index];
+      let imgURL = image.url ? image.url : this.defaultImgURL;
+      const galleryImage: NgxGalleryImage = {
+        small: imgURL,
+        medium: imgURL,
+        big: imgURL
+      };
+      this.galleryImages.push(galleryImage);
+    }
   }
 
   displayImageSource(image: GearImage): string {
