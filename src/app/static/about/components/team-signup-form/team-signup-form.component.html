@@ -29,11 +29,7 @@
   <!-- <div class="scroll-down"></div> -->
 </div>
 
-<div
-  #contactFormElement
-  [ngStyle]="{ marginTop: isSticky ? '50px' : '0' }"
-  class="form-wrapper"
->
+<div class="form-wrapper">
   <form [formGroup]="contactForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="shipping-card">
       <mat-card-header>

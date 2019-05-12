@@ -58,7 +58,7 @@
     <div [ngClass]="routeAnimationsElements">
       <fa-icon
         [@pulsing]="pulsingState"
-        (@pulsing.done)="onDonePulsing($event)"
+        (@pulsing.done)="onDonePulsing()"
         class="basketball ball"
         [icon]="['fas', 'basketball-ball']"
         size="2x"

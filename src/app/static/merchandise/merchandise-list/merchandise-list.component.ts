@@ -110,13 +110,15 @@ export class MerchandiseListComponent implements OnInit {
     });
   }
 
-  OnPageChange(event: PageEvent) {
+  OnPageChange(event: PageEvent): PageEvent {
+    this.pageEvent = new PageEvent();
     let startIndex = event.pageIndex * event.pageSize;
     let endIndex = startIndex + event.pageSize;
     if (endIndex > this.length) {
       endIndex = this.length;
     }
     this.pagedGearItems = this.gearItems.slice(startIndex, endIndex);
+    return this.pageEvent;
   }
 
   onResize(event) {
