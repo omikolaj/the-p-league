@@ -1,11 +1,29 @@
 import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
+import { AboutComponent } from "./views/about/about.component";
 
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "about",
-    pathMatch: "full"
+    children: [
+      {
+        path: "about",
+        loadChildren: "./views/about/about.module#AboutModule"
+      },
+      {
+        path: "team-signup",
+        loadChildren:
+          "./views/about/components/team-signup-form/team-signup-form.module#TeamSignupFormModule"
+      },
+      {
+        path: "merchandise",
+        loadChildren: "./views/merchandise/merchandise.module#MerchandiseModule"
+      },
+      {
+        path: "gallery",
+        loadChildren: "./views/gallery/gallery.module#GalleryModule"
+      }
+    ]
   },
   {
     path: "**",
@@ -16,7 +34,9 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: "enabled"
+      scrollPositionRestoration: "enabled",
+      enableTracing: false,
+      preloadingStrategy: PreloadAllModules
     })
   ],
   exports: [RouterModule]

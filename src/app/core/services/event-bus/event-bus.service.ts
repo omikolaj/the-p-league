@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Subscription, Subject, BehaviorSubject } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { filter, map, pairwise } from "rxjs/operators";
 
 @Injectable({

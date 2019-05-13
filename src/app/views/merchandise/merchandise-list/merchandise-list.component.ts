@@ -111,6 +111,7 @@ export class MerchandiseListComponent implements OnInit {
   }
 
   OnPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
     let startIndex = event.pageIndex * event.pageSize;
     let endIndex = startIndex + event.pageSize;
     if (endIndex > this.length) {

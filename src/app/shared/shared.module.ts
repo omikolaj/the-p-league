@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {    
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import {
   MatAutocompleteModule,
   MatBadgeModule,
   MatBottomSheetModule,
@@ -38,16 +38,16 @@ import {
   MatTooltipModule,
   MatTreeModule,
   RippleGlobalOptions,
-  MAT_RIPPLE_GLOBAL_OPTIONS,
-} from '@angular/material';
+  MAT_RIPPLE_GLOBAL_OPTIONS
+} from "@angular/material";
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import {  
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
   faPlayCircle,
   faRocket,
   faBasketballBall
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
 import {
   faGithub,
@@ -55,9 +55,12 @@ import {
   faTwitter,
   faInstagram,
   faYoutube
-} from '@fortawesome/free-brands-svg-icons';
+} from "@fortawesome/free-brands-svg-icons";
 
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { GalleryViewerComponent } from "./components/gallery-viewer/gallery-viewer.component";
+import { NgxGalleryModule } from "ngx-gallery";
+import { ReactiveFormsModule } from "@angular/forms";
 
 library.add(
   faGithub,
@@ -68,21 +71,20 @@ library.add(
   faPlayCircle,
   faRocket,
   faBasketballBall
-)
+);
 
 // This is used for controling the Angular ripples effect globally
 // https://material.angular.io/components/ripple/api
 const globalRippleConfig: RippleGlobalOptions = {
   terminateOnPointerUp: false
-}
+};
 
 @NgModule({
   providers: [
-    {provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig}
+    { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }
   ],
-  declarations: [],
+  declarations: [GalleryViewerComponent],
   imports: [
-    CommonModule,
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
@@ -118,14 +120,15 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    
+
     FontAwesomeModule,
 
-    FlexLayoutModule
+    FlexLayoutModule,
+
+    NgxGalleryModule,
+    ReactiveFormsModule
   ],
   exports: [
-    CommonModule,
-    BrowserAnimationsModule,
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
@@ -163,8 +166,10 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTreeModule,
 
     FontAwesomeModule,
-    
-    FlexLayoutModule
+
+    FlexLayoutModule,
+    GalleryViewerComponent,
+    ReactiveFormsModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {}
