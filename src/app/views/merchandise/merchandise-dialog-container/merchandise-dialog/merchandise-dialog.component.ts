@@ -10,7 +10,7 @@ import {
   NgForm
 } from "@angular/forms";
 import { GearItem } from "src/app/core/models/gear-item.model";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterStateSnapshot } from "@angular/router";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { MatDialogRef } from "@angular/material";
 import { GearSize, Size } from "src/app/core/models/gear-size.model";
@@ -26,6 +26,7 @@ import {
   animate
 } from "@angular/animations";
 import { cloneDeep } from "lodash";
+import { GearImageViewPipe } from "src/app/core/pipes/gear-image-view/gear-image-view.pipe";
 
 export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -77,11 +78,11 @@ export class MerchandiseDialogComponent implements OnInit {
   gearItemForm: FormGroup;
   selectedFileFormData: FormData = new FormData();
   gearItemImages: GearImage[] = [];
+  noSizesSelectedStateMatcher: ErrorStateMatcher = new NoSizeErrorStateMatcher();
 
   gearSizes: GearSize[] = [];
   isInStock: boolean = true;
   sizeEnum = Size;
-  noSizesSelectedStateMatcher: ErrorStateMatcher = new NoSizeErrorStateMatcher();
 
   constructor(
     private fb: FormBuilder,
@@ -103,8 +104,7 @@ export class MerchandiseDialogComponent implements OnInit {
   ngOnInit() {
     const outlet = "modal";
 
-    // Checks to see if we are in edit mode and grabs the id from the url
-    this.route.firstChild.children
+    this.route.children[0].firstChild.children
       .filter(r => r.outlet === outlet)
       .map(r =>
         r.params.subscribe(params => {
@@ -114,6 +114,7 @@ export class MerchandiseDialogComponent implements OnInit {
             .subscribe(gearItem => (this.gearItem = cloneDeep(gearItem)));
         })
       );
+
     this.initForm();
   }
 

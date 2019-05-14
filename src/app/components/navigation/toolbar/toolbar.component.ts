@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { Observable, Subscription } from "rxjs";
-import { map, pairwise, filter } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import {
   EventBusService,
   Events

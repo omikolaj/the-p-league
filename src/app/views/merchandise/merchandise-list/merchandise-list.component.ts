@@ -111,14 +111,22 @@ export class MerchandiseListComponent implements OnInit {
   }
 
   OnPageChange(event: PageEvent): PageEvent {
+<<<<<<< HEAD:src/app/static/merchandise/merchandise-list/merchandise-list.component.ts
     this.pageEvent = new PageEvent();
+=======
+    this.pageSize = event.pageSize;
+>>>>>>> lazy-loading:src/app/views/merchandise/merchandise-list/merchandise-list.component.ts
     let startIndex = event.pageIndex * event.pageSize;
     let endIndex = startIndex + event.pageSize;
     if (endIndex > this.length) {
       endIndex = this.length;
     }
     this.pagedGearItems = this.gearItems.slice(startIndex, endIndex);
+<<<<<<< HEAD:src/app/static/merchandise/merchandise-list/merchandise-list.component.ts
     return this.pageEvent;
+=======
+    return new PageEvent();
+>>>>>>> lazy-loading:src/app/views/merchandise/merchandise-list/merchandise-list.component.ts
   }
 
   onResize(event) {

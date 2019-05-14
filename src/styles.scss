@@ -36,15 +36,16 @@
 /* You can add global styles to this file, and also import other style files */
 @import "themes/dark-theme.scss";
 
-@import "app/static/about/about.component.scss-theme.scss";
-@import "app/components/navigation/sidenav-list/sidenav-list.component.scss-theme.scss";
 @import "app/app.component.scss-theme.scss";
-@import "app/static//merchandise/merchandise-list/merchandise-item/merchandise-item.scss-theme.scss";
-@import "app/static/gallery/gallery-grid-list.scss-theme.scss";
-@import "app/static/merchandise/merchandise-dialog-container/merchandise-dialog/merchandise-dialog.component.scss-theme.scss";
-@import "app/static/merchandise/merchandise-list/merchandise-list.component.scss-theme.scss";
+@import "app/components/navigation/sidenav-list/sidenav-list.component.scss-theme.scss";
 @import "app/components/navigation/toolbar/toolbar.component.scss-theme.scss";
-@import "app/static//about/components/team-signup-form/team-signup-form.component.scss-theme.scss";
+
+@import "app/views/about/about.component.scss-theme.scss";
+@import "app/views/merchandise/merchandise-list/merchandise-item/merchandise-item.scss-theme.scss";
+@import "app/views/gallery/gallery-grid-list.scss-theme.scss";
+@import "app/views/merchandise/merchandise-dialog-container/merchandise-dialog/merchandise-dialog.component.scss-theme.scss";
+@import "app/views/merchandise/merchandise-list/merchandise-list.component.scss-theme.scss";
+@import "app/views/about/components/team-signup-form/team-signup-form.component.scss-theme.scss";
 
 @include angular-material-theme($the-p-league-theme);
 

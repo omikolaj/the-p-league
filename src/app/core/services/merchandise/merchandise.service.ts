@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, of, Subject, BehaviorSubject } from "rxjs";
+import { Observable, of, BehaviorSubject } from "rxjs";
 import { GearItem } from "../../models/gear-item.model";
 import { flatMap, map } from "rxjs/operators";
 import { Size } from "../../models/gear-size.model";

@@ -1,12 +1,10 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { GearItem } from "src/app/core/models/gear-item.model";
 import { GearImage } from "src/app/core/models/gear-image.model";
 import "hammerjs";
 import {
   NgxGalleryOptions,
   NgxGalleryImage,
-  NgxGalleryAnimation,
-  NgxGalleryLayout
+  NgxGalleryAnimation
 } from "ngx-gallery";
 import {
   EmitEvent,
@@ -55,11 +53,11 @@ export const galleryOptions = [
 ];
 
 @Component({
-  selector: "app-carousel",
-  templateUrl: "./carousel.component.html",
-  styleUrls: ["./carousel.component.scss"]
+  selector: "app-gallery-viewer",
+  templateUrl: "./gallery-viewer.component.html",
+  styleUrls: ["./gallery-viewer.component.scss"]
 })
-export class CarouselComponent implements OnInit {
+export class GalleryViewerComponent implements OnInit {
   @Input() images: GearImage[] = [];
   defaultImgURL: string = "../../../../assets/default_gear.png";
 

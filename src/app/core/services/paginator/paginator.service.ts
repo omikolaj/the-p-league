@@ -79,12 +79,14 @@ export class PaginatorService {
             if (newGearItems.length === pagedGearItems.length) {
               return newGearItems;
             }
-            // If the newGearItems length does not equal paginator length we want to add the item from the next page to the current view of pagedGearItems
-            const gearItemToAdd: GearItem =
-              newGearItems[
-                pagedGearItemToRemoveIndex +
-                  (pagedGearItems.length - pagedGearItemToRemoveIndex - 1)
-              ];
+            const removedGearItemIndexOfTotal = prevGearItems.indexOf(
+              gearItemToRemove
+            );
+            const indexToAddToTotal = pageSize - pagedGearItemToRemoveIndex;
+            const indexOfNextGearItem =
+              removedGearItemIndexOfTotal - 1 + indexToAddToTotal;
+            const gearItemToAdd: GearItem = newGearItems[indexOfNextGearItem];
+
             pagedGearItemsCopy.splice(
               pagedGearItems.length - 1,
               0,
