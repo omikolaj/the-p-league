@@ -1,39 +1,41 @@
-<div class="second-background">
-  <div
-    style="position: relative; top: 40%; left: 40%; margin: 0 auto; height: 60%; width: 60%;"
-  >
+<ng-template *ngIf="!isMobile">
+  <div class="second-background">
     <div
-      data-scalar-x="7"
-      data-scalar-y="7"
-      data-relative-input="true"
-      id="scene"
-      style="width: 60%; height: 60%;"
+      style="position: relative; top: 40%; left: 40%; margin: 0 auto; height: 60%; width: 60%;"
     >
-      <div data-depth="0.2" class="float-position-1">
-        <h3 class="app-gradient">Got a squad?</h3>
-      </div>
-      <div data-depth="0.6" class="float-position-2">
-        <h3 class="app-gradient">Sign up and compete!</h3>
+      <div
+        data-scalar-x="7"
+        data-scalar-y="7"
+        data-relative-input="true"
+        id="scene"
+        style="width: 60%; height: 60%;"
+      >
+        <div data-depth="0.2" class="float-position-1">
+          <h3 class="app-gradient">Got a squad?</h3>
+        </div>
+        <div data-depth="0.6" class="float-position-2">
+          <h3 class="app-gradient">Sign up and compete!</h3>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="gradient">
-    <div class="container"></div>
-  </div>
-  <div id="arrow-wrapper">
-    <div class="arrow-border">
-      <div class="arrow down"></div>
-      <div class="pulse"></div>
+    <div class="gradient">
+      <div class="container"></div>
     </div>
+    <div id="arrow-wrapper">
+      <div class="arrow-border">
+        <div class="arrow down"></div>
+        <div class="pulse"></div>
+      </div>
+    </div>
+    <!-- <div class="scroll-down"></div> -->
   </div>
-  <!-- <div class="scroll-down"></div> -->
-</div>
+</ng-template>
 
-<<<<<<< HEAD:src/app/static/about/components/team-signup-form/team-signup-form.component.html
-<div class="form-wrapper">
-=======
-<div #contactFormElement class="form-wrapper">
->>>>>>> lazy-loading:src/app/views/about/components/team-signup-form/team-signup-form.component.html
+<div
+  #contactFormElement
+  class="form-wrapper"
+  [ngStyle]="{ marginTop: isMobile ? '50px' : null }"
+>
   <form [formGroup]="contactForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="shipping-card">
       <mat-card-header>

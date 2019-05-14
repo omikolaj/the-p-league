@@ -7,6 +7,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import Parallax from "parallax-js";
+import { DeviceDetectorService } from "ngx-device-detector";
 
 @Component({
   selector: "app-team-signup-form",
@@ -26,12 +27,23 @@ export class TeamSignupFormComponent implements OnInit, OnDestroy {
   });
   parallaxInstance: Parallax;
   @ViewChild("contactFormElement") contactFormElement: ElementRef;
+  isMobile: boolean;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private deviceService: DeviceDetectorService
+  ) {}
 
   ngOnInit(): void {
-    var scene = document.getElementById("scene");
-    this.parallaxInstance = new Parallax(scene);
+    this.epicFunction();
+    if (!this.isMobile) {
+      var scene = document.getElementById("scene");
+      this.parallaxInstance = new Parallax(scene);
+    }
+  }
+
+  epicFunction() {
+    this.isMobile = this.deviceService.isMobile();
   }
 
   ngOnDestroy() {
