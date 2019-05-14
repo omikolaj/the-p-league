@@ -45,7 +45,7 @@
       [length]="length"
       [pageSize]="pageSize"
       [pageSizeOptions]="pageSizeOptions"
-      (page)="pageEvent = OnPageChange()"
+      (page)="pageEvent = OnPageChange($event)"
       (window:resize)="onResize($event)"
       [showFirstLastButtons]="true"
     >

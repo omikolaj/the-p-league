@@ -7,7 +7,6 @@ import { NavigationModule } from "./components/navigation/navigation.module";
 import { CoreModule } from "./core/core.module";
 import { MerchandiseService } from "./core/services/merchandise/merchandise.service";
 import { SharedModule } from "./shared/shared.module";
-import { AboutComponent } from "./views/about/about.component";
 
 @NgModule({
   declarations: [AppComponent],

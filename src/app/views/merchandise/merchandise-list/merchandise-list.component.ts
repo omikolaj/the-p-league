@@ -110,7 +110,7 @@ export class MerchandiseListComponent implements OnInit {
     });
   }
 
-  OnPageChange(event: PageEvent) {
+  OnPageChange(event: PageEvent): PageEvent {
     this.pageSize = event.pageSize;
     let startIndex = event.pageIndex * event.pageSize;
     let endIndex = startIndex + event.pageSize;
@@ -118,6 +118,7 @@ export class MerchandiseListComponent implements OnInit {
       endIndex = this.length;
     }
     this.pagedGearItems = this.gearItems.slice(startIndex, endIndex);
+    return new PageEvent();
   }
 
   onResize(event) {
