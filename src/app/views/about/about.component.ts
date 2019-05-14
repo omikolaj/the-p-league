@@ -13,6 +13,7 @@ import {
 } from "@angular/animations";
 
 import { ROUTE_ANIMATIONS_ELEMENTS } from "../../core/animations/route.animations";
+import { DeviceDetectorService } from "ngx-device-detector";
 
 @Component({
   selector: "app-about",
@@ -71,15 +72,26 @@ export class AboutComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   isIn: boolean = false;
   pulsingState: string = "inactive";
-  constructor() {}
+  isMobile: boolean;
+  isTablet: boolean;
+  isDesktopDevice: boolean;
+
+  constructor(private deviceService: DeviceDetectorService) {}
 
   ngOnInit() {
     this.isIn = true;
     this.pulsingState = "active";
+    this.epicFunction();
   }
 
   ngOnDestroy() {
     this.isIn = false;
+  }
+
+  epicFunction(): void {
+    this.isMobile = this.deviceService.isMobile();
+    this.isTablet = this.deviceService.isTablet();
+    this.isDesktopDevice = this.deviceService.isDesktop();
   }
 
   onDonePulsing() {
