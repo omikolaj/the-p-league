@@ -32,7 +32,10 @@
   </div>
   <br />
 
-  <div class="second-background parallax">
+  <div
+    class="second-background"
+    [ngClass]="isMobile ? 'parallax-mobile' : 'parallax'"
+  >
     <div class="gradient">
       <div class="container"></div>
     </div>

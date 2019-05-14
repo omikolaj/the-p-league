@@ -136,6 +136,11 @@ h1 {
 }
 
 .parallax-mobile {
+  min-height: 700px;
+  background: url(../../../assets/merchanidse_welcome_2.jpg) no-repeat center top;
+  background-attachment: scroll;
+  background-size: cover;
+  min-height: 700px;
 }
 
 .second-background {

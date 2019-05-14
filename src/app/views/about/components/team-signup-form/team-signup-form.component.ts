@@ -47,7 +47,9 @@ export class TeamSignupFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.parallaxInstance.destroy();
+    if (!this.isMobile) {
+      this.parallaxInstance.destroy();
+    }
   }
 
   onArrowClick() {
