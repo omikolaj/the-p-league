@@ -16,7 +16,7 @@ import {
   styleUrls: ["./app.component.scss"],
   animations: [
     trigger("routeAnimations", [
-      transition("AboutPage <=> TeamSignUpPage", routeAnimations),
+      //transition("AboutPage <=> TeamSignUpPage", routeAnimations),
       transition("* <=> MerchandiseListPage", routeAnimations)
     ])
   ]
