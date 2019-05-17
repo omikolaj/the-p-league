@@ -34,7 +34,7 @@
 
   <div
     class="second-background"
-    [ngClass]="isMobile ? 'parallax-mobile' : 'parallax'"
+    [ngClass]="mobileFunction() ? 'mobile-img' : 'parallax'"
   >
     <div class="gradient">
       <div class="container"></div>

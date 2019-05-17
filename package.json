@@ -38,10 +38,14 @@
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "lodash": "^4.17.11",
+    "ngx-bootstrap": "^4.1.1",
     "ngx-device-detector": "^1.3.5",
     "ngx-gallery": "^5.10.0",
+<<<<<<< HEAD
     "parallax-js": "^3.1.0",
     "path": "^0.12.7",
+=======
+>>>>>>> mobile-fix
     "rxjs": "~6.3.3",
     "shortid": "^2.2.14",
     "tslib": "^1.9.0",

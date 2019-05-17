@@ -1,11 +1,9 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-
 import { TeamSignupFormRoutingModule } from "./team-signup-form-routing.module";
 import { TeamSignupFormComponent } from "./team-signup-form.component";
-import {} from "@angular/forms";
 import { SharedModule } from "src/app/shared/shared.module";
-import { DeviceDetectorModule } from "ngx-device-detector";
+import { CarouselModule } from "ngx-bootstrap/carousel";
 
 @NgModule({
   declarations: [TeamSignupFormComponent],
@@ -13,7 +11,7 @@ import { DeviceDetectorModule } from "ngx-device-detector";
     CommonModule,
     TeamSignupFormRoutingModule,
     SharedModule,
-    DeviceDetectorModule.forRoot()
+    CarouselModule
   ]
 })
 export class TeamSignupFormModule {}

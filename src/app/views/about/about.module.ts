@@ -14,8 +14,7 @@ import { SharedModule } from "src/app/shared/shared.module";
     AboutRoutingModule,
     TeamSignupFormModule,
     CoreModule,
-    SharedModule,
-    DeviceDetectorModule.forRoot()
+    SharedModule
   ]
 })
 export class AboutModule {}

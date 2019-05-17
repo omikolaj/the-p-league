@@ -1,3 +1,8 @@
+:host {
+  // Required because carousel in team sign up comp has z-index of 15
+  z-index: 20;
+}
+
 .sidenav .mat-toolbar {
   background: inherit;
 }
