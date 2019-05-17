@@ -13,11 +13,7 @@
   </slide>
 </carousel>
 
-<div
-  #contactFormElement
-  class="form-wrapper"
-  [ngStyle]="{ marginTop: isMobile ? '50px' : null }"
->
+<div #contactFormElement class="form-wrapper">
   <form [formGroup]="contactForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="shipping-card">
       <mat-card-header>
