@@ -1,12 +1,6 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef
-} from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
-import Parallax from "parallax-js";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { TeamSignUpImages, TeamSignUpImage } from "./team-signup-images";
 
 @Component({
   selector: "app-team-signup-form",
@@ -14,7 +8,7 @@ import Parallax from "parallax-js";
   styleUrls: ["./team-signup-form.component.scss"]
 })
 export class TeamSignupFormComponent implements OnInit, OnDestroy {
-  contactForm = this.fb.group({
+  contactForm: FormGroup = this.fb.group({
     teamName: this.fb.control(null, Validators.required),
     firstName: this.fb.control(null, Validators.required),
     lastName: this.fb.control(null, Validators.required),
@@ -24,24 +18,14 @@ export class TeamSignupFormComponent implements OnInit, OnDestroy {
     ]),
     email: this.fb.control(null, [Validators.required, Validators.email])
   });
-  parallaxInstance: Parallax;
-  @ViewChild("contactFormElement") contactFormElement: ElementRef;
+
+  images: TeamSignUpImage[] = TeamSignUpImages;
 
   constructor(private fb: FormBuilder) {}
 
-  ngOnInit(): void {
-    var scene = document.getElementById("scene");
-    this.parallaxInstance = new Parallax(scene);
-  }
+  ngOnInit(): void {}
 
-  ngOnDestroy() {
-    this.parallaxInstance.destroy();
-  }
-
-  onArrowClick() {
-    const targetELement = this.contactFormElement.nativeElement as HTMLElement;
-    targetELement.scrollIntoView({ behavior: "smooth" });
-  }
+  ngOnDestroy() {}
 
   onSubmit() {
     alert("Thanks!");

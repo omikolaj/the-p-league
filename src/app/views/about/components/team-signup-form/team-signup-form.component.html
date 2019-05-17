@@ -1,33 +1,17 @@
-<div class="second-background">
-  <div
-    style="position: relative; top: 40%; left: 40%; margin: 0 auto; height: 60%; width: 60%;"
-  >
-    <div
-      data-scalar-x="7"
-      data-scalar-y="7"
-      data-relative-input="true"
-      id="scene"
-      style="width: 60%; height: 60%;"
-    >
-      <div data-depth="0.2" class="float-position-1">
-        <h3 class="app-gradient">Got a squad?</h3>
-      </div>
-      <div data-depth="0.6" class="float-position-2">
-        <h3 class="app-gradient">Sign up and compete!</h3>
-      </div>
+<carousel>
+  <slide *ngFor="let img of images">
+    <img
+      class="carousel-image"
+      [src]="img.src"
+      [alt]="img.alt"
+      style="display: block; width: 100%;"
+    />
+    <div class="carousel-caption d-md-block">
+      <h3>{{ img.title }}</h3>
+      <p>{{ img.description }}</p>
     </div>
-  </div>
-  <div class="gradient">
-    <div class="container"></div>
-  </div>
-  <div id="arrow-wrapper">
-    <div class="arrow-border">
-      <div class="arrow down"></div>
-      <div class="pulse"></div>
-    </div>
-  </div>
-  <!-- <div class="scroll-down"></div> -->
-</div>
+  </slide>
+</carousel>
 
 <div #contactFormElement class="form-wrapper">
   <form [formGroup]="contactForm" novalidate (ngSubmit)="onSubmit()">

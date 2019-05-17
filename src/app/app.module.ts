@@ -7,6 +7,7 @@ import { NavigationModule } from "./components/navigation/navigation.module";
 import { CoreModule } from "./core/core.module";
 import { MerchandiseService } from "./core/services/merchandise/merchandise.service";
 import { SharedModule } from "./shared/shared.module";
+import { DeviceDetectorModule } from "ngx-device-detector";
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,7 +24,8 @@ import { SharedModule } from "./shared/shared.module";
     CoreModule,
 
     // app
-    AppRoutingModule
+    AppRoutingModule,
+    DeviceDetectorModule.forRoot()
   ],
   providers: [MerchandiseService],
   bootstrap: [AppComponent]
