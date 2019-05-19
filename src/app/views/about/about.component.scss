@@ -27,19 +27,15 @@ h1 {
 
   animation: bounce 1s;
   -webkit-animation: bounce 1s;
-  -ms-animation: bounce 1s;
 
   animation-direction: alternate;
   -webkit-animation-direction: alternate;
-  -ms-animation-direction: alternate;
 
   animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84);
   -webkit-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84);
-  -ms-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84);
 
   animation-iteration-count: infinite;
   -webkit-animation-iteration-count: infinite;
-  -ms-animation-iteration-count: infinite;
 }
 
 @keyframes bounce {
@@ -57,15 +53,6 @@ h1 {
   }
   to {
     -webkit-transform: translate3d(0, 45px, 0);
-  }
-}
-
-@-moz-keyframes bounce {
-  from {
-    -moz-transform: translate3d(0, 0, 0);
-  }
-  to {
-    -moz-transform: translate3d(0, 45px, 0);
   }
 }
 
