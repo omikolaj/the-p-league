@@ -60,9 +60,11 @@
     </span>
     <div [ngClass]="routeAnimationsElements">
       <fa-icon
+        [@bounce]="bounceState"
+        (@bounce.done)="onDoneBounce()"
         [@pulsing]="pulsingState"
         (@pulsing.done)="onDonePulsing()"
-        class="basketball ball"
+        class="basketball "
         [icon]="['fas', 'basketball-ball']"
         size="2x"
       ></fa-icon>
