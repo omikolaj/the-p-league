@@ -60,16 +60,15 @@
     </span>
     <div [ngClass]="routeAnimationsElements">
       <fa-icon
-        [@bounce]="bounceState"
-        (@bounce.done)="onDoneBounce()"
         [@pulsing]="pulsingState"
         (@pulsing.done)="onDonePulsing()"
-        class="basketball "
+        class="basketball ball"
         [icon]="['fas', 'basketball-ball']"
         size="2x"
       ></fa-icon>
     </div>
-
+    <!-- [@bounce]="bounceState"
+    (@bounce.done)="onDoneBounce()" -->
     <ul [ngClass]="routeAnimationsElements" class="animations">
       <li>
         <p>Each league will have 8-20 teams</p>
