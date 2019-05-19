@@ -71,14 +71,33 @@ import { DeviceDetectorService } from "ngx-device-detector";
       ])
     ]),
     trigger("bounce", [
-      state("stopped", style({ transform: "translate3d(0, 0, 0)" })),
-      state("bouncing", style({ transform: "translate3d(0, 45px, 0)" })),
-      transition("stopped <=> bouncing", [
+      state(
+        "stopped",
+        style({
+          transform: "translate3d(0, 0, 0)"
+        })
+      ),
+      state(
+        "bouncing",
+        style({
+          transform: "translate3d(0, 45px, 0)"
+        })
+      ),
+      transition("stopped => bouncing", [
         animate(
-          "1s .1s ease-in-out",
+          "1s cubic-bezier(0.5, 0.05, 1, 0.84)",
           keyframes([
             style({ transform: "translate3d(0, 0, 0)" }),
             style({ transform: "translate3d(0, 45px, 0)" })
+          ])
+        )
+      ]),
+      transition("bouncing => stopped", [
+        animate(
+          "1s cubic-bezier(0.5, 0.05, 1, 0.84)",
+          keyframes([
+            style({ transform: "translate3d(0, 45px, 0)" }),
+            style({ transform: "translate3d(0, 0, 0)" })
           ])
         )
       ])
