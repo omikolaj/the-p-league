@@ -73,7 +73,7 @@ export class AboutComponent implements OnInit {
   isIn: boolean = false;
   pulsingState: string = "inactive";
 
-  constructor(private deviceInfo: DeviceInfoService) {}
+  constructor(public deviceInfo: DeviceInfoService) {}
 
   ngOnInit() {
     this.isIn = true;

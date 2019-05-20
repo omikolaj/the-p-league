@@ -55,7 +55,7 @@ export class MerchandiseListComponent implements OnInit {
     private route: ActivatedRoute,
     private scroll: ScrollDispatcher,
     private paginatorService: PaginatorService,
-    private deviceInfo: DeviceInfoService
+    public deviceInfo: DeviceInfoService
   ) {}
 
   ngOnInit() {
