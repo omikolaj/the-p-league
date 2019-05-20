@@ -13,11 +13,7 @@ import {
 } from "@angular/animations";
 
 import { ROUTE_ANIMATIONS_ELEMENTS } from "../../core/animations/route.animations";
-import {
-  epicFunction,
-  DeviceInformation
-} from "src/app/shared/helpers/device-helper";
-import { DeviceDetectorService } from "ngx-device-detector";
+import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
 
 @Component({
   selector: "app-about",
@@ -70,51 +66,16 @@ import { DeviceDetectorService } from "ngx-device-detector";
         )
       ])
     ]),
-    trigger("bounce", [
-      state(
-        "stopped",
-        style({
-          transform: "translate3d(0, 0, 0)"
-        })
-      ),
-      state(
-        "bouncing",
-        style({
-          transform: "translate3d(0, 45px, 0)"
-        })
-      ),
-      transition("stopped => bouncing", [
-        animate(
-          "1s cubic-bezier(0.5, 0.05, 1, 0.84)",
-          keyframes([
-            style({ transform: "translate3d(0, 0, 0)" }),
-            style({ transform: "translate3d(0, 45px, 0)" })
-          ])
-        )
-      ]),
-      transition("bouncing => stopped", [
-        animate(
-          "1s cubic-bezier(0.5, 0.05, 1, 0.84)",
-          keyframes([
-            style({ transform: "translate3d(0, 45px, 0)" }),
-            style({ transform: "translate3d(0, 0, 0)" })
-          ])
-        )
-      ])
-    ])
   ]
 })
 export class AboutComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   isIn: boolean = false;
   pulsingState: string = "inactive";
-  deviceInfo: DeviceInformation;
-  bounceState: string = "stopped";
 
-  constructor(private deviceService: DeviceDetectorService) {}
+  constructor(private deviceInfo: DeviceInfoService) {}
 
   ngOnInit() {
-    this.deviceInfo = epicFunction(this.deviceService);
     this.isIn = true;
     this.pulsingState = "active";
   }
@@ -123,15 +84,7 @@ export class AboutComponent implements OnInit {
     this.isIn = false;
   }
 
-  onDoneBounce() {
-    this.bounceState = this.bounceState === "bouncing" ? "stopped" : "bouncing";
-  }
-
   onDonePulsing() {
     this.pulsingState = this.pulsingState === "active" ? "inactive" : "active";
-  }
-
-  mobileFunction(): boolean {
-    return this.deviceInfo.isMobile || this.deviceInfo.isTablet;
   }
 }

@@ -68,6 +68,11 @@ mat-paginator {
     background-size: cover;
   }
 
+  .mobile-img {
+    @extend .parallax;
+    background-attachment: scroll;
+  }
+
   .gradient {
     &::before {
       position: absolute;

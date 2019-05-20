@@ -24,14 +24,22 @@ h1 {
 .ball {
   border-radius: 50%;
   background-color: transparent;
-  -webkit-animation: bounce 1s;
-  animation: bounce 1s;
-  -webkit-animation-direction: alternate;
-  animation-direction: alternate;
-  -webkit-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84);
-  animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84);
-  -webkit-animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
+
+  animation: bounce 1s !important;
+  -webkit-animation: bounce 1s !important;
+  -ms-animation: bounce 1s !important;
+
+  animation-direction: alternate !important;
+  -webkit-animation-direction: alternate !important;
+  -ms-animation-direction: alternate !important;
+
+  animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
+  -webkit-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
+  -ms-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
+
+  animation-iteration-count: infinite !important;
+  -webkit-animation-iteration-count: infinite !important;
+  -ms-animation-iteration-count: infinite !important;
 }
 
 @keyframes bounce {
