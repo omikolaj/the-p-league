@@ -13,11 +13,7 @@ import {
 } from "@angular/animations";
 
 import { ROUTE_ANIMATIONS_ELEMENTS } from "../../core/animations/route.animations";
-import {
-  epicFunction,
-  DeviceInformation
-} from "src/app/shared/helpers/device-helper";
-import { DeviceDetectorService } from "ngx-device-detector";
+import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
 
 @Component({
   selector: "app-about",
@@ -76,12 +72,10 @@ export class AboutComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   isIn: boolean = false;
   pulsingState: string = "inactive";
-  deviceInfo: DeviceInformation;
 
-  constructor(private deviceService: DeviceDetectorService) {}
+  constructor(private deviceInfo: DeviceInfoService) {}
 
   ngOnInit() {
-    this.deviceInfo = epicFunction(this.deviceService);
     this.isIn = true;
     this.pulsingState = "active";
   }
@@ -92,9 +86,5 @@ export class AboutComponent implements OnInit {
 
   onDonePulsing() {
     this.pulsingState = this.pulsingState === "active" ? "inactive" : "active";
-  }
-
-  mobileFunction(): boolean {
-    return this.deviceInfo.isMobile || this.deviceInfo.isTablet;
   }
 }

@@ -1,6 +1,6 @@
 <div [ngStyle]="{ marginTop: isSticky ? '50px' : '0' }">
   <div class="background " [ngClass]="routeAnimationsElements">
-    <div class="gradient parallax">
+    <div class="gradient" [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'">
       <div class="container">
         <div style="height: 350px;"></div>
       </div>

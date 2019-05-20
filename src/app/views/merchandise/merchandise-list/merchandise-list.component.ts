@@ -23,6 +23,7 @@ import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
 import { Subscription, throwError } from "rxjs";
 import { tap } from "rxjs/operators";
 import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
+import { DeviceInfoService } from 'src/app/core/services/device-info/device-info.service';
 
 @Component({
   selector: "app-merchandise-list",
@@ -53,7 +54,8 @@ export class MerchandiseListComponent implements OnInit {
     private eventbus: EventBusService,
     private route: ActivatedRoute,
     private scroll: ScrollDispatcher,
-    private paginatorService: PaginatorService
+    private paginatorService: PaginatorService,
+    private deviceInfo: DeviceInfoService
   ) {}
 
   ngOnInit() {

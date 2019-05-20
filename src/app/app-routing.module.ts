@@ -22,12 +22,17 @@ const routes: Routes = [
       {
         path: "gallery",
         loadChildren: "./views/gallery/gallery.module#GalleryModule"
+      },
+      {
+        path: "",
+        redirectTo: "about",
+        pathMatch: "full"
       }
     ]
   },
   {
     path: "**",
-    redirectTo: "about"
+    redirectTo: ""
   }
 ];
 
