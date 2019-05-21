@@ -61,6 +61,8 @@ export class MerchandiseListComponent implements OnInit {
   ngOnInit() {
     this.eventbus.emit(new EmitEvent(Events.StickyHeader, this.isSticky));
 
+    this.getViewHeightSize();
+
     this.merchandiseService.gearItemsSubject$
       .pipe(
         tap((gearItems: GearItem[]) => {
@@ -90,6 +92,13 @@ export class MerchandiseListComponent implements OnInit {
     this.eventbus.emit(new EmitEvent(Events.StickyHeader, !this.isSticky));
     this.eventbus.emit(new EmitEvent(Events.HideToolbar, false));
     this.scrollingSubscription.unsubscribe();
+  }
+
+  getViewHeightSize(){
+    window.addEventListener('resize', () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    })
   }
 
   onWindowScroll(data: CdkScrollable) {
