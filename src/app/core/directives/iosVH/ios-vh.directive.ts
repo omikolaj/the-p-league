@@ -4,15 +4,19 @@ import { Directive, HostListener } from '@angular/core';
   selector: '[appIosVH]'
 })
 export class IosVHDirective {
-  @HostListener('resize', ['$event']) onresize(event){
-    console.log("RESIZE EVENT");
-    this.calculateVH;
-  }
-  constructor() { }
+  setVHFunc: Function = () => {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
 
-  calculateVH(){
-    
+  @HostListener('window:resize', ['$event']) onResize(){
+    this.setVHFunc();
   }
+  constructor() 
+  { }
 
+  ngOnInit(){
+    this.setVHFunc();
+  }
 
 }

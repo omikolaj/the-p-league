@@ -2,8 +2,7 @@ import {
   Component,
   OnInit,
   ViewChild,
-  ElementRef,
-  forwardRef
+  ElementRef
 } from "@angular/core";
 import { GearItem } from "src/app/core/models/gear-item.model";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
@@ -11,8 +10,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animati
 import { Router, ActivatedRoute } from "@angular/router";
 import {
   PageEvent,
-  MatPaginator,
-  MatExpansionPanelDescription
+  MatPaginator
 } from "@angular/material";
 import {
   EventBusService,
@@ -61,8 +59,6 @@ export class MerchandiseListComponent implements OnInit {
   ngOnInit() {
     this.eventbus.emit(new EmitEvent(Events.StickyHeader, this.isSticky));
 
-    this.getViewHeightSize();
-
     this.merchandiseService.gearItemsSubject$
       .pipe(
         tap((gearItems: GearItem[]) => {
@@ -92,17 +88,6 @@ export class MerchandiseListComponent implements OnInit {
     this.eventbus.emit(new EmitEvent(Events.StickyHeader, !this.isSticky));
     this.eventbus.emit(new EmitEvent(Events.HideToolbar, false));
     this.scrollingSubscription.unsubscribe();
-  }
-
-  getViewHeightSize(){
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-    
-    window.addEventListener('resize', () => {
-      let vh = window.innerHeight * 0.01;
-      console.log("[inside add event listener]", vh);
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    })
   }
 
   onWindowScroll(data: CdkScrollable) {

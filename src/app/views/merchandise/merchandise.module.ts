@@ -11,6 +11,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 import { MerchandiseDialogContainerComponent } from "./merchandise-dialog-container/merchandise-dialog-container.component";
 import { MerchandiseDialogComponent } from "./merchandise-dialog-container/merchandise-dialog/merchandise-dialog.component";
 import { GearImageViewPipe } from "src/app/core/pipes/gear-image-view/gear-image-view.pipe";
+import { IosVHDirective } from 'src/app/core/directives/iosVH/ios-vh.directive';
 
 @NgModule({
   declarations: [
@@ -18,14 +19,15 @@ import { GearImageViewPipe } from "src/app/core/pipes/gear-image-view/gear-image
     MerchandiseItemComponent,
     MerchandiseDialogContainerComponent,
     MerchandiseDialogComponent,
-    GearImageViewPipe
+    GearImageViewPipe,
+    IosVHDirective
   ],
   entryComponents: [MerchandiseDialogComponent],
   imports: [
     CommonModule,
     MerchandiseRoutingModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
     MerchandiseDialogService,

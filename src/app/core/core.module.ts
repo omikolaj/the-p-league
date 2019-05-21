@@ -6,7 +6,7 @@ import { ClearElementValueDirective } from "./directives/clear-element-value/cle
 import { IosVHDirective } from './directives/iosVH/ios-vh.directive';
 
 @NgModule({
-  declarations: [SizeEnumToSizePipe, ClearElementValueDirective, IosVHDirective],
+  declarations: [SizeEnumToSizePipe, ClearElementValueDirective],
   imports: [CommonModule, SharedModule],
   exports: [SizeEnumToSizePipe, ClearElementValueDirective]
 })
