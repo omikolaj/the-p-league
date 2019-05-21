@@ -59,8 +59,9 @@ mat-paginator {
     background-size: cover;
 
     /* Set a specific height */
-    //height: 100vh;
+    height: 100vh;
     height: calc(var(--vh, 1vh) * 100);
+    
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
