@@ -3,7 +3,7 @@ import { query, style, sequence, animate, stagger } from '@angular/animations';
 export const ROUTE_ANIMATIONS_ELEMENTS = 'route-animation-elements';
 
 export const routeAnimations = [
-  query(':enter > *', style({ opacity: 0, position: 'fixed' }), {
+  query(':enter > *', style({ opacity: 0 }), {
     optional: true
   }),
   query(':enter .' + ROUTE_ANIMATIONS_ELEMENTS, style({ opacity: 0 }), {

@@ -59,7 +59,7 @@
       >Let's keep it simple and play ball
     </span>
     <div [ngClass]="routeAnimationsElements">
-      <fa-icon
+      <fa-icon [ngStyle]="null"
         [@pulsing]="pulsingState"
         (@pulsing.done)="onDonePulsing()"
         class="basketball ball"
