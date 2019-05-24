@@ -1,11 +1,21 @@
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 
 @mixin p-league-gallery-grid-list-component-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 
-  :host img{
-    width: 100%;    
+  :host img {
+    width: 100%;
+  }
+
+  app-gallery-viewer ngx-gallery {
+    box-shadow: 9px 10px 25px -6px mat-color($accent, default);
+    -webkit-box-shadow: 9px 10px 25px -6px mat-color($accent, default);
+  }
+
+  .season-gallery {
+    box-shadow: 9px 12px 25px -6px mat-color($accent, default);
+    -webkit-box-shadow: 9px 12px 25px -6px mat-color($accent, default);
   }
 }

@@ -1,0 +1,83 @@
+<p style="text-align: center;">
+  As an admin you can manage gallery photos' here
+</p>
+
+<mat-accordion>
+  <mat-expansion-panel
+    (opened)="panelOpenState = true"
+    (closed)="panelOpenState = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        New
+      </mat-panel-title>
+      <mat-panel-description>
+        Upload Photos
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-action-row>
+      <button mat-raised-button color="accent" (click)="onUploadPhotos()">
+        Upload
+      </button>
+      <button mat-raised-button color="warn" (click)="onSave()">
+        Save
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel
+    (opened)="panelOpenState = true"
+    (closed)="panelOpenState = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Modify
+      </mat-panel-title>
+      <mat-panel-description>
+        Delete/Rearrange
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <!-- <div>
+
+      <div
+        cdkDropList
+        *ngFor="let photo of galleryImages"
+        class="photos-container"
+      >
+        <div cdkDrag class="photo-element">
+          <mat-checkbox color="warn" [(ngModel)]="photo.delete"
+            >Flag</mat-checkbox
+          >
+          <img [src]="photo.url" alt="admin-view-seasons-photo" />
+        </div>
+      </div>
+    </div> -->
+
+    <div class="photos-container" cdkDropListGroup>
+      <div
+        cdkDropList
+        [cdkDropListEnterPredicate]="dropListEnterPredicate"
+        (cdkDropListDropped)="dropListDropped($event)"
+      ></div>
+      <div
+        cdkDropList
+        *ngFor="let photo of galleryImages; let i = index"
+        [cdkDropListEnterPredicate]="dropListEnterPredicate"
+        (cdkDropListDropped)="dropListDropped($event)"
+      >
+        <div cdkDrag class="photo-element" (cdkDragMoved)="dragMoved($event)">
+          <mat-checkbox (change)="onChange($event, i)" color="warn"
+            >Flag</mat-checkbox
+          >
+          <img [src]="photo.url" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <mat-action-row>
+      <button mat-raised-button color="warn" (click)="onDelete()">
+        Delete
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
