@@ -12,10 +12,18 @@ import {
   CdkDrag,
   CdkDragMove
 } from "@angular/cdk/drag-drop";
-import { map, filter } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { map, filter, buffer, concatMap, scan } from "rxjs/operators";
+import {
+  Observable,
+  Subject,
+  Subscribable,
+  Subscription,
+  concat,
+  merge
+} from "rxjs";
 import { ViewportRuler } from "@angular/cdk/overlay";
 import { MatCheckboxChange } from "@angular/material";
+import { v4 as uuid } from "uuid";
 
 @Component({
   selector: "app-admin-control",
@@ -37,6 +45,24 @@ export class AdminControlComponent implements OnInit {
   @Input("images") galleryImages: LeaguePicture[];
   panelOpenState = false;
 
+  selectedImagesFormDate: FormData = new FormData();
+  newLeaguePictures: LeaguePicture[] = [];
+
+  uploadPicture: Subject<LeaguePicture> = new Subject<LeaguePicture>();
+  leaguePicturesPreview$ = this.uploadPicture.pipe(
+    scan<LeaguePicture, LeaguePicture[]>(
+      (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
+        return pictures.includes(newPicture)
+          ? pictures.filter(p => p !== newPicture)
+          : [...pictures, newPicture];
+      },
+      new Array<LeaguePicture>()
+    )
+  );
+
+  subscriptions: Subscription = new Subscription();
+  fileReaders: FileReader[] = [];
+
   constructor(
     private viewportRuler: ViewportRuler,
     private galleryService: GalleryService
@@ -45,14 +71,7 @@ export class AdminControlComponent implements OnInit {
     this.source = null;
   }
 
-  ngOnInit() {
-    this.galleryService.leaguePicturesSubject$.pipe(
-      map((updatedPhotos: LeaguePicture[]) => {
-        console.log("ON SUBJECT NEXT", updatedPhotos);
-        return (this.galleryImages = updatedPhotos);
-      })
-    );
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     let phElement = this.placeholder.element.nativeElement;
@@ -60,6 +79,13 @@ export class AdminControlComponent implements OnInit {
     phElement.style.display = "none";
     phElement.parentElement.removeChild(phElement);
   }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+    this.fileReaders.forEach(fR => fR.abort());
+  }
+
+  uploadPreview(leaguePictues: LeaguePicture[]) {}
 
   onChange(event: MatCheckboxChange, index: number) {
     console.log("Checkbox change", event, index);
@@ -69,9 +95,11 @@ export class AdminControlComponent implements OnInit {
   }
 
   onChangeOrder() {
-    this.galleryService
-      .updateLeaguePicturesOrder(this.galleryImages)
-      .subscribe();
+    this.subscriptions.add(
+      this.galleryService
+        .updateLeaguePicturesOrder(this.galleryImages)
+        .subscribe()
+    );
   }
 
   onDelete(): void {
@@ -82,11 +110,50 @@ export class AdminControlComponent implements OnInit {
       .removeLeaguePictures(photosToDelete)
       .subscribe(updatedPhotos => {
         this.galleryImages = [...updatedPhotos];
-        console.log("ON SUBSCRIBED", updatedPhotos);
       });
   }
 
-  onUploadPhotos() {}
+  onImagesSelected(event) {
+    const fileList: FileList = event.target.files;
+
+    for (let index = 0; index < fileList.length; index++) {
+      let uploadPicture: LeaguePicture = {
+        preview: {
+          file: fileList[index],
+          error: false
+        }
+      };
+
+      const newLeaguePicture: LeaguePicture = {
+        ID: uuid(),
+        name: uploadPicture.preview.file.name,
+        size: uploadPicture.preview.file.size,
+        type: uploadPicture.preview.file.type
+      };
+
+      this.newLeaguePictures.push(newLeaguePicture);
+
+      const mimeType = uploadPicture.preview.file.type;
+      if (mimeType.match(/image\/*/) == null) {
+        uploadPicture.preview.error = true;
+        uploadPicture.preview.message = "Only images are supported.";
+        return;
+      }
+
+      const reader: FileReader = new FileReader();
+      this.fileReaders.push(reader);
+      reader.readAsDataURL(uploadPicture.preview.file);
+      reader.onload = (event: any) => {
+        uploadPicture.preview.src = event.target.result;
+        this.uploadPicture.next(uploadPicture);
+      };
+    }
+  }
+
+  onUndo(leaguePicture: LeaguePicture): void {
+    console.log(leaguePicture);
+    this.uploadPicture.next(leaguePicture);
+  }
 
   onSave() {}
 
@@ -220,30 +287,3 @@ function __isInsideDropListClientRect(
 }
 
 //#endregion Drag and Drop functions
-
-//   @Input("images") galleryImages: LeaguePicture[];
-//   panelOpenState = false;
-
-//   constructor(private galleryService: GalleryService) {}
-
-//   ngOnInit() {
-//     this.galleryService.leaguePicturesSubject$.pipe(
-//       map((updatedPhotos: LeaguePicture[]) => {
-//         console.log("ON SUBJECT NEXT", updatedPhotos);
-//         return (this.galleryImages = updatedPhotos);
-//       })
-//     );
-//   }
-
-//   onDelete(): void {
-//     const photosToDelete: LeaguePicture[] = this.galleryImages.filter(
-//       (lP: LeaguePicture) => lP.delete === true
-//     );
-//     this.galleryService
-//       .removeLeaguePictures(photosToDelete)
-//       .subscribe(updatedPhotos => {
-//         this.galleryImages = [...updatedPhotos];
-//         console.log("ON SUBSCRIBED", updatedPhotos);
-//       });
-//   }
-// }

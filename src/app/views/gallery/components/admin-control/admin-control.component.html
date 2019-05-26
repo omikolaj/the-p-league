@@ -15,11 +15,42 @@
         Upload Photos
       </mat-panel-description>
     </mat-expansion-panel-header>
+
+    <ng-container *ngIf="leaguePicturesPreview$ | async as leaguePictures">
+      <ng-container
+        *ngFor="
+          let previewPicture of leaguePicturesPreview$ | async;
+          let i = index
+        "
+      >
+        <div class="photos-container">
+          <div class="photo-element">
+            <button
+              mat-raised-button
+              color="warn"
+              (click)="onUndo(previewPicture)"
+            >
+              Undo
+            </button>
+            <img [src]="previewPicture.preview.src" alt="" />
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+
     <mat-action-row>
-      <button mat-raised-button color="accent" (click)="onUploadPhotos()">
+      <button mat-raised-button color="primary" (click)="fileUpload.click()">
         Upload
       </button>
-      <button mat-raised-button color="warn" (click)="onSave()">
+      <input
+        #fileUpload
+        type="file"
+        multiple="multiple"
+        (change)="onImagesSelected($event)"
+        style="display: none"
+      />
+
+      <button mat-raised-button color="accent" (click)="onSave()">
         Save
       </button>
     </mat-action-row>

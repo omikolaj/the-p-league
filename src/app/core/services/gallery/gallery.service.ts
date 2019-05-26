@@ -69,7 +69,10 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p_league_1.JPG",
     medium: "../../../assets/p_league_1.JPG",
-    big: "../../../assets/p_league_1.JPG"
+    big: "../../../assets/p_league_1.JPG",
+    ID: "1",
+    size: 0,
+    type: "jpg"
   },
   {
     url: "../../../assets/p-league-2.JPG",
@@ -78,7 +81,10 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p-league-2.JPG",
     medium: "../../../assets/p-league-2.JPG",
-    big: "../../../assets/p-league-2.JPG"
+    big: "../../../assets/p-league-2.JPG",
+    ID: "1",
+    size: 0,
+    type: "jpg"
   },
   {
     url: "../../../assets/p-league-3.JPG",
@@ -87,7 +93,10 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p-league-3.JPG",
     medium: "../../../assets/p-league-3.JPG",
-    big: "../../../assets/p-league-3.JPG"
+    big: "../../../assets/p-league-3.JPG",
+    ID: "1",
+    size: 0,
+    type: "jpg"
   },
   {
     url: "../../../assets/p-league-4.JPG",
@@ -96,7 +105,10 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG"
+    big: "../../../assets/p-league-4.JPG",
+    ID: "1",
+    size: 0,
+    type: "jpg"
   },
   {
     url: "../../../assets/p-league-4.JPG",
@@ -105,7 +117,10 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG"
+    big: "../../../assets/p-league-4.JPG",
+    ID: "1",
+    size: 1,
+    type: "jpg"
   },
   {
     url: "../../../assets/p-league-3.JPG",
@@ -114,7 +129,10 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p-league-3.JPG",
     medium: "../../../assets/p-league-3.JPG",
-    big: "../../../assets/p-league-3.JPG"
+    big: "../../../assets/p-league-3.JPG",
+    ID: "1",
+    size: 0,
+    type: "jpg"
   },
   {
     url: "../../../assets/p-league-4.JPG",
@@ -123,7 +141,10 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG"
+    big: "../../../assets/p-league-4.JPG",
+    ID: "1",
+    size: 0,
+    type: "jpg"
   },
   {
     url: "../../../assets/p-league-4.JPG",
@@ -132,6 +153,9 @@ export const leaguePictures: LeaguePicture[] = [
     delete: false,
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG"
+    big: "../../../assets/p-league-4.JPG",
+    ID: "1",
+    size: 0,
+    type: "jpg"
   }
 ];
