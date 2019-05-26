@@ -15,28 +15,27 @@
         Upload Photos
       </mat-panel-description>
     </mat-expansion-panel-header>
-
-    <ng-container *ngIf="leaguePicturesPreview$ | async as leaguePictures">
-      <ng-container
-        *ngFor="
-          let previewPicture of leaguePicturesPreview$ | async;
-          let i = index
-        "
-      >
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    <div #leaguePics *ngIf="leaguePicturesPreview$ | async as leaguePictures">
+      <ng-container *ngFor="let leaguePicture of leaguePictures; let i = index">
         <div class="photos-container">
           <div class="photo-element">
             <button
+              style="display: block"
               mat-raised-button
               color="warn"
-              (click)="onUndo(previewPicture)"
+              (click)="onUndo(leaguePicture)"
             >
               Undo
             </button>
-            <img [src]="previewPicture.preview.src" alt="" />
+            <h4 class="preview-error" *ngIf="leaguePicture.preview.error">
+              {{ leaguePicture.preview.message }}
+            </h4>
+            <img [src]="leaguePicture.preview.src" alt="" />
           </div>
         </div>
       </ng-container>
-    </ng-container>
+    </div>
 
     <mat-action-row>
       <button mat-raised-button color="primary" (click)="fileUpload.click()">
@@ -44,13 +43,14 @@
       </button>
       <input
         #fileUpload
+        appClearElementValue
         type="file"
         multiple="multiple"
         (change)="onImagesSelected($event)"
         style="display: none"
       />
 
-      <button mat-raised-button color="accent" (click)="onSave()">
+      <button mat-raised-button color="accent" [disabled]="" (click)="onSave()">
         Save
       </button>
     </mat-action-row>

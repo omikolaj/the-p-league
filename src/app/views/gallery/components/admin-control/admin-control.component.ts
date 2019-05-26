@@ -12,14 +12,15 @@ import {
   CdkDrag,
   CdkDragMove
 } from "@angular/cdk/drag-drop";
-import { map, filter, buffer, concatMap, scan } from "rxjs/operators";
+import { map, filter, buffer, concatMap, scan, flatMap } from "rxjs/operators";
 import {
   Observable,
   Subject,
   Subscribable,
   Subscription,
   concat,
-  merge
+  merge,
+  BehaviorSubject
 } from "rxjs";
 import { ViewportRuler } from "@angular/cdk/overlay";
 import { MatCheckboxChange } from "@angular/material";
@@ -52,13 +53,34 @@ export class AdminControlComponent implements OnInit {
   leaguePicturesPreview$ = this.uploadPicture.pipe(
     scan<LeaguePicture, LeaguePicture[]>(
       (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
-        return pictures.includes(newPicture)
-          ? pictures.filter(p => p !== newPicture)
-          : [...pictures, newPicture];
+        if (pictures.includes(newPicture)) {
+          this.newLeaguePictures = pictures.filter(p => p !== newPicture);
+          pictures = [...this.newLeaguePictures];
+          return pictures;
+        } else {
+          console.log("inside of else block");
+          return [...pictures, newPicture];
+        }
+        // console.log("Pictures is", pictures);
+        // console.log("NewPicture is", newPicture);
+        // return pictures.includes(newPicture)
+        //   ? pictures.filter(p => p !== newPicture)
+        //   : [...pictures, newPicture];
       },
       new Array<LeaguePicture>()
     )
   );
+
+  // fileUploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  // fileUpload$ = this.fileUploadProgress.pipe(
+  //   map((num: number) => {
+  //     const perc: number = 100 / num;
+  //     return perc;
+  //   })
+  // );
+  // uploadProgress: number = 0;
+
+  loading: boolean = false;
 
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
@@ -115,6 +137,14 @@ export class AdminControlComponent implements OnInit {
 
   onImagesSelected(event) {
     const fileList: FileList = event.target.files;
+    if (fileList.length > 0) {
+      this.loading = true;
+    }
+    const checkIfStillLoading = index => {
+      if (index === fileList.length - 1) {
+        this.loading = false;
+      }
+    };
 
     for (let index = 0; index < fileList.length; index++) {
       let uploadPicture: LeaguePicture = {
@@ -128,16 +158,23 @@ export class AdminControlComponent implements OnInit {
         ID: uuid(),
         name: uploadPicture.preview.file.name,
         size: uploadPicture.preview.file.size,
-        type: uploadPicture.preview.file.type
+        type: uploadPicture.preview.file.type,
+        big: "../../../../assets/default_gallery.jpg",
+        medium: "../../../../assets/default_gallery.jpg",
+        small: "../../../../assets/default_gallery.jpg"
       };
 
       this.newLeaguePictures.push(newLeaguePicture);
 
       const mimeType = uploadPicture.preview.file.type;
       if (mimeType.match(/image\/*/) == null) {
+        console.log("[Invalid Image]");
         uploadPicture.preview.error = true;
         uploadPicture.preview.message = "Only images are supported.";
-        return;
+        uploadPicture.preview.src = "../../../../assets/warning.jpg";
+        this.uploadPicture.next(uploadPicture);
+        checkIfStillLoading(index);
+        continue;
       }
 
       const reader: FileReader = new FileReader();
@@ -146,16 +183,20 @@ export class AdminControlComponent implements OnInit {
       reader.onload = (event: any) => {
         uploadPicture.preview.src = event.target.result;
         this.uploadPicture.next(uploadPicture);
+        checkIfStillLoading(index);
       };
     }
   }
 
   onUndo(leaguePicture: LeaguePicture): void {
-    console.log(leaguePicture);
     this.uploadPicture.next(leaguePicture);
   }
 
-  onSave() {}
+  onSave() {
+    this.galleryService
+      .saveLeaguePictures(this.newLeaguePictures)
+      .subscribe(v => console.log(v));
+  }
 
   // add() {
   //   this.items.push(this.items.length + 1);

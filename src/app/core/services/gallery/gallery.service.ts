@@ -59,6 +59,20 @@ export class GalleryService {
       })
     );
   }
+
+  saveLeaguePictures(
+    newLeaguePictures: LeaguePicture[]
+  ): Observable<LeaguePicture[]> {
+    return this.leaguePictures$.pipe(
+      map((leaguePictures: LeaguePicture[]) => {
+        const updatedArr: LeaguePicture[] = newLeaguePictures.concat(
+          leaguePictures
+        );
+        this.leaguePicturesSubject$.next(updatedArr);
+        return updatedArr;
+      })
+    );
+  }
 }
 
 export const leaguePictures: LeaguePicture[] = [
