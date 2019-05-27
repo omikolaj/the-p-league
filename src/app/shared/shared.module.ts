@@ -46,7 +46,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faPlayCircle,
   faRocket,
-  faBasketballBall
+  faBasketballBall,
+  faUndo
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -70,7 +71,8 @@ library.add(
   faYoutube,
   faPlayCircle,
   faRocket,
-  faBasketballBall
+  faBasketballBall,
+  faUndo
 );
 
 // This is used for controling the Angular ripples effect globally

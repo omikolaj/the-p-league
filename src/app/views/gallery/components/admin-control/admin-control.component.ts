@@ -1,27 +1,15 @@
 import { Component, OnInit, Input, ViewChild } from "@angular/core";
 import { LeaguePicture } from "src/app/core/models/leage-picture.model";
-import {
-  GalleryService,
-  leaguePictures
-} from "src/app/core/services/gallery/gallery.service";
+import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import {
   CdkDropListGroup,
   CdkDropList,
-  CdkDropListContainer,
   moveItemInArray,
   CdkDrag,
   CdkDragMove
 } from "@angular/cdk/drag-drop";
-import { map, filter, buffer, concatMap, scan, flatMap } from "rxjs/operators";
-import {
-  Observable,
-  Subject,
-  Subscribable,
-  Subscription,
-  concat,
-  merge,
-  BehaviorSubject
-} from "rxjs";
+import { scan } from "rxjs/operators";
+import { Subject, Subscription } from "rxjs";
 import { ViewportRuler } from "@angular/cdk/overlay";
 import { MatCheckboxChange } from "@angular/material";
 import { v4 as uuid } from "uuid";
@@ -53,34 +41,23 @@ export class AdminControlComponent implements OnInit {
   leaguePicturesPreview$ = this.uploadPicture.pipe(
     scan<LeaguePicture, LeaguePicture[]>(
       (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
+        if (newPicture == null) {
+          return [];
+        }
         if (pictures.includes(newPicture)) {
           this.newLeaguePictures = pictures.filter(p => p !== newPicture);
           pictures = [...this.newLeaguePictures];
           return pictures;
         } else {
-          console.log("inside of else block");
           return [...pictures, newPicture];
         }
-        // console.log("Pictures is", pictures);
-        // console.log("NewPicture is", newPicture);
-        // return pictures.includes(newPicture)
-        //   ? pictures.filter(p => p !== newPicture)
-        //   : [...pictures, newPicture];
       },
       new Array<LeaguePicture>()
     )
   );
 
-  // fileUploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  // fileUpload$ = this.fileUploadProgress.pipe(
-  //   map((num: number) => {
-  //     const perc: number = 100 / num;
-  //     return perc;
-  //   })
-  // );
-  // uploadProgress: number = 0;
-
   loading: boolean = false;
+  leaguePicturesMarkedForDeletion: LeaguePicture[] = [];
 
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
@@ -107,12 +84,25 @@ export class AdminControlComponent implements OnInit {
     this.fileReaders.forEach(fR => fR.abort());
   }
 
-  uploadPreview(leaguePictues: LeaguePicture[]) {}
+  uploadPreview() {}
 
   onChange(event: MatCheckboxChange, index: number) {
-    console.log("Checkbox change", event, index);
     const galleryImagesUpdated = [...this.galleryImages];
-    galleryImagesUpdated[index].delete = event.checked;
+    const leaguePicture: LeaguePicture = galleryImagesUpdated[index];
+
+    leaguePicture.delete = event.checked;
+    if (leaguePicture.delete) {
+      this.leaguePicturesMarkedForDeletion.push(leaguePicture);
+    } else {
+      if (this.leaguePicturesMarkedForDeletion.includes(leaguePicture)) {
+        this.leaguePicturesMarkedForDeletion = this.leaguePicturesMarkedForDeletion.filter(
+          (lP: LeaguePicture) => {
+            console.log("inside lP", lP.ID !== leaguePicture.ID);
+            return lP.ID !== leaguePicture.ID;
+          }
+        );
+      }
+    }
     this.galleryImages = galleryImagesUpdated;
   }
 
@@ -128,11 +118,13 @@ export class AdminControlComponent implements OnInit {
     const photosToDelete: LeaguePicture[] = this.galleryImages.filter(
       (lP: LeaguePicture) => lP.delete === true
     );
-    this.galleryService
-      .removeLeaguePictures(photosToDelete)
-      .subscribe(updatedPhotos => {
-        this.galleryImages = [...updatedPhotos];
-      });
+    this.subscriptions.add(
+      this.galleryService
+        .removeLeaguePictures(photosToDelete)
+        .subscribe(updatedPhotos => {
+          this.galleryImages = [...updatedPhotos];
+        })
+    );
   }
 
   onImagesSelected(event) {
@@ -195,7 +187,7 @@ export class AdminControlComponent implements OnInit {
   onSave() {
     this.galleryService
       .saveLeaguePictures(this.newLeaguePictures)
-      .subscribe(v => console.log(v));
+      .subscribe(_ => this.uploadPicture.next(null));
   }
 
   // add() {

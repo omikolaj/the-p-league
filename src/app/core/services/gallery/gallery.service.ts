@@ -3,6 +3,7 @@ import { Observable, of, BehaviorSubject } from "rxjs";
 import { LeaguePicture } from "../../models/leage-picture.model";
 import { map } from "rxjs/operators";
 import { forEach } from "@angular/router/src/utils/collection";
+import { v4 as uuid } from "uuid";
 
 @Injectable({
   providedIn: "root"
@@ -84,7 +85,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p_league_1.JPG",
     medium: "../../../assets/p_league_1.JPG",
     big: "../../../assets/p_league_1.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 0,
     type: "jpg"
   },
@@ -96,7 +97,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p-league-2.JPG",
     medium: "../../../assets/p-league-2.JPG",
     big: "../../../assets/p-league-2.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 0,
     type: "jpg"
   },
@@ -108,7 +109,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p-league-3.JPG",
     medium: "../../../assets/p-league-3.JPG",
     big: "../../../assets/p-league-3.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 0,
     type: "jpg"
   },
@@ -120,7 +121,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
     big: "../../../assets/p-league-4.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 0,
     type: "jpg"
   },
@@ -132,7 +133,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
     big: "../../../assets/p-league-4.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 1,
     type: "jpg"
   },
@@ -144,7 +145,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p-league-3.JPG",
     medium: "../../../assets/p-league-3.JPG",
     big: "../../../assets/p-league-3.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 0,
     type: "jpg"
   },
@@ -156,7 +157,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
     big: "../../../assets/p-league-4.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 0,
     type: "jpg"
   },
@@ -168,7 +169,7 @@ export const leaguePictures: LeaguePicture[] = [
     small: "../../../assets/p-league-4.JPG",
     medium: "../../../assets/p-league-4.JPG",
     big: "../../../assets/p-league-4.JPG",
-    ID: "1",
+    ID: uuid(),
     size: 0,
     type: "jpg"
   }

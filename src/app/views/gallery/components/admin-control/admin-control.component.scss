@@ -1,12 +1,12 @@
 .photos-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .photo-element {
   border-radius: 4px;
-  margin: 10px 10px 10px 0;
+  margin-bottom: 10px;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
 
   mat-checkbox {
@@ -14,9 +14,18 @@
     padding: 10px;
   }
   img {
-    width: 326px;
+    max-width: 326px;
+    width: 100%;
     max-height: 400px;
   }
+}
+
+:host /deep/ .mat-expansion-panel-body {
+  padding: 0 0px 16px;
+}
+
+.accordion-wrapper {
+  padding: 0 8px;
 }
 
 .preview-error {
@@ -26,8 +35,6 @@
 
 .cdk-drop-list {
   display: flex;
-  padding-right: 10px;
-  padding-bottom: 10px;
 }
 
 .cdk-drag-preview {

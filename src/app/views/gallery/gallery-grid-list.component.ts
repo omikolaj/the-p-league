@@ -84,17 +84,15 @@ export class GalleryGridListComponent implements OnInit {
   constructor(private galleryService: GalleryService) {}
 
   ngOnInit() {
-    // this.galleryService
-    //   .fetchAllLeaguePictures()
-    //   .subscribe((galleryPhotos: LeaguePicture[]) => {
-    //     console.log("[UPDATED PHOTOS]");
-    //     this.galleryImages = galleryPhotos;
-    //   });
     this.galleryService.leaguePicturesSubject$.subscribe(
       (leaguePictures: LeaguePicture[]) => {
         console.log("[Getting Updated Photos Gallery Grid]", leaguePictures);
         this.galleryImages = [...leaguePictures];
       }
     );
+  }
+
+  ngOnDestroy() {
+    this.galleryService.leaguePicturesSubject$.unsubscribe();
   }
 }
