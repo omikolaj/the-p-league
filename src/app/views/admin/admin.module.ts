@@ -5,6 +5,7 @@ import { AdminRoutingModule } from "./admin-routing.module";
 import { AdminLoginComponent } from "./admin-login/admin-login.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "src/app/shared/shared.module";
+import { AdminService } from "src/app/core/services/admin/admin.service";
 
 @NgModule({
   declarations: [AdminLoginComponent],
