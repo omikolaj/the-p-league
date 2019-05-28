@@ -27,6 +27,10 @@ import {
 } from "@angular/animations";
 import { cloneDeep } from "lodash";
 import { GearImageViewPipe } from "src/app/core/pipes/gear-image-view/gear-image-view.pipe";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 
 export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -88,7 +92,8 @@ export class MerchandiseDialogComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private merchandiseService: MerchandiseService,
-    private dialogRef: MatDialogRef<MerchandiseDialogComponent>
+    private dialogRef: MatDialogRef<MerchandiseDialogComponent>,
+    private snackBarService: SnackBarService
   ) {
     // Initialize all of the available gear sizes
     this.gearSizes = [
@@ -122,21 +127,57 @@ export class MerchandiseDialogComponent implements OnInit {
     this.dialogRef.close();
     const gearItem = this.gearItemObjectForDelivery();
     if (this.editMode) {
-      this.merchandiseService
-        .updateGearItem(gearItem)
-        .subscribe((update: boolean) =>
-          console.log("[GEARITEM UPDATED SUCCESS?: ]", update)
-        );
+      this.merchandiseService.updateGearItem(gearItem).subscribe(
+        (update: boolean) => {
+          console.log("[GEARITEM UPDATED SUCCESS?: ]", update);
+          this.snackBarService.openSnackBarFromComponent(
+            `Successfully updated ${gearItem.name}`,
+            "Dismiss",
+            SnackBarEvent.Success
+          );
+        },
+        err => {
+          console.log("[GEARITEM UPDATE ERROR]", err);
+          this.snackBarService.openSnackBarFromComponent(
+            `Error occured while updating ${gearItem.name}`,
+            "Dismiss",
+            SnackBarEvent.Error
+          );
+        }
+      );
     } else {
-      this.merchandiseService
-        .createGearItem(gearItem)
-        .subscribe((gearItem: GearItem) =>
-          console.log("[GEARITEM CREATED]", gearItem)
-        );
+      this.merchandiseService.createGearItem(gearItem).subscribe(
+        (gearItem: GearItem) => {
+          console.log("[GEARITEM CREATED]", gearItem);
+          this.snackBarService.openSnackBarFromComponent(
+            `Successfully created ${gearItem.name}`,
+            "Dismiss",
+            SnackBarEvent.Success
+          );
+        },
+        err => {
+          console.log("[GEARITEM CREATION ERROR]", err);
+          this.snackBarService.openSnackBarFromComponent(
+            `Error occured while creating ${gearItem.name}`,
+            "Dismiss",
+            SnackBarEvent.Error
+          );
+        }
+      );
     }
   }
 
   gearItemObjectForDelivery(): GearItem {
+    const gearItemImages: GearImage[] = this.editMode
+      ? this.gearItemForm.value.images
+      : [
+          {
+            url: "../../../../../assets/default_gear.png",
+            small: "../../../../../assets/default_gear.png",
+            medium: "../../../../../assets/default_gear.png",
+            big: "../../../../../assets/default_gear.png"
+          }
+        ];
     const gearItemForDelivery: GearItem = {
       ID: this.editMode ? this.gearItem.ID : null,
       name: this.gearItemForm.value.name,
@@ -145,7 +186,7 @@ export class MerchandiseDialogComponent implements OnInit {
         s => s.gearSize
       ),
       inStock: this.gearItemForm.value.inStock,
-      images: this.gearItemForm.value.images
+      images: gearItemImages
     };
     this.selectedFileFormData.append(
       "gearItem",

@@ -1,27 +1,19 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef
-} from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { GearItem } from "src/app/core/models/gear-item.model";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { Router, ActivatedRoute } from "@angular/router";
-import {
-  PageEvent,
-  MatPaginator
-} from "@angular/material";
+import { PageEvent, MatPaginator } from "@angular/material";
 import {
   EventBusService,
   EmitEvent,
   Events
 } from "src/app/core/services/event-bus/event-bus.service";
 import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
-import { Subscription, throwError } from "rxjs";
+import { Subscription } from "rxjs";
 import { tap } from "rxjs/operators";
 import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
-import { DeviceInfoService } from 'src/app/core/services/device-info/device-info.service';
+import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
 
 @Component({
   selector: "app-merchandise-list",

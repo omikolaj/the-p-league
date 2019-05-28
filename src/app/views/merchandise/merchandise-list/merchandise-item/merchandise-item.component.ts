@@ -4,6 +4,51 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { Size } from "src/app/core/models/gear-size.model";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
+import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
+
+export const galleryOptions: NgxGalleryOptions[] = [
+  {
+    width: "360px",
+    height: "400px",
+    imageAnimation: NgxGalleryAnimation.Zoom,
+    thumbnails: false,
+    previewSwipe: true,
+    imageSwipe: true,
+    imageArrowsAutoHide: true,
+    previewAutoPlayInterval: 4000,
+    imageAutoPlayInterval: 4000,
+    previewCloseOnClick: true,
+    previewCloseOnEsc: true,
+    previewKeyboardNavigation: true,
+    previewInfinityMove: true,
+    imageInfinityMove: true,
+    previewZoom: true,
+    imageAutoPlay: true,
+    imageAutoPlayPauseOnHover: true,
+    previewAutoPlay: true,
+    previewAutoPlayPauseOnHover: true,
+    imageBullets: true
+  },
+  // max-width 800
+  {
+    breakpoint: 800,
+    width: "100%",
+    height: "360px",
+    imagePercent: 80,
+    thumbnailsPercent: 20,
+    thumbnailsMargin: 20,
+    thumbnailMargin: 20
+  },
+  // max-width 400
+  {
+    breakpoint: 400,
+    preview: false
+  }
+];
 
 @Component({
   selector: "app-merchandise-item",
@@ -13,12 +58,14 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animati
 export class MerchandiseItemComponent implements OnInit {
   @Input() gearItem: GearItem;
   sizes = Size;
+  galleryOptions: NgxGalleryOptions[] = galleryOptions;
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private merchandiseService: MerchandiseService
+    private merchandiseService: MerchandiseService,
+    private snackBarService: SnackBarService
   ) {}
 
   ngOnInit() {}
@@ -35,10 +82,23 @@ export class MerchandiseItemComponent implements OnInit {
   }
 
   onDeleteGearItem() {
-    this.merchandiseService
-      .deleteGearItem(this.gearItem.ID)
-      .subscribe((deletedItem: boolean) =>
-        console.log("GEARITEM DELETED SUCCESS?: ", deletedItem)
-      );
+    this.merchandiseService.deleteGearItem(this.gearItem.ID).subscribe(
+      (deletedItem: boolean) => {
+        console.log("GEARITEM DELETED SUCCESS?: ", deletedItem);
+        this.snackBarService.openSnackBarFromComponent(
+          `Successfully deleted ${this.gearItem.name}`,
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      },
+      err => {
+        console.log("Error occured", err);
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while deleting ${this.gearItem.name}`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+      }
+    );
   }
 }

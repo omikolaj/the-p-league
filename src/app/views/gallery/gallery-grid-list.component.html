@@ -1,25 +1,31 @@
-<div style="margin-top: 75px">
+<div style="margin-top: 75px;">
+  <h3 class="heading gradient">League Snapshots</h3>
+  <div class="admin">
+    <app-admin-control [images]="galleryImages"></app-admin-control>
+  </div>
 
-  <mat-grid-list cols="2" rowHeight="2:1">
+  <div class="season-gallery">
+    <mat-card
+      [class.mat-elevation-z7]="true"
+      class="season-card"
+      [ngClass]="routeAnimationsElements"
+    >
+      <mat-card-header>
+        <div mat-card-avatar class="season-header-image"></div>
+        <mat-card-title>
+          Seasons Snapshots
+        </mat-card-title>
+        <mat-card-subtitle> </mat-card-subtitle>
+      </mat-card-header>
 
-      <mat-grid-tile [ngClass]="routeAnimationsElements" *ngFor="let leaguePicture of leaguePictures$ | async" [colspan]="leaguePicture.cols"
-        [rowspan]="leaguePicture.rows">
+      <div mat-card-image>
+        <app-gallery-viewer [options]="galleryOptions" [images]="galleryImages">
+        </app-gallery-viewer>
+      </div>
 
-        <!-- <mat-grid-tile-header>
-        {{ leaguePicture.name }}
-      </mat-grid-tile-header> -->
-
-        <img [src]="leaguePicture.URL" alt="The P League Snapshot">
-
-        <!-- <mat-grid-tile-footer>
-        #{{ leaguePicture.hashTag }}
-      </mat-grid-tile-footer> -->
-
-      </mat-grid-tile>      
-
-  </mat-grid-list>
-
-  <mat-paginator [length]="7" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
-    </mat-paginator>
-
+      <mat-card-content>
+        <div></div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

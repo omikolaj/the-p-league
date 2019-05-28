@@ -26,7 +26,10 @@
   </mat-card-header>
 
   <div mat-card-image>
-    <app-gallery-viewer [images]="gearItem.images"></app-gallery-viewer>
+    <app-gallery-viewer
+      [options]="galleryOptions"
+      [images]="gearItem.images"
+    ></app-gallery-viewer>
   </div>
 
   <mat-card-content>

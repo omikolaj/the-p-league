@@ -1,6 +1,7 @@
 :host {
   // Required because carousel in team sign up comp has z-index of 15
-  z-index: 20;
+  // and because the ngx-gallery has a z-index of 1000
+  z-index: 1001;
 }
 
 .sidenav .mat-toolbar {

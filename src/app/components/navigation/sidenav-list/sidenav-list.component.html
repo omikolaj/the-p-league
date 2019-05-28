@@ -1,10 +1,25 @@
-<div class="branding"><img [src]="logo_with_title" />
-  <span class="app-title">{{appTitle}}</span></div>
+<div [routerLink]="'about'" (click)="onSideNavLinkClick()" class="branding">
+  <img [src]="logo_with_title" /> <span class="app-title">{{ appTitle }}</span>
+</div>
 <mat-nav-list [@sideNavLink]="sideNavAnimationState">
-  <a mat-list-item (click)="onSideNavLinkClick()" href="https://playpass.com/ cleveland-fitness-club/12-team-basketball-schedule-r344505" target="_blank">Schedule</a>
-  
-  <ng-container *ngFor="let navText of sidenavListText;">    
-      <a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'/' + navText | lowercase">{{navText}}</a>
+  <a
+    mat-list-item
+    (click)="onSideNavLinkClick()"
+    href="https://playpass.com/ cleveland-fitness-club/12-team-basketball-schedule-r344505"
+    target="_blank"
+    >Schedule</a
+  >
+
+  <ng-container *ngFor="let navText of sidenavListText">
+    <a
+      mat-list-item
+      (click)="onSideNavLinkClick()"
+      [routerLink]="'/' + navText | lowercase"
+      >{{ navText }}</a
+    >
   </ng-container>
 
+  <a mat-list-item (click)="onSideNavLinkClick()" routerLink="admin-login"
+    >Admin</a
+  >
 </mat-nav-list>

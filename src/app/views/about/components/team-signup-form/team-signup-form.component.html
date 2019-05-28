@@ -1,17 +1,23 @@
-<carousel>
-  <slide *ngFor="let img of images">
-    <img
-      class="carousel-image"
-      [src]="img.src"
-      [alt]="img.alt"
-      style="display: block; width: 100%;"
-    />
-    <div class="carousel-caption d-md-block">
-      <h3>{{ img.title }}</h3>
-      <p>{{ img.description }}</p>
-    </div>
-  </slide>
-</carousel>
+<div>
+  <carousel>
+    <slide *ngFor="let img of images">
+      <img
+        class="carousel-image"
+        [src]="img.src"
+        [alt]="img.alt"
+        style="display: block; width: 100%;"
+      />
+      <div class="carousel-caption d-md-block">
+        <h3>{{ img.title }}</h3>
+        <p>{{ img.description }}</p>
+      </div>
+    </slide>
+  </carousel>
+</div>
+
+<ng-template>
+  <app-informational-message> </app-informational-message>
+</ng-template>
 
 <div #contactFormElement class="form-wrapper">
   <form [formGroup]="contactForm" novalidate (ngSubmit)="onSubmit()">
