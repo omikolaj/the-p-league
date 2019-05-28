@@ -15,6 +15,10 @@
   </carousel>
 </div>
 
+<ng-template>
+  <app-informational-message> </app-informational-message>
+</ng-template>
+
 <div #contactFormElement class="form-wrapper">
   <form [formGroup]="contactForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="shipping-card">

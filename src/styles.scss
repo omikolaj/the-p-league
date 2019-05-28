@@ -49,6 +49,7 @@
 @import "app/views/merchandise/merchandise-list/merchandise-list.component.scss-theme.scss";
 @import "app/views/about/components/team-signup-form/team-signup-form.component.scss-theme.scss";
 @import "app/views/gallery/components/admin-control/admin-control.component.scss-theme.scss";
+@import "app/views/admin/admin-login/admin-login.component.scss-theme.scss";
 
 @include angular-material-theme($the-p-league-theme);
 
@@ -63,7 +64,7 @@
   @include p-league-toolbar-component-theme($theme);
   @include p-league-team-signup-form-theme($theme);
   @include p-league-gallery-admin-control-theme($theme);
-  // @include p-league-snack-bar-theme($theme);
+  @include p-league-admin-component-theme($theme);
 }
 
 .dark-theme {

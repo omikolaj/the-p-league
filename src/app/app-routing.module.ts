@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: "./views/gallery/gallery.module#GalleryModule"
       },
       {
+        path: "admin-login",
+        loadChildren: "./views/admin/admin.module#AdminModule"
+      },
+      {
         path: "",
         redirectTo: "about",
         pathMatch: "full"
