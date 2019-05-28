@@ -5,6 +5,10 @@ import { MerchandiseService } from "src/app/core/services/merchandise/merchandis
 import { Size } from "src/app/core/models/gear-size.model";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
@@ -60,7 +64,8 @@ export class MerchandiseItemComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private merchandiseService: MerchandiseService
+    private merchandiseService: MerchandiseService,
+    private snackBarService: SnackBarService
   ) {}
 
   ngOnInit() {}
@@ -77,10 +82,23 @@ export class MerchandiseItemComponent implements OnInit {
   }
 
   onDeleteGearItem() {
-    this.merchandiseService
-      .deleteGearItem(this.gearItem.ID)
-      .subscribe((deletedItem: boolean) =>
-        console.log("GEARITEM DELETED SUCCESS?: ", deletedItem)
-      );
+    this.merchandiseService.deleteGearItem(this.gearItem.ID).subscribe(
+      (deletedItem: boolean) => {
+        console.log("GEARITEM DELETED SUCCESS?: ", deletedItem);
+        this.snackBarService.openSnackBarFromComponent(
+          `Successfully deleted ${this.gearItem.name}`,
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      },
+      err => {
+        console.log("Error occured", err);
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while deleting ${this.gearItem.name}`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+      }
+    );
   }
 }

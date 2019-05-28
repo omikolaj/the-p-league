@@ -17,7 +17,8 @@ import {
   animations: [
     trigger("routeAnimations", [
       transition("AboutPage <=> TeamSignUpPage", routeAnimations),
-      transition("* <=> MerchandiseListPage", routeAnimations)
+      transition("* <=> MerchandiseListPage", routeAnimations),
+      transition("* <=> *", routeAnimations)
     ])
   ]
 })

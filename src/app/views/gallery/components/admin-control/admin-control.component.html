@@ -2,9 +2,10 @@
   Admin Dash
 </p>
 
-<div class="accordion-wrapper">
-  <mat-accordion>
+<div class="accordion-wrapper" [ngClass]="routeAnimationsElements">
+  <mat-accordion #accordion displayMode="flat">
     <mat-expansion-panel
+      [expanded]="false"
       (opened)="panelOpenState = true"
       (closed)="panelOpenState = false"
     >
@@ -70,6 +71,7 @@
     </mat-expansion-panel>
 
     <mat-expansion-panel
+      [expanded]="false"
       (opened)="panelOpenState = true"
       (closed)="panelOpenState = false"
     >

@@ -50,7 +50,7 @@ export class GalleryService {
           leaguePicturesUpdated = this.defaultGalleryImage;
         }
 
-        this.leaguePicturesSubject$.next([...leaguePicturesUpdated]);
+        this.leaguePicturesSubject$.next(leaguePicturesUpdated);
 
         return leaguePicturesUpdated;
       })

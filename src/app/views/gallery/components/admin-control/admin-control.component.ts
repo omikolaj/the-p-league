@@ -15,7 +15,7 @@ import {
   CdkDragMove
 } from "@angular/cdk/drag-drop";
 import { scan, map } from "rxjs/operators";
-import { Subject, Subscription, empty } from "rxjs";
+import { Subject, Subscription, empty, Observable } from "rxjs";
 import { ViewportRuler } from "@angular/cdk/overlay";
 import {
   MatCheckboxChange,
@@ -28,6 +28,7 @@ import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 
 @Component({
   selector: "app-admin-control",
@@ -35,6 +36,7 @@ import {
   styleUrls: ["./admin-control.component.scss"]
 })
 export class AdminControlComponent implements OnInit {
+  routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   //#region DragAndDrop Properties
   @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<CdkDropList>;
   @ViewChild(CdkDropList) placeholder: CdkDropList;
@@ -56,10 +58,6 @@ export class AdminControlComponent implements OnInit {
   leaguePicturesPreview$ = this.uploadPicture.pipe(
     scan<LeaguePicture, LeaguePicture[]>(
       (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
-        // if (newPicture === typeof undefined) {
-        //   this.newLeaguePictures = [];
-        //   return (pictures = []);
-        // }
         if (pictures.includes(newPicture)) {
           this.newLeaguePictures = pictures.filter(p => p !== newPicture);
           pictures = [...this.newLeaguePictures];
@@ -103,6 +101,14 @@ export class AdminControlComponent implements OnInit {
 
   uploadPreview() {}
 
+  onChangeOrder() {
+    this.subscriptions.add(
+      this.galleryService
+        .updateLeaguePicturesOrder(this.galleryImages)
+        .subscribe()
+    );
+  }
+
   onChange(event: MatCheckboxChange, index: number) {
     const galleryImagesUpdated = [...this.galleryImages];
     const leaguePicture: LeaguePicture = galleryImagesUpdated[index];
@@ -123,24 +129,29 @@ export class AdminControlComponent implements OnInit {
     this.galleryImages = galleryImagesUpdated;
   }
 
-  onChangeOrder() {
-    this.subscriptions.add(
-      this.galleryService
-        .updateLeaguePicturesOrder(this.galleryImages)
-        .subscribe()
-    );
-  }
-
   onDelete(): void {
     const photosToDelete: LeaguePicture[] = this.galleryImages.filter(
       (lP: LeaguePicture) => lP.delete === true
     );
     this.subscriptions.add(
-      this.galleryService
-        .removeLeaguePictures(photosToDelete)
-        .subscribe(updatedPhotos => {
+      this.galleryService.removeLeaguePictures(photosToDelete).subscribe(
+        updatedPhotos => {
           this.galleryImages = [...updatedPhotos];
-        })
+          this.snackBarService.openSnackBarFromComponent(
+            "Successfully deleted selected photos",
+            "Dismiss",
+            SnackBarEvent.Success
+          );
+        },
+        err => {
+          this.snackBarService.openSnackBarFromComponent(
+            "Error occured deleting selected items",
+            "Dismiss",
+            SnackBarEvent.Error
+          );
+          console.log("Error occured deleting selected items ", err);
+        }
+      )
     );
   }
 

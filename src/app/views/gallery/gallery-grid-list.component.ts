@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { LeaguePicture } from "src/app/core/models/leage-picture.model";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subscription } from "rxjs";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
@@ -71,6 +71,7 @@ export class GalleryGridListComponent implements OnInit {
   leaguePictures$: Observable<LeaguePicture[]>;
   galleryImages: LeaguePicture[] = [];
   galleryOptions: NgxGalleryOptions[] = galleryOptions;
+  subscription: Subscription;
 
   galleryImages$: Observable<
     LeaguePicture[]
@@ -84,7 +85,7 @@ export class GalleryGridListComponent implements OnInit {
   constructor(private galleryService: GalleryService) {}
 
   ngOnInit() {
-    this.galleryService.leaguePicturesSubject$.subscribe(
+    this.subscription = this.galleryService.leaguePicturesSubject$.subscribe(
       (leaguePictures: LeaguePicture[]) => {
         console.log("[Getting Updated Photos Gallery Grid]", leaguePictures);
         this.galleryImages = [...leaguePictures];
@@ -93,6 +94,6 @@ export class GalleryGridListComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.galleryService.leaguePicturesSubject$.unsubscribe();
+    this.subscription.unsubscribe();
   }
 }
