@@ -40,6 +40,8 @@
 @import "app/components/navigation/sidenav-list/sidenav-list.component.scss-theme.scss";
 @import "app/components/navigation/toolbar/toolbar.component.scss-theme.scss";
 
+// @import "app/shared/components/snack-bar/snack-bar.component.theme-scss.scss";
+
 @import "app/views/about/about.component.scss-theme.scss";
 @import "app/views/merchandise/merchandise-list/merchandise-item/merchandise-item.scss-theme.scss";
 @import "app/views/gallery/gallery-grid-list.scss-theme.scss";
@@ -61,6 +63,7 @@
   @include p-league-toolbar-component-theme($theme);
   @include p-league-team-signup-form-theme($theme);
   @include p-league-gallery-admin-control-theme($theme);
+  // @include p-league-snack-bar-theme($theme);
 }
 
 .dark-theme {
@@ -83,4 +86,23 @@ body {
 .mat-sidenav-content,
 .mat-tab-body-content {
   transform: none !important;
+}
+
+// Snackbar styles
+.style-success {
+  background: #323232;
+  color: rgba(255, 255, 255, 0.7);
+  // font-weight: 700;
+  .mat-button-wrapper {
+    color: #ff4081;
+  }
+}
+
+.style-error {
+  background: #ff4081;
+  color: rgba(255, 255, 255, 0.7);
+  // font-weight: 700;
+  .mat-button-wrapper {
+    color: #323232;
+  }
 }

@@ -9,8 +9,15 @@ import { v4 as uuid } from "uuid";
   providedIn: "root"
 })
 export class GalleryService {
+  defaultGalleryImage: LeaguePicture[] = [
+    {
+      small: "../../../../assets/default_gallery.jpg",
+      medium: "../../../../assets/default_gallery.jpg",
+      big: "../../../../assets/default_gallery.jpg"
+    }
+  ];
   leaguePicturesSubject$ = new BehaviorSubject<LeaguePicture[]>(leaguePictures);
-  leaguePictures$: Observable<LeaguePicture[]>;
+  leaguePictures$ = this.leaguePicturesSubject$.asObservable();
   constructor() {
     this.leaguePictures$ = of(leaguePictures);
   }
@@ -37,7 +44,14 @@ export class GalleryService {
             }
           }
         );
-        this.leaguePicturesSubject$.next(leaguePicturesUpdated);
+
+        // If all images were deleted simply render the default image
+        if (leaguePicturesUpdated.length === 0) {
+          leaguePicturesUpdated = this.defaultGalleryImage;
+        }
+
+        this.leaguePicturesSubject$.next([...leaguePicturesUpdated]);
+
         return leaguePicturesUpdated;
       })
     );

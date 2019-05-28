@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
-import { map, catchError } from "rxjs/operators";
+import { catchError } from "rxjs/operators";
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
@@ -75,7 +75,7 @@ export class GalleryGridListComponent implements OnInit {
   galleryImages$: Observable<
     LeaguePicture[]
   > = this.galleryService.leaguePictures$.pipe(
-    catchError(error => {
+    catchError(() => {
       console.log("[ERROR IN GALLERY GRID STREAM]");
       return of(null);
     })

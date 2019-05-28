@@ -1,4 +1,10 @@
-import { Component, OnInit, Input, ViewChild } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  ViewChildren
+} from "@angular/core";
 import { LeaguePicture } from "src/app/core/models/leage-picture.model";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import {
@@ -8,11 +14,20 @@ import {
   CdkDrag,
   CdkDragMove
 } from "@angular/cdk/drag-drop";
-import { scan } from "rxjs/operators";
-import { Subject, Subscription } from "rxjs";
+import { scan, map } from "rxjs/operators";
+import { Subject, Subscription, empty } from "rxjs";
 import { ViewportRuler } from "@angular/cdk/overlay";
-import { MatCheckboxChange } from "@angular/material";
+import {
+  MatCheckboxChange,
+  MatSnackBar,
+  MatSnackBarConfig
+} from "@angular/material";
 import { v4 as uuid } from "uuid";
+import { SnackBarComponent } from "src/app/shared/components/snack-bar/snack-bar.component";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 
 @Component({
   selector: "app-admin-control",
@@ -41,9 +56,10 @@ export class AdminControlComponent implements OnInit {
   leaguePicturesPreview$ = this.uploadPicture.pipe(
     scan<LeaguePicture, LeaguePicture[]>(
       (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
-        if (newPicture == null) {
-          return [];
-        }
+        // if (newPicture === typeof undefined) {
+        //   this.newLeaguePictures = [];
+        //   return (pictures = []);
+        // }
         if (pictures.includes(newPicture)) {
           this.newLeaguePictures = pictures.filter(p => p !== newPicture);
           pictures = [...this.newLeaguePictures];
@@ -64,7 +80,8 @@ export class AdminControlComponent implements OnInit {
 
   constructor(
     private viewportRuler: ViewportRuler,
-    private galleryService: GalleryService
+    private galleryService: GalleryService,
+    private snackBarService: SnackBarService
   ) {
     this.target = null;
     this.source = null;
@@ -127,6 +144,14 @@ export class AdminControlComponent implements OnInit {
     );
   }
 
+  disableDelete(): boolean {
+    if (this.galleryImages.length === 0) {
+      return true;
+    } else {
+      this.leaguePicturesMarkedForDeletion.length < 1;
+    }
+  }
+
   onImagesSelected(event) {
     const fileList: FileList = event.target.files;
     if (fileList.length > 0) {
@@ -140,23 +165,17 @@ export class AdminControlComponent implements OnInit {
 
     for (let index = 0; index < fileList.length; index++) {
       let uploadPicture: LeaguePicture = {
+        ID: uuid(),
         preview: {
           file: fileList[index],
           error: false
-        }
-      };
-
-      const newLeaguePicture: LeaguePicture = {
-        ID: uuid(),
-        name: uploadPicture.preview.file.name,
-        size: uploadPicture.preview.file.size,
-        type: uploadPicture.preview.file.type,
+        },
         big: "../../../../assets/default_gallery.jpg",
         medium: "../../../../assets/default_gallery.jpg",
         small: "../../../../assets/default_gallery.jpg"
       };
 
-      this.newLeaguePictures.push(newLeaguePicture);
+      this.newLeaguePictures.push(uploadPicture);
 
       const mimeType = uploadPicture.preview.file.type;
       if (mimeType.match(/image\/*/) == null) {
@@ -185,9 +204,25 @@ export class AdminControlComponent implements OnInit {
   }
 
   onSave() {
-    this.galleryService
-      .saveLeaguePictures(this.newLeaguePictures)
-      .subscribe(_ => this.uploadPicture.next(null));
+    this.galleryService.saveLeaguePictures(this.newLeaguePictures).subscribe(
+      _ => {
+        this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
+          this.uploadPicture.next(leaguePicture);
+        });
+        this.snackBarService.openSnackBarFromComponent(
+          "Successfully Added New Images",
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      },
+      err => {
+        this.snackBarService.openSnackBarFromComponent(
+          "Error occured while adding images",
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+      }
+    );
   }
 
   // add() {

@@ -94,14 +94,20 @@ export const storeItems: GearItem[] = [
         name: "image1",
         size: 12,
         type: "type",
-        url: "../../../assets/IMG_5585.JPG"
+        url: "../../../assets/IMG_5585.JPG",
+        small: "../../../assets/IMG_5585.JPG",
+        medium: "../../../assets/IMG_5585.JPG",
+        big: "../../../assets/IMG_5585.JPG"
       },
       {
         ID: "123",
         name: "image2",
         size: 12,
         type: "type",
-        url: "../../../assets/IMG_5904.JPG"
+        url: "../../../assets/IMG_5904.JPG",
+        small: "../../../assets/IMG_5904.JPG",
+        medium: "../../../assets/IMG_5904.JPG",
+        big: "../../../assets/IMG_5904.JPG"
       }
     ]
   },
@@ -124,21 +130,30 @@ export const storeItems: GearItem[] = [
         name: "image41",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       },
       {
         ID: "1",
         name: "image44",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       },
       {
         ID: "3",
         name: "image43",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -161,7 +176,10 @@ export const storeItems: GearItem[] = [
         name: "imageerw1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -184,7 +202,10 @@ export const storeItems: GearItem[] = [
         name: "image1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -207,7 +228,10 @@ export const storeItems: GearItem[] = [
         name: "imagesa1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -230,7 +254,10 @@ export const storeItems: GearItem[] = [
         name: "imwage1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -253,7 +280,10 @@ export const storeItems: GearItem[] = [
         name: "image1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -276,7 +306,10 @@ export const storeItems: GearItem[] = [
         name: "image1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -299,7 +332,10 @@ export const storeItems: GearItem[] = [
         name: "image1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -322,7 +358,10 @@ export const storeItems: GearItem[] = [
         name: "image1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   },
@@ -345,7 +384,10 @@ export const storeItems: GearItem[] = [
         name: "image1",
         size: 12,
         type: "type",
-        url: "../../../assets/default_gear.png"
+        url: "../../../assets/default_gear.png",
+        small: "../../../assets/default_gear.png",
+        medium: "../../../assets/default_gear.png",
+        big: "../../../assets/default_gear.png"
       }
     ]
   }

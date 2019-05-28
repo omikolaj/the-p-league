@@ -55,13 +55,12 @@ mat-paginator {
   }
 
   .parallax {
-    background-image: url("src/assets/merchanidse_welcome_4.jpg");
+    background: url("src/assets/merchandise_welcome.jpg");
     background-size: cover;
 
     /* Set a specific height */
     height: 100vh;
     height: calc(var(--vh, 1vh) * 100);
-    
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;

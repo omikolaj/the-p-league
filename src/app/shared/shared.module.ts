@@ -62,6 +62,7 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { GalleryViewerComponent } from "./components/gallery-viewer/gallery-viewer.component";
 import { NgxGalleryModule } from "ngx-gallery";
 import { ReactiveFormsModule } from "@angular/forms";
+import { SnackBarComponent } from "./components/snack-bar/snack-bar.component";
 
 library.add(
   faGithub,
@@ -85,7 +86,7 @@ const globalRippleConfig: RippleGlobalOptions = {
   providers: [
     { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }
   ],
-  declarations: [GalleryViewerComponent],
+  declarations: [GalleryViewerComponent, SnackBarComponent],
   imports: [
     MatAutocompleteModule,
     MatBadgeModule,
@@ -172,6 +173,7 @@ const globalRippleConfig: RippleGlobalOptions = {
     FlexLayoutModule,
     GalleryViewerComponent,
     ReactiveFormsModule
-  ]
+  ],
+  entryComponents: [SnackBarComponent]
 })
 export class SharedModule {}

@@ -19,7 +19,7 @@
       linear,
       left top,
       right top,
-      color-stop(0.2, mat-color($primary, lighter)),
+      color-stop(0.4, mat-color($primary, lighter)),
       color-stop(0.76, mat-color($primary, default))
     );
     -webkit-background-clip: text;

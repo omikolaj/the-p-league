@@ -8,6 +8,7 @@ import { FormsModule } from "@angular/forms";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { ClearElementValueDirective } from "src/app/core/directives/clear-element-value/clear-element-value.directive";
 import { CoreModule } from "src/app/core/core.module";
+import { SnackBarComponent } from "src/app/shared/components/snack-bar/snack-bar.component";
 
 @NgModule({
   declarations: [GalleryGridListComponent, AdminControlComponent],
