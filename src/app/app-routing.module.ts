@@ -24,7 +24,7 @@ const routes: Routes = [
         loadChildren: "./views/gallery/gallery.module#GalleryModule"
       },
       {
-        path: "admin-login",
+        path: "admin",
         loadChildren: "./views/admin/admin.module#AdminModule"
       },
       {

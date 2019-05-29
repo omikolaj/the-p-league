@@ -8,6 +8,8 @@ import { CoreModule } from "./core/core.module";
 import { MerchandiseService } from "./core/services/merchandise/merchandise.service";
 import { SharedModule } from "./shared/shared.module";
 import { DeviceDetectorModule } from "ngx-device-detector";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { ApiRequestPrefixService } from "./core/interceptors/api-request-prefix/api-request-prefix.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,6 +17,7 @@ import { DeviceDetectorModule } from "ngx-device-detector";
     // angular
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
     // core & shared
     NavigationModule,
@@ -27,7 +30,13 @@ import { DeviceDetectorModule } from "ngx-device-detector";
     AppRoutingModule,
     DeviceDetectorModule.forRoot()
   ],
-  providers: [MerchandiseService],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiRequestPrefixService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
