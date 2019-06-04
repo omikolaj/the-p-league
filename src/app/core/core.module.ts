@@ -4,6 +4,7 @@ import { SizeEnumToSizePipe } from "./pipes/sizeEnumToSize/size-enum-to-size.pip
 import { SharedModule } from "../shared/shared.module";
 import { ClearElementValueDirective } from "./directives/clear-element-value/clear-element-value.directive";
 import { IosVHDirective } from "./directives/iosVH/ios-vh.directive";
+import { HasRoleDirective } from "./directives/has-role/has-role.directive";
 
 @NgModule({
   declarations: [SizeEnumToSizePipe, ClearElementValueDirective],

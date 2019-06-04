@@ -11,7 +11,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 import { MerchandiseDialogContainerComponent } from "./merchandise-dialog-container/merchandise-dialog-container.component";
 import { MerchandiseDialogComponent } from "./merchandise-dialog-container/merchandise-dialog/merchandise-dialog.component";
 import { GearImageViewPipe } from "src/app/core/pipes/gear-image-view/gear-image-view.pipe";
-import { IosVHDirective } from 'src/app/core/directives/iosVH/ios-vh.directive';
+import { IosVHDirective } from "src/app/core/directives/iosVH/ios-vh.directive";
+import { HasRoleDirective } from "src/app/core/directives/has-role/has-role.directive";
+import { RolesResolver } from "src/app/core/services/resolvers/roles/roles-resolver.service";
 
 @NgModule({
   declarations: [
@@ -20,17 +22,19 @@ import { IosVHDirective } from 'src/app/core/directives/iosVH/ios-vh.directive';
     MerchandiseDialogContainerComponent,
     MerchandiseDialogComponent,
     GearImageViewPipe,
-    IosVHDirective
+    IosVHDirective,
+    HasRoleDirective
   ],
   entryComponents: [MerchandiseDialogComponent],
   imports: [
     CommonModule,
     MerchandiseRoutingModule,
     SharedModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     MerchandiseDialogService,
+    RolesResolver,
     { provide: MatDialogRef, useValue: {} },
     { provide: MAT_DIALOG_DATA, useValue: {} }
   ]

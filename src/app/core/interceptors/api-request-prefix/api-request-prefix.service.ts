@@ -8,7 +8,7 @@ import {
 import { Observable } from "rxjs";
 
 @Injectable()
-export class ApiRequestPrefixService implements HttpInterceptor {
+export class ApiRequestPrefixInterceptor implements HttpInterceptor {
   constructor() {}
 
   intercept(

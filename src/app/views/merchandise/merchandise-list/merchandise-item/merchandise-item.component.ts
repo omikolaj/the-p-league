@@ -9,6 +9,7 @@ import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { AuthService } from "src/app/core/services/auth/auth.service";
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
@@ -57,6 +58,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
 })
 export class MerchandiseItemComponent implements OnInit {
   @Input() gearItem: GearItem;
+  @Input("admin") isAdmin: boolean;
   sizes = Size;
   galleryOptions: NgxGalleryOptions[] = galleryOptions;
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;

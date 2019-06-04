@@ -14,6 +14,7 @@ import { Subscription } from "rxjs";
 import { tap } from "rxjs/operators";
 import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
 import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
+import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
 
 @Component({
   selector: "app-merchandise-list",
@@ -38,6 +39,8 @@ export class MerchandiseListComponent implements OnInit {
   isSticky: boolean = false;
   scrollingSubscription: Subscription;
 
+  isAdmin: boolean = false;
+
   constructor(
     private merchandiseService: MerchandiseService,
     private router: Router,
@@ -49,6 +52,8 @@ export class MerchandiseListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.isAdmin = this.route.snapshot.data.roles.includes(Role.Admin);
+
     this.eventbus.emit(new EmitEvent(Events.StickyHeader, this.isSticky));
 
     this.merchandiseService.gearItemsSubject$

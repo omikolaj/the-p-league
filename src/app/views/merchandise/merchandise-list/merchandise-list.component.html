@@ -1,6 +1,10 @@
 <div [ngStyle]="{ marginTop: isSticky ? '50px' : '0' }">
   <div class="background " [ngClass]="routeAnimationsElements">
-    <div appIosVH class="gradient" [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'">
+    <div
+      appIosVH
+      class="gradient"
+      [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'"
+    >
       <div class="container">
         <div style="height: 350px;"></div>
       </div>
@@ -18,7 +22,7 @@
       The P League Collection
     </h2>
 
-    <div class="admin">
+    <div class="admin" *ngIf="isAdmin">
       <span [ngClass]="routeAnimationsElements"
         >As an admin you can modify your inventory here</span
       >
@@ -35,7 +39,11 @@
 
     <div class="merchandise-cards">
       <ng-container *ngFor="let gearItem of pagedGearItems">
-        <app-merchandise-item class="list-item" [gearItem]="gearItem">
+        <app-merchandise-item
+          [admin]="isAdmin"
+          class="list-item"
+          [gearItem]="gearItem"
+        >
         </app-merchandise-item>
       </ng-container>
     </div>

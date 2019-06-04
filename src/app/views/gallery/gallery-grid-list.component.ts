@@ -5,6 +5,8 @@ import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
 import { catchError } from "rxjs/operators";
+import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
+import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
@@ -73,6 +75,8 @@ export class GalleryGridListComponent implements OnInit {
   galleryOptions: NgxGalleryOptions[] = galleryOptions;
   subscription: Subscription;
 
+  isAdmin: boolean = false;
+
   galleryImages$: Observable<
     LeaguePicture[]
   > = this.galleryService.leaguePictures$.pipe(
@@ -82,9 +86,14 @@ export class GalleryGridListComponent implements OnInit {
     })
   );
 
-  constructor(private galleryService: GalleryService) {}
+  constructor(
+    private galleryService: GalleryService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    this.isAdmin = this.route.snapshot.data.roles.includes(Role.Admin);
+
     this.subscription = this.galleryService.leaguePicturesSubject$.subscribe(
       (leaguePictures: LeaguePicture[]) => {
         console.log("[Getting Updated Photos Gallery Grid]", leaguePictures);

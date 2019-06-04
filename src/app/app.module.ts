@@ -9,7 +9,8 @@ import { MerchandiseService } from "./core/services/merchandise/merchandise.serv
 import { SharedModule } from "./shared/shared.module";
 import { DeviceDetectorModule } from "ngx-device-detector";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { ApiRequestPrefixService } from "./core/interceptors/api-request-prefix/api-request-prefix.service";
+import { RefreshAccessTokenInterceptor } from "./core/interceptors/refresh-access-token/refresh-access-token.service";
+import { ApiRequestPrefixInterceptor } from "./core/interceptors/api-request-prefix/api-request-prefix.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +34,12 @@ import { ApiRequestPrefixService } from "./core/interceptors/api-request-prefix/
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: ApiRequestPrefixService,
+      useClass: ApiRequestPrefixInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RefreshAccessTokenInterceptor,
       multi: true
     }
   ],
