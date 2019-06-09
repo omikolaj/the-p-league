@@ -10,11 +10,12 @@ import {
   Events
 } from "src/app/core/services/event-bus/event-bus.service";
 import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
-import { Subscription } from "rxjs";
-import { tap } from "rxjs/operators";
+import { Subscription, Subject, Observable, BehaviorSubject } from "rxjs";
+import { tap, map, switchMap, mapTo } from "rxjs/operators";
 import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
 import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
 import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
+import { ChangeDetectionStrategy } from "@angular/compiler/src/core";
 
 @Component({
   selector: "app-merchandise-list",
@@ -41,6 +42,26 @@ export class MerchandiseListComponent implements OnInit {
 
   isAdmin: boolean = false;
 
+  gearItems$: Observable<
+    GearItem[]
+  > = this.merchandiseService.gearItemsSubject$.pipe(
+    tap((gearItems: GearItem[]) => {
+      console.log("INSIDE MAP ON MERCH LIST INIT", gearItems);
+      const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
+        [...gearItems],
+        [...this.gearItems],
+        [...this.pagedGearItems],
+        this.pageSize,
+        this.paginator
+      );
+
+      this.length = gearItems.length;
+      this.gearItems = [...gearItems];
+      this.pagedGearItems = pagedItems;
+      console.log("Paged Items are", this.pagedGearItems);
+    })
+  );
+
   constructor(
     private merchandiseService: MerchandiseService,
     private router: Router,
@@ -55,24 +76,6 @@ export class MerchandiseListComponent implements OnInit {
     this.isAdmin = this.route.snapshot.data.roles.includes(Role.Admin);
 
     this.eventbus.emit(new EmitEvent(Events.StickyHeader, this.isSticky));
-
-    this.merchandiseService.gearItemsSubject$
-      .pipe(
-        tap((gearItems: GearItem[]) => {
-          const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
-            [...gearItems],
-            [...this.gearItems],
-            [...this.pagedGearItems],
-            this.pageSize,
-            this.paginator
-          );
-
-          this.length = gearItems.length;
-          this.gearItems = [...gearItems];
-          this.pagedGearItems = pagedItems;
-        })
-      )
-      .subscribe();
 
     this.scrollingSubscription = this.scroll
       .scrolled()
@@ -107,7 +110,7 @@ export class MerchandiseListComponent implements OnInit {
     });
   }
 
-  OnPageChange(event: PageEvent): PageEvent {
+  OnPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;
     let startIndex = event.pageIndex * event.pageSize;
     let endIndex = startIndex + event.pageSize;
@@ -115,7 +118,8 @@ export class MerchandiseListComponent implements OnInit {
       endIndex = this.length;
     }
     this.pagedGearItems = this.gearItems.slice(startIndex, endIndex);
-    return new PageEvent();
+
+    return (this.pageEvent = new PageEvent());
   }
 
   onResize(event) {

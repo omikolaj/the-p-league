@@ -1,20 +1,69 @@
 import { Injectable } from "@angular/core";
-import { Observable, of, BehaviorSubject } from "rxjs";
+import {
+  Observable,
+  of,
+  BehaviorSubject,
+  Subject,
+  throwError,
+  merge,
+  EMPTY,
+  race,
+  AsyncSubject,
+  ReplaySubject,
+  forkJoin
+} from "rxjs";
 import { GearItem } from "../../models/gear-item.model";
-import { flatMap, map } from "rxjs/operators";
+import {
+  flatMap,
+  map,
+  tap,
+  catchError,
+  mergeMap,
+  shareReplay,
+  share,
+  first,
+  startWith,
+  switchMap
+} from "rxjs/operators";
+import { combineLatest } from "rxjs";
 import { Size } from "../../models/gear-size.model";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import {
+  Resolve,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot
+} from "@angular/router";
 
 @Injectable({
   providedIn: "root"
 })
-export class MerchandiseService {
-  // make the http call here
-  // this.http.get<Product[]>('api/v1/make-call-here').pipe(etc)
-  gearItemsSubject$ = new BehaviorSubject<GearItem[]>(storeItems);
-  gearItems$: Observable<GearItem[]>;
+export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
+  headers = {
+    headers: new HttpHeaders({
+      "Content-Type": "application/json"
+    })
+  };
+  private readonly merchandiseUrl: string = "merchandise";
 
-  constructor() {
-    this.gearItems$ = of(storeItems);
+  gearItemsSubject$ = new BehaviorSubject<GearItem[]>([]);
+  gearItems$: Observable<GearItem[]> = this.gearItemsSubject$.asObservable();
+  gearItems: GearItem[];
+
+  constructor(private http: HttpClient) {
+    //this.gearItems$ = of(storeItems);
+  }
+
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<any> | Promise<any> | any {
+    return (this.gearItems$ = this.http
+      .get<GearItem[]>(this.merchandiseUrl)
+      .pipe(
+        tap(gearItems => this.gearItemsSubject$.next(gearItems)),
+        map((gearItems: GearItem[]) => (this.gearItems = gearItems)),
+        shareReplay()
+      ));
   }
 
   fetchAllGearItems(): Observable<GearItem[]> {
@@ -24,59 +73,102 @@ export class MerchandiseService {
   findGearItem(ID: number): Observable<GearItem> {
     return this.gearItems$.pipe(
       flatMap((gearItems: GearItem[]) =>
-        gearItems.filter((gearItem: GearItem) => gearItem.ID === ID)
+        gearItems.filter((gearItem: GearItem) => gearItem.id === ID)
       )
     );
   }
 
-  updateGearItem(gearItem: GearItem): Observable<boolean> {
-    return this.gearItems$.pipe(
-      map((gearItems: GearItem[]) => {
-        const index: number = gearItems
-          .map((gearItem: GearItem) => gearItem.ID)
-          .indexOf(gearItem.ID);
-        const validIndex: boolean = index > -1;
-        if (validIndex) {
-          gearItems.splice(index, 1, gearItem);
-        }
-        this.gearItemsSubject$.next(gearItems);
-        return validIndex;
+  updateGearItem(gearItem: GearItem): Observable<any> {
+    const headers = {
+      headers: new HttpHeaders({
+        // "X-Requested-With": "XMLHttpRequest"
+        "Content-Type": "multipart/form-data"
       })
+    };
+    return this.http
+      .patch<GearItem>(
+        `${this.merchandiseUrl}/${gearItem.id}`,
+        gearItem.formData
+      )
+      .pipe(
+        flatMap(gearItem => this.gearItems$),
+        map(gearItems => {
+          const index: number = gearItems
+            .map((gearItem: GearItem) => gearItem.id)
+            .indexOf(gearItem.id);
+          const validIndex: boolean = index > -1;
+          if (validIndex) {
+            gearItems.splice(index, 1, gearItem);
+          }
+          return gearItems;
+        }),
+        tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems)),
+        catchError(err => {
+          console.log(err);
+          return err;
+        })
+      );
+  }
+
+  createGearItem(gearItem: GearItem): Observable<GearItem[]> {
+    return combineLatest([
+      this.gearItems$,
+      this.http.post<GearItem>(`${this.merchandiseUrl}`, gearItem.formData)
+    ]).pipe(
+      map(([gearItems, newGearItem]: [GearItem[], GearItem]) => {
+        gearItems.unshift(newGearItem);
+        return gearItems;
+      }),
+      tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems))
     );
   }
 
-  createGearItem(gearItem: GearItem): Observable<GearItem> {
-    gearItem.ID = Math.floor(Math.random() * 1000) + 1;
-    return this.gearItems$.pipe(
-      map((gearItems: GearItem[]) => {
-        gearItems.unshift(gearItem);
-        this.gearItemsSubject$.next(gearItems);
-        return gearItem;
-      })
-    );
+  deleteGearItem(Id: number): Observable<GearItem[]> {
+    return this.http
+      .delete<void>(`${this.merchandiseUrl}/${Id}`, this.headers)
+      .pipe(
+        flatMap(_ => this.gearItems$),
+        map(gearItems => {
+          const index: number = gearItems
+            .map((gearItem: GearItem) => gearItem.id)
+            .indexOf(Id);
+          const validIndex: boolean = index > -1;
+          if (validIndex) {
+            gearItems.splice(index, 1);
+          }
+          return gearItems;
+        }),
+        tap((gearItems: GearItem[]) => {
+          this.gearItemsSubject$.next(gearItems);
+        }),
+        catchError(this.handleError)
+      );
   }
 
-  deleteGearItem(ID: number): Observable<boolean> {
-    // remove gear item
-    return this.gearItems$.pipe(
-      map((gearItems: GearItem[]) => {
-        const index: number = gearItems
-          .map((gearItem: GearItem) => gearItem.ID)
-          .indexOf(ID);
-        const validIndex: boolean = index > -1;
-        if (validIndex) {
-          gearItems.splice(index, 1);
-        }
-        this.gearItemsSubject$.next(gearItems);
-        return validIndex;
-      })
-    );
+  private handleError(err) {
+    // in a real world app, we may send the server to some remote logging infrastructure
+    // instead of just logging it to the console
+    let errorMessage: string;
+    if (typeof err === "string") {
+      errorMessage = err;
+    } else {
+      if (err.error instanceof ErrorEvent) {
+        // A client-side or network error occurred. Handle it accordingly.
+        errorMessage = `An error occurred: ${err.error.message}`;
+      } else {
+        // The backend returned an unsuccessful response code.
+        // The response body may contain clues as to what went wrong,
+        errorMessage = `Backend returned code ${err.status}: ${err.body.error}`;
+      }
+    }
+    console.error(err);
+    return throwError(errorMessage);
   }
 }
 
 export const storeItems: GearItem[] = [
   {
-    ID: 1,
+    id: 1,
     name: "T-shirt",
     price: 10,
     sizes: [
@@ -90,7 +182,7 @@ export const storeItems: GearItem[] = [
     inStock: true,
     images: [
       {
-        ID: "1",
+        id: "1",
         name: "image1",
         size: 12,
         type: "type",
@@ -100,7 +192,7 @@ export const storeItems: GearItem[] = [
         big: "../../../assets/IMG_5585.JPG"
       },
       {
-        ID: "123",
+        id: "123",
         name: "image2",
         size: 12,
         type: "type",
@@ -112,7 +204,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 2,
+    id: 2,
     name: "Hoodie",
     price: 25,
     sizes: [
@@ -126,7 +218,7 @@ export const storeItems: GearItem[] = [
     inStock: true,
     images: [
       {
-        ID: "11",
+        id: "11",
         name: "image41",
         size: 12,
         type: "type",
@@ -136,7 +228,7 @@ export const storeItems: GearItem[] = [
         big: "../../../assets/default_gear.png"
       },
       {
-        ID: "1",
+        id: "1",
         name: "image44",
         size: 12,
         type: "type",
@@ -146,7 +238,7 @@ export const storeItems: GearItem[] = [
         big: "../../../assets/default_gear.png"
       },
       {
-        ID: "3",
+        id: "3",
         name: "image43",
         size: 12,
         type: "type",
@@ -158,7 +250,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 3,
+    id: 3,
     name: "Pants",
     price: 20,
     sizes: [
@@ -172,7 +264,7 @@ export const storeItems: GearItem[] = [
     inStock: false,
     images: [
       {
-        ID: "31",
+        id: "31",
         name: "imageerw1",
         size: 12,
         type: "type",
@@ -184,7 +276,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 4,
+    id: 4,
     name: "Pants",
     price: 20,
     sizes: [
@@ -198,7 +290,7 @@ export const storeItems: GearItem[] = [
     inStock: false,
     images: [
       {
-        ID: "13",
+        id: "13",
         name: "image1",
         size: 12,
         type: "type",
@@ -210,7 +302,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 5,
+    id: 5,
     name: "Wrist Band",
     price: 5,
     sizes: [
@@ -224,7 +316,7 @@ export const storeItems: GearItem[] = [
     inStock: true,
     images: [
       {
-        ID: "3",
+        id: "3",
         name: "imagesa1",
         size: 12,
         type: "type",
@@ -236,7 +328,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 6,
+    id: 6,
     name: "Long Sleeve",
     price: 15,
     sizes: [
@@ -250,7 +342,7 @@ export const storeItems: GearItem[] = [
     inStock: true,
     images: [
       {
-        ID: "1w3",
+        id: "1w3",
         name: "imwage1",
         size: 12,
         type: "type",
@@ -262,7 +354,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 7,
+    id: 7,
     name: "Hats",
     price: 30,
     sizes: [
@@ -276,7 +368,7 @@ export const storeItems: GearItem[] = [
     inStock: false,
     images: [
       {
-        ID: "13",
+        id: "13",
         name: "image1",
         size: 12,
         type: "type",
@@ -288,7 +380,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 8,
+    id: 8,
     name: "Hatss",
     price: 30,
     sizes: [
@@ -302,7 +394,7 @@ export const storeItems: GearItem[] = [
     inStock: false,
     images: [
       {
-        ID: "13",
+        id: "13",
         name: "image1",
         size: 12,
         type: "type",
@@ -314,7 +406,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 9,
+    id: 9,
     name: "Watch",
     price: 30,
     sizes: [
@@ -328,7 +420,7 @@ export const storeItems: GearItem[] = [
     inStock: false,
     images: [
       {
-        ID: "13",
+        id: "13",
         name: "image1",
         size: 12,
         type: "type",
@@ -340,7 +432,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 10,
+    id: 10,
     name: "Jorts",
     price: 30,
     sizes: [
@@ -354,7 +446,7 @@ export const storeItems: GearItem[] = [
     inStock: false,
     images: [
       {
-        ID: "13",
+        id: "13",
         name: "image1",
         size: 12,
         type: "type",
@@ -366,7 +458,7 @@ export const storeItems: GearItem[] = [
     ]
   },
   {
-    ID: 11,
+    id: 11,
     name: "Jortss",
     price: 30,
     sizes: [
@@ -380,7 +472,7 @@ export const storeItems: GearItem[] = [
     inStock: false,
     images: [
       {
-        ID: "13",
+        id: "13",
         name: "image1",
         size: 12,
         type: "type",

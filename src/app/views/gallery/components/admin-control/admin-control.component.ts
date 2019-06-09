@@ -120,8 +120,8 @@ export class AdminControlComponent implements OnInit {
       if (this.leaguePicturesMarkedForDeletion.includes(leaguePicture)) {
         this.leaguePicturesMarkedForDeletion = this.leaguePicturesMarkedForDeletion.filter(
           (lP: LeaguePicture) => {
-            console.log("inside lP", lP.ID !== leaguePicture.ID);
-            return lP.ID !== leaguePicture.ID;
+            console.log("inside lP", lP.id !== leaguePicture.id);
+            return lP.id !== leaguePicture.id;
           }
         );
       }
@@ -176,7 +176,7 @@ export class AdminControlComponent implements OnInit {
 
     for (let index = 0; index < fileList.length; index++) {
       let uploadPicture: LeaguePicture = {
-        ID: uuid(),
+        id: uuid(),
         preview: {
           file: fileList[index],
           error: false

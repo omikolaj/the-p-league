@@ -31,6 +31,8 @@ import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { Subscription } from "rxjs";
+import { switchMap, flatMap, tap } from "rxjs/operators";
 
 export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -77,12 +79,14 @@ export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
   ]
 })
 export class MerchandiseDialogComponent implements OnInit {
+  outlet = "modal";
   gearItem: GearItem;
   editMode: boolean = false;
   gearItemForm: FormGroup;
   selectedFileFormData: FormData = new FormData();
   gearItemImages: GearImage[] = [];
   noSizesSelectedStateMatcher: ErrorStateMatcher = new NoSizeErrorStateMatcher();
+  subscription: Subscription;
 
   gearSizes: GearSize[] = [];
   isInStock: boolean = true;
@@ -107,17 +111,18 @@ export class MerchandiseDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    const outlet = "modal";
-
     this.route.children[0].firstChild.children
-      .filter(r => r.outlet === outlet)
+      .filter(r => r.outlet === this.outlet)
       .map(r =>
-        r.params.subscribe(params => {
-          this.editMode = params["id"] != null;
-          this.merchandiseService
-            .findGearItem(+params["id"])
-            .subscribe(gearItem => (this.gearItem = cloneDeep(gearItem)));
-        })
+        r.params
+          .pipe(
+            switchMap(params => {
+              this.editMode = params["id"] != null;
+              return this.merchandiseService.findGearItem(+params["id"]);
+            }),
+            tap((gearItem: GearItem) => (this.gearItem = cloneDeep(gearItem)))
+          )
+          .subscribe()
       );
 
     this.initForm();
@@ -125,7 +130,7 @@ export class MerchandiseDialogComponent implements OnInit {
 
   onSubmit() {
     this.dialogRef.close();
-    const gearItem = this.gearItemObjectForDelivery();
+    const gearItem: GearItem = this.gearItemObjectForDelivery();
     if (this.editMode) {
       this.merchandiseService.updateGearItem(gearItem).subscribe(
         (update: boolean) => {
@@ -146,8 +151,9 @@ export class MerchandiseDialogComponent implements OnInit {
         }
       );
     } else {
+      //this.merchandiseService.createGearItemAction(gearItem);
       this.merchandiseService.createGearItem(gearItem).subscribe(
-        (gearItem: GearItem) => {
+        (gearItems: GearItem[]) => {
           console.log("[GEARITEM CREATED]", gearItem);
           this.snackBarService.openSnackBarFromComponent(
             `Successfully created ${gearItem.name}`,
@@ -170,16 +176,17 @@ export class MerchandiseDialogComponent implements OnInit {
   gearItemObjectForDelivery(): GearItem {
     const gearItemImages: GearImage[] = this.editMode
       ? this.gearItemForm.value.images
-      : [
-          {
-            url: "../../../../../assets/default_gear.png",
-            small: "../../../../../assets/default_gear.png",
-            medium: "../../../../../assets/default_gear.png",
-            big: "../../../../../assets/default_gear.png"
-          }
-        ];
+      : [];
+    // [
+    //   {
+    //     url: "../../../../../assets/default_gear.png",
+    //     small: "../../../../../assets/default_gear.png",
+    //     medium: "../../../../../assets/default_gear.png",
+    //     big: "../../../../../assets/default_gear.png"
+    //   }
+    // ]
     const gearItemForDelivery: GearItem = {
-      ID: this.editMode ? this.gearItem.ID : null,
+      id: this.editMode ? this.gearItem.id : null,
       name: this.gearItemForm.value.name,
       price: this.gearItemForm.value.price,
       sizes: this.gearItemForm.value.sizes.gearSizesGroup.value.gearSizesArray.map(
@@ -223,12 +230,14 @@ export class MerchandiseDialogComponent implements OnInit {
       // and replace the first item in the array with the first item from the user
       // defined array
       for (let index = 0; index < length; index++) {
+        this.selectedFileFormData.delete(`${index}`);
         this.gearItemImages.splice(index, 1, {
-          ID: uuid(),
+          id: uuid(),
           name: filesObj[index].name,
           size: filesObj[index].size,
           type: filesObj[index].type
         });
+        this.selectedFileFormData.append(`${index}`, filesObj[index]);
       }
     }
     // If we more than 0 and less than 3 so either 1 or 2 images uploaded
@@ -239,25 +248,29 @@ export class MerchandiseDialogComponent implements OnInit {
       // then start replacing the first item in the array
       for (let index = 0; index < length; index++) {
         if (this.gearItemImages.length < 3) {
+          this.selectedFileFormData.delete(`${index}`);
           this.gearItemImages = [
             ...this.gearItemImages,
             {
-              ID: uuid(),
+              id: uuid(),
               name: filesObj[index].name,
               size: filesObj[index].size,
               type: filesObj[index].type
             }
           ];
+          this.selectedFileFormData.append(`${index}`, filesObj[index]);
         }
         // If the on hand image array already has 3 items, start replacing existing items with user defined items
         else {
           for (let index = 0; index < length; index++) {
+            this.selectedFileFormData.delete(`${index}`);
             this.gearItemImages.splice(index, 1, {
-              ID: uuid(),
+              id: uuid(),
               name: filesObj[index].name,
               size: filesObj[index].size,
               type: filesObj[index].type
             });
+            this.selectedFileFormData.append(`${index}`, filesObj[index]);
           }
         }
       }
@@ -265,16 +278,21 @@ export class MerchandiseDialogComponent implements OnInit {
     // we have a clean array
     else {
       for (let index = 0; index < length; index++) {
+        this.selectedFileFormData.delete(`${index}`);
         this.gearItemImages = [
           ...this.gearItemImages,
           {
-            ID: uuid(),
+            id: uuid(),
             name: filesObj[index].name,
             size: filesObj[index].size,
             type: filesObj[index].type
           }
         ];
+        this.selectedFileFormData.append(`${index}`, filesObj[index]);
       }
+    }
+    for (let index = 0; index < 3; index++) {
+      this.selectedFileFormData.append("gearImages", filesObj[index]);
     }
     this.gearItemForm.controls["images"].setValue(this.gearItemImages);
   }
@@ -282,7 +300,7 @@ export class MerchandiseDialogComponent implements OnInit {
   // Removes user defined image from the uploaded array of images
   onRemoveImage(image: GearImage) {
     console.log("[BEFORE REMOVE]", this.gearItemImages);
-    const index = this.gearItemImages.map(gI => gI.ID).indexOf(image.ID);
+    const index = this.gearItemImages.map(gI => gI.id).indexOf(image.id);
     if (index > -1) {
       this.gearItemImages.splice(index, 1);
     }

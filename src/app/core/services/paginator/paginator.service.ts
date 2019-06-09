@@ -39,7 +39,7 @@ export class PaginatorService {
       let updatedPagedGearItems: GearItem[] = [];
       newGearItems.filter((newGearItem: GearItem) => {
         pagedGearItems.map((pagedGearItem: GearItem) => {
-          if (pagedGearItem.ID == newGearItem.ID) {
+          if (pagedGearItem.id == newGearItem.id) {
             updatedPagedGearItems.push(newGearItem);
           }
         });

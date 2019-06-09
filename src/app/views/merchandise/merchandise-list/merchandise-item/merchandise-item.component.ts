@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { GearItem } from "src/app/core/models/gear-item.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
@@ -10,6 +10,7 @@ import {
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
 import { AuthService } from "src/app/core/services/auth/auth.service";
+import { Subscription } from "rxjs";
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
@@ -56,7 +57,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
   templateUrl: "./merchandise-item.component.html",
   styleUrls: ["./merchandise-item.component.scss"]
 })
-export class MerchandiseItemComponent implements OnInit {
+export class MerchandiseItemComponent implements OnInit, OnDestroy {
   @Input() gearItem: GearItem;
   @Input("admin") isAdmin: boolean;
   sizes = Size;
@@ -72,11 +73,13 @@ export class MerchandiseItemComponent implements OnInit {
 
   ngOnInit() {}
 
+  ngOnDestroy() {}
+
   onEditGearItem() {
     this.router.navigate(
       [
         {
-          outlets: { modal: [this.gearItem.ID, "edit"] }
+          outlets: { modal: [this.gearItem.id, "edit"] }
         }
       ],
       { relativeTo: this.route }
@@ -84,8 +87,8 @@ export class MerchandiseItemComponent implements OnInit {
   }
 
   onDeleteGearItem() {
-    this.merchandiseService.deleteGearItem(this.gearItem.ID).subscribe(
-      (deletedItem: boolean) => {
+    this.merchandiseService.deleteGearItem(this.gearItem.id).subscribe(
+      (deletedItem: GearItem[]) => {
         console.log("GEARITEM DELETED SUCCESS?: ", deletedItem);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully deleted ${this.gearItem.name}`,

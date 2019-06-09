@@ -38,13 +38,15 @@
     </div>
 
     <div class="merchandise-cards">
-      <ng-container *ngFor="let gearItem of pagedGearItems">
-        <app-merchandise-item
-          [admin]="isAdmin"
-          class="list-item"
-          [gearItem]="gearItem"
-        >
-        </app-merchandise-item>
+      <ng-container *ngIf="gearItems$ | async">
+        <ng-container *ngFor="let gearItem of pagedGearItems">
+          <app-merchandise-item
+            [admin]="isAdmin"
+            class="list-item"
+            [gearItem]="gearItem"
+          >
+          </app-merchandise-item>
+        </ng-container>
       </ng-container>
     </div>
 

@@ -1,7 +1,8 @@
 export interface ImageBase {
-  ID?: string;
+  id?: string;
   name?: string;
   size?: number;
   type?: string;
   url?: string;
+  CloudinaryId?: string;
 }
