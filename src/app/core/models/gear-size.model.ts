@@ -1,9 +1,10 @@
-export interface GearSize{
-  size: Size,
-  available: boolean,
-  color: string 
+export interface GearSize {
+  id?: number;
+  size?: Size;
+  available: boolean;
+  color: string;
 }
-export enum Size{
+export enum Size {
   NONE = 0,
   XS = 1,
   S = 2,

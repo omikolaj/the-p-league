@@ -111,6 +111,11 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
   }
 
   createGearItem(gearItem: GearItem): Observable<GearItem[]> {
+    const headers = {
+      headers: new HttpHeaders({
+        "Content-Type": "multipart/form-data"
+      })
+    };
     return combineLatest([
       this.gearItems$,
       this.http.post<GearItem>(`${this.merchandiseUrl}`, gearItem.formData)

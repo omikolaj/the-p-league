@@ -9,3 +9,8 @@ export class Role {
 // If more items will be required from the request object, create a class
 // and then create static fields like for Role ^
 export const TOKEN_HEADER: string = "Token-Expired";
+
+export class GearItemUpload {
+  static readonly GearItem: string = "gearItem";
+  static readonly GearImages: string = "gearImages";
+}
