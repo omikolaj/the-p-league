@@ -5,7 +5,7 @@ import {
   ViewChild,
   ViewChildren
 } from "@angular/core";
-import { LeaguePicture } from "src/app/core/models/leage-picture.model";
+import { LeaguePicture } from "src/app/core/models/league-picture.model";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import {
   CdkDropListGroup,
@@ -29,6 +29,7 @@ import {
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
+import { LeagueImageUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
 
 @Component({
   selector: "app-admin-control",
@@ -176,7 +177,6 @@ export class AdminControlComponent implements OnInit {
 
     for (let index = 0; index < fileList.length; index++) {
       let uploadPicture: LeaguePicture = {
-        id: uuid(),
         preview: {
           file: fileList[index],
           error: false
@@ -185,6 +185,11 @@ export class AdminControlComponent implements OnInit {
         medium: "../../../../assets/default_gallery.jpg",
         small: "../../../../assets/default_gallery.jpg"
       };
+
+      this.selectedImagesFormDate.append(
+        LeagueImageUpload.LeagueImages,
+        fileList[index]
+      );
 
       this.newLeaguePictures.push(uploadPicture);
 
@@ -215,25 +220,27 @@ export class AdminControlComponent implements OnInit {
   }
 
   onSave() {
-    this.galleryService.saveLeaguePictures(this.newLeaguePictures).subscribe(
-      _ => {
-        this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
-          this.uploadPicture.next(leaguePicture);
-        });
-        this.snackBarService.openSnackBarFromComponent(
-          "Successfully Added New Images",
-          "Dismiss",
-          SnackBarEvent.Success
-        );
-      },
-      err => {
-        this.snackBarService.openSnackBarFromComponent(
-          "Error occured while adding images",
-          "Dismiss",
-          SnackBarEvent.Error
-        );
-      }
-    );
+    this.galleryService
+      .saveLeaguePictures(this.selectedImagesFormDate)
+      .subscribe(
+        _ => {
+          this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
+            this.uploadPicture.next(leaguePicture);
+          });
+          this.snackBarService.openSnackBarFromComponent(
+            "Successfully Added New Images",
+            "Dismiss",
+            SnackBarEvent.Success
+          );
+        },
+        err => {
+          this.snackBarService.openSnackBarFromComponent(
+            "Error occured while adding images",
+            "Dismiss",
+            SnackBarEvent.Error
+          );
+        }
+      );
   }
 
   // add() {

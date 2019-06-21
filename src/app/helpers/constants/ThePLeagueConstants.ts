@@ -14,3 +14,7 @@ export class GearItemUpload {
   static readonly GearItem: string = "gearItem";
   static readonly GearImages: string = "gearImages";
 }
+
+export class LeagueImageUpload {
+  static readonly LeagueImages: string = "leagueImages";
+}

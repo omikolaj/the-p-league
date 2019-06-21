@@ -1,30 +1,7 @@
 import { Injectable } from "@angular/core";
-import {
-  Observable,
-  of,
-  BehaviorSubject,
-  Subject,
-  throwError,
-  merge,
-  EMPTY,
-  race,
-  AsyncSubject,
-  ReplaySubject,
-  forkJoin
-} from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 import { GearItem } from "../../models/gear-item.model";
-import {
-  flatMap,
-  map,
-  tap,
-  catchError,
-  mergeMap,
-  shareReplay,
-  share,
-  first,
-  startWith,
-  switchMap
-} from "rxjs/operators";
+import { flatMap, map, tap, shareReplay } from "rxjs/operators";
 import { combineLatest } from "rxjs";
 import { Size } from "../../models/gear-size.model";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -61,7 +38,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       .get<GearItem[]>(this.merchandiseUrl)
       .pipe(
         tap(gearItems => this.gearItemsSubject$.next(gearItems)),
-        map((gearItems: GearItem[]) => (this.gearItems = gearItems)),
+        map((gearItems: GearItem[]) => (this.gearItems = gearItems).reverse()),
         shareReplay()
       ));
   }
@@ -78,44 +55,28 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     );
   }
 
-  updateGearItem(gearItem: GearItem): Observable<any> {
-    const headers = {
-      headers: new HttpHeaders({
-        // "X-Requested-With": "XMLHttpRequest"
-        "Content-Type": "multipart/form-data"
-      })
-    };
-    return this.http
-      .patch<GearItem>(
+  updateGearItem(gearItem: GearItem): Observable<GearItem[]> {
+    return combineLatest([
+      this.gearItems$,
+      this.http.patch<GearItem>(
         `${this.merchandiseUrl}/${gearItem.id}`,
         gearItem.formData
       )
-      .pipe(
-        flatMap(gearItem => this.gearItems$),
-        map(gearItems => {
-          const index: number = gearItems
-            .map((gearItem: GearItem) => gearItem.id)
-            .indexOf(gearItem.id);
-          const validIndex: boolean = index > -1;
-          if (validIndex) {
-            gearItems.splice(index, 1, gearItem);
-          }
-          return gearItems;
-        }),
-        tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems)),
-        catchError(err => {
-          console.log(err);
-          return err;
-        })
-      );
+    ]).pipe(
+      map(([gearItems, updatedGearItem]: [GearItem[], GearItem]) => {
+        const index: number = gearItems
+          .map((gearItem: GearItem) => gearItem.id)
+          .indexOf(gearItem.id);
+        if (index > -1) {
+          gearItems.splice(index, 1, updatedGearItem);
+        }
+        return gearItems;
+      })
+      // tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems))
+    );
   }
 
   createGearItem(gearItem: GearItem): Observable<GearItem[]> {
-    const headers = {
-      headers: new HttpHeaders({
-        "Content-Type": "multipart/form-data"
-      })
-    };
     return combineLatest([
       this.gearItems$,
       this.http.post<GearItem>(`${this.merchandiseUrl}`, gearItem.formData)
@@ -128,46 +89,22 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     );
   }
 
-  deleteGearItem(Id: number): Observable<GearItem[]> {
-    return this.http
-      .delete<void>(`${this.merchandiseUrl}/${Id}`, this.headers)
-      .pipe(
-        flatMap(_ => this.gearItems$),
-        map(gearItems => {
-          const index: number = gearItems
-            .map((gearItem: GearItem) => gearItem.id)
-            .indexOf(Id);
-          const validIndex: boolean = index > -1;
-          if (validIndex) {
-            gearItems.splice(index, 1);
-          }
-          return gearItems;
-        }),
-        tap((gearItems: GearItem[]) => {
-          this.gearItemsSubject$.next(gearItems);
-        }),
-        catchError(this.handleError)
-      );
-  }
-
-  private handleError(err) {
-    // in a real world app, we may send the server to some remote logging infrastructure
-    // instead of just logging it to the console
-    let errorMessage: string;
-    if (typeof err === "string") {
-      errorMessage = err;
-    } else {
-      if (err.error instanceof ErrorEvent) {
-        // A client-side or network error occurred. Handle it accordingly.
-        errorMessage = `An error occurred: ${err.error.message}`;
-      } else {
-        // The backend returned an unsuccessful response code.
-        // The response body may contain clues as to what went wrong,
-        errorMessage = `Backend returned code ${err.status}: ${err.body.error}`;
-      }
-    }
-    console.error(err);
-    return throwError(errorMessage);
+  deleteGearItem(Id: number) {
+    return combineLatest([
+      this.gearItems$,
+      this.http.delete<void>(`${this.merchandiseUrl}/${Id}`, this.headers)
+    ]).pipe(
+      map(([gearItems]: [GearItem[], void]) => {
+        const index: number = gearItems
+          .map((gearItem: GearItem) => gearItem.id)
+          .indexOf(Id);
+        if (index > -1) {
+          gearItems.splice(index, 1);
+        }
+        return gearItems;
+      }),
+      tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems))
+    );
   }
 }
 

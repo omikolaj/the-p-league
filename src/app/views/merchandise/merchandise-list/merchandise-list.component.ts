@@ -33,8 +33,8 @@ export class MerchandiseListComponent implements OnInit {
 
   breakpoint: number = 3;
   length: number = 0;
-  pageSize: number = 5;
-  pageSizeOptions: number[] = [5, 10, 20, 25];
+  pageSize: number = 6;
+  pageSizeOptions: number[] = [6, 12, 18, 24];
   pageEvent: PageEvent;
 
   isSticky: boolean = false;
@@ -42,9 +42,27 @@ export class MerchandiseListComponent implements OnInit {
 
   isAdmin: boolean = false;
 
-  gearItems$: Observable<
-    GearItem[]
-  > = this.merchandiseService.gearItemsSubject$.pipe(
+  // gearItems$: Observable<
+  //   GearItem[]
+  // > = this.merchandiseService.gearItemsSubject$.pipe(
+  //   tap((gearItems: GearItem[]) => {
+  //     console.log("INSIDE MAP ON MERCH LIST INIT", gearItems);
+  //     const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
+  //       [...gearItems],
+  //       [...this.gearItems],
+  //       [...this.pagedGearItems],
+  //       this.pageSize,
+  //       this.paginator
+  //     );
+
+  //     this.length = gearItems.length;
+  //     this.gearItems = [...gearItems];
+  //     this.pagedGearItems = pagedItems;
+  //     console.log("Paged Items are", this.pagedGearItems);
+  //   })
+  // );
+
+  gearItems$: Observable<GearItem[]> = this.merchandiseService.gearItems$.pipe(
     tap((gearItems: GearItem[]) => {
       console.log("INSIDE MAP ON MERCH LIST INIT", gearItems);
       const pagedItems: GearItem[] = this.paginatorService.getPagedItems(

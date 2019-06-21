@@ -4,5 +4,9 @@ export interface ImageBase {
   size?: number;
   type?: string;
   url?: string;
-  CloudinaryId?: string;
+  cloudinaryPublicId?: string;
+  width?: string;
+  height?: string;
+  resourceType?: string;
+  format?: string;
 }

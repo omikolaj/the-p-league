@@ -12,7 +12,11 @@ import {
 import { ActivatedRoute, RouterStateSnapshot } from "@angular/router";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { MatDialogRef } from "@angular/material";
-import { GearSize, Size } from "src/app/core/models/gear-size.model";
+import {
+  GearSize,
+  Size,
+  gearSizesArray
+} from "src/app/core/models/gear-size.model";
 import { v4 as uuid } from "uuid";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { GearImage } from "src/app/core/models/gear-image.model";
@@ -34,6 +38,7 @@ import { Subscription } from "rxjs";
 import { switchMap, flatMap, tap } from "rxjs/operators";
 import { GearItemUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
 import { GearItem } from "src/app/core/models/gear-item.model";
+import { MerchandiseDialogService } from "../merchandise-dialog.service";
 
 export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -101,14 +106,7 @@ export class MerchandiseDialogComponent implements OnInit {
     private snackBarService: SnackBarService
   ) {
     // Initialize all of the available gear sizes
-    this.gearSizes = [
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.L, available: false, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: false, color: "warn" }
-    ];
+    this.gearSizes = [...gearSizesArray];
   }
 
   ngOnInit() {
@@ -134,8 +132,8 @@ export class MerchandiseDialogComponent implements OnInit {
     const gearItem: GearItem = this.gearItemObjectForDelivery();
     if (this.editMode) {
       this.merchandiseService.updateGearItem(gearItem).subscribe(
-        (update: boolean) => {
-          console.log("[GEARITEM UPDATED SUCCESS?: ]", update);
+        (updatedGearItems: GearItem[]) => {
+          console.log("[GEARITEM UPDATED SUCCESS]", updatedGearItems);
           this.snackBarService.openSnackBarFromComponent(
             `Successfully updated ${gearItem.name}`,
             "Dismiss",
@@ -176,7 +174,7 @@ export class MerchandiseDialogComponent implements OnInit {
 
   gearItemObjectForDelivery(): GearItem {
     const gearItemImages: GearImage[] = this.editMode
-      ? this.gearItemForm.value.images
+      ? this.gearItemImages.filter(gearImage => gearImage.id != undefined)
       : [];
 
     const gearItemForDelivery: GearItem = {
@@ -189,58 +187,18 @@ export class MerchandiseDialogComponent implements OnInit {
       images: gearItemImages
     };
 
-    this.appendGearItemToFormData(
-      gearItemForDelivery,
-      this.selectedFileFormData,
-      this.editMode
-    );
+    if (this.editMode) {
+      gearItemForDelivery.id = this.gearItem.id;
+    }
 
     gearItemForDelivery.formData = this.selectedFileFormData;
 
+    gearItemForDelivery.formData.append(
+      "gearItem",
+      JSON.stringify(gearItemForDelivery)
+    );
+
     return gearItemForDelivery;
-  }
-
-  appendGearItemToFormData(
-    gearItemToAppend: GearItem,
-    formData: FormData,
-    editMode: boolean
-  ) {
-    if (editMode) {
-      gearItemToAppend.id = this.gearItem.id;
-      formData.append("id", JSON.stringify(gearItemToAppend.id));
-    }
-
-    formData.append("name", JSON.stringify(gearItemToAppend.name));
-
-    formData.append("inStock", JSON.stringify(gearItemToAppend.inStock));
-
-    formData.append("price", JSON.stringify(gearItemToAppend.price));
-
-    for (let index = 0; index < gearItemToAppend.sizes.length; index++) {
-      const size = gearItemToAppend.sizes[index];
-      this.appendOneGearSize(index, size);
-    }
-  }
-
-  appendOneGearSize(index: number, size: GearSize) {
-    if (this.editMode) {
-      this.selectedFileFormData.append(
-        `sizes[${index}].id`,
-        size.id.toString()
-      );
-    }
-    this.selectedFileFormData.append(
-      `sizes[${index}].available`,
-      size.available.toString()
-    );
-    this.selectedFileFormData.append(
-      `sizes[${index}].color`,
-      size.color.toString()
-    );
-    this.selectedFileFormData.append(
-      `sizes[${index}].size`,
-      size.size.valueOf().toString()
-    );
   }
 
   // Controls the text that displays next the slide toggle
@@ -258,6 +216,7 @@ export class MerchandiseDialogComponent implements OnInit {
   }
 
   onFileSelected(event) {
+    this.selectedFileFormData = new FormData();
     const length =
       event.target.files.length < 3 ? event.target.files.length : 3;
     const filesObj = <File>event.target.files;
@@ -271,53 +230,39 @@ export class MerchandiseDialogComponent implements OnInit {
       // defined array
       for (let index = 0; index < length; index++) {
         this.gearItemImages.splice(index, 1, {
-          id: uuid(),
           name: filesObj[index].name,
           size: filesObj[index].size,
           type: filesObj[index].type
         });
+
         this.selectedFileFormData.append(
           GearItemUpload.GearImages,
           filesObj[index]
         );
       }
     }
-    // If we more than 0 and less than 3 so either 1 or 2 images uploaded
+    // If we have more than 0 and less than 3 so either 1 or 2 images uploaded
     else if (this.gearItemImages.length > 0 && this.gearItemImages.length < 3) {
       this.gearItemImages = [...this.gearItemImages];
       // Loop through the total number of images that user is trying to upload
       // and add the first user image to the exisiting array until you reach length of 3
       // then start replacing the first item in the array
       for (let index = 0; index < length; index++) {
+        // if the existing array already has 3 items we will just stop accepting new images
         if (this.gearItemImages.length < 3) {
           this.gearItemImages = [
-            ...this.gearItemImages,
             {
-              id: uuid(),
               name: filesObj[index].name,
               size: filesObj[index].size,
               type: filesObj[index].type
-            }
+            },
+            ...this.gearItemImages
           ];
+
           this.selectedFileFormData.append(
             GearItemUpload.GearImages,
             filesObj[index]
           );
-        }
-        // If the on hand image array already has 3 items, start replacing existing items with user defined items
-        else {
-          for (let index = 0; index < length; index++) {
-            this.gearItemImages.splice(index, 1, {
-              id: uuid(),
-              name: filesObj[index].name,
-              size: filesObj[index].size,
-              type: filesObj[index].type
-            });
-            this.selectedFileFormData.append(
-              GearItemUpload.GearImages,
-              filesObj[index]
-            );
-          }
         }
       }
     }
@@ -327,19 +272,19 @@ export class MerchandiseDialogComponent implements OnInit {
         this.gearItemImages = [
           ...this.gearItemImages,
           {
-            id: uuid(),
             name: filesObj[index].name,
             size: filesObj[index].size,
             type: filesObj[index].type
           }
         ];
+
         this.selectedFileFormData.append(
           GearItemUpload.GearImages,
           filesObj[index]
         );
       }
     }
-    this.gearItemForm.controls["images"].setValue(this.gearItemImages);
+    //this.gearItemForm.controls["images"].setValue(this.gearItemImages);
   }
 
   // Removes user defined image from the uploaded array of images

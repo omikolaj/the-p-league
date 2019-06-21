@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { LeaguePicture } from "src/app/core/models/leage-picture.model";
+import { LeaguePicture } from "src/app/core/models/league-picture.model";
 import { Observable, of, Subscription } from "rxjs";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
