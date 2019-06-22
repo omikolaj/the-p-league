@@ -56,7 +56,6 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
   gearItemsTest$ = combineLatest();
 
   updateGearItem(gearItem: GearItem): Observable<GearItem[]> {
-    this.gearItems$;
     return (this.gearItems$ = combineLatest([
       this.gearItems$,
       this.http.patch<GearItem>(
