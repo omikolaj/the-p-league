@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  ChangeDetectionStrategy
+} from "@angular/core";
 import { GearItem } from "src/app/core/models/gear-item.model";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
@@ -10,18 +16,18 @@ import {
   Events
 } from "src/app/core/services/event-bus/event-bus.service";
 import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
-import { Subscription, Subject, Observable, BehaviorSubject, of } from "rxjs";
-import { tap, map, switchMap, mapTo } from "rxjs/operators";
+import { Subscription, combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
 import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
 import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
 import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
-import { ChangeDetectionStrategy } from "@angular/compiler/src/core";
 
 @Component({
   selector: "app-merchandise-list",
   templateUrl: "./merchandise-list.component.html",
   styleUrls: ["./merchandise-list.component.scss"],
-  providers: [PaginatorService]
+  providers: [PaginatorService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MerchandiseListComponent implements OnInit {
   @ViewChild("gearUp") merchandiseCards: ElementRef;
@@ -42,11 +48,14 @@ export class MerchandiseListComponent implements OnInit {
 
   isAdmin: boolean = false;
 
-  gearItems$: Observable<
-    GearItem[]
-  > = this.merchandiseService.gearItemsSubject$.pipe(
-    tap((gearItems: GearItem[]) => {
-      console.log("INSIDE MAP ON MERCH LIST INIT", gearItems);
+  gearItems$ = combineLatest([
+    this.merchandiseService.gearItems$,
+    this.merchandiseService.updatedGearItems$,
+    this.merchandiseService.newLatestGearItems$,
+    this.merchandiseService.deleteGearItemsLatest$,
+    this.merchandiseService.pageChangeAction
+  ]).pipe(
+    map(([gearItems]) => {
       const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
         [...gearItems],
         [...this.gearItems],
@@ -58,7 +67,7 @@ export class MerchandiseListComponent implements OnInit {
       this.length = gearItems.length;
       this.gearItems = [...gearItems];
       this.pagedGearItems = pagedItems;
-      console.log("Paged Items are", this.pagedGearItems);
+      return this.pagedGearItems;
     })
   );
 
@@ -111,6 +120,8 @@ export class MerchandiseListComponent implements OnInit {
   }
 
   OnPageChange(event: PageEvent) {
+    this.pageEvent = new PageEvent();
+
     this.pageSize = event.pageSize;
     let startIndex = event.pageIndex * event.pageSize;
     let endIndex = startIndex + event.pageSize;
@@ -119,7 +130,8 @@ export class MerchandiseListComponent implements OnInit {
     }
     this.pagedGearItems = this.gearItems.slice(startIndex, endIndex);
 
-    return (this.pageEvent = new PageEvent());
+    // Trigger the page change action
+    this.merchandiseService.onPageChange();
   }
 
   onResize(event) {

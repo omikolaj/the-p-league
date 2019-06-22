@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, of, BehaviorSubject, combineLatest } from "rxjs";
 import { LeaguePicture } from "../../models/league-picture.model";
-import { map, shareReplay, tap } from "rxjs/operators";
+import { map, shareReplay, tap, switchMap, catchError } from "rxjs/operators";
 import { forEach } from "@angular/router/src/utils/collection";
 import { v4 as uuid } from "uuid";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -11,6 +11,10 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot
 } from "@angular/router";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 
 @Injectable({
   providedIn: "root"
@@ -26,33 +30,72 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   ];
   leaguePicturesSubject$ = new BehaviorSubject<LeaguePicture[]>([]);
   //leaguePictures$ = this.leaguePicturesSubject$.asObservable();
-  leaguePictures$: Observable<LeaguePicture[]>;
+  leaguePictures$: Observable<LeaguePicture[]> = new BehaviorSubject<
+    LeaguePicture[]
+  >([]).asObservable();
   leaguePictures: LeaguePicture[] = [];
 
-  constructor(private http: HttpClient) {
-    //this.leaguePictures$ = of(leaguePictures);
-  }
+  private addLeaguePictureAction: BehaviorSubject<
+    FormData
+  > = new BehaviorSubject<FormData>(null);
+  private deleteLeaguePictureAction: BehaviorSubject<
+    LeaguePicture[]
+  > = new BehaviorSubject<LeaguePicture[]>(null);
+  private updateLeaguePictureOrderAction: BehaviorSubject<
+    LeaguePicture[]
+  > = new BehaviorSubject<LeaguePicture[]>(null);
+  private removePreviewPictureAction: BehaviorSubject<
+    LeaguePicture
+  > = new BehaviorSubject<LeaguePicture>(null);
+
+  constructor(
+    private http: HttpClient,
+    private snackBarService: SnackBarService
+  ) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<any> | Promise<any> | any {
-    return (this.leaguePictures$ = this.http
-      .get<LeaguePicture[]>(this.galleryUrl)
-      .pipe(
-        tap(leaguePictures => this.leaguePicturesSubject$.next(leaguePictures)),
-        map((leaguePictures: LeaguePicture[]) =>
-          (this.leaguePictures = leaguePictures).reverse()
-        ),
-        shareReplay()
-      ));
-  }
+    this.leaguePictures$ = this.http.get<LeaguePicture[]>(this.galleryUrl).pipe(
+      map((leaguePictures: LeaguePicture[]) =>
+        (this.leaguePictures = leaguePictures).reverse()
+      ),
+      catchError(() => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while getting gallery items. Please come back later`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
+      }),
+      shareReplay()
+    );
 
-  fetchAllLeaguePictures(): Observable<LeaguePicture[]> {
     return this.leaguePictures$;
   }
 
-  removeLeaguePictures(leaguePics: LeaguePicture[]) {
+  deleteLeaguePicturesLatest$ = combineLatest([
+    this.deleteLeaguePictureAction,
+    this.leaguePictures$
+  ]).pipe(
+    switchMap(
+      ([leaguePicturesToDelete]: [LeaguePicture[], LeaguePicture[]]) => {
+        return this.deleteLeaguePicturesAsync(leaguePicturesToDelete);
+      }
+    )
+  );
+
+  deleteLeaguePictures(leaguePictures: LeaguePicture[]) {
+    this.deleteLeaguePictureAction.next(leaguePictures);
+  }
+
+  private deleteLeaguePicturesAsync(leaguePics: LeaguePicture[]) {
+    if (leaguePics === null) {
+      return of([]);
+    }
+    const photoString: string =
+      leaguePics.length > 0 && leaguePics.length < 2 ? "photo" : "photos";
     const options = {
       headers: new HttpHeaders({
         "Content-Type": "application/json"
@@ -72,13 +115,38 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         });
         return leaguePicsAll;
       }),
-      tap(updatedLeaguePics =>
-        this.leaguePicturesSubject$.next(updatedLeaguePics)
-      )
+      tap(_ => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Successfully deleted gallery ${photoString}`,
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      }),
+      catchError(err => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while deleting gallery ${photoString} gear item`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
+      })
     );
   }
 
-  updateLeaguePicturesOrder(
+  updatedLeaguePictures$ = combineLatest([
+    this.updateLeaguePictureOrderAction,
+    this.leaguePictures$
+  ]).pipe(
+    switchMap(([updatedLeaguePictures]: [LeaguePicture[], LeaguePicture[]]) => {
+      return this.updateLeaguePicturesOrderAsync(updatedLeaguePictures);
+    })
+  );
+
+  updateLeaguePicturesOrder(leaguePictures: LeaguePicture[]) {
+    this.updateLeaguePictureOrderAction.next(leaguePictures);
+  }
+
+  private updateLeaguePicturesOrderAsync(
     leaguePicturesOrdered: LeaguePicture[]
   ): Observable<LeaguePicture[]> {
     return this.leaguePictures$.pipe(
@@ -96,7 +164,29 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     );
   }
 
-  saveLeaguePictures(newLeaguePictures: FormData): Observable<LeaguePicture[]> {
+  removePreview(leaguePicture: LeaguePicture) {
+    this.removePreviewPictureAction.next(leaguePicture);
+  }
+
+  newLatestLeaguePictures$ = combineLatest([
+    this.addLeaguePictureAction,
+    this.leaguePictures$
+  ]).pipe(
+    switchMap(([newLeaguePicture]: [FormData, LeaguePicture[]]) => {
+      return this.createLeagueImagesAsync(newLeaguePicture);
+    })
+  );
+
+  createLeagueImages(leaguePictures: FormData) {
+    this.addLeaguePictureAction.next(leaguePictures);
+  }
+
+  private createLeagueImagesAsync(
+    newLeaguePictures: FormData
+  ): Observable<LeaguePicture[]> {
+    if (newLeaguePictures === null) {
+      return of([]);
+    }
     return combineLatest([
       this.leaguePictures$,
       this.http.post<LeaguePicture[]>(`${this.galleryUrl}`, newLeaguePictures)
@@ -113,9 +203,21 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
           return existingLeagueImages;
         }
       ),
-      tap(updatedLeagueImages =>
-        this.leaguePicturesSubject$.next(updatedLeagueImages)
-      )
+      tap(_ => {
+        this.snackBarService.openSnackBarFromComponent(
+          "Successfully created gallery photo",
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      }),
+      catchError(() => {
+        this.snackBarService.openSnackBarFromComponent(
+          "Error occured while creating gallery photo",
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
+      })
     );
   }
 }

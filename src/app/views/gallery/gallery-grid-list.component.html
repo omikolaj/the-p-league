@@ -21,8 +21,13 @@
       </mat-card-header>
 
       <div mat-card-image>
-        <app-gallery-viewer [options]="galleryOptions" [images]="galleryImages">
-        </app-gallery-viewer>
+        <ng-container *ngIf="galleryImages$ | async as galleryImages">
+          <app-gallery-viewer
+            [options]="galleryOptions"
+            [images]="galleryImages"
+          >
+          </app-gallery-viewer>
+        </ng-container>
       </div>
 
       <mat-card-content>

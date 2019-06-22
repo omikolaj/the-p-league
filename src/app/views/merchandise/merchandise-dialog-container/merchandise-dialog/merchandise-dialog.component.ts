@@ -34,7 +34,7 @@ import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { switchMap, flatMap, tap } from "rxjs/operators";
 import { GearItemUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
 import { GearItem } from "src/app/core/models/gear-item.model";
@@ -121,6 +121,7 @@ export class MerchandiseDialogComponent implements OnInit {
             }),
             tap((gearItem: GearItem) => {
               this.gearItem = cloneDeep(gearItem);
+              console.log(this.gearItem);
             })
           )
           .subscribe()
@@ -133,43 +134,9 @@ export class MerchandiseDialogComponent implements OnInit {
     this.dialogRef.close();
     const gearItem: GearItem = this.gearItemObjectForDelivery();
     if (this.editMode) {
-      this.merchandiseService.updateGearItem(gearItem).subscribe(
-        (updatedGearItems: GearItem[]) => {
-          console.log("[GEARITEM UPDATED SUCCESS]", updatedGearItems);
-          this.snackBarService.openSnackBarFromComponent(
-            `Successfully updated ${gearItem.name}`,
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          console.log("[GEARITEM UPDATE ERROR]", err);
-          this.snackBarService.openSnackBarFromComponent(
-            `Error occured while updating ${gearItem.name}`,
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-        }
-      );
+      this.merchandiseService.updateGearItem(gearItem);
     } else {
-      this.merchandiseService.createGearItem(gearItem).subscribe(
-        (gearItems: GearItem[]) => {
-          console.log("[GEARITEM CREATED]", gearItem);
-          this.snackBarService.openSnackBarFromComponent(
-            `Successfully created ${gearItem.name}`,
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          console.log("[GEARITEM CREATION ERROR]", err);
-          this.snackBarService.openSnackBarFromComponent(
-            `Error occured while creating ${gearItem.name}`,
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-        }
-      );
+      this.merchandiseService.createGearItem(gearItem);
     }
   }
 
@@ -285,7 +252,6 @@ export class MerchandiseDialogComponent implements OnInit {
         );
       }
     }
-    //this.gearItemForm.controls["images"].setValue(this.gearItemImages);
   }
 
   // Removes user defined image from the uploaded array of images

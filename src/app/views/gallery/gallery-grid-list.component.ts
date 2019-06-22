@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { LeaguePicture } from "src/app/core/models/league-picture.model";
-import { Observable, of, Subscription } from "rxjs";
+import { Observable, of, Subscription, combineLatest } from "rxjs";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
-import { catchError } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
 import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
 
@@ -77,12 +77,25 @@ export class GalleryGridListComponent implements OnInit {
 
   isAdmin: boolean = false;
 
-  galleryImages$: Observable<
+  galleryImagess$: Observable<
     LeaguePicture[]
   > = this.galleryService.leaguePictures$.pipe(
     catchError(() => {
-      console.log("[ERROR IN GALLERY GRID STREAM]");
       return of(null);
+    })
+  );
+
+  galleryImages$ = combineLatest([
+    this.galleryService.leaguePictures$,
+    this.galleryService.newLatestLeaguePictures$,
+    this.galleryService.deleteLeaguePicturesLatest$
+  ]).pipe(
+    map(([leaguePictures, latestLeaguePictures]) => {
+      console.log("INSIDE GALLERY IMAGES grid list");
+      console.log("previous gallery images", this.galleryImages);
+      console.log("current gallery images", leaguePictures);
+      this.galleryImages = [...leaguePictures];
+      return leaguePictures;
     })
   );
 
@@ -94,12 +107,12 @@ export class GalleryGridListComponent implements OnInit {
   ngOnInit() {
     this.isAdmin = this.route.snapshot.data.roles.includes(Role.Admin);
 
-    this.subscription = this.galleryService.leaguePicturesSubject$.subscribe(
-      (leaguePictures: LeaguePicture[]) => {
-        console.log("[Getting Updated Photos Gallery Grid]", leaguePictures);
-        this.galleryImages = [...leaguePictures];
-      }
-    );
+    // this.subscription = this.galleryService.leaguePicturesSubject$.subscribe(
+    //   (leaguePictures: LeaguePicture[]) => {
+    //     console.log("[Getting Updated Photos Gallery Grid]", leaguePictures);
+    //     this.galleryImages = [...leaguePictures];
+    //   }
+    // );
   }
 
   ngOnDestroy() {

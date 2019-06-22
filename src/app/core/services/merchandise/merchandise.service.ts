@@ -1,63 +1,101 @@
 import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, of } from "rxjs";
 import { GearItem } from "../../models/gear-item.model";
-import { flatMap, map, tap, shareReplay } from "rxjs/operators";
+import {
+  flatMap,
+  map,
+  tap,
+  shareReplay,
+  switchMap,
+  catchError
+} from "rxjs/operators";
 import { combineLatest } from "rxjs";
 import { Size } from "../../models/gear-size.model";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {
   Resolve,
   ActivatedRouteSnapshot,
   RouterStateSnapshot
 } from "@angular/router";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
-  headers = {
-    headers: new HttpHeaders({
-      "Content-Type": "application/json"
-    })
-  };
   private readonly merchandiseUrl: string = "merchandise";
-
-  gearItemsSubject$ = new BehaviorSubject<GearItem[]>([]);
-  gearItems$: Observable<GearItem[]> = this.gearItemsSubject$.asObservable();
+  updateGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
+    GearItem
+  >(null);
+  addGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<GearItem>(
+    null
+  );
+  deleteGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
+    GearItem
+  >(null);
+  pageChangeAction: BehaviorSubject<{}> = new BehaviorSubject<{}>(null);
+  gearItems$: Observable<GearItem[]> = new BehaviorSubject<GearItem[]>(
+    []
+  ).asObservable();
   gearItems: GearItem[];
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private snackBarService: SnackBarService
+  ) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<any> | Promise<any> | any {
-    return (this.gearItems$ = this.http
-      .get<GearItem[]>(this.merchandiseUrl)
-      .pipe(
-        tap(gearItems => this.gearItemsSubject$.next(gearItems)),
-        map((gearItems: GearItem[]) => (this.gearItems = gearItems).reverse()),
-        shareReplay()
-      ));
-  }
-
-  fetchAllGearItems(): Observable<GearItem[]> {
+    this.gearItems$ = this.http.get<GearItem[]>(this.merchandiseUrl).pipe(
+      map((gearItems: GearItem[]) => (this.gearItems = gearItems).reverse()),
+      catchError(() => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while getting store items. Please come back later`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
+      }),
+      shareReplay()
+    );
     return this.gearItems$;
   }
 
-  findGearItem(ID: number): Observable<GearItem> {
+  onPageChange() {
+    return this.pageChangeAction.next({});
+  }
+
+  findGearItem(id: number): Observable<GearItem> {
     return this.gearItems$.pipe(
       flatMap((gearItems: GearItem[]) =>
-        gearItems.filter((gearItem: GearItem) => gearItem.id === ID)
+        gearItems.filter((gearItem: GearItem) => gearItem.id === id)
       )
     );
   }
 
-  gearItemsTest$ = combineLatest();
+  updatedGearItems$ = combineLatest([
+    this.updateGearItemAction,
+    this.gearItems$
+  ]).pipe(
+    switchMap(([updatedGearItem]) => {
+      return this.updateGearItemAsync(updatedGearItem);
+    })
+  );
 
-  updateGearItem(gearItem: GearItem): Observable<GearItem[]> {
-    this.gearItems$;
-    return (this.gearItems$ = combineLatest([
+  updateGearItem(gearItem: GearItem) {
+    this.updateGearItemAction.next(gearItem);
+  }
+
+  updateGearItemAsync(gearItem: GearItem): Observable<GearItem[]> {
+    if (gearItem === null) {
+      return of([]);
+    }
+    return combineLatest([
       this.gearItems$,
       this.http.patch<GearItem>(
         `${this.merchandiseUrl}/${gearItem.id}`,
@@ -65,7 +103,6 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       )
     ]).pipe(
       map(([gearItems, updatedGearItem]: [GearItem[], GearItem]) => {
-        console.log("Inside updateGearItem service");
         const index: number = gearItems
           .map((gearItem: GearItem) => gearItem.id)
           .indexOf(gearItem.id);
@@ -74,13 +111,41 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         }
         return gearItems;
       }),
-      tap(updatedGearItems => {
-        this.gearItemsSubject$.next(updatedGearItems);
+      tap(_ => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Successfully updated ${gearItem.name} gear item`,
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      }),
+      catchError(() => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while updating ${gearItem.name} gear item`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
       })
-    ));
+    );
   }
 
-  createGearItem(gearItem: GearItem): Observable<GearItem[]> {
+  newLatestGearItems$ = combineLatest([
+    this.addGearItemAction,
+    this.gearItems$
+  ]).pipe(
+    switchMap(([newGearItem]) => {
+      return this.createGearItemAsync(newGearItem);
+    })
+  );
+
+  createGearItem(gearItem: GearItem) {
+    this.addGearItemAction.next(gearItem);
+  }
+
+  createGearItemAsync(gearItem: GearItem): Observable<GearItem[]> {
+    if (gearItem === null) {
+      return of([]);
+    }
     return combineLatest([
       this.gearItems$,
       this.http.post<GearItem>(`${this.merchandiseUrl}`, gearItem.formData)
@@ -89,25 +154,69 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         gearItems.unshift(newGearItem);
         return gearItems;
       }),
-      tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems))
+      tap(_ => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Successfully created ${gearItem.name} gear item`,
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      }),
+      catchError(() => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while creating ${gearItem.name} gear item`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
+      })
     );
   }
 
-  deleteGearItem(Id: number) {
+  deleteGearItemsLatest$ = combineLatest([
+    this.deleteGearItemAction,
+    this.gearItems$
+  ]).pipe(
+    switchMap(([gearItemToDelete]) => {
+      return this.deleteGearItemAsync(gearItemToDelete);
+    })
+  );
+
+  deleteGearItem(gearItem: GearItem) {
+    this.deleteGearItemAction.next(gearItem);
+  }
+
+  deleteGearItemAsync(gearItemToDelete: GearItem) {
+    if (gearItemToDelete === null) {
+      return of([]);
+    }
     return combineLatest([
       this.gearItems$,
-      this.http.delete<void>(`${this.merchandiseUrl}/${Id}`, this.headers)
+      this.http.delete<void>(`${this.merchandiseUrl}/${gearItemToDelete.id}`)
     ]).pipe(
       map(([gearItems]: [GearItem[], void]) => {
         const index: number = gearItems
           .map((gearItem: GearItem) => gearItem.id)
-          .indexOf(Id);
+          .indexOf(gearItemToDelete.id);
         if (index > -1) {
           gearItems.splice(index, 1);
         }
         return gearItems;
       }),
-      tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems))
+      tap(_ => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Successfully deleted ${gearItemToDelete.name} gear item`,
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      }),
+      catchError(err => {
+        this.snackBarService.openSnackBarFromComponent(
+          `Error occured while deleting ${gearItemToDelete.name} gear item`,
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
+      })
     );
   }
 }

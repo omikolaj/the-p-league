@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ViewChild,
-  ViewChildren
-} from "@angular/core";
+import { Component, OnInit, Input, ViewChild } from "@angular/core";
 import { LeaguePicture } from "src/app/core/models/league-picture.model";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
 import {
@@ -15,15 +9,9 @@ import {
   CdkDragMove
 } from "@angular/cdk/drag-drop";
 import { scan, map } from "rxjs/operators";
-import { Subject, Subscription, empty, Observable } from "rxjs";
+import { Subject, Subscription, combineLatest } from "rxjs";
 import { ViewportRuler } from "@angular/cdk/overlay";
-import {
-  MatCheckboxChange,
-  MatSnackBar,
-  MatSnackBarConfig
-} from "@angular/material";
-import { v4 as uuid } from "uuid";
-import { SnackBarComponent } from "src/app/shared/components/snack-bar/snack-bar.component";
+import { MatCheckboxChange } from "@angular/material";
 import {
   SnackBarService,
   SnackBarEvent
@@ -50,9 +38,10 @@ export class AdminControlComponent implements OnInit {
   //#endregion
 
   @Input("images") galleryImages: LeaguePicture[];
+
   panelOpenState = false;
 
-  selectedImagesFormDate: FormData = new FormData();
+  selectedImagesFormData: FormData = new FormData();
   newLeaguePictures: LeaguePicture[] = [];
 
   uploadPicture: Subject<LeaguePicture> = new Subject<LeaguePicture>();
@@ -79,8 +68,7 @@ export class AdminControlComponent implements OnInit {
 
   constructor(
     private viewportRuler: ViewportRuler,
-    private galleryService: GalleryService,
-    private snackBarService: SnackBarService
+    private galleryService: GalleryService
   ) {
     this.target = null;
     this.source = null;
@@ -96,18 +84,13 @@ export class AdminControlComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscriptions.unsubscribe();
     this.fileReaders.forEach(fR => fR.abort());
   }
 
   uploadPreview() {}
 
   onChangeOrder() {
-    this.subscriptions.add(
-      this.galleryService
-        .updateLeaguePicturesOrder(this.galleryImages)
-        .subscribe()
-    );
+    this.galleryService.updateLeaguePicturesOrder(this.galleryImages);
   }
 
   onChange(event: MatCheckboxChange, index: number) {
@@ -134,26 +117,7 @@ export class AdminControlComponent implements OnInit {
     const photosToDelete: LeaguePicture[] = this.galleryImages.filter(
       (lP: LeaguePicture) => lP.delete === true
     );
-    this.subscriptions.add(
-      this.galleryService.removeLeaguePictures(photosToDelete).subscribe(
-        updatedPhotos => {
-          this.galleryImages = [...updatedPhotos];
-          this.snackBarService.openSnackBarFromComponent(
-            "Successfully deleted selected photos",
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          this.snackBarService.openSnackBarFromComponent(
-            "Error occured deleting selected items",
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-          console.log("Error occured deleting selected items ", err);
-        }
-      )
-    );
+    this.galleryService.deleteLeaguePictures(photosToDelete);
   }
 
   disableDelete(): boolean {
@@ -186,7 +150,7 @@ export class AdminControlComponent implements OnInit {
         small: "../../../../assets/default_gallery.jpg"
       };
 
-      this.selectedImagesFormDate.append(
+      this.selectedImagesFormData.append(
         LeagueImageUpload.LeagueImages,
         fileList[index]
       );
@@ -220,27 +184,27 @@ export class AdminControlComponent implements OnInit {
   }
 
   onSave() {
-    this.galleryService
-      .saveLeaguePictures(this.selectedImagesFormDate)
-      .subscribe(
-        _ => {
-          this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
-            this.uploadPicture.next(leaguePicture);
-          });
-          this.snackBarService.openSnackBarFromComponent(
-            "Successfully Added New Images",
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          this.snackBarService.openSnackBarFromComponent(
-            "Error occured while adding images",
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-        }
-      );
+    this.galleryService.createLeagueImages(this.selectedImagesFormData);
+    // .saveLeaguePictures(this.selectedImagesFormData)
+    // .subscribe(
+    //   _ => {
+    //     this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
+    //       this.uploadPicture.next(leaguePicture);
+    //     });
+    //     this.snackBarService.openSnackBarFromComponent(
+    //       "Successfully Added New Images",
+    //       "Dismiss",
+    //       SnackBarEvent.Success
+    //     );
+    //   },
+    //   err => {
+    //     this.snackBarService.openSnackBarFromComponent(
+    //       "Error occured while adding images",
+    //       "Dismiss",
+    //       SnackBarEvent.Error
+    //     );
+    //   }
+    // );
   }
 
   // add() {
