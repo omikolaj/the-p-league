@@ -10,7 +10,7 @@ import {
   Events
 } from "src/app/core/services/event-bus/event-bus.service";
 import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
-import { Subscription, Subject, Observable, BehaviorSubject } from "rxjs";
+import { Subscription, Subject, Observable, BehaviorSubject, of } from "rxjs";
 import { tap, map, switchMap, mapTo } from "rxjs/operators";
 import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
 import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
@@ -42,27 +42,9 @@ export class MerchandiseListComponent implements OnInit {
 
   isAdmin: boolean = false;
 
-  // gearItems$: Observable<
-  //   GearItem[]
-  // > = this.merchandiseService.gearItemsSubject$.pipe(
-  //   tap((gearItems: GearItem[]) => {
-  //     console.log("INSIDE MAP ON MERCH LIST INIT", gearItems);
-  //     const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
-  //       [...gearItems],
-  //       [...this.gearItems],
-  //       [...this.pagedGearItems],
-  //       this.pageSize,
-  //       this.paginator
-  //     );
-
-  //     this.length = gearItems.length;
-  //     this.gearItems = [...gearItems];
-  //     this.pagedGearItems = pagedItems;
-  //     console.log("Paged Items are", this.pagedGearItems);
-  //   })
-  // );
-
-  gearItems$: Observable<GearItem[]> = this.merchandiseService.gearItems$.pipe(
+  gearItems$: Observable<
+    GearItem[]
+  > = this.merchandiseService.gearItemsSubject$.pipe(
     tap((gearItems: GearItem[]) => {
       console.log("INSIDE MAP ON MERCH LIST INIT", gearItems);
       const pagedItems: GearItem[] = this.paginatorService.getPagedItems(

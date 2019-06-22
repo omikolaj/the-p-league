@@ -26,9 +26,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
   gearItems$: Observable<GearItem[]> = this.gearItemsSubject$.asObservable();
   gearItems: GearItem[];
 
-  constructor(private http: HttpClient) {
-    //this.gearItems$ = of(storeItems);
-  }
+  constructor(private http: HttpClient) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
@@ -55,8 +53,11 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     );
   }
 
+  gearItemsTest$ = combineLatest();
+
   updateGearItem(gearItem: GearItem): Observable<GearItem[]> {
-    return combineLatest([
+    this.gearItems$;
+    return (this.gearItems$ = combineLatest([
       this.gearItems$,
       this.http.patch<GearItem>(
         `${this.merchandiseUrl}/${gearItem.id}`,
@@ -64,6 +65,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       )
     ]).pipe(
       map(([gearItems, updatedGearItem]: [GearItem[], GearItem]) => {
+        console.log("Inside updateGearItem service");
         const index: number = gearItems
           .map((gearItem: GearItem) => gearItem.id)
           .indexOf(gearItem.id);
@@ -71,9 +73,11 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
           gearItems.splice(index, 1, updatedGearItem);
         }
         return gearItems;
+      }),
+      tap(updatedGearItems => {
+        this.gearItemsSubject$.next(updatedGearItems);
       })
-      // tap(updatedGearItems => this.gearItemsSubject$.next(updatedGearItems))
-    );
+    ));
   }
 
   createGearItem(gearItem: GearItem): Observable<GearItem[]> {

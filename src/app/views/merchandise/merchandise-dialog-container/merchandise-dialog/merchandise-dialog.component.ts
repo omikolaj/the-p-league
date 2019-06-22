@@ -119,7 +119,9 @@ export class MerchandiseDialogComponent implements OnInit {
               this.editMode = params["id"] != null;
               return this.merchandiseService.findGearItem(+params["id"]);
             }),
-            tap((gearItem: GearItem) => (this.gearItem = cloneDeep(gearItem)))
+            tap((gearItem: GearItem) => {
+              this.gearItem = cloneDeep(gearItem);
+            })
           )
           .subscribe()
       );
@@ -150,7 +152,6 @@ export class MerchandiseDialogComponent implements OnInit {
         }
       );
     } else {
-      //this.merchandiseService.createGearItemAction(gearItem);
       this.merchandiseService.createGearItem(gearItem).subscribe(
         (gearItems: GearItem[]) => {
           console.log("[GEARITEM CREATED]", gearItem);
