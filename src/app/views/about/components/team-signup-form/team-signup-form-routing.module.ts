@@ -5,8 +5,13 @@ import { TeamSignupFormComponent } from "./team-signup-form.component";
 const routes: Routes = [
   {
     path: "",
-    component: TeamSignupFormComponent,
-    data: { animation: "TeamSignUpPage" }
+    children: [
+      {
+        path: "signup",
+        component: TeamSignupFormComponent,
+        data: { animation: "TeamSignUpPage" }
+      }
+    ]
   }
 ];
 

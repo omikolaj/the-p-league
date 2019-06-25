@@ -22,20 +22,22 @@
       The P League Collection
     </h2>
 
-    <div class="admin" *ngIf="isAdmin">
-      <span [ngClass]="routeAnimationsElements"
-        >As an admin you can modify your inventory here</span
-      >
-      <button
-        mat-raised-button
-        [ngClass]="routeAnimationsElements"
-        color="accent"
-        type="button"
-        (click)="onAddGearItems()"
-      >
-        Upload Gear
-      </button>
-    </div>
+    <ng-container *ngIf="this.authService.isLoggedIn$ | async">
+      <div class="admin" *ngIf="isAdmin">
+        <span [ngClass]="routeAnimationsElements"
+          >As an admin you can modify your inventory here</span
+        >
+        <button
+          mat-raised-button
+          [ngClass]="routeAnimationsElements"
+          color="accent"
+          type="button"
+          (click)="onAddGearItems()"
+        >
+          Upload Gear
+        </button>
+      </div>
+    </ng-container>
 
     <div class="merchandise-cards">
       <ng-container *ngIf="gearItems$ | async as gearItems">

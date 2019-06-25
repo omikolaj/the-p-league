@@ -1,7 +1,16 @@
 import { Injectable } from "@angular/core";
-import { Observable, of, BehaviorSubject, combineLatest } from "rxjs";
+import { Observable, of, BehaviorSubject, combineLatest, Subject } from "rxjs";
 import { LeaguePicture } from "../../models/league-picture.model";
-import { map, shareReplay, tap, switchMap, catchError } from "rxjs/operators";
+import {
+  map,
+  shareReplay,
+  tap,
+  switchMap,
+  catchError,
+  scan,
+  concatMap,
+  mergeMap
+} from "rxjs/operators";
 import { forEach } from "@angular/router/src/utils/collection";
 import { v4 as uuid } from "uuid";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -48,6 +57,23 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     LeaguePicture
   > = new BehaviorSubject<LeaguePicture>(null);
 
+  newLeaguePictures: LeaguePicture[] = [];
+  uploadPicture: Subject<LeaguePicture> = new Subject<LeaguePicture>();
+  leaguePicturesPreview$ = this.uploadPicture.pipe(
+    scan<LeaguePicture, LeaguePicture[]>(
+      (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
+        if (pictures.includes(newPicture)) {
+          this.newLeaguePictures = pictures.filter(p => p !== newPicture);
+          pictures = [...this.newLeaguePictures];
+          return pictures;
+        } else {
+          return [...pictures, newPicture];
+        }
+      },
+      new Array<LeaguePicture>()
+    )
+  );
+
   constructor(
     private http: HttpClient,
     private snackBarService: SnackBarService
@@ -58,8 +84,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     state: RouterStateSnapshot
   ): Observable<any> | Promise<any> | any {
     this.leaguePictures$ = this.http.get<LeaguePicture[]>(this.galleryUrl).pipe(
-      map((leaguePictures: LeaguePicture[]) =>
-        (this.leaguePictures = leaguePictures).reverse()
+      map(
+        (leaguePictures: LeaguePicture[]) =>
+          (this.leaguePictures = leaguePictures)
       ),
       catchError(() => {
         this.snackBarService.openSnackBarFromComponent(
@@ -133,13 +160,15 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     );
   }
 
-  updatedLeaguePictures$ = combineLatest([
+  updatedLeaguePicturesOrder$ = combineLatest([
     this.updateLeaguePictureOrderAction,
     this.leaguePictures$
   ]).pipe(
-    switchMap(([updatedLeaguePictures]: [LeaguePicture[], LeaguePicture[]]) => {
-      return this.updateLeaguePicturesOrderAsync(updatedLeaguePictures);
-    })
+    switchMap(
+      ([updatedLeaguePictureOrder]: [LeaguePicture[], LeaguePicture[]]) => {
+        return this.updateLeaguePicturesOrderAsync(updatedLeaguePictureOrder);
+      }
+    )
   );
 
   updateLeaguePicturesOrder(leaguePictures: LeaguePicture[]) {
@@ -148,18 +177,53 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
 
   private updateLeaguePicturesOrderAsync(
     leaguePicturesOrdered: LeaguePicture[]
-  ): Observable<LeaguePicture[]> {
-    return this.leaguePictures$.pipe(
-      map((leaguePictures: LeaguePicture[]) => {
-        if (leaguePicturesOrdered.length != leaguePictures.length) {
-          console.log(
-            "The array length of ordered pictures did not match the length of existing pictures"
-          );
-          this.leaguePicturesSubject$.next(leaguePictures);
-          return leaguePictures;
+  ) {
+    if (leaguePicturesOrdered === null) {
+      return of([]);
+    }
+    let headers = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json"
+      })
+    };
+    return combineLatest([
+      this.updateLeaguePictureOrderAction,
+      this.leaguePictures$
+    ]).pipe(
+      map(
+        ([leaguePicturesOrdered, leaguePictures]: [
+          LeaguePicture[],
+          LeaguePicture[]
+        ]) => {
+          if (leaguePicturesOrdered.length != leaguePictures.length) {
+            console.log(
+              "The array length of ordered pictures did not match the length of existing pictures"
+            );
+            return leaguePictures;
+          }
+          // clear old array
+          leaguePictures.length = 0;
+          // append new contents of the new array to the old array since
+          // order has changed
+          leaguePictures.push.apply(leaguePictures, leaguePicturesOrdered);
+
+          return leaguePicturesOrdered;
         }
-        this.leaguePicturesSubject$.next(leaguePicturesOrdered);
-        return (leaguePictures = leaguePicturesOrdered);
+      ),
+      map(leaguePicturesOrdered => {
+        // assign orderIds to persist the order
+        for (let index = 0; index < leaguePicturesOrdered.length; index++) {
+          let leaguePicture = leaguePicturesOrdered[index];
+          leaguePicture.orderId = index + 1;
+        }
+        return leaguePicturesOrdered;
+      }),
+      mergeMap(leaguePicturesOrdered => {
+        return this.http.post<LeaguePicture[]>(
+          `${this.galleryUrl}/order`,
+          JSON.stringify(leaguePicturesOrdered),
+          headers
+        );
       })
     );
   }
@@ -203,6 +267,15 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
           return existingLeagueImages;
         }
       ),
+      // This tap is necessary to clear the preview list after successful upload
+      // we have to re-emit each uploaded picture because in the leaguePicturesPreview$
+      // we have logic to check if the item being emitted
+      // exists in the array, if it does remove it, if it doesn't add it
+      tap(_ => {
+        this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
+          this.uploadPicture.next(leaguePicture);
+        });
+      }),
       tap(_ => {
         this.snackBarService.openSnackBarFromComponent(
           "Successfully created gallery photo",

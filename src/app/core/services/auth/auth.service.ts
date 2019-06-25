@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpHeaders, HttpClient } from "@angular/common/http";
 import { Login } from "../../models/auth/login.model";
 import { Observable, of, BehaviorSubject } from "rxjs";
-import { tap, map } from "rxjs/operators";
+import { tap, map, shareReplay } from "rxjs/operators";
 import * as moment from "moment";
 import * as jwt_decode from "jwt-decode";
 import { JwtPayload } from "../../models/auth/token/JwtPayload.model";
@@ -20,6 +20,16 @@ export class AuthService {
     })
   };
 
+  private isLoggedInSub: BehaviorSubject<boolean> = new BehaviorSubject<
+    boolean
+  >(false);
+  isLoggedIn$ = this.isLoggedInSub.asObservable().pipe(
+    map(isLoggedIn => {
+      return this.isLoggedIn;
+    }),
+    shareReplay()
+  );
+
   isAdministrator$: Observable<boolean>;
   isAdministrator: boolean;
 
@@ -32,7 +42,8 @@ export class AuthService {
       .pipe(
         map(appToken => {
           return this.setSession(appToken);
-        })
+        }),
+        tap(_ => this.isLoggedInSub.next(true))
       );
   }
 
@@ -41,7 +52,8 @@ export class AuthService {
       map(res => {
         localStorage.removeItem(LOCAL_STORAGE_ITEM);
         return res;
-      })
+      }),
+      tap(_ => this.isLoggedInSub.next(false))
     );
   }
 
@@ -69,7 +81,6 @@ export class AuthService {
     };
     const localStorageItemJSON: string = JSON.stringify(localStorageItem);
     localStorage.setItem(LOCAL_STORAGE_ITEM, localStorageItemJSON);
-
     return appToken;
   }
 
@@ -97,6 +108,9 @@ export class AuthService {
 
   get isLoggedIn(): boolean {
     console.log("Is logged in ", moment().isBefore(this.getExpiration));
+    if (this.getExpiration === null) {
+      return false;
+    }
     return moment().isBefore(this.getExpiration);
   }
 
@@ -104,6 +118,10 @@ export class AuthService {
     const localStorageItem: LocalStorageItem = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_ITEM)
     ) as LocalStorageItem;
+    if (localStorageItem === null) {
+      // if localStorageItem is empty user is logged out
+      return null;
+    }
     const expiration = JSON.parse(localStorageItem.expires_at);
     return moment(expiration);
   }
@@ -115,5 +133,9 @@ export class AuthService {
       console.log("[ERROR WHILE DECODING TOKEN]", jwt);
       return null;
     }
+  }
+
+  private expired(): moment.Moment {
+    return moment.invalid({ userInvalidated: true });
   }
 }

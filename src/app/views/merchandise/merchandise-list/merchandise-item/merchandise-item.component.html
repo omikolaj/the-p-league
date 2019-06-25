@@ -45,12 +45,14 @@
     </div>
   </mat-card-content>
 
-  <mat-card-actions *ngIf="isAdmin">
-    <button mat-raised-button color="accent" (click)="onEditGearItem()">
-      EDIT
-    </button>
-    <button mat-raised-button color="warn" (click)="onDeleteGearItem()">
-      DELETE
-    </button>
-  </mat-card-actions>
+  <ng-container *ngIf="this.authService.isLoggedIn$ | async">
+    <mat-card-actions *ngIf="isAdmin">
+      <button mat-raised-button color="accent" (click)="onEditGearItem()">
+        EDIT
+      </button>
+      <button mat-raised-button color="warn" (click)="onDeleteGearItem()">
+        DELETE
+      </button>
+    </mat-card-actions>
+  </ng-container>
 </mat-card>

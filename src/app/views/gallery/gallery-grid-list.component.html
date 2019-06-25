@@ -1,8 +1,10 @@
 <div style="margin-top: 75px;">
   <h3 class="heading gradient">League Snapshots</h3>
   <div class="admin">
-    <ng-container *ngIf="isAdmin">
-      <app-admin-control [images]="galleryImages"></app-admin-control>
+    <ng-container *ngIf="this.authService.isLoggedIn$ | async">
+      <ng-container *ngIf="isAdmin">
+        <app-admin-control [images]="galleryImages"></app-admin-control>
+      </ng-container>
     </ng-container>
   </div>
 

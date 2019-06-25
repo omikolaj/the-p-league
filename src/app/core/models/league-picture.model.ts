@@ -9,4 +9,5 @@ export interface LeaguePicture extends INgxGalleryImage, ImageBase {
   delete?: boolean;
   formData?: FormData;
   preview?: Preview;
+  orderId?: number;
 }

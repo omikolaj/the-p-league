@@ -5,6 +5,7 @@ import { MerchandiseService } from "src/app/core/services/merchandise/merchandis
 import { Size } from "src/app/core/models/gear-size.model";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
+import { AuthService } from "src/app/core/services/auth/auth.service";
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
@@ -61,7 +62,8 @@ export class MerchandiseItemComponent {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private merchandiseService: MerchandiseService
+    private merchandiseService: MerchandiseService,
+    public authService: AuthService
   ) {}
 
   onEditGearItem() {

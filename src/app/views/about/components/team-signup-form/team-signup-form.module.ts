@@ -4,10 +4,10 @@ import { TeamSignupFormRoutingModule } from "./team-signup-form-routing.module";
 import { TeamSignupFormComponent } from "./team-signup-form.component";
 import { SharedModule } from "src/app/shared/shared.module";
 import { CarouselModule } from "ngx-bootstrap/carousel";
-import { InformationalMessageComponent } from "./informational-message/informational-message.component";
+import { InformationalDialogComponent } from "./informational-dialog/informational-dialog.component";
 
 @NgModule({
-  declarations: [TeamSignupFormComponent, InformationalMessageComponent],
+  declarations: [TeamSignupFormComponent, InformationalDialogComponent],
   imports: [
     CommonModule,
     TeamSignupFormRoutingModule,

@@ -18,12 +18,15 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-      <ng-container *ngIf="newLeaguePictures.length === 0">
+      <ng-container *ngIf="galleryService.newLeaguePictures.length === 0">
         <p class="empty-images">
           You don't have any images for upload
         </p>
       </ng-container>
-      <div #leaguePics *ngIf="leaguePicturesPreview$ | async as leaguePictures">
+      <div
+        #leaguePics
+        *ngIf="galleryService.leaguePicturesPreview$ | async as leaguePictures"
+      >
         <div class="photos-container">
           <ng-container
             *ngFor="let leaguePicture of leaguePictures; let i = index"
@@ -62,7 +65,9 @@
         <button
           mat-raised-button
           color="accent"
-          [disabled]="newLeaguePictures.length > 0 ? 'false' : 'true'"
+          [disabled]="
+            galleryService.newLeaguePictures.length > 0 ? 'false' : 'true'
+          "
           (click)="onSave()"
         >
           Save

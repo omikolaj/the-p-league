@@ -21,6 +21,7 @@ import { map } from "rxjs/operators";
 import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
 import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
 import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
+import { AuthService } from "src/app/core/services/auth/auth.service";
 
 @Component({
   selector: "app-merchandise-list",
@@ -78,7 +79,8 @@ export class MerchandiseListComponent implements OnInit {
     private route: ActivatedRoute,
     private scroll: ScrollDispatcher,
     private paginatorService: PaginatorService,
-    public deviceInfo: DeviceInfoService
+    public deviceInfo: DeviceInfoService,
+    public authService: AuthService
   ) {}
 
   ngOnInit() {

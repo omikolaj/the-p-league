@@ -18,8 +18,12 @@ export class RolesResolver implements Resolve<Observable<string[]>> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<any> | Promise<any> | any {
-    return this.http.get<string[]>(
-      `users/${this.authService.currentUserId}/roles`
-    );
+    if (this.authService.isLoggedIn) {
+      return this.http.get<string[]>(
+        `users/${this.authService.currentUserId}/roles`
+      );
+    }
+    // if user is not logged in return empty array of 'roles'
+    return [];
   }
 }

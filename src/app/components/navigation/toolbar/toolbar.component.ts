@@ -4,7 +4,8 @@ import {
   EventEmitter,
   Input,
   ChangeDetectorRef,
-  OnInit
+  OnInit,
+  OnDestroy
 } from "@angular/core";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { Observable, Subscription } from "rxjs";
@@ -20,6 +21,11 @@ import {
   animate,
   state
 } from "@angular/animations";
+import { AuthService } from "src/app/core/services/auth/auth.service";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 
 @Component({
   selector: "app-toolbar",
@@ -46,7 +52,7 @@ import {
     ])
   ]
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent implements OnInit, OnDestroy {
   @Output() sidenavToggle = new EventEmitter();
   @Input() appTitle: string;
   @Input() logo: string;
@@ -68,7 +74,9 @@ export class ToolbarComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private eventbus: EventBusService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    public authService: AuthService,
+    private snackBar: SnackBarService
   ) {}
 
   ngOnInit() {
@@ -85,11 +93,32 @@ export class ToolbarComponent implements OnInit {
     );
   }
 
-  ngOnDestory() {
+  ngOnDestroy(): void {
     this.headerSubscribtion.unsubscribe();
   }
 
   onToggleSidenav(): void {
     this.sidenavToggle.emit();
+  }
+
+  logout() {
+    this.headerSubscribtion.add(
+      this.authService.logout().subscribe(
+        loggedOut => {
+          this.snackBar.openSnackBarFromComponent(
+            "You have successfully logged out",
+            "Dismiss",
+            SnackBarEvent.Success
+          );
+        },
+        err => {
+          this.snackBar.openSnackBarFromComponent(
+            "An error occured while logging out",
+            "Dismiss",
+            SnackBarEvent.Error
+          );
+        }
+      )
+    );
   }
 }
