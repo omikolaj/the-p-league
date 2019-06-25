@@ -59,7 +59,8 @@
       >Let's keep it simple and play ball
     </span>
     <div [ngClass]="routeAnimationsElements">
-      <fa-icon [ngStyle]="null"
+      <fa-icon
+        [ngStyle]="null"
         [@pulsing]="pulsingState"
         (@pulsing.done)="onDonePulsing()"
         class="basketball ball"
@@ -67,8 +68,6 @@
         size="2x"
       ></fa-icon>
     </div>
-    <!-- [@bounce]="bounceState"
-    (@bounce.done)="onDoneBounce()" -->
     <ul [ngClass]="routeAnimationsElements" class="animations">
       <li>
         <p>Each league will have 8-20 teams</p>
@@ -104,7 +103,7 @@
 
     <div [ngClass]="routeAnimationsElements" class="actions">
       <a
-        routerLink="/team-signup"
+        routerLink="/team/signup"
         mat-raised-button
         class="actions-main pulsing"
         color="accent"

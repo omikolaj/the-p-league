@@ -14,7 +14,6 @@ export class MerchandiseDialogContainerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("[DIALOG CONTAINER]");
     // We are using setTimeout to defer this code to another JavaScript Virtual Machine turn.
     // This avoids the error in development "Expression has changed after it was checked".
     setTimeout(() => {

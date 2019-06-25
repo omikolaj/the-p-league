@@ -15,11 +15,6 @@ import {
   providedIn: "root"
 })
 export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
-  headers = {
-    headers: new HttpHeaders({
-      "Content-Type": "application/json"
-    })
-  };
   private readonly merchandiseUrl: string = "merchandise";
 
   gearItemsSubject$ = new BehaviorSubject<GearItem[]>([]);
@@ -64,7 +59,6 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       )
     ]).pipe(
       map(([gearItems, updatedGearItem]: [GearItem[], GearItem]) => {
-        console.log("Inside updateGearItem service");
         const index: number = gearItems
           .map((gearItem: GearItem) => gearItem.id)
           .indexOf(gearItem.id);

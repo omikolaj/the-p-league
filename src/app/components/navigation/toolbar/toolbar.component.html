@@ -53,15 +53,17 @@
           </button>
         </ng-container>
 
-        <a
-          fxFlexAlign="center"
-          fxHide.xs="true"
-          fxHide.lg="false"
-          style="color: white;"
-          routerLink="admin/login"
-        >
-          <button style="height: 100%" mat-button>Admin</button>
-        </a>
+        <ng-container *ngIf="this.authService.isLoggedIn$ | async">
+          <button
+            fxFlexAlign="center"
+            fxHide.xs="true"
+            fxHide.lg="false"
+            mat-button
+            (click)="logout()"
+          >
+            Logout
+          </button>
+        </ng-container>
       </div>
     </div>
   </mat-toolbar>

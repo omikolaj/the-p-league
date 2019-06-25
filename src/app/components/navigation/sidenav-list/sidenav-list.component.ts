@@ -1,4 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  OnDestroy
+} from "@angular/core";
 import {
   trigger,
   transition,
@@ -7,6 +14,13 @@ import {
   query,
   stagger
 } from "@angular/animations";
+import { AuthService } from "src/app/core/services/auth/auth.service";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { Subscription } from "rxjs";
+import { subscribeOn } from "rxjs/operators";
 
 @Component({
   selector: "app-sidenav-list",
@@ -28,7 +42,7 @@ import {
     ])
   ]
 })
-export class SidenavListComponent implements OnInit {
+export class SidenavListComponent implements OnInit, OnDestroy {
   sideNavAnimationState: string = "out";
   @Output() sideNavClose = new EventEmitter();
   @Input() appTitle: string;
@@ -36,10 +50,21 @@ export class SidenavListComponent implements OnInit {
   @Input() logo: string;
   logo_with_title: string = "../../../../assets/logo_no_title.png";
   sidenavListText: string[] = ["Merchandise", "Gallery"];
+  isLoggedIn: boolean = false;
+  subscription: Subscription;
 
-  constructor() {}
+  constructor(
+    private authService: AuthService,
+    private snackBar: SnackBarService
+  ) {
+    this.isLoggedIn = authService.isLoggedIn;
+  }
 
   ngOnInit() {}
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   onSideNavClose(): void {
     this.sideNavClose.emit();
@@ -57,5 +82,25 @@ export class SidenavListComponent implements OnInit {
   sideNavClosing() {
     console.log("SidenNavClose");
     this.sideNavAnimationState = "out";
+  }
+  logout() {
+    this.subscription.add(
+      this.authService.logout().subscribe(
+        loggedOut => {
+          this.snackBar.openSnackBarFromComponent(
+            "You have successfully logged out",
+            "Dismiss",
+            SnackBarEvent.Success
+          );
+        },
+        err => {
+          this.snackBar.openSnackBarFromComponent(
+            "An error occured while logging out",
+            "Dismiss",
+            SnackBarEvent.Error
+          );
+        }
+      )
+    );
   }
 }

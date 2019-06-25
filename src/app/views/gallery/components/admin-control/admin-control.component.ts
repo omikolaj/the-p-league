@@ -1,9 +1,8 @@
 import {
   Component,
-  OnInit,
   Input,
   ViewChild,
-  ViewChildren
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { LeaguePicture } from "src/app/core/models/league-picture.model";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
@@ -14,29 +13,19 @@ import {
   CdkDrag,
   CdkDragMove
 } from "@angular/cdk/drag-drop";
-import { scan, map } from "rxjs/operators";
-import { Subject, Subscription, empty, Observable } from "rxjs";
+import { Subscription } from "rxjs";
 import { ViewportRuler } from "@angular/cdk/overlay";
-import {
-  MatCheckboxChange,
-  MatSnackBar,
-  MatSnackBarConfig
-} from "@angular/material";
-import { v4 as uuid } from "uuid";
-import { SnackBarComponent } from "src/app/shared/components/snack-bar/snack-bar.component";
-import {
-  SnackBarService,
-  SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { MatCheckboxChange } from "@angular/material";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { LeagueImageUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
 
 @Component({
   selector: "app-admin-control",
   templateUrl: "./admin-control.component.html",
-  styleUrls: ["./admin-control.component.scss"]
+  styleUrls: ["./admin-control.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdminControlComponent implements OnInit {
+export class AdminControlComponent {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   //#region DragAndDrop Properties
   @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<CdkDropList>;
@@ -51,42 +40,19 @@ export class AdminControlComponent implements OnInit {
 
   @Input("images") galleryImages: LeaguePicture[];
   panelOpenState = false;
-
-  selectedImagesFormDate: FormData = new FormData();
-  newLeaguePictures: LeaguePicture[] = [];
-
-  uploadPicture: Subject<LeaguePicture> = new Subject<LeaguePicture>();
-  leaguePicturesPreview$ = this.uploadPicture.pipe(
-    scan<LeaguePicture, LeaguePicture[]>(
-      (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
-        if (pictures.includes(newPicture)) {
-          this.newLeaguePictures = pictures.filter(p => p !== newPicture);
-          pictures = [...this.newLeaguePictures];
-          return pictures;
-        } else {
-          return [...pictures, newPicture];
-        }
-      },
-      new Array<LeaguePicture>()
-    )
-  );
-
+  selectedImagesFormData: FormData = new FormData();
   loading: boolean = false;
   leaguePicturesMarkedForDeletion: LeaguePicture[] = [];
-
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
 
   constructor(
     private viewportRuler: ViewportRuler,
-    private galleryService: GalleryService,
-    private snackBarService: SnackBarService
+    private galleryService: GalleryService
   ) {
     this.target = null;
     this.source = null;
   }
-
-  ngOnInit() {}
 
   ngAfterViewInit() {
     let phElement = this.placeholder.element.nativeElement;
@@ -96,18 +62,11 @@ export class AdminControlComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscriptions.unsubscribe();
     this.fileReaders.forEach(fR => fR.abort());
   }
 
-  uploadPreview() {}
-
   onChangeOrder() {
-    this.subscriptions.add(
-      this.galleryService
-        .updateLeaguePicturesOrder(this.galleryImages)
-        .subscribe()
-    );
+    this.galleryService.updateLeaguePicturesOrder(this.galleryImages);
   }
 
   onChange(event: MatCheckboxChange, index: number) {
@@ -134,26 +93,7 @@ export class AdminControlComponent implements OnInit {
     const photosToDelete: LeaguePicture[] = this.galleryImages.filter(
       (lP: LeaguePicture) => lP.delete === true
     );
-    this.subscriptions.add(
-      this.galleryService.removeLeaguePictures(photosToDelete).subscribe(
-        updatedPhotos => {
-          this.galleryImages = [...updatedPhotos];
-          this.snackBarService.openSnackBarFromComponent(
-            "Successfully deleted selected photos",
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          this.snackBarService.openSnackBarFromComponent(
-            "Error occured deleting selected items",
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-          console.log("Error occured deleting selected items ", err);
-        }
-      )
-    );
+    this.galleryService.deleteLeaguePictures(photosToDelete);
   }
 
   disableDelete(): boolean {
@@ -186,12 +126,12 @@ export class AdminControlComponent implements OnInit {
         small: "../../../../assets/default_gallery.jpg"
       };
 
-      this.selectedImagesFormDate.append(
+      this.selectedImagesFormData.append(
         LeagueImageUpload.LeagueImages,
         fileList[index]
       );
 
-      this.newLeaguePictures.push(uploadPicture);
+      this.galleryService.newLeaguePictures.push(uploadPicture);
 
       const mimeType = uploadPicture.preview.file.type;
       if (mimeType.match(/image\/*/) == null) {
@@ -199,7 +139,7 @@ export class AdminControlComponent implements OnInit {
         uploadPicture.preview.error = true;
         uploadPicture.preview.message = "Only images are supported.";
         uploadPicture.preview.src = "../../../../assets/warning.jpg";
-        this.uploadPicture.next(uploadPicture);
+        this.galleryService.uploadPicture.next(uploadPicture);
         checkIfStillLoading(index);
         continue;
       }
@@ -209,49 +149,20 @@ export class AdminControlComponent implements OnInit {
       reader.readAsDataURL(uploadPicture.preview.file);
       reader.onload = (event: any) => {
         uploadPicture.preview.src = event.target.result;
-        this.uploadPicture.next(uploadPicture);
+        this.galleryService.uploadPicture.next(uploadPicture);
         checkIfStillLoading(index);
       };
     }
   }
 
   onUndo(leaguePicture: LeaguePicture): void {
-    this.uploadPicture.next(leaguePicture);
+    this.galleryService.uploadPicture.next(leaguePicture);
   }
 
+  // After executing onSave I have to re-emit all of the uploaded pictures again which are stored in this.newLeaguePictures, to remove them from the preview
   onSave() {
-    this.galleryService
-      .saveLeaguePictures(this.selectedImagesFormDate)
-      .subscribe(
-        _ => {
-          this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
-            this.uploadPicture.next(leaguePicture);
-          });
-          this.snackBarService.openSnackBarFromComponent(
-            "Successfully Added New Images",
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          this.snackBarService.openSnackBarFromComponent(
-            "Error occured while adding images",
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-        }
-      );
+    this.galleryService.createLeagueImages(this.selectedImagesFormData);
   }
-
-  // add() {
-  //   this.items.push(this.items.length + 1);
-  // }
-
-  // shuffle() {
-  //   this.galleryImages.sort(function() {
-  //     return 0.5 - Math.random();
-  //   });
-  // }
 
   //#region Drag and Drop methods
 

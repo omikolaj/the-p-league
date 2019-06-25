@@ -11,7 +11,7 @@ const routes: Routes = [
         loadChildren: "./views/about/about.module#AboutModule"
       },
       {
-        path: "team-signup",
+        path: "team",
         loadChildren:
           "./views/about/components/team-signup-form/team-signup-form.module#TeamSignupFormModule"
       },

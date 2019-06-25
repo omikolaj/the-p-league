@@ -1,16 +1,11 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { GearItem } from "src/app/core/models/gear-item.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { Size } from "src/app/core/models/gear-size.model";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
-import {
-  SnackBarService,
-  SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 import { AuthService } from "src/app/core/services/auth/auth.service";
-import { Subscription } from "rxjs";
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
@@ -57,7 +52,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
   templateUrl: "./merchandise-item.component.html",
   styleUrls: ["./merchandise-item.component.scss"]
 })
-export class MerchandiseItemComponent implements OnInit, OnDestroy {
+export class MerchandiseItemComponent {
   @Input() gearItem: GearItem;
   @Input("admin") isAdmin: boolean;
   sizes = Size;
@@ -68,12 +63,8 @@ export class MerchandiseItemComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private merchandiseService: MerchandiseService,
-    private snackBarService: SnackBarService
+    public authService: AuthService
   ) {}
-
-  ngOnInit() {}
-
-  ngOnDestroy() {}
 
   onEditGearItem() {
     this.router.navigate(
@@ -87,23 +78,6 @@ export class MerchandiseItemComponent implements OnInit, OnDestroy {
   }
 
   onDeleteGearItem() {
-    this.merchandiseService.deleteGearItem(this.gearItem.id).subscribe(
-      (deletedItem: GearItem[]) => {
-        console.log("GEARITEM DELETED SUCCESS?: ", deletedItem);
-        this.snackBarService.openSnackBarFromComponent(
-          `Successfully deleted ${this.gearItem.name}`,
-          "Dismiss",
-          SnackBarEvent.Success
-        );
-      },
-      err => {
-        console.log("Error occured", err);
-        this.snackBarService.openSnackBarFromComponent(
-          `Error occured while deleting ${this.gearItem.name}`,
-          "Dismiss",
-          SnackBarEvent.Error
-        );
-      }
-    );
+    this.merchandiseService.deleteGearItem(this.gearItem);
   }
 }

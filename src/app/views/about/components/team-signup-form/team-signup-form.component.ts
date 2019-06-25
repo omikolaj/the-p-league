@@ -9,13 +9,15 @@ import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { TeamService } from "src/app/core/services/team/team.service";
+import { TeamSignUpForm } from "src/app/core/models/team/team-sign-up-form.model";
 
 @Component({
   selector: "app-team-signup-form",
   templateUrl: "./team-signup-form.component.html",
   styleUrls: ["./team-signup-form.component.scss"]
 })
-export class TeamSignupFormComponent implements OnInit, OnDestroy {
+export class TeamSignupFormComponent {
   routeAnimations = ROUTE_ANIMATIONS_ELEMENTS;
   contactForm: FormGroup = this.fb.group({
     teamName: this.fb.control(null, Validators.required),
@@ -29,17 +31,20 @@ export class TeamSignupFormComponent implements OnInit, OnDestroy {
   });
   images: TeamSignUpImage[] = TeamSignUpImages;
 
-  constructor(
-    private fb: FormBuilder,
-    private teamSignupService: TeamSignupService,
-    private snackBarService: SnackBarService
-  ) {}
+  newTeamSubmission$;
 
-  ngOnInit(): void {}
+  constructor(private fb: FormBuilder, private teamService: TeamService) {}
 
-  ngOnDestroy() {}
-
-  onSubmit() {}
-
-  onCancel() {}
+  onSubmit() {
+    const teamSignUpForm: TeamSignUpForm = {
+      name: this.contactForm.value.teamName,
+      contact: {
+        firstName: this.contactForm.value.firstName,
+        lastName: this.contactForm.value.lastName,
+        phoneNumber: this.contactForm.value.phoneNumber,
+        email: this.contactForm.value.email
+      }
+    };
+    this.teamService.addTeamSignUpForm(teamSignUpForm);
+  }
 }
