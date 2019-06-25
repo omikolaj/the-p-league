@@ -1,14 +1,7 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { TeamSignUpImages, TeamSignUpImage } from "./team-signup-images";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
-import { Subject, Observable } from "rxjs";
-import { TeamInfo } from "src/app/core/models/team-info";
-import { TeamSignupService } from "./team-signup.service";
-import {
-  SnackBarService,
-  SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 import { TeamService } from "src/app/core/services/team/team.service";
 import { TeamSignUpForm } from "src/app/core/models/team/team-sign-up-form.model";
 
