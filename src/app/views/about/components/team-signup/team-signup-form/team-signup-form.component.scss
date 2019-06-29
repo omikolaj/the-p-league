@@ -1,0 +1,46 @@
+@import "../../../../merchandise/merchandise-list/merchandise-list.component.scss";
+
+.full-width {
+  width: 100%;
+}
+
+.signup-card {
+  min-width: 120px;
+  margin: 20px auto;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  flex: 1;
+}
+
+.col:last-child {
+  margin-right: 0;
+}
+
+form {
+  margin: 0 auto;
+  width: 70%;
+}
+
+.form-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 600px) {
+  form {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+@media (min-width: 903px) {
+  form {
+    width: 450px;
+  }
+}

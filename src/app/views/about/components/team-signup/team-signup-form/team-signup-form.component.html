@@ -1,27 +1,10 @@
-<div>
-  <carousel>
-    <slide *ngFor="let img of images">
-      <img
-        class="carousel-image"
-        [src]="img.src"
-        [alt]="img.alt"
-        style="display: block; width: 100%;"
-      />
-      <div class="carousel-caption d-md-block">
-        <h3>{{ img.title }}</h3>
-        <p>{{ img.description }}</p>
-      </div>
-    </slide>
-  </carousel>
-</div>
-
-<ng-template>
-  <app-informational-message> </app-informational-message>
-</ng-template>
-
-<div #contactFormElement class="form-wrapper">
+<div
+  #contactFormElement
+  class="form-wrapper"
+  [ngClass]="routeAnimationsElements"
+>
   <form [formGroup]="contactForm" novalidate (ngSubmit)="onSubmit()">
-    <mat-card class="shipping-card">
+    <mat-card class="signup-card">
       <mat-card-header>
         <mat-card-title>Team Info</mat-card-title>
       </mat-card-header>
@@ -128,5 +111,3 @@
     </mat-card>
   </form>
 </div>
-
-<ng-container *ngIf="newTeamSubmission$ | async"> </ng-container>

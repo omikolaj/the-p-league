@@ -63,6 +63,8 @@ import { GalleryViewerComponent } from "./components/gallery-viewer/gallery-view
 import { NgxGalleryModule } from "ngx-gallery";
 import { ReactiveFormsModule } from "@angular/forms";
 import { SnackBarComponent } from "./components/snack-bar/snack-bar.component";
+import { CarouselComponent } from "./components/carousel/carousel.component";
+import { CarouselModule } from "ngx-bootstrap/carousel";
 
 library.add(
   faGithub,
@@ -86,7 +88,7 @@ const globalRippleConfig: RippleGlobalOptions = {
   providers: [
     { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }
   ],
-  declarations: [GalleryViewerComponent, SnackBarComponent],
+  declarations: [GalleryViewerComponent, SnackBarComponent, CarouselComponent],
   imports: [
     MatAutocompleteModule,
     MatBadgeModule,
@@ -129,7 +131,9 @@ const globalRippleConfig: RippleGlobalOptions = {
     FlexLayoutModule,
 
     NgxGalleryModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule,
+    CarouselModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -172,7 +176,10 @@ const globalRippleConfig: RippleGlobalOptions = {
 
     FlexLayoutModule,
     GalleryViewerComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule,
+    CarouselModule,
+    CarouselComponent
   ],
   entryComponents: [SnackBarComponent]
 })

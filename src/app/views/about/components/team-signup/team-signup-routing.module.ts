@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { TeamSignupFormComponent } from "./team-signup-form.component";
+import { TeamSignupComponent } from "./team-signup/team-signup.component";
 
 const routes: Routes = [
   {
@@ -8,7 +8,7 @@ const routes: Routes = [
     children: [
       {
         path: "signup",
-        component: TeamSignupFormComponent,
+        component: TeamSignupComponent,
         data: { animation: "TeamSignUpPage" }
       }
     ]
@@ -19,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TeamSignupFormRoutingModule {}
+export class TeamSignupRoutingModule {}

@@ -13,7 +13,7 @@ const routes: Routes = [
       {
         path: "team",
         loadChildren:
-          "./views/about/components/team-signup-form/team-signup-form.module#TeamSignupFormModule"
+          "./views/about/components/team-signup/team-signup.module#TeamSignupModule"
       },
       {
         path: "merchandise",

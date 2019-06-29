@@ -1,8 +1,12 @@
 import { Injectable } from "@angular/core";
-import { Subject, Observable } from "rxjs";
+import { Subject, Observable, EMPTY, of } from "rxjs";
 import { TeamSignUpForm } from "../../models/team/team-sign-up-form.model";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { switchMap } from "rxjs/operators";
+import { switchMap, tap, catchError } from "rxjs/operators";
+import {
+  SnackBarService,
+  SnackBarEvent
+} from "src/app/shared/components/snack-bar/snack-bar-service.service";
 
 @Injectable({
   providedIn: "root"
@@ -17,21 +21,24 @@ export class TeamService {
     TeamSignUpForm
   >();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private snackBarService: SnackBarService
+  ) {}
 
-  addTeamSignUpForm(newTeamForm: TeamSignUpForm) {
+  newSubmission() {
+    this.newTeamSubmissionAction.next(undefined);
+  }
+
+  addTeamSignUpForm(newTeamForm: TeamSignUpForm | undefined) {
     this.newTeamSubmissionAction.next(newTeamForm);
-    // this.http
-    //   .post<TeamSignUpForm>(
-    //     "team/signup",
-    //     JSON.stringify(newTeamForm),
-    //     this.headers
-    //   )
-    //   .subscribe(_ => console.log("results are", _));
   }
 
   newTeamSubmission$ = this.newTeamSubmissionAction.asObservable().pipe(
     switchMap((newTeamSubmission: TeamSignUpForm) => {
+      if (newTeamSubmission == undefined) {
+        return of(undefined);
+      }
       return this.addTeamSignUpFormAsync(newTeamSubmission);
     })
   );
@@ -39,10 +46,21 @@ export class TeamService {
   addTeamSignUpFormAsync(
     newTeamForm: TeamSignUpForm
   ): Observable<TeamSignUpForm> {
-    return this.http.post<TeamSignUpForm>(
-      "team/signup",
-      JSON.stringify(newTeamForm),
-      this.headers
-    );
+    return this.http
+      .post<TeamSignUpForm>(
+        "team/signup",
+        JSON.stringify(newTeamForm),
+        this.headers
+      )
+      .pipe(
+        catchError(_ => {
+          this.snackBarService.openSnackBarFromComponent(
+            "Error occured while submitting the request",
+            "Dismiss",
+            SnackBarEvent.Error
+          );
+          return of(undefined);
+        })
+      );
   }
 }

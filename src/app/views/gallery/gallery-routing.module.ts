@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: "",
     component: GalleryGridListComponent,
-    data: { animation: "GalleryGridListPage" },
+    // data: { animation: "GalleryGridListPage" },
     resolve: { roles: RolesResolver, leaguePictures: GalleryService }
   }
 ];
