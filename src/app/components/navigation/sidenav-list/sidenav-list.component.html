@@ -19,8 +19,8 @@
     >
   </ng-container>
 
-  <ng-container *ngIf="isLoggedIn">
-    <a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="logout"
+  <ng-container *ngIf="isLoggedIn$ | async">
+    <a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'logout'"
       >Logout</a
     >
   </ng-container>

@@ -1,8 +1,8 @@
 import { Component, Input } from "@angular/core";
-import { GearItem } from "src/app/core/models/gear-item.model";
-import { ActivatedRoute, Router } from "@angular/router";
+import { GearItem } from "src/app/core/models/merchandise/gear-item.model";
+import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
-import { Size } from "src/app/core/models/gear-size.model";
+import { Size } from "src/app/core/models/merchandise/gear-size.model";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
 import { AuthService } from "src/app/core/services/auth/auth.service";
@@ -58,6 +58,7 @@ export class MerchandiseItemComponent {
   sizes = Size;
   galleryOptions: NgxGalleryOptions[] = galleryOptions;
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
+  isLoading$ = this.merchandiseService.loadingDelete$;
 
   constructor(
     private router: Router,
@@ -71,6 +72,17 @@ export class MerchandiseItemComponent {
       [
         {
           outlets: { modal: [this.gearItem.id, "edit"] }
+        }
+      ],
+      { relativeTo: this.route }
+    );
+  }
+
+  onPreOrderGearItem() {
+    this.router.navigate(
+      [
+        {
+          outlets: { modal: [this.gearItem.id, "pre-order"] }
         }
       ],
       { relativeTo: this.route }

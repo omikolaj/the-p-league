@@ -1,17 +1,28 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnInit } from "@angular/core";
 import { MerchandiseDialogComponent } from "./merchandise-dialog/merchandise-dialog.component";
 import { MatDialog } from "@angular/material";
-import { Router, ActivatedRoute } from "@angular/router";
-import { GearItem } from "src/app/core/models/gear-item.model";
-import { GearImage } from "src/app/core/models/gear-image.model";
-import { FormGroup } from "@angular/forms";
+import { Router, ActivatedRoute, ParamMap } from "@angular/router";
+import { map } from "rxjs/operators";
+import { ComponentType } from "@angular/cdk/portal";
+import { MerchandisePreOrderDialogComponent } from "./merchandise-pre-order-dialog/merchandise-pre-order-dialog.component";
 
 @Injectable()
-export class MerchandiseDialogService {
+export class MerchandiseDialogService implements OnInit {
+  component: ComponentType<
+    MerchandiseDialogComponent | MerchandisePreOrderDialogComponent
+  > = MerchandiseDialogComponent;
+
   constructor(private router: Router, private route: ActivatedRoute) {}
 
+  ngOnInit(): void {}
+
   openMerchandiseDialog(dialog: MatDialog): void {
-    const dialogRef = dialog.open(MerchandiseDialogComponent, {
+    if (this.router.url.includes("pre-order")) {
+      this.component = MerchandisePreOrderDialogComponent;
+    } else {
+      this.component = MerchandiseDialogComponent;
+    }
+    const dialogRef = dialog.open(this.component, {
       width: "90%",
       maxWidth: "450px"
     });

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { GearSize, Size } from '../../models/gear-size.model';
+import { GearSize, Size } from '../../models/merchandise/gear-size.model';
 
 const ALL: string = "ALL";
 const NONE: string = "NONE";

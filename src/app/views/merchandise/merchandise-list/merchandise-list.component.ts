@@ -5,7 +5,7 @@ import {
   ElementRef,
   ChangeDetectionStrategy
 } from "@angular/core";
-import { GearItem } from "src/app/core/models/gear-item.model";
+import { GearItem } from "src/app/core/models/merchandise/gear-item.model";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { Router, ActivatedRoute } from "@angular/router";

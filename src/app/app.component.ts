@@ -1,5 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { RouterOutlet, Router, NavigationEnd } from "@angular/router";
+import {
+  RouterOutlet,
+  Router,
+  NavigationEnd,
+  NavigationStart,
+  NavigationCancel,
+  NavigationError
+} from "@angular/router";
 import { trigger, transition } from "@angular/animations";
 import { routeAnimations } from "./core/animations/route.animations";
 import { Observable, Subscription } from "rxjs";
@@ -31,6 +38,7 @@ export class AppComponent implements OnInit {
   hideScrollbar: boolean = false;
   previousURL: string;
   currentURL: string = "";
+  loading: boolean = false;
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -44,6 +52,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.router.events.subscribe(event => {
+      this.checkRouterEvent(event);
       if (event instanceof NavigationEnd) {
         this.previousURL = this.currentURL;
         this.currentURL = event.url;
@@ -60,6 +69,13 @@ export class AppComponent implements OnInit {
       Events.HideScrollbar,
       (event: boolean) => (this.hideScrollbar = event)
     );
+
+    this.subscription.add(
+      this.eventbus.on(Events.Loading, (event: boolean) => {
+        console.log("inside loading in app");
+        return (this.loading = event);
+      })
+    );
   }
 
   prepareRoute(outlet: RouterOutlet) {
@@ -68,5 +84,20 @@ export class AppComponent implements OnInit {
       outlet.activatedRouteData &&
       outlet.activatedRouteData["animation"]
     );
+  }
+
+  checkRouterEvent(event) {
+    if (event instanceof NavigationStart) {
+      this.loading = true;
+      console.log("Loading is true");
+    }
+    if (
+      event instanceof NavigationEnd ||
+      event instanceof NavigationCancel ||
+      event instanceof NavigationError
+    ) {
+      this.loading = false;
+      console.log("Loading is false");
+    }
   }
 }

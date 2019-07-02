@@ -8,22 +8,21 @@ import {
   switchMap,
   catchError,
   scan,
-  concatMap,
   mergeMap
 } from "rxjs/operators";
-import { forEach } from "@angular/router/src/utils/collection";
 import { v4 as uuid } from "uuid";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { LeagueImageUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
 import {
   Resolve,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
+  Router
 } from "@angular/router";
 import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { EventBusService } from "../event-bus/event-bus.service";
 
 @Injectable({
   providedIn: "root"
@@ -37,8 +36,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       big: "../../../../assets/default_gallery.jpg"
     }
   ];
-  leaguePicturesSubject$ = new BehaviorSubject<LeaguePicture[]>([]);
-  //leaguePictures$ = this.leaguePicturesSubject$.asObservable();
+  //leaguePicturesSubject$ = new BehaviorSubject<LeaguePicture[]>([]);
   leaguePictures$: Observable<LeaguePicture[]> = new BehaviorSubject<
     LeaguePicture[]
   >([]).asObservable();
@@ -56,6 +54,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   private removePreviewPictureAction: BehaviorSubject<
     LeaguePicture
   > = new BehaviorSubject<LeaguePicture>(null);
+
+  private loadingSubject: Subject<boolean> = new Subject<boolean>();
+  loading$ = this.loadingSubject.asObservable();
 
   newLeaguePictures: LeaguePicture[] = [];
   uploadPicture: Subject<LeaguePicture> = new Subject<LeaguePicture>();
@@ -76,7 +77,8 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
 
   constructor(
     private http: HttpClient,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private router: Router
   ) {}
 
   resolve(
@@ -89,8 +91,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
           (this.leaguePictures = leaguePictures)
       ),
       catchError(() => {
+        this.router.navigate(["about"]);
         this.snackBarService.openSnackBarFromComponent(
-          `Error occured while getting gallery items. Please come back later`,
+          "Error occured while getting gallery items. Please try again later",
           "Dismiss",
           SnackBarEvent.Error
         );
@@ -102,12 +105,17 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     return this.leaguePictures$;
   }
 
+  onLoading(loading: boolean) {
+    this.loadingSubject.next(loading);
+  }
+
   deleteLeaguePicturesLatest$ = combineLatest([
     this.deleteLeaguePictureAction,
     this.leaguePictures$
   ]).pipe(
     switchMap(
       ([leaguePicturesToDelete]: [LeaguePicture[], LeaguePicture[]]) => {
+        this.loadingSubject.next(true);
         return this.deleteLeaguePicturesAsync(leaguePicturesToDelete);
       }
     )
@@ -143,13 +151,15 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         return leaguePicsAll;
       }),
       tap(_ => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully deleted gallery ${photoString}`,
           "Dismiss",
           SnackBarEvent.Success
         );
       }),
-      catchError(err => {
+      catchError(() => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured while deleting gallery ${photoString} gear item`,
           "Dismiss",
@@ -166,6 +176,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   ]).pipe(
     switchMap(
       ([updatedLeaguePictureOrder]: [LeaguePicture[], LeaguePicture[]]) => {
+        this.loadingSubject.next(true);
         return this.updateLeaguePicturesOrderAsync(updatedLeaguePictureOrder);
       }
     )
@@ -224,6 +235,23 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
           JSON.stringify(leaguePicturesOrdered),
           headers
         );
+      }),
+      tap(_ => {
+        this.loadingSubject.next(false);
+        this.snackBarService.openSnackBarFromComponent(
+          "Successfully updated gallery images order",
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      }),
+      catchError(() => {
+        this.loadingSubject.next(false);
+        this.snackBarService.openSnackBarFromComponent(
+          "Error occured while updating gallery images order",
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+        return of([]);
       })
     );
   }
@@ -237,6 +265,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     this.leaguePictures$
   ]).pipe(
     switchMap(([newLeaguePicture]: [FormData, LeaguePicture[]]) => {
+      this.loadingSubject.next(true);
+      //console.log("LOading is true", newLeaguePicture);
+      //this.eventBus.emit(new EmitEvent(Events.Loading, true));
       return this.createLeagueImagesAsync(newLeaguePicture);
     })
   );
@@ -248,6 +279,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   private createLeagueImagesAsync(
     newLeaguePictures: FormData
   ): Observable<LeaguePicture[]> {
+    console.log("Inside ncreateLeageuImageasynx");
     if (newLeaguePictures === null) {
       return of([]);
     }
@@ -277,6 +309,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         });
       }),
       tap(_ => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           "Successfully created gallery photo",
           "Dismiss",
@@ -284,6 +317,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         );
       }),
       catchError(() => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           "Error occured while creating gallery photo",
           "Dismiss",

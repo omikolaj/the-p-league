@@ -57,7 +57,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   @Input() appTitle: string;
   @Input() logo: string;
 
-  headerSubscribtion: Subscription;
+  headerSubscription: Subscription;
   isSticky: boolean = true;
   hideToolBarHeader: boolean = false;
   headerLinksText: string[] = ["Merchandise", "Gallery"];
@@ -75,17 +75,16 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private eventbus: EventBusService,
     private cdRef: ChangeDetectorRef,
-    public authService: AuthService,
-    private snackBar: SnackBarService
+    public authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.headerSubscribtion = this.eventbus.on(
+    this.headerSubscription = this.eventbus.on(
       Events.StickyHeader,
       isSticky => (this.isSticky = isSticky)
     );
 
-    this.headerSubscribtion.add(
+    this.headerSubscription.add(
       this.eventbus.onHideToolBar(Events.HideToolbar, (event: boolean) => {
         this.hideToolBarHeader = event;
         this.cdRef.detectChanges();
@@ -94,31 +93,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.headerSubscribtion.unsubscribe();
+    this.headerSubscription.unsubscribe();
   }
 
   onToggleSidenav(): void {
     this.sidenavToggle.emit();
-  }
-
-  logout() {
-    this.headerSubscribtion.add(
-      this.authService.logout().subscribe(
-        loggedOut => {
-          this.snackBar.openSnackBarFromComponent(
-            "You have successfully logged out",
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          this.snackBar.openSnackBarFromComponent(
-            "An error occured while logging out",
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-        }
-      )
-    );
   }
 }

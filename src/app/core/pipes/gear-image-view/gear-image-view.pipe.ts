@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { GearImage } from '../../models/gear-image.model';
+import { GearImage } from '../../models/merchandise/gear-image.model';
 
 @Pipe({
   name: 'gearImageView',

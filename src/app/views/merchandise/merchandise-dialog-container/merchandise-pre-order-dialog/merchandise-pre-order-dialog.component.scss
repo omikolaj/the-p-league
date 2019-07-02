@@ -61,3 +61,15 @@ mat-slide-toggle {
 :host /deep/ .mat-horizontal-content-container {
   padding-bottom: 0px !important;
 }
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+.contact-preference {
+  margin-left: 10px;
+}
+
+#preferred-contact-lable {
+  margin-bottom: 7px;
+}

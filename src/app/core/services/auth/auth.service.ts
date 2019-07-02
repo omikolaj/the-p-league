@@ -25,6 +25,8 @@ export class AuthService {
   >(false);
   isLoggedIn$ = this.isLoggedInSub.asObservable().pipe(
     map(isLoggedIn => {
+      if (isLoggedIn) {
+      }
       return this.isLoggedIn;
     }),
     shareReplay()
@@ -102,12 +104,17 @@ export class AuthService {
     }
   }
 
+  private get wasLoggedIn() {
+    return this.getExpiration === null ? null : true;
+  }
+
   get isLoggedOut(): boolean {
     return !this.isLoggedIn;
   }
 
   get isLoggedIn(): boolean {
     console.log("Is logged in ", moment().isBefore(this.getExpiration));
+    // if this.getExpiration is null user was never logged in OR intentially logged out
     if (this.getExpiration === null) {
       return false;
     }
@@ -133,9 +140,5 @@ export class AuthService {
       console.log("[ERROR WHILE DECODING TOKEN]", jwt);
       return null;
     }
-  }
-
-  private expired(): moment.Moment {
-    return moment.invalid({ userInvalidated: true });
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { GearItem } from "../../models/gear-item.model";
+import { GearItem } from "../../models/merchandise/gear-item.model";
 import { MatPaginator } from "@angular/material";
 
 @Injectable()

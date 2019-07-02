@@ -18,6 +18,7 @@ export class RolesResolver implements Resolve<Observable<string[]>> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<any> | Promise<any> | any {
+    console.log("INside RolesResolver");
     if (this.authService.isLoggedIn) {
       return this.http.get<string[]>(
         `users/${this.authService.currentUserId}/roles`

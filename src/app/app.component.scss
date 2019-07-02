@@ -1,4 +1,4 @@
-@import 'src/styles.scss';
+@import "src/styles.scss";
 
 //Example how to use different color palattes
 $foreground: map-get($the-p-league-theme, foreground);
@@ -6,8 +6,20 @@ $foreground: map-get($the-p-league-theme, foreground);
   color: mat-color($foreground, disabled-text);
 }
 
+mat-spinner {
+  position: relative;
+  top: 165px;
+  left: 50%;
+  margin-left: -50px;
+  z-index: 100;
+}
+
+mat-progress-bar {
+  z-index: 1500;
+}
+
 .sidenav-container {
-  height: 100%;  
+  height: 100%;
 }
 
 .sidenav {
@@ -28,7 +40,7 @@ $foreground: map-get($the-p-league-theme, foreground);
   width: 250px;
 }
 
-.theme-wrapper{
+.theme-wrapper {
   height: 100%;
   width: 100%;
 }
@@ -118,4 +130,3 @@ $foreground: map-get($the-p-league-theme, foreground);
     }
   }
 }
-

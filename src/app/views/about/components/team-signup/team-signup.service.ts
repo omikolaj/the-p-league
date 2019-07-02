@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { TeamInfo } from "src/app/core/models/team-info";
+import { TeamInfo } from "src/app/core/models/team/team-info";
 import { Subject, Observable } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { map } from "rxjs/operators";

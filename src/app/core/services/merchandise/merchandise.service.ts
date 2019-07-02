@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject, of } from "rxjs";
-import { GearItem } from "../../models/gear-item.model";
+import { Observable, BehaviorSubject, of, Subject } from "rxjs";
+import { GearItem } from "../../models/merchandise/gear-item.model";
 import {
   flatMap,
   map,
@@ -10,41 +10,59 @@ import {
   catchError
 } from "rxjs/operators";
 import { combineLatest } from "rxjs";
-import { Size } from "../../models/gear-size.model";
+import { Size } from "../../models/merchandise/gear-size.model";
 import { HttpClient } from "@angular/common/http";
 import {
   Resolve,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
+  Router
 } from "@angular/router";
 import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
+import { PreOrderForm } from "../../models/merchandise/pre-order-form.model";
+import {
+  EventBusService,
+  EmitEvent,
+  Events
+} from "../event-bus/event-bus.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
-  private readonly merchandiseUrl: string = "merchandise";
-  updateGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
+  public readonly merchandiseUrl: string = "merchandise";
+  private updateGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
     GearItem
   >(null);
-  addGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<GearItem>(
-    null
-  );
-  deleteGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
+  private addGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
+    GearItem
+  >(null);
+  private deleteGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
     GearItem
   >(null);
   pageChangeAction: BehaviorSubject<{}> = new BehaviorSubject<{}>(null);
+
+  private loadingSubject = new Subject<boolean>();
+  loading$ = this.loadingSubject.asObservable();
+
+  // We need a separate loading for delete because otherwise if we trigger update loading or new
+  // both the card individual loading bar will appear and the one in the dialog
+  private loadingDeleteSubject = new Subject<boolean>();
+  loadingDelete$ = this.loadingDeleteSubject.asObservable();
+
   gearItems$: Observable<GearItem[]> = new BehaviorSubject<GearItem[]>(
     []
   ).asObservable();
   gearItems: GearItem[];
 
   constructor(
-    private http: HttpClient,
-    private snackBarService: SnackBarService
+    public http: HttpClient,
+    public snackBarService: SnackBarService,
+    private eventBus: EventBusService,
+    private router: Router
   ) {}
 
   resolve(
@@ -54,6 +72,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.gearItems$ = this.http.get<GearItem[]>(this.merchandiseUrl).pipe(
       map((gearItems: GearItem[]) => (this.gearItems = gearItems).reverse()),
       catchError(() => {
+        this.router.navigate(["about"]);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured while getting store items. Please come back later`,
           "Dismiss",
@@ -83,6 +102,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.gearItems$
   ]).pipe(
     switchMap(([updatedGearItem]) => {
+      this.loadingSubject.next(true);
       return this.updateGearItemAsync(updatedGearItem);
     })
   );
@@ -91,7 +111,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.updateGearItemAction.next(gearItem);
   }
 
-  updateGearItemAsync(gearItem: GearItem): Observable<GearItem[]> {
+  private updateGearItemAsync(gearItem: GearItem): Observable<GearItem[]> {
     if (gearItem === null) {
       return of([]);
     }
@@ -112,13 +132,16 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         return gearItems;
       }),
       tap(_ => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully updated ${gearItem.name} gear item`,
           "Dismiss",
           SnackBarEvent.Success
         );
       }),
+      tap(() => this.eventBus.emit(new EmitEvent(Events.CloseOpen, true))),
       catchError(() => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured while updating ${gearItem.name} gear item`,
           "Dismiss",
@@ -134,6 +157,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.gearItems$
   ]).pipe(
     switchMap(([newGearItem]) => {
+      this.loadingSubject.next(true);
       return this.createGearItemAsync(newGearItem);
     })
   );
@@ -142,7 +166,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.addGearItemAction.next(gearItem);
   }
 
-  createGearItemAsync(gearItem: GearItem): Observable<GearItem[]> {
+  private createGearItemAsync(gearItem: GearItem): Observable<GearItem[]> {
     if (gearItem === null) {
       return of([]);
     }
@@ -155,13 +179,16 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         return gearItems;
       }),
       tap(_ => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully created ${gearItem.name} gear item`,
           "Dismiss",
           SnackBarEvent.Success
         );
       }),
+      tap(() => this.eventBus.emit(new EmitEvent(Events.CloseOpen, true))),
       catchError(() => {
+        this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured while creating ${gearItem.name} gear item`,
           "Dismiss",
@@ -177,6 +204,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.gearItems$
   ]).pipe(
     switchMap(([gearItemToDelete]) => {
+      this.loadingDeleteSubject.next(true);
       return this.deleteGearItemAsync(gearItemToDelete);
     })
   );
@@ -185,7 +213,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.deleteGearItemAction.next(gearItem);
   }
 
-  deleteGearItemAsync(gearItemToDelete: GearItem) {
+  private deleteGearItemAsync(gearItemToDelete: GearItem) {
     if (gearItemToDelete === null) {
       return of([]);
     }
@@ -203,6 +231,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         return gearItems;
       }),
       tap(_ => {
+        this.loadingDeleteSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully deleted ${gearItemToDelete.name} gear item`,
           "Dismiss",
@@ -210,6 +239,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         );
       }),
       catchError(err => {
+        this.loadingDeleteSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured while deleting ${gearItemToDelete.name} gear item`,
           "Dismiss",

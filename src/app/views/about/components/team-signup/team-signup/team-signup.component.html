@@ -1,10 +1,11 @@
 <div>
   <app-carousel [images]="images"></app-carousel>
 </div>
+
 <ng-container *ngIf="!(teamSignUpSubmitted$ | async); else info">
   <app-team-signup-form></app-team-signup-form>
 </ng-container>
-
+Ae
 <ng-template #info>
   <app-information [teamSignUpForm]="teamSignUpForm"></app-information>
 </ng-template>

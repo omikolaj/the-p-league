@@ -41,10 +41,11 @@ export class AdminControlComponent {
   @Input("images") galleryImages: LeaguePicture[];
   panelOpenState = false;
   selectedImagesFormData: FormData = new FormData();
-  loading: boolean = false;
+  //loading: boolean = false;
   leaguePicturesMarkedForDeletion: LeaguePicture[] = [];
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
+  isLoading$ = this.galleryService.loading$;
 
   constructor(
     private viewportRuler: ViewportRuler,
@@ -107,11 +108,13 @@ export class AdminControlComponent {
   onImagesSelected(event) {
     const fileList: FileList = event.target.files;
     if (fileList.length > 0) {
-      this.loading = true;
+      //this.loading = true;
+      this.galleryService.onLoading(true);
     }
     const checkIfStillLoading = index => {
       if (index === fileList.length - 1) {
-        this.loading = false;
+        // this.loading = false;
+        this.galleryService.onLoading(false);
       }
     };
 

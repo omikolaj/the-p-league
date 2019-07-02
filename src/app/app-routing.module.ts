@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
-import { AboutComponent } from "./views/about/about.component";
+import {} from "./shared/shared.module";
+import { LogoutComponent } from "./shared/components/logout/logout.component";
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
       {
         path: "admin",
         loadChildren: "./views/admin/admin.module#AdminModule"
+      },
+      {
+        path: "logout",
+        loadChildren: "./shared/components/logout/logout.module#LogoutModule"
       },
       {
         path: "",

@@ -2,6 +2,10 @@
   {{ editMode ? "Edit Item" : "New Gear" }}
 </h1>
 
+<ng-container *ngIf="isLoading$ | async">
+  <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
+</ng-container>
+
 <form [formGroup]="gearItemForm" (ngSubmit)="onSubmit()">
   <mat-horizontal-stepper>
     <mat-step>

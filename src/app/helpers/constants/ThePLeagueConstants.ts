@@ -1,4 +1,5 @@
 export const LOCAL_STORAGE_ITEM: string = "ThePLeague";
+export const ROUTER_OUTLET: string = "modal"; 
 
 export class Role {
   static readonly Admin: string = "admin";

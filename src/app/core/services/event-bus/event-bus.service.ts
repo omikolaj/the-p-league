@@ -49,5 +49,7 @@ export enum Events {
   None,
   StickyHeader,
   HideScrollbar,
-  HideToolbar
+  HideToolbar,
+  CloseOpen,
+  Loading
 }

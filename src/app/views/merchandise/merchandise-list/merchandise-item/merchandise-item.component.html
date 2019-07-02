@@ -25,6 +25,9 @@
       [images]="gearItem.images"
     ></app-gallery-viewer>
   </div>
+  <ng-container *ngIf="isLoading$ | async">
+    <mat-progress-bar color="warn" mode="indeterminate"></mat-progress-bar>
+  </ng-container>
 
   <mat-card-content>
     <div>
@@ -45,14 +48,34 @@
     </div>
   </mat-card-content>
 
-  <ng-container *ngIf="this.authService.isLoggedIn$ | async">
-    <mat-card-actions *ngIf="isAdmin">
-      <button mat-raised-button color="accent" (click)="onEditGearItem()">
-        EDIT
-      </button>
-      <button mat-raised-button color="warn" (click)="onDeleteGearItem()">
-        DELETE
-      </button>
-    </mat-card-actions>
-  </ng-container>
+  <mat-card-actions>
+    <ng-container *ngIf="this.authService.isLoggedIn$ | async">
+      <ng-container *ngIf="isAdmin">
+        <button
+          id="edit"
+          mat-raised-button
+          color="accent"
+          (click)="onEditGearItem()"
+        >
+          EDIT
+        </button>
+        <button
+          id="delete"
+          mat-raised-button
+          color="warn"
+          (click)="onDeleteGearItem()"
+        >
+          DELETE
+        </button>
+      </ng-container>
+    </ng-container>
+    <button
+      id="pre-order"
+      mat-raised-button
+      color="accent"
+      (click)="onPreOrderGearItem()"
+    >
+      PRE-ORDER
+    </button>
+  </mat-card-actions>
 </mat-card>

@@ -88,6 +88,23 @@
             </mat-form-field>
           </div>
         </div>
+
+        <div id="preferred-contact-lable">
+          <mat-placeholder class="placeholder"
+            >Preferred Contact:</mat-placeholder
+          >
+        </div>
+        <div class="contact-preference">
+          <mat-radio-group
+            formControlName="preferredContact"
+            aria-label="Select an option"
+          >
+            <mat-radio-button value="1" [checked]="true"
+              >Text/Call</mat-radio-button
+            >
+            <mat-radio-button value="2">Email</mat-radio-button>
+          </mat-radio-group>
+        </div>
       </mat-card-content>
 
       <mat-card-actions>

@@ -51,7 +51,8 @@ export class TeamSignupFormComponent {
     email: this.fb.control("oski@gmail.com", [
       Validators.required,
       Validators.email
-    ])
+    ]),
+    preferredContact: this.fb.control(1)
   });
 
   constructor(private fb: FormBuilder, private teamService: TeamService) {}
@@ -63,7 +64,8 @@ export class TeamSignupFormComponent {
         firstName: this.contactForm.value.firstName,
         lastName: this.contactForm.value.lastName,
         phoneNumber: this.contactForm.value.phoneNumber,
-        email: this.contactForm.value.email
+        email: this.contactForm.value.email,
+        preferredContact: this.contactForm.value.preferredContact
       }
     };
     this.submitted = "submitted";

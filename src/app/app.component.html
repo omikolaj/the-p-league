@@ -29,6 +29,12 @@
         ></app-toolbar>
 
         <main class="content" [@routeAnimations]="prepareRoute(outlet)">
+          <mat-progress-bar
+            color="accent"
+            *ngIf="loading"
+            mode="indeterminate"
+            style="position: fixed"
+          ></mat-progress-bar>
           <router-outlet #outlet="outlet"></router-outlet>
           <router-outlet name="modal"></router-outlet>
         </main>

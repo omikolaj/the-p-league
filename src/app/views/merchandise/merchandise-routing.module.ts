@@ -18,6 +18,11 @@ const routes: Routes = [
     component: MerchandiseDialogContainerComponent
   },
   {
+    path: ":id/pre-order",
+    outlet: "modal",
+    component: MerchandiseDialogContainerComponent
+  },
+  {
     path: "new",
     outlet: "modal",
     component: MerchandiseDialogContainerComponent

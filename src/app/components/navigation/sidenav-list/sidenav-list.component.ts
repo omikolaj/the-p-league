@@ -50,15 +50,13 @@ export class SidenavListComponent implements OnInit, OnDestroy {
   @Input() logo: string;
   logo_with_title: string = "../../../../assets/logo_no_title.png";
   sidenavListText: string[] = ["Merchandise", "Gallery"];
-  isLoggedIn: boolean = false;
+  isLoggedIn$ = this.authService.isLoggedIn$;
   subscription: Subscription;
 
   constructor(
     private authService: AuthService,
     private snackBar: SnackBarService
-  ) {
-    this.isLoggedIn = authService.isLoggedIn;
-  }
+  ) {}
 
   ngOnInit() {}
 
@@ -84,23 +82,21 @@ export class SidenavListComponent implements OnInit, OnDestroy {
     this.sideNavAnimationState = "out";
   }
   logout() {
-    this.subscription.add(
-      this.authService.logout().subscribe(
-        loggedOut => {
-          this.snackBar.openSnackBarFromComponent(
-            "You have successfully logged out",
-            "Dismiss",
-            SnackBarEvent.Success
-          );
-        },
-        err => {
-          this.snackBar.openSnackBarFromComponent(
-            "An error occured while logging out",
-            "Dismiss",
-            SnackBarEvent.Error
-          );
-        }
-      )
+    this.authService.logout().subscribe(
+      loggedOut => {
+        this.snackBar.openSnackBarFromComponent(
+          "You have successfully logged out",
+          "Dismiss",
+          SnackBarEvent.Success
+        );
+      },
+      err => {
+        this.snackBar.openSnackBarFromComponent(
+          "An error occured while logging out",
+          "Dismiss",
+          SnackBarEvent.Error
+        );
+      }
     );
   }
 }

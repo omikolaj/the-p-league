@@ -32,6 +32,18 @@ form {
   height: 100%;
 }
 
+.contact-preference {
+  margin-left: 10px;
+}
+
+#preferred-contact-lable {
+  margin-bottom: 7px;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
 @media (max-width: 600px) {
   form {
     width: 100%;

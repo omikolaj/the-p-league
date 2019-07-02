@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -9,17 +9,16 @@ import {
   FormGroupDirective,
   NgForm
 } from "@angular/forms";
-import { ActivatedRoute, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
 import { MatDialogRef } from "@angular/material";
 import {
   GearSize,
   Size,
   gearSizesArray
-} from "src/app/core/models/gear-size.model";
-import { v4 as uuid } from "uuid";
+} from "src/app/core/models/merchandise/gear-size.model";
 import { ErrorStateMatcher } from "@angular/material/core";
-import { GearImage } from "src/app/core/models/gear-image.model";
+import { GearImage } from "src/app/core/models/merchandise/gear-image.model";
 import {
   trigger,
   style,
@@ -29,16 +28,17 @@ import {
   animate
 } from "@angular/animations";
 import { cloneDeep } from "lodash";
-import { GearImageViewPipe } from "src/app/core/pipes/gear-image-view/gear-image-view.pipe";
+import { Subscription } from "rxjs";
+import { switchMap, tap } from "rxjs/operators";
 import {
-  SnackBarService,
-  SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
-import { Subscription, Subject } from "rxjs";
-import { switchMap, flatMap, tap } from "rxjs/operators";
-import { GearItemUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
-import { GearItem } from "src/app/core/models/gear-item.model";
-import { MerchandiseDialogService } from "../merchandise-dialog.service";
+  GearItemUpload,
+  ROUTER_OUTLET
+} from "src/app/helpers/Constants/ThePLeagueConstants";
+import { GearItem } from "src/app/core/models/merchandise/gear-item.model";
+import {
+  EventBusService,
+  Events
+} from "src/app/core/services/event-bus/event-bus.service";
 
 export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -84,8 +84,7 @@ export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
     ])
   ]
 })
-export class MerchandiseDialogComponent implements OnInit {
-  outlet = "modal";
+export class MerchandiseDialogComponent implements OnInit, OnDestroy {
   gearItem: GearItem;
   editMode: boolean = false;
   gearItemForm: FormGroup;
@@ -93,25 +92,31 @@ export class MerchandiseDialogComponent implements OnInit {
   gearItemImages: GearImage[] = [];
   noSizesSelectedStateMatcher: ErrorStateMatcher = new NoSizeErrorStateMatcher();
   subscription: Subscription;
-
   gearSizes: GearSize[] = [];
   isInStock: boolean = true;
   sizeEnum = Size;
+  isLoading$ = this.merchandiseService.loading$;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private merchandiseService: MerchandiseService,
     private dialogRef: MatDialogRef<MerchandiseDialogComponent>,
-    private snackBarService: SnackBarService
+    private eventBus: EventBusService
   ) {
     // Initialize all of the available gear sizes
     this.gearSizes = [...gearSizesArray];
   }
 
   ngOnInit() {
+    this.subscription = this.eventBus.on(Events.CloseOpen, closeDialog => {
+      if (closeDialog) {
+        this.dialogRef.close();
+      }
+    });
+
     this.route.children[0].firstChild.children
-      .filter(r => r.outlet === this.outlet)
+      .filter(r => r.outlet === ROUTER_OUTLET)
       .map(r =>
         r.params
           .pipe(
@@ -121,7 +126,6 @@ export class MerchandiseDialogComponent implements OnInit {
             }),
             tap((gearItem: GearItem) => {
               this.gearItem = cloneDeep(gearItem);
-              console.log(this.gearItem);
             })
           )
           .subscribe()
@@ -130,8 +134,12 @@ export class MerchandiseDialogComponent implements OnInit {
     this.initForm();
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   onSubmit() {
-    this.dialogRef.close();
+    // this.dialogRef.close();
     const gearItem: GearItem = this.gearItemObjectForDelivery();
     if (this.editMode) {
       this.merchandiseService.updateGearItem(gearItem);
