@@ -28,6 +28,7 @@ import {
   EmitEvent,
   Events
 } from "../event-bus/event-bus.service";
+import { handleError } from "src/app/helpers/handleError";
 
 @Injectable({
   providedIn: "root"
@@ -74,7 +75,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       catchError(() => {
         this.router.navigate(["about"]);
         this.snackBarService.openSnackBarFromComponent(
-          `Error occured while getting store items. Please come back later`,
+          `Error occured. Please come back later`,
           "Dismiss",
           SnackBarEvent.Error
         );
@@ -91,9 +92,12 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
 
   findGearItem(id: number): Observable<GearItem> {
     return this.gearItems$.pipe(
-      flatMap((gearItems: GearItem[]) =>
-        gearItems.filter((gearItem: GearItem) => gearItem.id === id)
-      )
+      flatMap((gearItems: GearItem[]) => {
+        const item = gearItems.filter(
+          (gearItem: GearItem) => gearItem.id === id
+        );
+        return item;
+      })
     );
   }
 
@@ -134,7 +138,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       tap(_ => {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
-          `Successfully updated ${gearItem.name} gear item`,
+          `Successfully updated ${gearItem.name}`,
           "Dismiss",
           SnackBarEvent.Success
         );
@@ -143,7 +147,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       catchError(() => {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
-          `Error occured while updating ${gearItem.name} gear item`,
+          `Error occured updating ${gearItem.name}`,
           "Dismiss",
           SnackBarEvent.Error
         );
@@ -181,7 +185,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       tap(_ => {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
-          `Successfully created ${gearItem.name} gear item`,
+          `Successfully created ${gearItem.name}`,
           "Dismiss",
           SnackBarEvent.Success
         );
@@ -190,7 +194,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       catchError(() => {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
-          `Error occured while creating ${gearItem.name} gear item`,
+          `Error occured creating ${gearItem.name}`,
           "Dismiss",
           SnackBarEvent.Error
         );
@@ -233,7 +237,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       tap(_ => {
         this.loadingDeleteSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
-          `Successfully deleted ${gearItemToDelete.name} gear item`,
+          `Successfully deleted ${gearItemToDelete.name}`,
           "Dismiss",
           SnackBarEvent.Success
         );
@@ -241,11 +245,11 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
       catchError(err => {
         this.loadingDeleteSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
-          `Error occured while deleting ${gearItemToDelete.name} gear item`,
+          `Error occured deleting ${gearItemToDelete.name}`,
           "Dismiss",
           SnackBarEvent.Error
         );
-        return of([]);
+        return of(null);
       })
     );
   }

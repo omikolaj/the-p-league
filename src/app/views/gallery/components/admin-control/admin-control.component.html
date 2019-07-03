@@ -50,13 +50,6 @@
         </div>
       </div>
 
-      <ng-container *ngIf="isLoading$ | async">
-        <mat-progress-bar
-          color="accent"
-          mode="indeterminate"
-        ></mat-progress-bar>
-      </ng-container>
-
       <mat-action-row>
         <button mat-raised-button color="primary" (click)="fileUpload.click()">
           Upload
@@ -97,10 +90,6 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <ng-container *ngIf="isLoading$ | async">
-        <mat-progress-bar color="warn" mode="indeterminate"></mat-progress-bar>
-      </ng-container>
-
       <ng-container *ngIf="galleryImages.length === 0">
         <p class="empty-images">No images to display</p>
       </ng-container>
@@ -126,10 +115,6 @@
           </div>
         </div>
       </div>
-
-      <ng-container *ngIf="isLoading$ | async">
-        <mat-progress-bar color="warn" mode="indeterminate"></mat-progress-bar>
-      </ng-container>
 
       <mat-action-row>
         <button

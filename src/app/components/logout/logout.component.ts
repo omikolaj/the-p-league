@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 import {
   SnackBarService,
   SnackBarEvent
-} from "../snack-bar/snack-bar-service.service";
+} from "../../shared/components/snack-bar/snack-bar-service.service";
 import { tap, catchError } from "rxjs/operators";
 import {
   EventBusService,

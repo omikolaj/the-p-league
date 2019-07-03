@@ -89,7 +89,6 @@ export class AppComponent implements OnInit {
   checkRouterEvent(event) {
     if (event instanceof NavigationStart) {
       this.loading = true;
-      console.log("Loading is true");
     }
     if (
       event instanceof NavigationEnd ||
@@ -97,7 +96,6 @@ export class AppComponent implements OnInit {
       event instanceof NavigationError
     ) {
       this.loading = false;
-      console.log("Loading is false");
     }
   }
 }

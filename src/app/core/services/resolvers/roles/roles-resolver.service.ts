@@ -7,6 +7,8 @@ import {
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { AuthService } from "../../auth/auth.service";
+import { shareReplay, share, switchMap, tap } from "rxjs/operators";
+import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
 
 @Injectable({
   providedIn: "root"
@@ -18,11 +20,20 @@ export class RolesResolver implements Resolve<Observable<string[]>> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<any> | Promise<any> | any {
-    console.log("INside RolesResolver");
-    if (this.authService.isLoggedIn) {
-      return this.http.get<string[]>(
-        `users/${this.authService.currentUserId}/roles`
-      );
+    if (this.authService.wasLoggedIn) {
+      if (!this.authService.isLoggedIn) {
+        return this.authService.refreshToken().pipe(
+          switchMap(_ => {
+            return this.http
+              .get<string[]>(`users/${this.authService.currentUserId}/roles`)
+              .pipe(share());
+          })
+        );
+      } else {
+        return this.http
+          .get<string[]>(`users/${this.authService.currentUserId}/roles`)
+          .pipe(share());
+      }
     }
     // if user is not logged in return empty array of 'roles'
     return [];

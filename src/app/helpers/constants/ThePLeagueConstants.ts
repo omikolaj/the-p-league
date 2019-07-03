@@ -1,5 +1,5 @@
 export const LOCAL_STORAGE_ITEM: string = "ThePLeague";
-export const ROUTER_OUTLET: string = "modal"; 
+export const ROUTER_OUTLET: string = "modal";
 
 export class Role {
   static readonly Admin: string = "admin";
@@ -19,3 +19,19 @@ export class GearItemUpload {
 export class LeagueImageUpload {
   static readonly LeagueImages: string = "leagueImages";
 }
+
+export const ErrorCodes: string[] = [
+  "login",
+  "logout",
+  "refresh_token",
+  "user_not_found",
+  "gear_item_update",
+  "cloudinary_upload",
+  "cloudinary_delete",
+  "gear_item_delete",
+  "league_image_delete",
+  "gear_item_not_found",
+  "league_image_not_found",
+  "league_image_order",
+  "password_update"
+];

@@ -74,7 +74,8 @@ export class GalleryGridListComponent implements OnInit {
   leaguePictures$: Observable<LeaguePicture[]>;
   galleryImages: LeaguePicture[] = [];
   galleryOptions: NgxGalleryOptions[] = galleryOptions;
-
+  subscription: Subscription;
+  isLoggedIn$ = this.authService.isLoggedIn$;
   isAdmin: boolean = false;
 
   galleryImagess$: Observable<

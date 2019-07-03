@@ -47,13 +47,39 @@
                 </mat-form-field>
               </div>
             </div>
+
+            <div class="row" *ngIf="changePassword">
+              <div class="col">
+                <mat-form-field class="full-width">
+                  <input
+                    formControlName="newPassword"
+                    matInput
+                    type="password"
+                    placeholder="New Password"
+                    autocomplete="off"
+                  />
+                  <mat-error>New Password is required</mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <mat-slide-toggle
+              formControlName="changePassword"
+              [checked]="adminLoginForm.get('changePassword').value"
+              [labelPosition]="changePassword ? 'before' : 'after'"
+              style="display: block"
+              (toggleChange)="this.changePassword = !this.changePassword"
+              >{{
+                changePassword ? "Login" : "Update Password"
+              }}</mat-slide-toggle
+            >
             <button
               mat-raised-button
               color="primary"
               type="submit"
               [disabled]="!adminLoginForm.valid"
             >
-              Login
+              {{ changePassword ? "Update" : "Login" }}
             </button>
 
             <button

@@ -12,13 +12,15 @@ export class SnackBarService {
   private successConfig: MatSnackBarConfig = {
     panelClass: ["style-success"],
     horizontalPosition: "center",
-    verticalPosition: "bottom"
+    verticalPosition: "bottom",
+    duration: 3000
   };
 
   private errorConfig: MatSnackBarConfig = {
     panelClass: ["style-error"],
     horizontalPosition: "center",
-    verticalPosition: "bottom"
+    verticalPosition: "bottom",
+    duration: 3000
   };
 
   constructor(private snackBar: MatSnackBar) {}

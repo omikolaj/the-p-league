@@ -42,7 +42,6 @@ export class MerchandisePreOrderDialogComponent implements OnInit {
     })
   });
   gearItem: GearItem;
-  gearSizes = gearSizesArray;
   sizeEnum = Size;
   preOrderdItem$ = this.preOrderService.preOrder$;
   loading: boolean = false;

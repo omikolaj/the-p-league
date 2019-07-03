@@ -3,8 +3,7 @@ import { CommonModule } from "@angular/common";
 import { SizeEnumToSizePipe } from "./pipes/sizeEnumToSize/size-enum-to-size.pipe";
 import { SharedModule } from "../shared/shared.module";
 import { ClearElementValueDirective } from "./directives/clear-element-value/clear-element-value.directive";
-import { IosVHDirective } from "./directives/iosVH/ios-vh.directive";
-import { HasRoleDirective } from "./directives/has-role/has-role.directive";
+import { FilteredGearSizesPipe } from "./pipes/filteredGearSizes/filtered-gear-sizes.pipe";
 
 @NgModule({
   declarations: [SizeEnumToSizePipe, ClearElementValueDirective],

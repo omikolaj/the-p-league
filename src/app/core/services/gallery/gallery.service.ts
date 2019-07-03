@@ -22,7 +22,11 @@ import {
   SnackBarService,
   SnackBarEvent
 } from "src/app/shared/components/snack-bar/snack-bar-service.service";
-import { EventBusService } from "../event-bus/event-bus.service";
+import {
+  EventBusService,
+  EmitEvent,
+  Events
+} from "../event-bus/event-bus.service";
 
 @Injectable({
   providedIn: "root"
@@ -78,7 +82,8 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   constructor(
     private http: HttpClient,
     private snackBarService: SnackBarService,
-    private router: Router
+    private router: Router,
+    private eventBus: EventBusService
   ) {}
 
   resolve(
@@ -115,7 +120,6 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   ]).pipe(
     switchMap(
       ([leaguePicturesToDelete]: [LeaguePicture[], LeaguePicture[]]) => {
-        this.loadingSubject.next(true);
         return this.deleteLeaguePicturesAsync(leaguePicturesToDelete);
       }
     )
@@ -137,6 +141,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       }),
       body: JSON.stringify(leaguePics.map(lp => lp.id))
     };
+
+    this.eventBus.emit(new EmitEvent(Events.Loading, true));
+
     return combineLatest([
       this.leaguePictures$,
       this.http.delete<boolean>(this.galleryUrl, options)
@@ -151,7 +158,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         return leaguePicsAll;
       }),
       tap(_ => {
-        this.loadingSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           `Successfully deleted gallery ${photoString}`,
           "Dismiss",
@@ -159,7 +166,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         );
       }),
       catchError(() => {
-        this.loadingSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           `Error occured while deleting gallery ${photoString} gear item`,
           "Dismiss",
@@ -176,7 +183,6 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   ]).pipe(
     switchMap(
       ([updatedLeaguePictureOrder]: [LeaguePicture[], LeaguePicture[]]) => {
-        this.loadingSubject.next(true);
         return this.updateLeaguePicturesOrderAsync(updatedLeaguePictureOrder);
       }
     )
@@ -197,6 +203,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         "Content-Type": "application/json"
       })
     };
+
+    this.eventBus.emit(new EmitEvent(Events.Loading, true));
+
     return combineLatest([
       this.updateLeaguePictureOrderAction,
       this.leaguePictures$
@@ -237,7 +246,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         );
       }),
       tap(_ => {
-        this.loadingSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           "Successfully updated gallery images order",
           "Dismiss",
@@ -245,7 +254,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         );
       }),
       catchError(() => {
-        this.loadingSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           "Error occured while updating gallery images order",
           "Dismiss",
@@ -265,9 +274,6 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     this.leaguePictures$
   ]).pipe(
     switchMap(([newLeaguePicture]: [FormData, LeaguePicture[]]) => {
-      this.loadingSubject.next(true);
-      //console.log("LOading is true", newLeaguePicture);
-      //this.eventBus.emit(new EmitEvent(Events.Loading, true));
       return this.createLeagueImagesAsync(newLeaguePicture);
     })
   );
@@ -279,10 +285,12 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   private createLeagueImagesAsync(
     newLeaguePictures: FormData
   ): Observable<LeaguePicture[]> {
-    console.log("Inside ncreateLeageuImageasynx");
     if (newLeaguePictures === null) {
       return of([]);
     }
+
+    this.eventBus.emit(new EmitEvent(Events.Loading, true));
+
     return combineLatest([
       this.leaguePictures$,
       this.http.post<LeaguePicture[]>(`${this.galleryUrl}`, newLeaguePictures)
@@ -309,7 +317,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         });
       }),
       tap(_ => {
-        this.loadingSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           "Successfully created gallery photo",
           "Dismiss",
@@ -317,7 +325,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         );
       }),
       catchError(() => {
-        this.loadingSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           "Error occured while creating gallery photo",
           "Dismiss",

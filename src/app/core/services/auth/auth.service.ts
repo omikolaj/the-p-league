@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
 import { HttpHeaders, HttpClient } from "@angular/common/http";
 import { Login } from "../../models/auth/login.model";
-import { Observable, of, BehaviorSubject } from "rxjs";
-import { tap, map, shareReplay } from "rxjs/operators";
+import { Observable, of, BehaviorSubject, Subject, throwError } from "rxjs";
+import { tap, map, shareReplay, switchMap, catchError } from "rxjs/operators";
 import * as moment from "moment";
 import * as jwt_decode from "jwt-decode";
 import { JwtPayload } from "../../models/auth/token/JwtPayload.model";
-import { LOCAL_STORAGE_ITEM } from "src/app/helpers/Constants/ThePLeagueConstants";
+import {
+  LOCAL_STORAGE_ITEM,
+  Role
+} from "src/app/helpers/Constants/ThePLeagueConstants";
 import { LocalStorageItem } from "../../models/storage/local-storage.model";
 import { ApplicationToken } from "../../models/auth/token/ApplicationToken.model";
 
@@ -25,17 +28,16 @@ export class AuthService {
   >(false);
   isLoggedIn$ = this.isLoggedInSub.asObservable().pipe(
     map(isLoggedIn => {
-      if (isLoggedIn) {
-      }
       return this.isLoggedIn;
     }),
     shareReplay()
   );
 
-  isAdministrator$: Observable<boolean>;
-  isAdministrator: boolean;
-
   constructor(private http: HttpClient) {}
+
+  checkRoles() {
+    return this.http.get<string[]>(`users/${this.currentUserId}/roles`);
+  }
 
   authenticate(user: Login): Observable<ApplicationToken> {
     // http request to authenticate admin
@@ -45,8 +47,20 @@ export class AuthService {
         map(appToken => {
           return this.setSession(appToken);
         }),
-        tap(_ => this.isLoggedInSub.next(true))
+        tap(_ => this.isLoggedInSub.next(true)),
+        catchError(err => {
+          this.isLoggedInSub.next(false);
+          return throwError(err);
+        })
       );
+  }
+
+  updatePassword(user: Login) {
+    return this.http.post<boolean>(
+      `admin/${this.currentUserId}/update-password`,
+      JSON.stringify(user),
+      this.headers
+    );
   }
 
   logout(): Observable<boolean> {
@@ -64,7 +78,8 @@ export class AuthService {
       map(appToken => {
         console.log("Setting session. Token: ", appToken);
         return this.setSession(appToken);
-      })
+      }),
+      tap(_ => this.isLoggedInSub.next(true))
     );
   }
 
@@ -93,18 +108,8 @@ export class AuthService {
     return storageItem.id;
   }
 
-  // We have to make backend request to see if user is an admin
-  get isAdmin(): Observable<boolean> {
-    if (this.isAdministrator) {
-      return of(this.isAdministrator);
-    } else {
-      this.http
-        .get<boolean>("is-admin")
-        .pipe(map(isAdmin => (this.isAdministrator = isAdmin)));
-    }
-  }
-
-  private get wasLoggedIn() {
+  get wasLoggedIn() {
+    console.log("wasLoggedIn ", this.getExpiration === null ? null : true);
     return this.getExpiration === null ? null : true;
   }
 

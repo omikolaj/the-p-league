@@ -62,8 +62,9 @@ export class TeamService {
       .pipe(
         tap(() => this.eventBus.emit(new EmitEvent(Events.Loading, false))),
         catchError(_ => {
+          this.eventBus.emit(new EmitEvent(Events.Loading, false));
           this.snackBarService.openSnackBarFromComponent(
-            "Error occured while submitting the request",
+            "Error occured sending the request",
             "Dismiss",
             SnackBarEvent.Error
           );

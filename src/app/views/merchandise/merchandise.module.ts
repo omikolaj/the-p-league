@@ -15,6 +15,7 @@ import { IosVHDirective } from "src/app/core/directives/iosVH/ios-vh.directive";
 import { HasRoleDirective } from "src/app/core/directives/has-role/has-role.directive";
 import { RolesResolver } from "src/app/core/services/resolvers/roles/roles-resolver.service";
 import { MerchandisePreOrderDialogComponent } from "./merchandise-dialog-container/merchandise-pre-order-dialog/merchandise-pre-order-dialog.component";
+import { FilteredGearSizesPipe } from "src/app/core/pipes/filteredGearSizes/filtered-gear-sizes.pipe";
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MerchandisePreOrderDialogComponent } from "./merchandise-dialog-contain
     MerchandiseDialogContainerComponent,
     MerchandiseDialogComponent,
     GearImageViewPipe,
+    FilteredGearSizesPipe,
     IosVHDirective,
     HasRoleDirective,
     MerchandisePreOrderDialogComponent

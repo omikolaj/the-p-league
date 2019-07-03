@@ -6,7 +6,14 @@ import {
   HttpEvent,
   HttpErrorResponse
 } from "@angular/common/http";
-import { Observable, of, EMPTY, BehaviorSubject, observable } from "rxjs";
+import {
+  Observable,
+  of,
+  EMPTY,
+  BehaviorSubject,
+  observable,
+  throwError
+} from "rxjs";
 import {
   retryWhen,
   map,
@@ -49,12 +56,12 @@ export class RefreshAccessTokenInterceptor implements HttpInterceptor {
           if (req.url.includes(this.refreshUrl)) {
             this.authService.logout();
           }
-          return Observable.throw(error);
+          return throwError(error);
         }
         // If error status is different than 401 we want to skip refresh token
         // So we check that and throw the error if it's the case
         if (error.status != 401) {
-          return Observable.throw(error);
+          return throwError(error);
         }
         if (this.refreshTokenInProgress) {
           // If refreshTokenInProgress is true, we will wait until refreshTokenSubject has a non-null value
@@ -84,9 +91,11 @@ export class RefreshAccessTokenInterceptor implements HttpInterceptor {
                     this.refreshTokenInProgress = false;
                     this.authService.logout();
 
-                    return Observable.throw(err);
+                    return throwError(err);
                   })
                 );
+              } else {
+                return throwError(error);
               }
             }
           }

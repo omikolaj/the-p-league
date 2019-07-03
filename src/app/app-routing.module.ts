@@ -1,7 +1,5 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
-import {} from "./shared/shared.module";
-import { LogoutComponent } from "./shared/components/logout/logout.component";
 
 const routes: Routes = [
   {
@@ -30,7 +28,7 @@ const routes: Routes = [
       },
       {
         path: "logout",
-        loadChildren: "./shared/components/logout/logout.module#LogoutModule"
+        loadChildren: "./components/logout/logout.module#LogoutModule"
       },
       {
         path: "",

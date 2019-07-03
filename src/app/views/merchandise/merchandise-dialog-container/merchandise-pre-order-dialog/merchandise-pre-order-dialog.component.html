@@ -78,7 +78,10 @@
             >
             <mat-select formControlName="size">
               <mat-option>--</mat-option>
-              <mat-option *ngFor="let size of gearSizes" [value]="size.size">
+              <mat-option
+                *ngFor="let size of gearItem.sizes | filteredGearSizes"
+                [value]="size.size"
+              >
                 {{ sizeEnum[size.size] }}
               </mat-option>
             </mat-select>
@@ -154,9 +157,9 @@
     <mat-step>
       <ng-template matStepLabel>Order Summary</ng-template>
       <div>
-        Thank you for your order. You ordered {{ gearItem.name }} for ${{
-          gearItem.price
-        }}
+        Thank you for your pre-order. You pre-ordered {{ gearItem.name }} for
+        ${{ gearItem.price }}. We will be sending you a confirmation e-mail
+        shortly
       </div>
       <div class="action-buttons">
         <button
