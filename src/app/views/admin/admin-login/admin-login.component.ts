@@ -1,45 +1,34 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
-  Validators,
-  ValidatorFn,
-  AbstractControl,
-  FormControl,
-  FormGroupDirective,
-  NgForm
-} from "@angular/forms";
-import { Admin } from "src/app/core/models/user/user-base.model";
-import { AdminService } from "src/app/core/services/admin/admin.service";
-import { Auth } from "src/app/core/models/auth/auth.model";
-import { Login } from "src/app/core/models/auth/login.model";
-import { AuthService } from "src/app/core/services/auth/auth.service";
-import { Router } from "@angular/router";
-import { ErrorStateMatcher } from "@angular/material";
-import { BehaviorSubject, Subscription, throwError, of } from "rxjs";
-import { switchMap } from "rxjs/internal/operators/switchMap";
-import { map, tap, catchError } from "rxjs/operators";
+  Validators
+} from '@angular/forms';
+import { Login } from 'src/app/core/models/auth/login.model';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import {
   SnackBarService,
   SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
-import { handleError } from "src/app/helpers/handleError";
-import { ErrorCodes } from "src/app/helpers/Constants/ThePLeagueConstants";
+} from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { handleError } from 'src/app/helpers/handleError';
 
 @Component({
-  selector: "app-admin-login",
-  templateUrl: "./admin-login.component.html",
-  styleUrls: ["./admin-login.component.scss"]
+  selector: 'app-admin-login',
+  templateUrl: './admin-login.component.html',
+  styleUrls: ['./admin-login.component.scss']
 })
 export class AdminLoginComponent implements OnInit, OnDestroy {
   adminLoginForm: FormGroup = this.fb.group({
-    username: this.fb.control("oski", Validators.required),
-    password: this.fb.control("password", Validators.required),
+    username: this.fb.control('oski', Validators.required),
+    password: this.fb.control('password', Validators.required),
     newPassword: this.fb.control(null),
     changePassword: this.fb.control(false)
   });
-  changePassword: boolean = false;
-  adminLockImgSrc: string = "../../../../assets/admin_lock.png";
+  changePassword = false;
+  adminLockImgSrc = '../../../../assets/admin_lock.png';
   subscription: Subscription;
 
   constructor(
@@ -47,7 +36,7 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private snackBar: SnackBarService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.formControlValueChanged();
@@ -58,9 +47,9 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
   }
 
   formControlValueChanged() {
-    const newPasswordControl = this.adminLoginForm.get("newPassword");
+    const newPasswordControl = this.adminLoginForm.get('newPassword');
     this.subscription = this.adminLoginForm
-      .get("changePassword")
+      .get('changePassword')
       .valueChanges.subscribe((changePassword: boolean) => {
         if (changePassword) {
           newPasswordControl.setValidators([Validators.required]);
@@ -94,8 +83,8 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
         .pipe(
           tap(_ =>
             this.snackBar.openSnackBarFromComponent(
-              "Password Successfully Updated",
-              "Dismiss",
+              'Password Successfully Updated',
+              'Dismiss',
               SnackBarEvent.Success
             )
           ),
@@ -103,7 +92,7 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
         )
         .subscribe(_ => {
           this.adminLoginForm
-            .get("changePassword")
+            .get('changePassword')
             .setValue((this.changePassword = false));
         })
     );
@@ -115,7 +104,7 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
         .authenticate(admin)
         .pipe(catchError(err => handleError(err, this.snackBar)))
         .subscribe(_ => {
-          this.router.navigate(["merchandise"]);
+          this.router.navigate(['merchandise']);
         })
     );
   }

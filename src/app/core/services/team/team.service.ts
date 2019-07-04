@@ -1,36 +1,46 @@
-import { Injectable } from "@angular/core";
-import { Subject, Observable, EMPTY, of } from "rxjs";
-import { TeamSignUpForm } from "../../models/team/team-sign-up-form.model";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { switchMap, tap, catchError } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { Subject, Observable, EMPTY, of } from 'rxjs';
+import { TeamSignUpForm } from '../../models/team/team-sign-up-form.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { switchMap, tap, catchError } from 'rxjs/operators';
 import {
   SnackBarService,
   SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
+} from 'src/app/shared/components/snack-bar/snack-bar-service.service';
 import {
   EventBusService,
-  EmitEvent,
   Events
-} from "../event-bus/event-bus.service";
+} from '../event-bus/event-bus.service';
+import { EmitEvent } from '../event-bus/EmitEvent';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class TeamService {
+
+  constructor(
+    private http: HttpClient,
+    private snackBarService: SnackBarService,
+    private eventBus: EventBusService
+  ) { }
   headers = {
     headers: new HttpHeaders({
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     })
   };
   private newTeamSubmissionAction: Subject<TeamSignUpForm> = new Subject<
     TeamSignUpForm
   >();
 
-  constructor(
-    private http: HttpClient,
-    private snackBarService: SnackBarService,
-    private eventBus: EventBusService
-  ) {}
+  newTeamSubmission$ = this.newTeamSubmissionAction.asObservable().pipe(
+    switchMap((newTeamSubmission: TeamSignUpForm) => {
+      if (newTeamSubmission === undefined) {
+        return of(undefined);
+      }
+      this.eventBus.emit(new EmitEvent(Events.Loading, true));
+      return this.addTeamSignUpFormAsync(newTeamSubmission);
+    })
+  );
 
   newSubmission() {
     this.newTeamSubmissionAction.next(undefined);
@@ -40,22 +50,12 @@ export class TeamService {
     this.newTeamSubmissionAction.next(newTeamForm);
   }
 
-  newTeamSubmission$ = this.newTeamSubmissionAction.asObservable().pipe(
-    switchMap((newTeamSubmission: TeamSignUpForm) => {
-      if (newTeamSubmission == undefined) {
-        return of(undefined);
-      }
-      this.eventBus.emit(new EmitEvent(Events.Loading, true));
-      return this.addTeamSignUpFormAsync(newTeamSubmission);
-    })
-  );
-
   addTeamSignUpFormAsync(
     newTeamForm: TeamSignUpForm
   ): Observable<TeamSignUpForm> {
     return this.http
       .post<TeamSignUpForm>(
-        "team/signup",
+        'team/signup',
         JSON.stringify(newTeamForm),
         this.headers
       )
@@ -64,8 +64,8 @@ export class TeamService {
         catchError(_ => {
           this.eventBus.emit(new EmitEvent(Events.Loading, false));
           this.snackBarService.openSnackBarFromComponent(
-            "Error occured sending the request",
-            "Dismiss",
+            'Error occured sending the request',
+            'Dismiss',
             SnackBarEvent.Error
           );
           return of(undefined);

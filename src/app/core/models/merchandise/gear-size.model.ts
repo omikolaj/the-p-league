@@ -16,10 +16,10 @@ export enum Size {
 }
 
 export const gearSizesArray = [
-  { size: Size.XS, available: false, color: "warn" },
-  { size: Size.S, available: false, color: "warn" },
-  { size: Size.M, available: false, color: "warn" },
-  { size: Size.L, available: false, color: "warn" },
-  { size: Size.XL, available: false, color: "warn" },
-  { size: Size.XXL, available: false, color: "warn" }
+  { size: Size.XS, available: false, color: 'warn' },
+  { size: Size.S, available: false, color: 'warn' },
+  { size: Size.M, available: false, color: 'warn' },
+  { size: Size.L, available: false, color: 'warn' },
+  { size: Size.XL, available: false, color: 'warn' },
+  { size: Size.XXL, available: false, color: 'warn' }
 ];

@@ -1,17 +1,17 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   Resolve,
   ActivatedRouteSnapshot,
   RouterStateSnapshot
-} from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { AuthService } from "../../auth/auth.service";
-import { shareReplay, share, switchMap, tap } from "rxjs/operators";
-import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
+} from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
+import { shareReplay, share, switchMap, tap } from 'rxjs/operators';
+import { Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class RolesResolver implements Resolve<Observable<string[]>> {
   constructor(private http: HttpClient, private authService: AuthService) {}

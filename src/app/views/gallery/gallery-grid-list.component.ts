@@ -1,18 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { LeaguePicture } from "src/app/core/models/league-picture.model";
-import { Observable, of, Subscription, combineLatest } from "rxjs";
-import { GalleryService } from "src/app/core/services/gallery/gallery.service";
-import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
-import { NgxGalleryAnimation, NgxGalleryOptions } from "ngx-gallery";
-import { catchError, map } from "rxjs/operators";
-import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
-import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
-import { AuthService } from "src/app/core/services/auth/auth.service";
+import { Component, OnInit } from '@angular/core';
+import { LeaguePicture } from 'src/app/core/models/league-picture.model';
+import { Observable, of, Subscription, combineLatest } from 'rxjs';
+import { GalleryService } from 'src/app/core/services/gallery/gallery.service';
+import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
+import { NgxGalleryAnimation, NgxGalleryOptions } from 'ngx-gallery';
+import { catchError, map } from 'rxjs/operators';
+import { ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 
 export const galleryOptions: NgxGalleryOptions[] = [
   {
-    width: "100%",
-    height: "400px",
+    width: '100%',
+    height: '400px',
     imageAnimation: NgxGalleryAnimation.Zoom,
     thumbnails: true,
     previewSwipe: true,
@@ -35,7 +35,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
   // max-width 800
   {
     breakpoint: 576,
-    height: "400px",
+    height: '400px',
     imagePercent: 80,
     thumbnailsPercent: 20,
     thumbnailsMargin: 20,
@@ -43,7 +43,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
   },
   {
     breakpoint: 768,
-    height: "600px",
+    height: '600px',
     imagePercent: 80,
     thumbnailsPercent: 20,
     thumbnailsMargin: 20,
@@ -51,7 +51,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
   },
   {
     breakpoint: 10000,
-    height: "800px",
+    height: '800px',
     imagePercent: 80,
     thumbnailsPercent: 20,
     thumbnailsMargin: 20,
@@ -65,9 +65,9 @@ export const galleryOptions: NgxGalleryOptions[] = [
 ];
 
 @Component({
-  selector: "app-gallery-grid-list",
-  templateUrl: "./gallery-grid-list.component.html",
-  styleUrls: ["./gallery-grid-list.component.scss"]
+  selector: 'app-gallery-grid-list',
+  templateUrl: './gallery-grid-list.component.html',
+  styleUrls: ['./gallery-grid-list.component.scss']
 })
 export class GalleryGridListComponent implements OnInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
@@ -76,7 +76,7 @@ export class GalleryGridListComponent implements OnInit {
   galleryOptions: NgxGalleryOptions[] = galleryOptions;
   subscription: Subscription;
   isLoggedIn$ = this.authService.isLoggedIn$;
-  isAdmin: boolean = false;
+  isAdmin = false;
 
   galleryImagess$: Observable<
     LeaguePicture[]

@@ -5,13 +5,13 @@ import {
   Input,
   ViewContainerRef,
   TemplateRef
-} from "@angular/core";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { RolesService } from "../../services/roles/roles.service";
+} from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { RolesService } from '../../services/roles/roles.service';
 
 @Directive({
-  selector: "[appHasRole]"
+  selector: '[appHasRole]'
 })
 export class HasRoleDirective implements OnInit, OnDestroy {
   // the role the user must have
@@ -22,11 +22,11 @@ export class HasRoleDirective implements OnInit, OnDestroy {
   isVisible = false;
 
   /**
-   * @param {ViewContainerRef} viewContainerRef
+   * @param viewContainerRef
    * 	-- the location where we need to render the templateRef
-   * @param {TemplateRef<any>} templateRef
+   * @param templateRef
    *   -- the templateRef to be potentially rendered
-   * @param {RolesService} rolesService
+   * @param rolesService
    *   -- will give us access to the roles a user has
    */
   constructor(

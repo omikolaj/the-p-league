@@ -1,14 +1,15 @@
-import { Injectable } from "@angular/core";
-import { Subscription, Subject } from "rxjs";
-import { filter, map, pairwise } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { Subscription, Subject } from 'rxjs';
+import { filter, map, pairwise } from 'rxjs/operators';
+import { EmitEvent } from './EmitEvent';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class EventBusService {
   private subject$ = new Subject();
 
-  constructor() {}
+  constructor() { }
 
   emit(event: EmitEvent) {
     this.subject$.next(event);
@@ -39,10 +40,6 @@ export class EventBusService {
       )
       .subscribe(action);
   }
-}
-
-export class EmitEvent {
-  constructor(public name: any, public value?: any) {}
 }
 
 export enum Events {

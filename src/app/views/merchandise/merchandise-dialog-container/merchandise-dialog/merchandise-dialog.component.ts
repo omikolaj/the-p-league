@@ -1,24 +1,21 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   ValidatorFn,
-  AbstractControl,
-  FormControl,
-  FormGroupDirective,
-  NgForm
-} from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
-import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
-import { MatDialogRef } from "@angular/material";
+  AbstractControl
+} from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
+import { MatDialogRef } from '@angular/material';
 import {
   GearSize,
   Size,
   gearSizesArray
-} from "src/app/core/models/merchandise/gear-size.model";
-import { ErrorStateMatcher } from "@angular/material/core";
-import { GearImage } from "src/app/core/models/merchandise/gear-image.model";
+} from 'src/app/core/models/merchandise/gear-size.model';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { GearImage } from 'src/app/core/models/merchandise/gear-image.model';
 import {
   trigger,
   style,
@@ -26,56 +23,48 @@ import {
   transition,
   stagger,
   animate
-} from "@angular/animations";
-import { cloneDeep } from "lodash";
-import { Subscription } from "rxjs";
-import { switchMap, tap } from "rxjs/operators";
+} from '@angular/animations';
+import { cloneDeep } from 'lodash';
+import { Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import {
   GearItemUpload,
   ROUTER_OUTLET
-} from "src/app/helpers/Constants/ThePLeagueConstants";
-import { GearItem } from "src/app/core/models/merchandise/gear-item.model";
+} from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { GearItem } from 'src/app/core/models/merchandise/gear-item.model';
 import {
   EventBusService,
   Events
-} from "src/app/core/services/event-bus/event-bus.service";
-
-export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl,
-    form: FormGroupDirective | NgForm
-  ): boolean {
-    return control && control.invalid && control.touched;
-  }
-}
+} from 'src/app/core/services/event-bus/event-bus.service';
+import { NoSizeErrorStateMatcher } from './NoSizeErrorStateMatcher';
 
 @Component({
-  selector: "app-merchandise-dialog",
-  templateUrl: "./merchandise-dialog.component.html",
-  styleUrls: ["./merchandise-dialog.component.scss"],
+  selector: 'app-merchandise-dialog',
+  templateUrl: './merchandise-dialog.component.html',
+  styleUrls: ['./merchandise-dialog.component.scss'],
   animations: [
-    trigger("imageUpload", [
-      transition("* => *", [
+    trigger('imageUpload', [
+      transition('* => *', [
         query(
-          ":enter",
+          ':enter',
           [
-            style({ opacity: 0, transform: "translateY(-100%)" }),
+            style({ opacity: 0, transform: 'translateY(-100%)' }),
             stagger(290, [
               animate(
-                ".3s ease-in-out",
-                style({ opacity: 1, transform: "translateY(-3%)" })
+                '.3s ease-in-out',
+                style({ opacity: 1, transform: 'translateY(-3%)' })
               )
             ])
           ],
           { optional: true }
         ),
         query(
-          ":leave",
+          ':leave',
           [
-            style({ opacity: 1, transform: "translateX(0)" }),
+            style({ opacity: 1, transform: 'translateX(0)' }),
             animate(
-              ".3s cubic-bezier(.34,-0.39,.7,1.5)",
-              style({ opacity: 0, transform: "translateX(-30%)" })
+              '.3s cubic-bezier(.34,-0.39,.7,1.5)',
+              style({ opacity: 0, transform: 'translateX(-30%)' })
             )
           ],
           { optional: true }
@@ -86,14 +75,14 @@ export class NoSizeErrorStateMatcher implements ErrorStateMatcher {
 })
 export class MerchandiseDialogComponent implements OnInit, OnDestroy {
   gearItem: GearItem;
-  editMode: boolean = false;
+  editMode = false;
   gearItemForm: FormGroup;
   selectedFileFormData: FormData = new FormData();
   gearItemImages: GearImage[] = [];
   noSizesSelectedStateMatcher: ErrorStateMatcher = new NoSizeErrorStateMatcher();
   subscription: Subscription;
   gearSizes: GearSize[] = [];
-  isInStock: boolean = true;
+  isInStock = true;
   sizeEnum = Size;
   isLoading$ = this.merchandiseService.loading$;
 
@@ -121,8 +110,8 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
         r.params
           .pipe(
             switchMap(params => {
-              this.editMode = params["id"] != null;
-              return this.merchandiseService.findGearItem(+params["id"]);
+              this.editMode = params['id'] != null;
+              return this.merchandiseService.findGearItem(+params['id']);
             }),
             tap((gearItem: GearItem) => {
               this.gearItem = cloneDeep(gearItem);
@@ -150,7 +139,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 
   gearItemObjectForDelivery(): GearItem {
     const gearItemImages: GearImage[] = this.editMode
-      ? this.gearItemImages.filter(gearImage => gearImage.id != undefined)
+      ? this.gearItemImages.filter(gearImage => gearImage.id !== undefined)
       : [];
 
     const gearItemForDelivery: GearItem = {
@@ -170,7 +159,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
     gearItemForDelivery.formData = this.selectedFileFormData;
 
     gearItemForDelivery.formData.append(
-      "gearItem",
+      'gearItem',
       JSON.stringify(gearItemForDelivery)
     );
 
@@ -184,7 +173,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 
   // Re-runs the validations for the sizes control which is mat-chip-list to display error messages
   onSelectedChipSize() {
-    this.gearItemForm.controls["sizes"].updateValueAndValidity();
+    this.gearItemForm.controls['sizes'].updateValueAndValidity();
   }
 
   onCancel() {
@@ -216,9 +205,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
           filesObj[index]
         );
       }
-    }
-    // If we have more than 0 and less than 3 so either 1 or 2 images uploaded
-    else if (this.gearItemImages.length > 0 && this.gearItemImages.length < 3) {
+    } else if (this.gearItemImages.length > 0 && this.gearItemImages.length < 3) {
       this.gearItemImages = [...this.gearItemImages];
       // Loop through the total number of images that user is trying to upload
       // and add the first user image to the exisiting array until you reach length of 3
@@ -241,9 +228,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
           );
         }
       }
-    }
-    // we have a clean array
-    else {
+    } else {
       for (let index = 0; index < length; index++) {
         this.gearItemImages = [
           ...this.gearItemImages,
@@ -264,12 +249,12 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 
   // Removes user defined image from the uploaded array of images
   onRemoveImage(image: GearImage) {
-    console.log("[BEFORE REMOVE]", this.gearItemImages);
+    console.log('[BEFORE REMOVE]', this.gearItemImages);
     const index = this.gearItemImages.map(gI => gI.id).indexOf(image.id);
     if (index > -1) {
       this.gearItemImages.splice(index, 1);
     }
-    console.log("[AFTER REMOVE]", this.gearItemImages);
+    console.log('[AFTER REMOVE]', this.gearItemImages);
   }
 
   // Hides the div html control that hosts uploaded images if user has not yet uploaded any images
@@ -278,13 +263,13 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
       this.gearItemImages = [];
     }
     if (this.gearItemImages.length === 0) {
-      return "0px";
+      return '0px';
     }
   }
 
   // Initializes the form based on the 'editMode' the component is in
   initForm(): void {
-    let name: string = "";
+    let name = '';
     let price: number = null;
     let sizes: GearSize[] = this.gearSizes;
     let images: GearImage[] = [];

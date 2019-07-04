@@ -1,36 +1,39 @@
-import { Injectable } from "@angular/core";
-import { MatSnackBar, MatSnackBarConfig } from "@angular/material";
-import { Component } from "@angular/compiler/src/core";
-import { ComponentType } from "@angular/core/src/render3";
-import { Subject } from "rxjs";
-import { SnackBarComponent } from "./snack-bar.component";
+import { Injectable } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { SnackBarComponent } from './snack-bar.component';
+
+export enum SnackBarEvent {
+  Success,
+  Error,
+  Warning
+}
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class SnackBarService {
   private successConfig: MatSnackBarConfig = {
-    panelClass: ["style-success"],
-    horizontalPosition: "center",
-    verticalPosition: "bottom",
+    panelClass: ['style-success'],
+    horizontalPosition: 'center',
+    verticalPosition: 'bottom',
     duration: 3000
   };
 
   private errorConfig: MatSnackBarConfig = {
-    panelClass: ["style-error"],
-    horizontalPosition: "center",
-    verticalPosition: "bottom",
+    panelClass: ['style-error'],
+    horizontalPosition: 'center',
+    verticalPosition: 'bottom',
     duration: 3000
   };
 
   private warnConfig: MatSnackBarConfig = {
-    panelClass: ["style-warn"],
-    horizontalPosition: "center",
-    verticalPosition: "bottom",
+    panelClass: ['style-warn'],
+    horizontalPosition: 'center',
+    verticalPosition: 'bottom',
     duration: 3000
   };
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar) { }
 
   openSnackBarFromComponent(
     message: string,
@@ -62,10 +65,4 @@ export class SnackBarService {
         break;
     }
   }
-}
-
-export enum SnackBarEvent {
-  Success,
-  Error,
-  Warning
 }

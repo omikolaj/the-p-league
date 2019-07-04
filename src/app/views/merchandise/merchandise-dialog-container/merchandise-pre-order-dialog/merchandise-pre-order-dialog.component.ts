@@ -1,35 +1,35 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { MatDialogRef } from "@angular/material";
-import { FormGroup, Validators, FormBuilder } from "@angular/forms";
-import { ROUTER_OUTLET } from "src/app/helpers/Constants/ThePLeagueConstants";
-import { ActivatedRoute } from "@angular/router";
-import { switchMap, tap, combineLatest } from "rxjs/operators";
-import { GearItem } from "src/app/core/models/merchandise/gear-item.model";
-import { cloneDeep } from "lodash";
-import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { ROUTER_OUTLET } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { ActivatedRoute } from '@angular/router';
+import { switchMap, tap, combineLatest } from 'rxjs/operators';
+import { GearItem } from 'src/app/core/models/merchandise/gear-item.model';
+import { cloneDeep } from 'lodash';
+import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import {
   gearSizesArray,
   Size
-} from "src/app/core/models/merchandise/gear-size.model";
-import { PreOrderForm } from "src/app/core/models/merchandise/pre-order-form.model";
-import { PreOrderService } from "src/app/core/services/pre-order/pre-order.service";
+} from 'src/app/core/models/merchandise/gear-size.model';
+import { PreOrderForm } from 'src/app/core/models/merchandise/pre-order-form.model';
+import { PreOrderService } from 'src/app/core/services/pre-order/pre-order.service';
 
 @Component({
-  selector: "app-merchandise-pre-order-dialog",
-  templateUrl: "./merchandise-pre-order-dialog.component.html",
-  styleUrls: ["./merchandise-pre-order-dialog.component.scss"],
+  selector: 'app-merchandise-pre-order-dialog',
+  templateUrl: './merchandise-pre-order-dialog.component.html',
+  styleUrls: ['./merchandise-pre-order-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [PreOrderService]
 })
 export class MerchandisePreOrderDialogComponent implements OnInit {
   preOrderForm: FormGroup = this.fb.group({
-    firstName: this.fb.control("Oski", Validators.required),
-    lastName: this.fb.control("Mikol", Validators.required),
+    firstName: this.fb.control('Oski', Validators.required),
+    lastName: this.fb.control('Mikol', Validators.required),
     phoneNumber: this.fb.control(2163943502, [
       Validators.required,
-      Validators.pattern("[0-9]{0,10}")
+      Validators.pattern('[0-9]{0,10}')
     ]),
-    email: this.fb.control("oski@oski.com", [
+    email: this.fb.control('oski@oski.com', [
       Validators.required,
       Validators.email
     ]),
@@ -61,7 +61,7 @@ export class MerchandisePreOrderDialogComponent implements OnInit {
         r.params
           .pipe(
             switchMap(params => {
-              return this.merchandiseService.findGearItem(+params["id"]);
+              return this.merchandiseService.findGearItem(+params['id']);
             }),
             tap((gearItem: GearItem) => {
               this.gearItem = cloneDeep(gearItem);

@@ -1,22 +1,20 @@
-import { Directive, HostListener } from '@angular/core';
+import { Directive, HostListener, OnInit } from '@angular/core';
 
 @Directive({
   selector: '[appIosVH]'
 })
-export class IosVHDirective {
+export class IosVHDirective implements OnInit {
   setVHFunc: Function = () => {
-    let vh = window.innerHeight * 0.01;
+    const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
-  };
-
-  @HostListener('window:resize', ['$event']) onResize(){
-    this.setVHFunc();
-  }
-  constructor() 
-  { }
-
-  ngOnInit(){
-    this.setVHFunc();
   }
 
+  @HostListener('window:resize', ['$event']) onResize() {
+    this.setVHFunc();
+  }
+  constructor() { }
+
+  ngOnInit() {
+    this.setVHFunc();
+  }
 }

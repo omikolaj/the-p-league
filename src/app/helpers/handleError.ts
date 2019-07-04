@@ -1,19 +1,19 @@
-import { SnackBarEvent } from "../shared/components/snack-bar/snack-bar-service.service";
-import { ErrorCodes } from "./Constants/ThePLeagueConstants";
-import { throwError, of } from "rxjs";
+import { SnackBarEvent } from '../shared/components/snack-bar/snack-bar-service.service';
+import { ErrorCodes } from './Constants/ThePLeagueConstants';
+import { throwError, of } from 'rxjs';
 
 export function handleError(err, snackBar) {
   if (err.error instanceof ErrorEvent) {
     snackBar.openSnackBarFromComponent(
       `An error occured: ${err.error.message}`,
-      "Dismiss",
+      'Dismiss',
       SnackBarEvent.Error
     );
   } else {
     if (err.status === 500 || err.status === 501 || err.status === 504) {
       snackBar.openSnackBarFromComponent(
-        "Request to the server failed",
-        "Dismiss",
+        'Request to the server failed',
+        'Dismiss',
         SnackBarEvent.Error
       );
     }
@@ -25,13 +25,13 @@ export function handleError(err, snackBar) {
 
         snackBar.openSnackBarFromComponent(
           `${err.error[errorKey].errors[0].errorMessage}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Error
         );
       } else {
         snackBar.openSnackBarFromComponent(
           `${err.error[errorKey][0]}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Error
         );
       }

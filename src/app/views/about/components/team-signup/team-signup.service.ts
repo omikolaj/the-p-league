@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { TeamInfo } from "src/app/core/models/team/team-info";
-import { Subject, Observable } from "rxjs";
-import { FormGroup } from "@angular/forms";
-import { map } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { TeamInfo } from 'src/app/core/models/team/team-info';
+import { Subject, Observable } from 'rxjs';
+import { FormGroup } from '@angular/forms';
+import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class TeamSignupService {
   teamInfoSubject: Subject<TeamInfo> = new Subject<TeamInfo>();
@@ -18,7 +18,7 @@ export class TeamSignupService {
     const teamInfo: TeamInfo = this.mapFormToTeamInfo(teamInfoForm);
     return this.teamInfo$.pipe(
       map(v => {
-        console.log("Inside of teamInfo pipe");
+        console.log('Inside of teamInfo pipe');
         return (this.teamInfo = v);
       })
     );
@@ -32,7 +32,7 @@ export class TeamSignupService {
       cell: teamInfoForm.value.phoneNumber,
       email: teamInfoForm.value.email
     };
-    console.log("teamInfoObject", teamInfo);
+    console.log('teamInfoObject', teamInfo);
     return teamInfo;
   }
 }

@@ -3,51 +3,52 @@ import {
   OnInit,
   ViewChild,
   ElementRef,
-  ChangeDetectionStrategy
-} from "@angular/core";
-import { GearItem } from "src/app/core/models/merchandise/gear-item.model";
-import { MerchandiseService } from "src/app/core/services/merchandise/merchandise.service";
-import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
-import { Router, ActivatedRoute } from "@angular/router";
-import { PageEvent, MatPaginator } from "@angular/material";
+  ChangeDetectionStrategy,
+  OnDestroy
+} from '@angular/core';
+import { GearItem } from 'src/app/core/models/merchandise/gear-item.model';
+import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
+import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
+import { Router, ActivatedRoute } from '@angular/router';
+import { PageEvent, MatPaginator } from '@angular/material';
 import {
   EventBusService,
-  EmitEvent,
   Events
-} from "src/app/core/services/event-bus/event-bus.service";
-import { ScrollDispatcher, CdkScrollable } from "@angular/cdk/scrolling";
-import { Subscription, combineLatest } from "rxjs";
-import { map } from "rxjs/operators";
-import { PaginatorService } from "src/app/core/services/paginator/paginator.service";
-import { DeviceInfoService } from "src/app/core/services/device-info/device-info.service";
-import { Role } from "src/app/helpers/Constants/ThePLeagueConstants";
-import { AuthService } from "src/app/core/services/auth/auth.service";
+} from 'src/app/core/services/event-bus/event-bus.service';
+import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
+import { Subscription, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { PaginatorService } from 'src/app/core/services/paginator/paginator.service';
+import { DeviceInfoService } from 'src/app/core/services/device-info/device-info.service';
+import { Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
 
 @Component({
-  selector: "app-merchandise-list",
-  templateUrl: "./merchandise-list.component.html",
-  styleUrls: ["./merchandise-list.component.scss"],
+  selector: 'app-merchandise-list',
+  templateUrl: './merchandise-list.component.html',
+  styleUrls: ['./merchandise-list.component.scss'],
   providers: [PaginatorService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MerchandiseListComponent implements OnInit {
-  @ViewChild("gearUp") merchandiseCards: ElementRef;
-  @ViewChild("paginator") paginator: MatPaginator;
+export class MerchandiseListComponent implements OnInit, OnDestroy {
+  @ViewChild('gearUp') merchandiseCards: ElementRef;
+  @ViewChild('paginator') paginator: MatPaginator;
 
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gearItems: GearItem[] = [];
   pagedGearItems: GearItem[] = [];
 
-  breakpoint: number = 3;
-  length: number = 0;
-  pageSize: number = 6;
+  breakpoint = 3;
+  length = 0;
+  pageSize = 6;
   pageSizeOptions: number[] = [6, 12, 18, 24];
   pageEvent: PageEvent;
 
-  isSticky: boolean = false;
+  isSticky = false;
   scrollingSubscription: Subscription;
 
-  isAdmin: boolean = false;
+  isAdmin = false;
 
   gearItems$ = combineLatest([
     this.merchandiseService.gearItems$,
@@ -81,7 +82,7 @@ export class MerchandiseListComponent implements OnInit {
     private paginatorService: PaginatorService,
     public deviceInfo: DeviceInfoService,
     public authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.isAdmin = this.route.snapshot.data.roles.includes(Role.Admin);
@@ -112,11 +113,11 @@ export class MerchandiseListComponent implements OnInit {
 
   onArrowClick() {
     const targetELement = this.merchandiseCards.nativeElement as HTMLElement;
-    targetELement.scrollIntoView({ behavior: "smooth" });
+    targetELement.scrollIntoView({ behavior: 'smooth' });
   }
 
   onAddGearItems() {
-    this.router.navigate([{ outlets: { modal: ["new"] } }], {
+    this.router.navigate([{ outlets: { modal: ['new'] } }], {
       relativeTo: this.route
     });
   }
@@ -125,7 +126,7 @@ export class MerchandiseListComponent implements OnInit {
     this.pageEvent = new PageEvent();
 
     this.pageSize = event.pageSize;
-    let startIndex = event.pageIndex * event.pageSize;
+    const startIndex = event.pageIndex * event.pageSize;
     let endIndex = startIndex + event.pageSize;
     if (endIndex > this.length) {
       endIndex = this.length;
@@ -137,7 +138,7 @@ export class MerchandiseListComponent implements OnInit {
   }
 
   onResize(event) {
-    //to adjust to screen size
+    // to adjust to screen size
     this.breakpoint = event.target.innerWidth <= 800 ? 1 : 3;
   }
 }

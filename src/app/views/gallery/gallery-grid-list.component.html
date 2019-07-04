@@ -3,17 +3,13 @@
   <div class="admin">
     <ng-container *ngIf="this.authService.isLoggedIn$ | async">
       <ng-container *ngIf="isAdmin">
-        <app-admin-control [images]="galleryImages"></app-admin-control>
+        <app-admin-control [galleryImages]="galleryImages"></app-admin-control>
       </ng-container>
     </ng-container>
   </div>
 
   <div class="season-gallery">
-    <mat-card
-      [class.mat-elevation-z7]="true"
-      class="season-card"
-      [ngClass]="routeAnimationsElements"
-    >
+    <mat-card [class.mat-elevation-z7]="true" class="season-card" [ngClass]="routeAnimationsElements">
       <mat-card-header>
         <div mat-card-avatar class="season-header-image"></div>
         <mat-card-title>
@@ -24,10 +20,7 @@
 
       <div mat-card-image>
         <ng-container *ngIf="galleryImages$ | async as galleryImages">
-          <app-gallery-viewer
-            [options]="galleryOptions"
-            [images]="galleryImages"
-          >
+          <app-gallery-viewer [ngxGalleryOptions]="galleryOptions" [images]="galleryImages">
           </app-gallery-viewer>
         </ng-container>
       </div>

@@ -1,8 +1,4 @@
-<mat-card
-  [class.mat-elevation-z7]="true"
-  class="gear-item"
-  [ngClass]="routeAnimationsElements"
->
+<mat-card [class.mat-elevation-z7]="true" class="gear-item" [ngClass]="routeAnimationsElements">
   <mat-card-header>
     <mat-card-title>
       <div>
@@ -20,10 +16,7 @@
   </mat-card-header>
 
   <div mat-card-image>
-    <app-gallery-viewer
-      [options]="galleryOptions"
-      [images]="gearItem.images"
-    ></app-gallery-viewer>
+    <app-gallery-viewer [ngxGalleryOptions]="galleryOptions" [images]="gearItem.images"></app-gallery-viewer>
   </div>
   <ng-container *ngIf="isLoading$ | async">
     <mat-progress-bar color="warn" mode="indeterminate"></mat-progress-bar>
@@ -51,30 +44,15 @@
   <mat-card-actions>
     <ng-container *ngIf="this.authService.isLoggedIn$ | async">
       <ng-container *ngIf="isAdmin">
-        <button
-          id="edit"
-          mat-raised-button
-          color="accent"
-          (click)="onEditGearItem()"
-        >
+        <button id="edit" mat-raised-button color="accent" (click)="onEditGearItem()">
           EDIT
         </button>
-        <button
-          id="delete"
-          mat-raised-button
-          color="warn"
-          (click)="onDeleteGearItem()"
-        >
+        <button id="delete" mat-raised-button color="warn" (click)="onDeleteGearItem()">
           DELETE
         </button>
       </ng-container>
     </ng-container>
-    <button
-      id="pre-order"
-      mat-raised-button
-      color="accent"
-      (click)="onPreOrderGearItem()"
-    >
+    <button id="pre-order" mat-raised-button color="accent" (click)="onPreOrderGearItem()">
       PRE-ORDER
     </button>
   </mat-card-actions>

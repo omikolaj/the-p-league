@@ -1,9 +1,9 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { SizeEnumToSizePipe } from "./pipes/sizeEnumToSize/size-enum-to-size.pipe";
-import { SharedModule } from "../shared/shared.module";
-import { ClearElementValueDirective } from "./directives/clear-element-value/clear-element-value.directive";
-import { FilteredGearSizesPipe } from "./pipes/filteredGearSizes/filtered-gear-sizes.pipe";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SizeEnumToSizePipe } from './pipes/sizeEnumToSize/size-enum-to-size.pipe';
+import { SharedModule } from '../shared/shared.module';
+import { ClearElementValueDirective } from './directives/clear-element-value/clear-element-value.directive';
+import { FilteredGearSizesPipe } from './pipes/filteredGearSizes/filtered-gear-sizes.pipe';
 
 @NgModule({
   declarations: [SizeEnumToSizePipe, ClearElementValueDirective],

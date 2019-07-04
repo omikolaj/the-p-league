@@ -6,30 +6,30 @@ import {
   OnInit,
   OnDestroy,
   AfterViewInit
-} from "@angular/core";
-import { LeaguePicture } from "src/app/core/models/league-picture.model";
-import { GalleryService } from "src/app/core/services/gallery/gallery.service";
+} from '@angular/core';
+import { LeaguePicture } from 'src/app/core/models/league-picture.model';
+import { GalleryService } from 'src/app/core/services/gallery/gallery.service';
 import {
   CdkDropListGroup,
   CdkDropList,
   moveItemInArray,
   CdkDrag,
   CdkDragMove
-} from "@angular/cdk/drag-drop";
-import { Subscription } from "rxjs";
-import { ViewportRuler } from "@angular/cdk/overlay";
-import { MatCheckboxChange } from "@angular/material";
-import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
-import { LeagueImageUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
+} from '@angular/cdk/drag-drop';
+import { Subscription } from 'rxjs';
+import { ViewportRuler } from '@angular/cdk/overlay';
+import { MatCheckboxChange } from '@angular/material';
+import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
+import { LeagueImageUpload } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import {
   EventBusService,
   Events
-} from "src/app/core/services/event-bus/event-bus.service";
+} from 'src/app/core/services/event-bus/event-bus.service';
 
 @Component({
-  selector: "app-admin-control",
-  templateUrl: "./admin-control.component.html",
-  styleUrls: ["./admin-control.component.scss"],
+  selector: 'app-admin-control',
+  templateUrl: './admin-control.component.html',
+  styleUrls: ['./admin-control.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -45,14 +45,14 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   public activeContainer;
   //#endregion
 
-  @Input("images") galleryImages: LeaguePicture[];
+  @Input() galleryImages: LeaguePicture[];
   panelOpenState = false;
   selectedImagesFormData: FormData = new FormData();
-  //loading: boolean = false;
+  // loading: boolean = false;
   leaguePicturesMarkedForDeletion: LeaguePicture[] = [];
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
-  isLoading: boolean = false;
+  isLoading = false;
   subscription: Subscription;
 
   constructor(
@@ -72,9 +72,9 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    let phElement = this.placeholder.element.nativeElement;
+    const phElement = this.placeholder.element.nativeElement;
 
-    phElement.style.display = "none";
+    phElement.style.display = 'none';
     phElement.parentElement.removeChild(phElement);
   }
 
@@ -98,7 +98,7 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.leaguePicturesMarkedForDeletion.includes(leaguePicture)) {
         this.leaguePicturesMarkedForDeletion = this.leaguePicturesMarkedForDeletion.filter(
           (lP: LeaguePicture) => {
-            console.log("inside lP", lP.id !== leaguePicture.id);
+            console.log('inside lP', lP.id !== leaguePicture.id);
             return lP.id !== leaguePicture.id;
           }
         );
@@ -125,7 +125,7 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   onImagesSelected(event) {
     const fileList: FileList = event.target.files;
     if (fileList.length > 0) {
-      //this.loading = true;
+      // this.loading = true;
       this.galleryService.onLoading(true);
     }
     const checkIfStillLoading = index => {
@@ -136,14 +136,14 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     for (let index = 0; index < fileList.length; index++) {
-      let uploadPicture: LeaguePicture = {
+      const uploadPicture: LeaguePicture = {
         preview: {
           file: fileList[index],
           error: false
         },
-        big: "../../../../assets/default_gallery.jpg",
-        medium: "../../../../assets/default_gallery.jpg",
-        small: "../../../../assets/default_gallery.jpg"
+        big: '../../../../assets/default_gallery.jpg',
+        medium: '../../../../assets/default_gallery.jpg',
+        small: '../../../../assets/default_gallery.jpg'
       };
 
       this.selectedImagesFormData.append(
@@ -155,10 +155,10 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
 
       const mimeType = uploadPicture.preview.file.type;
       if (mimeType.match(/image\/*/) == null) {
-        console.log("[Invalid Image]");
+        console.log('[Invalid Image]');
         uploadPicture.preview.error = true;
-        uploadPicture.preview.message = "Only images are supported.";
-        uploadPicture.preview.src = "../../../../assets/warning.jpg";
+        uploadPicture.preview.message = 'Only images are supported.';
+        uploadPicture.preview.src = '../../../../assets/warning.jpg';
         this.galleryService.uploadPicture.next(uploadPicture);
         checkIfStillLoading(index);
         continue;
@@ -167,8 +167,8 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
       const reader: FileReader = new FileReader();
       this.fileReaders.push(reader);
       reader.readAsDataURL(uploadPicture.preview.file);
-      reader.onload = (event: any) => {
-        uploadPicture.preview.src = event.target.result;
+      reader.onload = (onLoadEvent: any) => {
+        uploadPicture.preview.src = onLoadEvent.target.result;
         this.galleryService.uploadPicture.next(uploadPicture);
         checkIfStillLoading(index);
       };
@@ -179,15 +179,15 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
     this.galleryService.uploadPicture.next(leaguePicture);
   }
 
-  // After executing onSave I have to re-emit all of the uploaded pictures again which are stored in this.newLeaguePictures, to remove them from the preview
+  // After executing onSave I have to re-emit all of the uploaded pictures again
+  // which are stored in this.newLeaguePictures, to remove them from the preview
   onSave() {
     this.galleryService.createLeagueImages(this.selectedImagesFormData);
   }
 
-  //#region Drag and Drop methods
-
+  // #region Drag and Drop methods
   dragMoved(e: CdkDragMove) {
-    let point = this.getPointerPositionOnPage(e.event);
+    const point = this.getPointerPositionOnPage(e.event);
 
     this.listGroup._items.forEach(dropList => {
       if (__isInsideDropListClientRect(dropList, point.x, point.y)) {
@@ -198,12 +198,12 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   dropListDropped() {
-    if (!this.target) return;
+    if (!this.target) { return; }
 
-    let phElement = this.placeholder.element.nativeElement;
-    let parent = phElement.parentElement;
+    const phElement = this.placeholder.element.nativeElement;
+    const parent = phElement.parentElement;
 
-    phElement.style.display = "none";
+    phElement.style.display = 'none';
 
     parent.removeChild(phElement);
     parent.appendChild(phElement);
@@ -215,33 +215,33 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
     this.target = null;
     this.source = null;
 
-    if (this.sourceIndex != this.targetIndex) {
+    if (this.sourceIndex !== this.targetIndex) {
       moveItemInArray(this.galleryImages, this.sourceIndex, this.targetIndex);
       this.onChangeOrder();
     }
   }
 
   dropListEnterPredicate = (drag: CdkDrag, drop: CdkDropList) => {
-    if (drop == this.placeholder) return true;
+    if (drop === this.placeholder) { return true; }
 
-    if (drop != this.activeContainer) return false;
+    if (drop !== this.activeContainer) { return false; }
 
-    let phElement = this.placeholder.element.nativeElement;
-    let sourceElement = drag.dropContainer.element.nativeElement;
-    let dropElement = drop.element.nativeElement;
+    const phElement = this.placeholder.element.nativeElement;
+    const sourceElement = drag.dropContainer.element.nativeElement;
+    const dropElement = drop.element.nativeElement;
 
-    let dragIndex = __indexOf(
+    const dragIndex = __indexOf(
       dropElement.parentElement.children,
       this.source ? phElement : sourceElement
     );
-    let dropIndex = __indexOf(dropElement.parentElement.children, dropElement);
+    const dropIndex = __indexOf(dropElement.parentElement.children, dropElement);
 
     if (!this.source) {
       this.sourceIndex = dragIndex;
       this.source = drag.dropContainer;
 
-      phElement.style.width = sourceElement.clientWidth + "px";
-      phElement.style.height = sourceElement.clientHeight + "px";
+      phElement.style.width = sourceElement.clientWidth + 'px';
+      phElement.style.height = sourceElement.clientHeight + 'px';
 
       sourceElement.parentElement.removeChild(sourceElement);
     }
@@ -249,7 +249,7 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
     this.targetIndex = dropIndex;
     this.target = drop;
 
-    phElement.style.display = "";
+    phElement.style.display = '';
     dropElement.parentElement.insertBefore(
       phElement,
       dropIndex > dragIndex ? dropElement.nextSibling : dropElement
@@ -261,7 +261,7 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
       drag.element.nativeElement.offsetTop
     );
     return false;
-  };
+  }
 
   /** Determines the point of the page that was touched by the user. */
   getPointerPositionOnPage(event: MouseEvent | TouchEvent) {
@@ -286,7 +286,7 @@ function __indexOf(collection, node) {
 
 /** Determines whether an event is a touch event. */
 function __isTouchEvent(event: MouseEvent | TouchEvent): event is TouchEvent {
-  return event.type.startsWith("touch");
+  return event.type.startsWith('touch');
 }
 
 function __isInsideDropListClientRect(

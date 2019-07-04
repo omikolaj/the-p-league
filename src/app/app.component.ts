@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 import {
   RouterOutlet,
   Router,
@@ -6,39 +6,39 @@ import {
   NavigationStart,
   NavigationCancel,
   NavigationError
-} from "@angular/router";
-import { trigger, transition } from "@angular/animations";
-import { routeAnimations } from "./core/animations/route.animations";
-import { Observable, Subscription } from "rxjs";
-import { Breakpoints, BreakpointObserver } from "@angular/cdk/layout";
-import { map } from "rxjs/operators";
+} from '@angular/router';
+import { trigger, transition } from '@angular/animations';
+import { routeAnimations } from './core/animations/route.animations';
+import { Observable, Subscription } from 'rxjs';
+import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { map } from 'rxjs/operators';
 import {
   EventBusService,
   Events
-} from "./core/services/event-bus/event-bus.service";
+} from './core/services/event-bus/event-bus.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
   animations: [
-    trigger("routeAnimations", [
-      transition("AboutPage <=> TeamSignUpPage", routeAnimations),
-      transition("* <=> MerchandiseListPage", routeAnimations),
-      transition("* <=> *", routeAnimations)
+    trigger('routeAnimations', [
+      transition('AboutPage <=> TeamSignUpPage', routeAnimations),
+      transition('* <=> MerchandiseListPage', routeAnimations),
+      transition('* <=> *', routeAnimations)
     ])
   ]
 })
 export class AppComponent implements OnInit {
-  title: string = "The P League";
-  logo = "../../../../assets/logo.png";
+  title = 'The P League';
+  logo = '../../../../assets/logo.png';
   year = new Date().getFullYear();
   window: Element;
   subscription: Subscription;
-  hideScrollbar: boolean = false;
+  hideScrollbar = false;
   previousURL: string;
-  currentURL: string = "";
-  loading: boolean = false;
+  currentURL = '';
+  loading = false;
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -56,11 +56,11 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         this.previousURL = this.currentURL;
         this.currentURL = event.url;
-        if (event.url.includes("modal") || this.previousURL.includes("modal")) {
+        if (event.url.includes('modal') || this.previousURL.includes('modal')) {
           return;
         }
         const contentContainer =
-          document.querySelector(".mat-sidenav-content") || this.window;
+          document.querySelector('.mat-sidenav-content') || this.window;
         contentContainer.scrollTo(0, 0);
       }
     });
@@ -81,7 +81,7 @@ export class AppComponent implements OnInit {
     return (
       outlet &&
       outlet.activatedRouteData &&
-      outlet.activatedRouteData["animation"]
+      outlet.activatedRouteData['animation']
     );
   }
 

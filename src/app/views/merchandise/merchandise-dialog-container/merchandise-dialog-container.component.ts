@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { MerchandiseDialogService } from "./merchandise-dialog.service";
-import { MatDialog } from "@angular/material";
+import { Component, OnInit } from '@angular/core';
+import { MerchandiseDialogService } from './merchandise-dialog.service';
+import { MatDialog } from '@angular/material';
 
 @Component({
-  selector: "app-merchandise-dialog-container",
-  templateUrl: "./merchandise-dialog-container.component.html",
-  styleUrls: ["./merchandise-dialog-container.component.scss"]
+  selector: 'app-merchandise-dialog-container',
+  templateUrl: './merchandise-dialog-container.component.html',
+  styleUrls: ['./merchandise-dialog-container.component.scss']
 })
 export class MerchandiseDialogContainerComponent implements OnInit {
   constructor(

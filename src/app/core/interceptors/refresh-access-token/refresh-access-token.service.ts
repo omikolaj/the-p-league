@@ -1,47 +1,39 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   HttpInterceptor,
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpErrorResponse
-} from "@angular/common/http";
+} from '@angular/common/http';
 import {
   Observable,
-  of,
-  EMPTY,
   BehaviorSubject,
-  observable,
   throwError
-} from "rxjs";
+} from 'rxjs';
 import {
-  retryWhen,
-  map,
   switchMap,
-  delayWhen,
   catchError,
-  concatMap,
   filter,
   take
-} from "rxjs/operators";
-import { TOKEN_HEADER } from "src/app/helpers/Constants/ThePLeagueConstants";
-import { AuthService } from "../../services/auth/auth.service";
-import { Router } from "@angular/router";
-import { ApplicationToken } from "../../models/auth/token/ApplicationToken.model";
+} from 'rxjs/operators';
+import { TOKEN_HEADER } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { AuthService } from '../../services/auth/auth.service';
+import { ApplicationToken } from '../../models/auth/token/ApplicationToken.model';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class RefreshAccessTokenInterceptor implements HttpInterceptor {
-  private readonly refreshUrl: string = "refresh/token";
-  private readonly login: string = "login";
+  private readonly refreshUrl: string = 'refresh/token';
+  private readonly login: string = 'login';
 
-  private refreshTokenInProgress: boolean = false;
+  private refreshTokenInProgress = false;
   private refreshTokenSubject: BehaviorSubject<
     ApplicationToken
   > = new BehaviorSubject<ApplicationToken>(null);
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   intercept(
     req: HttpRequest<any>,
@@ -49,7 +41,8 @@ export class RefreshAccessTokenInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError(error => {
-        // We do not want to refresh token for some requests such as login or refresh token itself. So we verify url and we throw an error if it's the case
+        // We do not want to refresh token for some requests such as login or refresh token itself.
+        // So we verify url and we throw an error if it's the case
         if (req.url.includes(this.refreshUrl) || req.url.includes(this.login)) {
           // We do another check to see if refresh token failed
           // In this case we want to logout user and then re-throw the error
@@ -60,7 +53,7 @@ export class RefreshAccessTokenInterceptor implements HttpInterceptor {
         }
         // If error status is different than 401 we want to skip refresh token
         // So we check that and throw the error if it's the case
-        if (error.status != 401) {
+        if (error.status !== 401) {
           return throwError(error);
         }
         if (this.refreshTokenInProgress) {

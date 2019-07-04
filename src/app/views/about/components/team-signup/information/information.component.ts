@@ -4,17 +4,17 @@ import {
   Input,
   ChangeDetectionStrategy,
   HostBinding
-} from "@angular/core";
-import { TeamSignUpForm } from "src/app/core/models/team/team-sign-up-form.model";
-import { TeamService } from "src/app/core/services/team/team.service";
-import { Router } from "@angular/router";
+} from '@angular/core';
+import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
+import { TeamService } from 'src/app/core/services/team/team.service';
+import { Router } from '@angular/router';
 import {
   trigger,
   transition,
   style,
   animate,
   query
-} from "@angular/animations";
+} from '@angular/animations';
 
 enum GoTo {
   Merchandise,
@@ -23,18 +23,18 @@ enum GoTo {
 }
 
 @Component({
-  selector: "app-information",
-  templateUrl: "./information.component.html",
-  styleUrls: ["./information.component.scss"],
+  selector: 'app-information',
+  templateUrl: './information.component.html',
+  styleUrls: ['./information.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
-    trigger("infoAnimation", [
-      transition(":enter", [
-        query(".info-wrapper", [
-          style({ opacity: 0, transform: "translateY(-3%)" }),
+    trigger('infoAnimation', [
+      transition(':enter', [
+        query('.info-wrapper', [
+          style({ opacity: 0, transform: 'translateY(-3%)' }),
           animate(
-            ".3s cubic-bezier(0.35, 0, 0.25, 1)",
-            style({ opacity: 1, transform: "translateY(0%)" })
+            '.3s cubic-bezier(0.35, 0, 0.25, 1)',
+            style({ opacity: 1, transform: 'translateY(0%)' })
           )
         ])
       ])
@@ -42,7 +42,7 @@ enum GoTo {
   ]
 })
 export class InformationComponent implements OnInit {
-  @HostBinding("@infoAnimation")
+  @HostBinding('@infoAnimation')
   public animatePage = true;
 
   @Input() teamSignUpForm: TeamSignUpForm;
@@ -52,11 +52,11 @@ export class InformationComponent implements OnInit {
   ngOnInit() {}
 
   toMerchandise() {
-    this.router.navigate(["merchandise"]);
+    this.router.navigate(['merchandise']);
   }
 
   toGallery() {
-    this.router.navigate(["gallery"]);
+    this.router.navigate(['gallery']);
   }
 
   toNewSubmission() {

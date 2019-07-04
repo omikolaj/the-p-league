@@ -1,52 +1,52 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     children: [
       {
-        path: "about",
-        loadChildren: "./views/about/about.module#AboutModule"
+        path: 'about',
+        loadChildren: './views/about/about.module#AboutModule'
       },
       {
-        path: "team",
+        path: 'team',
         loadChildren:
-          "./views/about/components/team-signup/team-signup.module#TeamSignupModule"
+          './views/about/components/team-signup/team-signup.module#TeamSignupModule'
       },
       {
-        path: "merchandise",
-        loadChildren: "./views/merchandise/merchandise.module#MerchandiseModule"
+        path: 'merchandise',
+        loadChildren: './views/merchandise/merchandise.module#MerchandiseModule'
       },
       {
-        path: "gallery",
-        loadChildren: "./views/gallery/gallery.module#GalleryModule"
+        path: 'gallery',
+        loadChildren: './views/gallery/gallery.module#GalleryModule'
       },
       {
-        path: "admin",
-        loadChildren: "./views/admin/admin.module#AdminModule"
+        path: 'admin',
+        loadChildren: './views/admin/admin.module#AdminModule'
       },
       {
-        path: "logout",
-        loadChildren: "./components/logout/logout.module#LogoutModule"
+        path: 'logout',
+        loadChildren: './components/logout/logout.module#LogoutModule'
       },
       {
-        path: "",
-        redirectTo: "about",
-        pathMatch: "full"
+        path: '',
+        redirectTo: 'about',
+        pathMatch: 'full'
       }
     ]
   },
   {
-    path: "**",
-    redirectTo: ""
+    path: '**',
+    redirectTo: ''
   }
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: "enabled",
+      scrollPositionRestoration: 'enabled',
       enableTracing: false,
       preloadingStrategy: PreloadAllModules
     })

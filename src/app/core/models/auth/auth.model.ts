@@ -1,4 +1,4 @@
-import { ApplicationToken } from "./token/ApplicationToken.model";
+import { ApplicationToken } from './token/ApplicationToken.model';
 
 export interface Auth {
   id?: string;

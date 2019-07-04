@@ -1,5 +1,5 @@
-import { GearSize } from "./gear-size.model";
-import { GearImage } from "./gear-image.model";
+import { GearSize } from './gear-size.model';
+import { GearImage } from './gear-image.model';
 
 export interface GearItem {
   id?: number;

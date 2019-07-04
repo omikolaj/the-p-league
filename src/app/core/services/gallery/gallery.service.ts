@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Observable, of, BehaviorSubject, combineLatest, Subject } from "rxjs";
-import { LeaguePicture } from "../../models/league-picture.model";
+import { Injectable } from '@angular/core';
+import { Observable, of, BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { LeaguePicture } from '../../models/league-picture.model';
 import {
   map,
   shareReplay,
@@ -9,38 +9,45 @@ import {
   catchError,
   scan,
   mergeMap
-} from "rxjs/operators";
-import { v4 as uuid } from "uuid";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+} from 'rxjs/operators';
+import { v4 as uuid } from 'uuid';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Resolve,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   Router
-} from "@angular/router";
+} from '@angular/router';
 import {
   SnackBarService,
   SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
+} from 'src/app/shared/components/snack-bar/snack-bar-service.service';
 import {
   EventBusService,
-  EmitEvent,
   Events
-} from "../event-bus/event-bus.service";
+} from '../event-bus/event-bus.service';
+import { EmitEvent } from '../event-bus/EmitEvent';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
-  private readonly galleryUrl: string = "gallery";
+
+  constructor(
+    private http: HttpClient,
+    private snackBarService: SnackBarService,
+    private router: Router,
+    private eventBus: EventBusService
+  ) { }
+  private readonly galleryUrl: string = 'gallery';
   defaultGalleryImage: LeaguePicture[] = [
     {
-      small: "../../../../assets/default_gallery.jpg",
-      medium: "../../../../assets/default_gallery.jpg",
-      big: "../../../../assets/default_gallery.jpg"
+      small: '../../../../assets/default_gallery.jpg',
+      medium: '../../../../assets/default_gallery.jpg',
+      big: '../../../../assets/default_gallery.jpg'
     }
   ];
-  //leaguePicturesSubject$ = new BehaviorSubject<LeaguePicture[]>([]);
+  // leaguePicturesSubject$ = new BehaviorSubject<LeaguePicture[]>([]);
   leaguePictures$: Observable<LeaguePicture[]> = new BehaviorSubject<
     LeaguePicture[]
   >([]).asObservable();
@@ -79,12 +86,36 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     )
   );
 
-  constructor(
-    private http: HttpClient,
-    private snackBarService: SnackBarService,
-    private router: Router,
-    private eventBus: EventBusService
-  ) {}
+  deleteLeaguePicturesLatest$ = combineLatest([
+    this.deleteLeaguePictureAction,
+    this.leaguePictures$
+  ]).pipe(
+    switchMap(
+      ([leaguePicturesToDelete]: [LeaguePicture[], LeaguePicture[]]) => {
+        return this.deleteLeaguePicturesAsync(leaguePicturesToDelete);
+      }
+    )
+  );
+
+  updatedLeaguePicturesOrder$ = combineLatest([
+    this.updateLeaguePictureOrderAction,
+    this.leaguePictures$
+  ]).pipe(
+    switchMap(
+      ([updatedLeaguePictureOrder]: [LeaguePicture[], LeaguePicture[]]) => {
+        return this.updateLeaguePicturesOrderAsync(updatedLeaguePictureOrder);
+      }
+    )
+  );
+
+  newLatestLeaguePictures$ = combineLatest([
+    this.addLeaguePictureAction,
+    this.leaguePictures$
+  ]).pipe(
+    switchMap(([newLeaguePicture]: [FormData, LeaguePicture[]]) => {
+      return this.createLeagueImagesAsync(newLeaguePicture);
+    })
+  );
 
   resolve(
     route: ActivatedRouteSnapshot,
@@ -96,10 +127,10 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
           (this.leaguePictures = leaguePictures)
       ),
       catchError(() => {
-        this.router.navigate(["about"]);
+        this.router.navigate(['about']);
         this.snackBarService.openSnackBarFromComponent(
-          "Error occured while getting gallery items. Please try again later",
-          "Dismiss",
+          'Error occured while getting gallery items. Please try again later',
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of([]);
@@ -114,17 +145,6 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     this.loadingSubject.next(loading);
   }
 
-  deleteLeaguePicturesLatest$ = combineLatest([
-    this.deleteLeaguePictureAction,
-    this.leaguePictures$
-  ]).pipe(
-    switchMap(
-      ([leaguePicturesToDelete]: [LeaguePicture[], LeaguePicture[]]) => {
-        return this.deleteLeaguePicturesAsync(leaguePicturesToDelete);
-      }
-    )
-  );
-
   deleteLeaguePictures(leaguePictures: LeaguePicture[]) {
     this.deleteLeaguePictureAction.next(leaguePictures);
   }
@@ -134,10 +154,10 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       return of([]);
     }
     const photoString: string =
-      leaguePics.length > 0 && leaguePics.length < 2 ? "photo" : "photos";
+      leaguePics.length > 0 && leaguePics.length < 2 ? 'photo' : 'photos';
     const options = {
       headers: new HttpHeaders({
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }),
       body: JSON.stringify(leaguePics.map(lp => lp.id))
     };
@@ -161,7 +181,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           `Successfully deleted gallery ${photoString}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Success
         );
       }),
@@ -169,24 +189,13 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
         this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           `Error occured while deleting gallery ${photoString} gear item`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of([]);
       })
     );
   }
-
-  updatedLeaguePicturesOrder$ = combineLatest([
-    this.updateLeaguePictureOrderAction,
-    this.leaguePictures$
-  ]).pipe(
-    switchMap(
-      ([updatedLeaguePictureOrder]: [LeaguePicture[], LeaguePicture[]]) => {
-        return this.updateLeaguePicturesOrderAsync(updatedLeaguePictureOrder);
-      }
-    )
-  );
 
   updateLeaguePicturesOrder(leaguePictures: LeaguePicture[]) {
     this.updateLeaguePictureOrderAction.next(leaguePictures);
@@ -198,9 +207,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     if (leaguePicturesOrdered === null) {
       return of([]);
     }
-    let headers = {
+    const headers = {
       headers: new HttpHeaders({
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       })
     };
 
@@ -215,9 +224,9 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
           LeaguePicture[],
           LeaguePicture[]
         ]) => {
-          if (leaguePicturesOrdered.length != leaguePictures.length) {
+          if (leaguePicturesOrdered.length !== leaguePictures.length) {
             console.log(
-              "The array length of ordered pictures did not match the length of existing pictures"
+              'The array length of ordered pictures did not match the length of existing pictures'
             );
             return leaguePictures;
           }
@@ -233,7 +242,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       map(leaguePicturesOrdered => {
         // assign orderIds to persist the order
         for (let index = 0; index < leaguePicturesOrdered.length; index++) {
-          let leaguePicture = leaguePicturesOrdered[index];
+          const leaguePicture = leaguePicturesOrdered[index];
           leaguePicture.orderId = index + 1;
         }
         return leaguePicturesOrdered;
@@ -248,16 +257,16 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       tap(_ => {
         this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
-          "Successfully updated gallery images order",
-          "Dismiss",
+          'Successfully updated gallery images order',
+          'Dismiss',
           SnackBarEvent.Success
         );
       }),
       catchError(() => {
         this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
-          "Error occured while updating gallery images order",
-          "Dismiss",
+          'Error occured while updating gallery images order',
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of([]);
@@ -268,15 +277,6 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   removePreview(leaguePicture: LeaguePicture) {
     this.removePreviewPictureAction.next(leaguePicture);
   }
-
-  newLatestLeaguePictures$ = combineLatest([
-    this.addLeaguePictureAction,
-    this.leaguePictures$
-  ]).pipe(
-    switchMap(([newLeaguePicture]: [FormData, LeaguePicture[]]) => {
-      return this.createLeagueImagesAsync(newLeaguePicture);
-    })
-  );
 
   createLeagueImages(leaguePictures: FormData) {
     this.addLeaguePictureAction.next(leaguePictures);
@@ -290,8 +290,8 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     }
     if (this.newLeaguePictures.length === 0) {
       this.snackBarService.openSnackBarFromComponent(
-        "No Pictures to Upload",
-        "Dismiss",
+        'No Pictures to Upload',
+        'Dismiss',
         SnackBarEvent.Warning
       );
       return of([]);
@@ -327,16 +327,16 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       tap(_ => {
         this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
-          "Successfully created gallery photo",
-          "Dismiss",
+          'Successfully created gallery photo',
+          'Dismiss',
           SnackBarEvent.Success
         );
       }),
       catchError(() => {
         this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
-          "Error occured while creating gallery photo",
-          "Dismiss",
+          'Error occured while creating gallery photo',
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of([]);
@@ -347,99 +347,99 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
 
 export const leaguePicturesConst: LeaguePicture[] = [
   {
-    url: "../../../assets/p_league_1.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p_league_1.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p_league_1.JPG",
-    medium: "../../../assets/p_league_1.JPG",
-    big: "../../../assets/p_league_1.JPG",
+    small: '../../../assets/p_league_1.JPG',
+    medium: '../../../assets/p_league_1.JPG',
+    big: '../../../assets/p_league_1.JPG',
     id: uuid(),
     size: 0,
-    type: "jpg"
+    type: 'jpg'
   },
   {
-    url: "../../../assets/p-league-2.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p-league-2.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p-league-2.JPG",
-    medium: "../../../assets/p-league-2.JPG",
-    big: "../../../assets/p-league-2.JPG",
+    small: '../../../assets/p-league-2.JPG',
+    medium: '../../../assets/p-league-2.JPG',
+    big: '../../../assets/p-league-2.JPG',
     id: uuid(),
     size: 0,
-    type: "jpg"
+    type: 'jpg'
   },
   {
-    url: "../../../assets/p-league-3.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p-league-3.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p-league-3.JPG",
-    medium: "../../../assets/p-league-3.JPG",
-    big: "../../../assets/p-league-3.JPG",
+    small: '../../../assets/p-league-3.JPG',
+    medium: '../../../assets/p-league-3.JPG',
+    big: '../../../assets/p-league-3.JPG',
     id: uuid(),
     size: 0,
-    type: "jpg"
+    type: 'jpg'
   },
   {
-    url: "../../../assets/p-league-4.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p-league-4.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p-league-4.JPG",
-    medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG",
+    small: '../../../assets/p-league-4.JPG',
+    medium: '../../../assets/p-league-4.JPG',
+    big: '../../../assets/p-league-4.JPG',
     id: uuid(),
     size: 0,
-    type: "jpg"
+    type: 'jpg'
   },
   {
-    url: "../../../assets/p-league-4.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p-league-4.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p-league-4.JPG",
-    medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG",
+    small: '../../../assets/p-league-4.JPG',
+    medium: '../../../assets/p-league-4.JPG',
+    big: '../../../assets/p-league-4.JPG',
     id: uuid(),
     size: 1,
-    type: "jpg"
+    type: 'jpg'
   },
   {
-    url: "../../../assets/p-league-3.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p-league-3.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p-league-3.JPG",
-    medium: "../../../assets/p-league-3.JPG",
-    big: "../../../assets/p-league-3.JPG",
+    small: '../../../assets/p-league-3.JPG',
+    medium: '../../../assets/p-league-3.JPG',
+    big: '../../../assets/p-league-3.JPG',
     id: uuid(),
     size: 0,
-    type: "jpg"
+    type: 'jpg'
   },
   {
-    url: "../../../assets/p-league-4.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p-league-4.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p-league-4.JPG",
-    medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG",
+    small: '../../../assets/p-league-4.JPG',
+    medium: '../../../assets/p-league-4.JPG',
+    big: '../../../assets/p-league-4.JPG',
     id: uuid(),
     size: 0,
-    type: "jpg"
+    type: 'jpg'
   },
   {
-    url: "../../../assets/p-league-4.JPG",
-    name: "test",
-    hashTag: "boom",
+    url: '../../../assets/p-league-4.JPG',
+    name: 'test',
+    hashTag: 'boom',
     delete: false,
-    small: "../../../assets/p-league-4.JPG",
-    medium: "../../../assets/p-league-4.JPG",
-    big: "../../../assets/p-league-4.JPG",
+    small: '../../../assets/p-league-4.JPG',
+    medium: '../../../assets/p-league-4.JPG',
+    big: '../../../assets/p-league-4.JPG',
     id: uuid(),
     size: 0,
-    type: "jpg"
+    type: 'jpg'
   }
 ];

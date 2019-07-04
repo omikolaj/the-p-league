@@ -1,6 +1,6 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatAutocompleteModule,
   MatBadgeModule,
@@ -39,16 +39,16 @@ import {
   MatTreeModule,
   RippleGlobalOptions,
   MAT_RIPPLE_GLOBAL_OPTIONS
-} from "@angular/material";
+} from '@angular/material';
 
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faPlayCircle,
   faRocket,
   faBasketballBall,
   faUndo
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
 import {
   faGithub,
@@ -56,15 +56,15 @@ import {
   faTwitter,
   faInstagram,
   faYoutube
-} from "@fortawesome/free-brands-svg-icons";
+} from '@fortawesome/free-brands-svg-icons';
 
-import { FlexLayoutModule } from "@angular/flex-layout";
-import { GalleryViewerComponent } from "./components/gallery-viewer/gallery-viewer.component";
-import { NgxGalleryModule } from "ngx-gallery";
-import { ReactiveFormsModule } from "@angular/forms";
-import { SnackBarComponent } from "./components/snack-bar/snack-bar.component";
-import { CarouselComponent } from "./components/carousel/carousel.component";
-import { CarouselModule } from "ngx-bootstrap/carousel";
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { GalleryViewerComponent } from './components/gallery-viewer/gallery-viewer.component';
+import { NgxGalleryModule } from 'ngx-gallery';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
+import { CarouselComponent } from './components/carousel/carousel.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 library.add(
   faGithub,

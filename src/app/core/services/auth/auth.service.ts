@@ -1,25 +1,25 @@
-import { Injectable } from "@angular/core";
-import { HttpHeaders, HttpClient } from "@angular/common/http";
-import { Login } from "../../models/auth/login.model";
-import { Observable, of, BehaviorSubject, Subject, throwError } from "rxjs";
-import { tap, map, shareReplay, switchMap, catchError } from "rxjs/operators";
-import * as moment from "moment";
-import * as jwt_decode from "jwt-decode";
-import { JwtPayload } from "../../models/auth/token/JwtPayload.model";
+import { Injectable } from '@angular/core';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Login } from '../../models/auth/login.model';
+import { Observable, of, BehaviorSubject, Subject, throwError } from 'rxjs';
+import { tap, map, shareReplay, switchMap, catchError } from 'rxjs/operators';
+import * as moment from 'moment';
+import * as jwt_decode from 'jwt-decode';
+import { JwtPayload } from '../../models/auth/token/JwtPayload.model';
 import {
   LOCAL_STORAGE_ITEM,
   Role
-} from "src/app/helpers/Constants/ThePLeagueConstants";
-import { LocalStorageItem } from "../../models/storage/local-storage.model";
-import { ApplicationToken } from "../../models/auth/token/ApplicationToken.model";
+} from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { LocalStorageItem } from '../../models/storage/local-storage.model';
+import { ApplicationToken } from '../../models/auth/token/ApplicationToken.model';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class AuthService {
   headers = {
     headers: new HttpHeaders({
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     })
   };
 
@@ -42,7 +42,7 @@ export class AuthService {
   authenticate(user: Login): Observable<ApplicationToken> {
     // http request to authenticate admin
     return this.http
-      .post<ApplicationToken>("login", JSON.stringify(user), this.headers)
+      .post<ApplicationToken>('login', JSON.stringify(user), this.headers)
       .pipe(
         map(appToken => {
           return this.setSession(appToken);
@@ -64,7 +64,7 @@ export class AuthService {
   }
 
   logout(): Observable<boolean> {
-    return this.http.delete<boolean>("logout").pipe(
+    return this.http.delete<boolean>('logout').pipe(
       map(res => {
         localStorage.removeItem(LOCAL_STORAGE_ITEM);
         return res;
@@ -74,9 +74,9 @@ export class AuthService {
   }
 
   refreshToken(): Observable<ApplicationToken> {
-    return this.http.get<ApplicationToken>("token/refresh").pipe(
+    return this.http.get<ApplicationToken>('token/refresh').pipe(
       map(appToken => {
-        console.log("Setting session. Token: ", appToken);
+        console.log('Setting session. Token: ', appToken);
         return this.setSession(appToken);
       }),
       tap(_ => this.isLoggedInSub.next(true))
@@ -88,7 +88,7 @@ export class AuthService {
     // and re-set it
     localStorage.removeItem(LOCAL_STORAGE_ITEM);
 
-    const expiresAt = moment().add(appToken.expires_in, "seconds");
+    const expiresAt = moment().add(appToken.expires_in, 'seconds');
     console.log(new Date(expiresAt.valueOf()));
     const jwtPayload: JwtPayload = this.decodeJwt(appToken.access_token);
     const localStorageItem: LocalStorageItem = {
@@ -109,7 +109,7 @@ export class AuthService {
   }
 
   get wasLoggedIn() {
-    console.log("wasLoggedIn ", this.getExpiration === null ? null : true);
+    console.log('wasLoggedIn ', this.getExpiration === null ? null : true);
     return this.getExpiration === null ? null : true;
   }
 
@@ -118,7 +118,7 @@ export class AuthService {
   }
 
   get isLoggedIn(): boolean {
-    console.log("Is logged in ", moment().isBefore(this.getExpiration));
+    console.log('Is logged in ', moment().isBefore(this.getExpiration));
     // if this.getExpiration is null user was never logged in OR intentially logged out
     if (this.getExpiration === null) {
       return false;
@@ -142,7 +142,7 @@ export class AuthService {
     try {
       return jwt_decode(jwt) as JwtPayload;
     } catch (error) {
-      console.log("[ERROR WHILE DECODING TOKEN]", jwt);
+      console.log('[ERROR WHILE DECODING TOKEN]', jwt);
       return null;
     }
   }

@@ -1,32 +1,32 @@
-import { Injectable } from "@angular/core";
-import { switchMap, catchError, tap } from "rxjs/operators";
-import { PreOrderForm } from "../../models/merchandise/pre-order-form.model";
-import { Observable, of, BehaviorSubject, Subject } from "rxjs";
+import { Injectable } from '@angular/core';
+import { switchMap, catchError, tap } from 'rxjs/operators';
+import { PreOrderForm } from '../../models/merchandise/pre-order-form.model';
+import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import {
   SnackBarEvent,
   SnackBarService
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
-import { MerchandiseService } from "../merchandise/merchandise.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { EventBusService } from "../event-bus/event-bus.service";
-import { Router } from "@angular/router";
+} from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { MerchandiseService } from '../merchandise/merchandise.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { EventBusService } from '../event-bus/event-bus.service';
+import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class PreOrderService extends MerchandiseService {
   private preOrderAction: Subject<PreOrderForm> = new Subject<PreOrderForm>();
 
   preOrder$ = this.preOrderAction.asObservable().pipe(
     switchMap((preOrderForm: PreOrderForm) => {
-      console.log("PreORderTriggered");
+      console.log('PreORderTriggered');
       return this.preOrderGearItemAsync(preOrderForm);
     })
   );
 
   headers = {
     headers: new HttpHeaders({
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     })
   };
 
@@ -58,8 +58,8 @@ export class PreOrderService extends MerchandiseService {
         catchError(err => {
           this.loadingSubject.next(false);
           this.snackBarService.openSnackBarFromComponent(
-            "Error occured submitting the pre-order",
-            "Dismiss",
+            'Error occured submitting the pre-order',
+            'Dismiss',
             SnackBarEvent.Error
           );
           return of(null);

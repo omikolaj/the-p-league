@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject, of, Subject } from "rxjs";
-import { GearItem } from "../../models/merchandise/gear-item.model";
+import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
+import { GearItem } from '../../models/merchandise/gear-item.model';
 import {
   flatMap,
   map,
@@ -8,33 +8,40 @@ import {
   shareReplay,
   switchMap,
   catchError
-} from "rxjs/operators";
-import { combineLatest } from "rxjs";
-import { Size } from "../../models/merchandise/gear-size.model";
-import { HttpClient } from "@angular/common/http";
+} from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { Size } from '../../models/merchandise/gear-size.model';
+import { HttpClient } from '@angular/common/http';
 import {
   Resolve,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   Router
-} from "@angular/router";
+} from '@angular/router';
 import {
   SnackBarService,
   SnackBarEvent
-} from "src/app/shared/components/snack-bar/snack-bar-service.service";
-import { PreOrderForm } from "../../models/merchandise/pre-order-form.model";
+} from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { PreOrderForm } from '../../models/merchandise/pre-order-form.model';
 import {
   EventBusService,
-  EmitEvent,
   Events
-} from "../event-bus/event-bus.service";
-import { handleError } from "src/app/helpers/handleError";
+} from '../event-bus/event-bus.service';
+import { handleError } from 'src/app/helpers/handleError';
+import { EmitEvent } from '../event-bus/EmitEvent';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
-  public readonly merchandiseUrl: string = "merchandise";
+
+  constructor(
+    public http: HttpClient,
+    public snackBarService: SnackBarService,
+    private eventBus: EventBusService,
+    private router: Router
+  ) { }
+  public readonly merchandiseUrl: string = 'merchandise';
   private updateGearItemAction: BehaviorSubject<GearItem> = new BehaviorSubject<
     GearItem
   >(null);
@@ -59,12 +66,35 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
   ).asObservable();
   gearItems: GearItem[];
 
-  constructor(
-    public http: HttpClient,
-    public snackBarService: SnackBarService,
-    private eventBus: EventBusService,
-    private router: Router
-  ) {}
+  updatedGearItems$ = combineLatest([
+    this.updateGearItemAction,
+    this.gearItems$
+  ]).pipe(
+    switchMap(([updatedGearItem]) => {
+      this.loadingSubject.next(true);
+      return this.updateGearItemAsync(updatedGearItem);
+    })
+  );
+
+  newLatestGearItems$ = combineLatest([
+    this.addGearItemAction,
+    this.gearItems$
+  ]).pipe(
+    switchMap(([newGearItem]) => {
+      this.loadingSubject.next(true);
+      return this.createGearItemAsync(newGearItem);
+    })
+  );
+
+  deleteGearItemsLatest$ = combineLatest([
+    this.deleteGearItemAction,
+    this.gearItems$
+  ]).pipe(
+    switchMap(([gearItemToDelete]) => {
+      this.loadingDeleteSubject.next(true);
+      return this.deleteGearItemAsync(gearItemToDelete);
+    })
+  );
 
   resolve(
     route: ActivatedRouteSnapshot,
@@ -73,10 +103,10 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.gearItems$ = this.http.get<GearItem[]>(this.merchandiseUrl).pipe(
       map((gearItems: GearItem[]) => (this.gearItems = gearItems).reverse()),
       catchError(() => {
-        this.router.navigate(["about"]);
+        this.router.navigate(['about']);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured. Please come back later`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of([]);
@@ -101,16 +131,6 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     );
   }
 
-  updatedGearItems$ = combineLatest([
-    this.updateGearItemAction,
-    this.gearItems$
-  ]).pipe(
-    switchMap(([updatedGearItem]) => {
-      this.loadingSubject.next(true);
-      return this.updateGearItemAsync(updatedGearItem);
-    })
-  );
-
   updateGearItem(gearItem: GearItem) {
     this.updateGearItemAction.next(gearItem);
   }
@@ -128,7 +148,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     ]).pipe(
       map(([gearItems, updatedGearItem]: [GearItem[], GearItem]) => {
         const index: number = gearItems
-          .map((gearItem: GearItem) => gearItem.id)
+          .map((gI: GearItem) => gI.id)
           .indexOf(gearItem.id);
         if (index > -1) {
           gearItems.splice(index, 1, updatedGearItem);
@@ -139,7 +159,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully updated ${gearItem.name}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Success
         );
       }),
@@ -148,23 +168,13 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured updating ${gearItem.name}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of([]);
       })
     );
   }
-
-  newLatestGearItems$ = combineLatest([
-    this.addGearItemAction,
-    this.gearItems$
-  ]).pipe(
-    switchMap(([newGearItem]) => {
-      this.loadingSubject.next(true);
-      return this.createGearItemAsync(newGearItem);
-    })
-  );
 
   createGearItem(gearItem: GearItem) {
     this.addGearItemAction.next(gearItem);
@@ -186,7 +196,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully created ${gearItem.name}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Success
         );
       }),
@@ -195,23 +205,13 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         this.loadingSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured creating ${gearItem.name}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of([]);
       })
     );
   }
-
-  deleteGearItemsLatest$ = combineLatest([
-    this.deleteGearItemAction,
-    this.gearItems$
-  ]).pipe(
-    switchMap(([gearItemToDelete]) => {
-      this.loadingDeleteSubject.next(true);
-      return this.deleteGearItemAsync(gearItemToDelete);
-    })
-  );
 
   deleteGearItem(gearItem: GearItem) {
     this.deleteGearItemAction.next(gearItem);
@@ -238,7 +238,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         this.loadingDeleteSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Successfully deleted ${gearItemToDelete.name}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Success
         );
       }),
@@ -246,7 +246,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         this.loadingDeleteSubject.next(false);
         this.snackBarService.openSnackBarFromComponent(
           `Error occured deleting ${gearItemToDelete.name}`,
-          "Dismiss",
+          'Dismiss',
           SnackBarEvent.Error
         );
         return of(null);
@@ -258,317 +258,317 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
 export const storeItems: GearItem[] = [
   {
     id: 1,
-    name: "T-shirt",
+    name: 'T-shirt',
     price: 10,
     sizes: [
-      { size: Size.L, available: false, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.XL, available: true, color: "warn" },
-      { size: Size.XXL, available: true, color: "warn" }
+      { size: Size.L, available: false, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.XL, available: true, color: 'warn' },
+      { size: Size.XXL, available: true, color: 'warn' }
     ],
     inStock: true,
     images: [
       {
-        id: "1",
-        name: "image1",
+        id: '1',
+        name: 'image1',
         size: 12,
-        type: "type",
-        url: "../../../assets/IMG_5585.JPG",
-        small: "../../../assets/IMG_5585.JPG",
-        medium: "../../../assets/IMG_5585.JPG",
-        big: "../../../assets/IMG_5585.JPG"
+        type: 'type',
+        url: '../../../assets/IMG_5585.JPG',
+        small: '../../../assets/IMG_5585.JPG',
+        medium: '../../../assets/IMG_5585.JPG',
+        big: '../../../assets/IMG_5585.JPG'
       },
       {
-        id: "123",
-        name: "image2",
+        id: '123',
+        name: 'image2',
         size: 12,
-        type: "type",
-        url: "../../../assets/IMG_5904.JPG",
-        small: "../../../assets/IMG_5904.JPG",
-        medium: "../../../assets/IMG_5904.JPG",
-        big: "../../../assets/IMG_5904.JPG"
+        type: 'type',
+        url: '../../../assets/IMG_5904.JPG',
+        small: '../../../assets/IMG_5904.JPG',
+        medium: '../../../assets/IMG_5904.JPG',
+        big: '../../../assets/IMG_5904.JPG'
       }
     ]
   },
   {
     id: 2,
-    name: "Hoodie",
+    name: 'Hoodie',
     price: 25,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: true, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: true, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: true, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: true, color: 'warn' }
     ],
     inStock: true,
     images: [
       {
-        id: "11",
-        name: "image41",
+        id: '11',
+        name: 'image41',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       },
       {
-        id: "1",
-        name: "image44",
+        id: '1',
+        name: 'image44',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       },
       {
-        id: "3",
-        name: "image43",
+        id: '3',
+        name: 'image43',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 3,
-    name: "Pants",
+    name: 'Pants',
     price: 20,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: false, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: false, color: 'warn' }
     ],
     inStock: false,
     images: [
       {
-        id: "31",
-        name: "imageerw1",
+        id: '31',
+        name: 'imageerw1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 4,
-    name: "Pants",
+    name: 'Pants',
     price: 20,
     sizes: [
-      { size: Size.L, available: false, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: false, color: "warn" }
+      { size: Size.L, available: false, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: false, color: 'warn' }
     ],
     inStock: false,
     images: [
       {
-        id: "13",
-        name: "image1",
+        id: '13',
+        name: 'image1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 5,
-    name: "Wrist Band",
+    name: 'Wrist Band',
     price: 5,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: true, color: "warn" },
-      { size: Size.XS, available: true, color: "warn" },
-      { size: Size.S, available: true, color: "warn" },
-      { size: Size.XL, available: true, color: "warn" },
-      { size: Size.XXL, available: true, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: true, color: 'warn' },
+      { size: Size.XS, available: true, color: 'warn' },
+      { size: Size.S, available: true, color: 'warn' },
+      { size: Size.XL, available: true, color: 'warn' },
+      { size: Size.XXL, available: true, color: 'warn' }
     ],
     inStock: true,
     images: [
       {
-        id: "3",
-        name: "imagesa1",
+        id: '3',
+        name: 'imagesa1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 6,
-    name: "Long Sleeve",
+    name: 'Long Sleeve',
     price: 15,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: true, color: "warn" },
-      { size: Size.XL, available: true, color: "warn" },
-      { size: Size.XXL, available: true, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: true, color: 'warn' },
+      { size: Size.XL, available: true, color: 'warn' },
+      { size: Size.XXL, available: true, color: 'warn' }
     ],
     inStock: true,
     images: [
       {
-        id: "1w3",
-        name: "imwage1",
+        id: '1w3',
+        name: 'imwage1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 7,
-    name: "Hats",
+    name: 'Hats',
     price: 30,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: true, color: "warn" },
-      { size: Size.XL, available: true, color: "warn" },
-      { size: Size.XXL, available: true, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: true, color: 'warn' },
+      { size: Size.XL, available: true, color: 'warn' },
+      { size: Size.XXL, available: true, color: 'warn' }
     ],
     inStock: false,
     images: [
       {
-        id: "13",
-        name: "image1",
+        id: '13',
+        name: 'image1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 8,
-    name: "Hatss",
+    name: 'Hatss',
     price: 30,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: false, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: false, color: 'warn' }
     ],
     inStock: false,
     images: [
       {
-        id: "13",
-        name: "image1",
+        id: '13',
+        name: 'image1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 9,
-    name: "Watch",
+    name: 'Watch',
     price: 30,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: false, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: false, color: 'warn' }
     ],
     inStock: false,
     images: [
       {
-        id: "13",
-        name: "image1",
+        id: '13',
+        name: 'image1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 10,
-    name: "Jorts",
+    name: 'Jorts',
     price: 30,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: false, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: false, color: 'warn' }
     ],
     inStock: false,
     images: [
       {
-        id: "13",
-        name: "image1",
+        id: '13',
+        name: 'image1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   },
   {
     id: 11,
-    name: "Jortss",
+    name: 'Jortss',
     price: 30,
     sizes: [
-      { size: Size.L, available: true, color: "warn" },
-      { size: Size.M, available: false, color: "warn" },
-      { size: Size.XS, available: false, color: "warn" },
-      { size: Size.S, available: false, color: "warn" },
-      { size: Size.XL, available: false, color: "warn" },
-      { size: Size.XXL, available: false, color: "warn" }
+      { size: Size.L, available: true, color: 'warn' },
+      { size: Size.M, available: false, color: 'warn' },
+      { size: Size.XS, available: false, color: 'warn' },
+      { size: Size.S, available: false, color: 'warn' },
+      { size: Size.XL, available: false, color: 'warn' },
+      { size: Size.XXL, available: false, color: 'warn' }
     ],
     inStock: false,
     images: [
       {
-        id: "13",
-        name: "image1",
+        id: '13',
+        name: 'image1',
         size: 12,
-        type: "type",
-        url: "../../../assets/default_gear.png",
-        small: "../../../assets/default_gear.png",
-        medium: "../../../assets/default_gear.png",
-        big: "../../../assets/default_gear.png"
+        type: 'type',
+        url: '../../../assets/default_gear.png',
+        small: '../../../assets/default_gear.png',
+        medium: '../../../assets/default_gear.png',
+        big: '../../../assets/default_gear.png'
       }
     ]
   }
