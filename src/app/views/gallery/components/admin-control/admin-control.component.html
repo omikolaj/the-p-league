@@ -62,13 +62,10 @@
           (change)="onImagesSelected($event)"
           style="display: none"
         />
-
         <button
           mat-raised-button
           color="accent"
-          [disabled]="
-            galleryService.newLeaguePictures.length > 0 ? 'false' : 'true'
-          "
+          [disabled]="isLoading"
           (click)="onSave()"
         >
           Save
@@ -120,7 +117,7 @@
         <button
           mat-raised-button
           color="warn"
-          [disabled]="disableDelete()"
+          [disabled]="disableDelete() || isLoading"
           (click)="onDelete()"
         >
           Delete

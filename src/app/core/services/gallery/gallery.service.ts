@@ -288,6 +288,14 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     if (newLeaguePictures === null) {
       return of([]);
     }
+    if (this.newLeaguePictures.length === 0) {
+      this.snackBarService.openSnackBarFromComponent(
+        "No Pictures to Upload",
+        "Dismiss",
+        SnackBarEvent.Warning
+      );
+      return of([]);
+    }
 
     this.eventBus.emit(new EmitEvent(Events.Loading, true));
 

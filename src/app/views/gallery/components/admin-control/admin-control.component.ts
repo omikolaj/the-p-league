@@ -2,7 +2,10 @@ import {
   Component,
   Input,
   ViewChild,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  OnInit,
+  OnDestroy,
+  AfterViewInit
 } from "@angular/core";
 import { LeaguePicture } from "src/app/core/models/league-picture.model";
 import { GalleryService } from "src/app/core/services/gallery/gallery.service";
@@ -18,6 +21,10 @@ import { ViewportRuler } from "@angular/cdk/overlay";
 import { MatCheckboxChange } from "@angular/material";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { LeagueImageUpload } from "src/app/helpers/Constants/ThePLeagueConstants";
+import {
+  EventBusService,
+  Events
+} from "src/app/core/services/event-bus/event-bus.service";
 
 @Component({
   selector: "app-admin-control",
@@ -25,7 +32,7 @@ import { LeagueImageUpload } from "src/app/helpers/Constants/ThePLeagueConstants
   styleUrls: ["./admin-control.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdminControlComponent {
+export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   //#region DragAndDrop Properties
   @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<CdkDropList>;
@@ -45,14 +52,23 @@ export class AdminControlComponent {
   leaguePicturesMarkedForDeletion: LeaguePicture[] = [];
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
-  isLoading$ = this.galleryService.loading$;
+  isLoading: boolean = false;
+  subscription: Subscription;
 
   constructor(
     private viewportRuler: ViewportRuler,
-    private galleryService: GalleryService
+    private galleryService: GalleryService,
+    private eventBus: EventBusService
   ) {
     this.target = null;
     this.source = null;
+  }
+
+  ngOnInit() {
+    this.subscription = this.eventBus.on(
+      Events.Loading,
+      isLoading => (this.isLoading = isLoading)
+    );
   }
 
   ngAfterViewInit() {
@@ -63,6 +79,7 @@ export class AdminControlComponent {
   }
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
     this.fileReaders.forEach(fR => fR.abort());
   }
 
@@ -101,7 +118,7 @@ export class AdminControlComponent {
     if (this.galleryImages.length === 0) {
       return true;
     } else {
-      this.leaguePicturesMarkedForDeletion.length < 1;
+      return this.leaguePicturesMarkedForDeletion.length === 0;
     }
   }
 

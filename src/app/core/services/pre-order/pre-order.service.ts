@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { switchMap, catchError } from "rxjs/operators";
+import { switchMap, catchError, tap } from "rxjs/operators";
 import { PreOrderForm } from "../../models/merchandise/pre-order-form.model";
 import { Observable, of, BehaviorSubject, Subject } from "rxjs";
 import {
@@ -46,7 +46,7 @@ export class PreOrderService extends MerchandiseService {
   private preOrderGearItemAsync(
     preOrderForm: PreOrderForm
   ): Observable<PreOrderForm> {
-    console.log("PreOrder Form is", preOrderForm);
+    this.loadingSubject.next(true);
     return this.http
       .post<PreOrderForm>(
         `${this.merchandiseUrl}/${preOrderForm.gearItemId}/pre-order`,
@@ -54,9 +54,11 @@ export class PreOrderService extends MerchandiseService {
         this.headers
       )
       .pipe(
+        tap(() => this.loadingSubject.next(false)),
         catchError(err => {
+          this.loadingSubject.next(false);
           this.snackBarService.openSnackBarFromComponent(
-            "Error occured while submitting pre-order form",
+            "Error occured submitting the pre-order",
             "Dismiss",
             SnackBarEvent.Error
           );

@@ -72,7 +72,6 @@ export class AppComponent implements OnInit {
 
     this.subscription.add(
       this.eventbus.on(Events.Loading, (event: boolean) => {
-        console.log("inside loading in app");
         return (this.loading = event);
       })
     );

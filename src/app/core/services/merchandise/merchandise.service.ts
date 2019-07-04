@@ -46,7 +46,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
   >(null);
   pageChangeAction: BehaviorSubject<{}> = new BehaviorSubject<{}>(null);
 
-  private loadingSubject = new Subject<boolean>();
+  protected loadingSubject = new Subject<boolean>();
   loading$ = this.loadingSubject.asObservable();
 
   // We need a separate loading for delete because otherwise if we trigger update loading or new

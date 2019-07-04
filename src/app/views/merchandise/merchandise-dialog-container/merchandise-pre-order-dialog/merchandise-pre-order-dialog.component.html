@@ -3,11 +3,10 @@
 </h1>
 
 <ng-container *ngIf="!(preOrderdItem$ | async); else finalizeOrder">
-  <mat-progress-bar
-    color="accent"
-    *ngIf="loading"
-    mode="indeterminate"
-  ></mat-progress-bar>
+  <ng-container *ngIf="isLoading$ | async">
+    <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
+  </ng-container>
+
   <form [formGroup]="preOrderForm" (ngSubmit)="onSubmit()">
     <mat-horizontal-stepper>
       <mat-step>
@@ -142,7 +141,7 @@
             style="align-self: flex-end;"
             mat-raised-button
             color="accent"
-            [disabled]="!preOrderForm.valid"
+            [disabled]="!preOrderForm.valid || (isLoading$ | async)"
           >
             Order!
           </button>
@@ -157,9 +156,12 @@
     <mat-step>
       <ng-template matStepLabel>Order Summary</ng-template>
       <div>
-        Thank you for your pre-order. You pre-ordered {{ gearItem.name }} for
-        ${{ gearItem.price }}. We will be sending you a confirmation e-mail
-        shortly
+        Thank you for your pre-order. You pre-ordered
+        {{ preOrderForm.get("orderDetails").value.quantity }}
+        {{ gearItem.name }} for ${{ gearItem.price }} each. Your total is ${{
+          computeTotalPrice()
+        }}
+        .We will be sending you a confirmation e-mail shortly
       </div>
       <div class="action-buttons">
         <button

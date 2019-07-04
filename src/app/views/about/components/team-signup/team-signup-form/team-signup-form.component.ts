@@ -1,4 +1,10 @@
-import { Component, ChangeDetectionStrategy, HostBinding } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  HostBinding,
+  OnInit,
+  OnDestroy
+} from "@angular/core";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { ROUTE_ANIMATIONS_ELEMENTS } from "src/app/core/animations/route.animations";
 import { TeamService } from "src/app/core/services/team/team.service";
@@ -12,6 +18,11 @@ import {
   animate,
   state
 } from "@angular/animations";
+import {
+  EventBusService,
+  Events
+} from "src/app/core/services/event-bus/event-bus.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-team-signup-form",
@@ -32,14 +43,12 @@ import {
     ])
   ]
 })
-export class TeamSignupFormComponent {
+export class TeamSignupFormComponent implements OnInit, OnDestroy {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   submitted: string = "not-submitted";
   @HostBinding("@infoAnimation")
   public animagePage = true;
-
   teamSignUpSuccess: boolean = false;
-
   contactForm: FormGroup = this.fb.group({
     teamName: this.fb.control("Broskars", Validators.required),
     firstName: this.fb.control("Ed", Validators.required),
@@ -54,8 +63,25 @@ export class TeamSignupFormComponent {
     ]),
     preferredContact: this.fb.control(1)
   });
+  isLoading: boolean = false;
+  subscription: Subscription;
 
-  constructor(private fb: FormBuilder, private teamService: TeamService) {}
+  constructor(
+    private fb: FormBuilder,
+    private teamService: TeamService,
+    private eventbus: EventBusService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.eventbus.on(
+      Events.Loading,
+      isLoading => (this.isLoading = isLoading)
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   onSubmit() {
     const teamSignUpForm: TeamSignUpForm = {

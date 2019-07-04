@@ -107,3 +107,11 @@ body {
     color: #323232;
   }
 }
+
+.style-warn {
+  background: #fbc02d;
+  color: #323232;
+  .mat-button-wrapper {
+    color: #ff4081;
+  }
+}

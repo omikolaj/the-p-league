@@ -152,7 +152,7 @@
           style="align-self: flex-end;"
           mat-raised-button
           color="accent"
-          [disabled]="!gearItemForm.valid"
+          [disabled]="!gearItemForm.valid || (isLoading$ | async)"
         >
           {{ editMode ? "Update" : "Post" }}
         </button>

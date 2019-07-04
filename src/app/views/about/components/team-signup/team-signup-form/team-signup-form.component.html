@@ -110,7 +110,7 @@
       <mat-card-actions>
         <button
           mat-raised-button
-          [disabled]="!contactForm.valid"
+          [disabled]="!contactForm.valid || isLoading"
           color="primary"
           type="submit"
         >

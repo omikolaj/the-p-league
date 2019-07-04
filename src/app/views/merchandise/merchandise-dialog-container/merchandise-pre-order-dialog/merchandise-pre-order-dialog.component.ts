@@ -35,7 +35,7 @@ export class MerchandisePreOrderDialogComponent implements OnInit {
     ]),
     orderDetails: this.fb.group({
       quantity: this.fb.control(1, Validators.required),
-      size: this.fb.control(1, Validators.required)
+      size: this.fb.control(null, Validators.required)
     }),
     contactPreference: this.fb.group({
       cellOrEmail: this.fb.control(1)
@@ -44,7 +44,7 @@ export class MerchandisePreOrderDialogComponent implements OnInit {
   gearItem: GearItem;
   sizeEnum = Size;
   preOrderdItem$ = this.preOrderService.preOrder$;
-  loading: boolean = false;
+  isLoading$ = this.preOrderService.loading$;
 
   constructor(
     private fb: FormBuilder,
@@ -84,9 +84,11 @@ export class MerchandisePreOrderDialogComponent implements OnInit {
         preferredContact: +this.preOrderForm.value.contactPreference.cellOrEmail
       }
     };
-    this.loading = true;
-    console.log("Loading true");
     this.preOrderService.preOrderGearItem(preOrderForm);
+  }
+
+  computeTotalPrice() {
+    return this.gearItem.price * this.preOrderForm.value.orderDetails.quantity;
   }
 
   onCancel() {

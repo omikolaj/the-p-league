@@ -23,6 +23,13 @@ export class SnackBarService {
     duration: 3000
   };
 
+  private warnConfig: MatSnackBarConfig = {
+    panelClass: ["style-warn"],
+    horizontalPosition: "center",
+    verticalPosition: "bottom",
+    duration: 3000
+  };
+
   constructor(private snackBar: MatSnackBar) {}
 
   openSnackBarFromComponent(
@@ -47,6 +54,8 @@ export class SnackBarService {
         break;
 
       case SnackBarEvent.Warning:
+        this.warnConfig.data = data;
+        this.snackBar.openFromComponent(SnackBarComponent, this.warnConfig);
         break;
 
       default:
