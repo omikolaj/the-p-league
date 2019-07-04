@@ -28,7 +28,6 @@ import { Subscription } from 'rxjs';
   selector: 'app-team-signup-form',
   templateUrl: './team-signup-form.component.html',
   styleUrls: ['./team-signup-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('infoAnimation', [
       transition('* => *', [
@@ -50,14 +49,14 @@ export class TeamSignupFormComponent implements OnInit, OnDestroy {
   public animagePage = true;
   teamSignUpSuccess = false;
   contactForm: FormGroup = this.fb.group({
-    teamName: this.fb.control('Broskars', Validators.required),
-    firstName: this.fb.control('Ed', Validators.required),
-    lastName: this.fb.control('Truck', Validators.required),
-    phoneNumber: this.fb.control('2163943502', [
+    teamName: this.fb.control(null, Validators.required),
+    firstName: this.fb.control(null, Validators.required),
+    lastName: this.fb.control(null, Validators.required),
+    phoneNumber: this.fb.control(null, [
       Validators.required,
       Validators.pattern('[0-9]{0,10}')
     ]),
-    email: this.fb.control('oski@gmail.com', [
+    email: this.fb.control(null, [
       Validators.required,
       Validators.email
     ]),
@@ -70,13 +69,14 @@ export class TeamSignupFormComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private teamService: TeamService,
     private eventbus: EventBusService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscription = this.eventbus.on(
       Events.Loading,
-      isLoading => (this.isLoading = isLoading)
-    );
+      isAppLoading => {
+        return this.isLoading = isAppLoading;
+      })
   }
 
   ngOnDestroy(): void {

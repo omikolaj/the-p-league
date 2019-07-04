@@ -4,11 +4,7 @@
 
 <div class="accordion-wrapper" [ngClass]="routeAnimationsElements">
   <mat-accordion #accordion displayMode="flat">
-    <mat-expansion-panel
-      [expanded]="false"
-      (opened)="panelOpenState = true"
-      (closed)="panelOpenState = false"
-    >
+    <mat-expansion-panel [expanded]="false" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
           New
@@ -24,21 +20,11 @@
         </p>
       </ng-container>
 
-      <div
-        #leaguePics
-        *ngIf="galleryService.leaguePicturesPreview$ | async as leaguePictures"
-      >
+      <div #leaguePics *ngIf="galleryService.leaguePicturesPreview$ | async as leaguePictures">
         <div class="photos-container">
-          <ng-container
-            *ngFor="let leaguePicture of leaguePictures; let i = index"
-          >
+          <ng-container *ngFor="let leaguePicture of leaguePictures; let i = index">
             <div class="photo-element">
-              <button
-                style="display: block"
-                mat-raised-button
-                color="warn"
-                (click)="onUndo(leaguePicture)"
-              >
+              <button style="display: block" mat-raised-button color="warn" (click)="onUndo(leaguePicture)">
                 Undo
               </button>
               <h4 class="preview-error" *ngIf="leaguePicture.preview.error">
@@ -54,30 +40,15 @@
         <button mat-raised-button color="primary" (click)="fileUpload.click()">
           Upload
         </button>
-        <input
-          #fileUpload
-          appClearElementValue
-          type="file"
-          multiple="multiple"
-          (change)="onImagesSelected($event)"
-          style="display: none"
-        />
-        <button
-          mat-raised-button
-          color="accent"
-          [disabled]="isLoading"
-          (click)="onSave()"
-        >
+        <input #fileUpload appClearElementValue type="file" multiple="multiple" (change)="onImagesSelected($event)"
+          style="display: none" />
+        <button mat-raised-button color="accent" [disabled]="isLoading" (click)="onSave()">
           Save
         </button>
       </mat-action-row>
     </mat-expansion-panel>
 
-    <mat-expansion-panel
-      [expanded]="false"
-      (opened)="panelOpenState = true"
-      (closed)="panelOpenState = false"
-    >
+    <mat-expansion-panel [expanded]="false" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Modify
@@ -92,34 +63,20 @@
       </ng-container>
 
       <div class="photos-container" cdkDropListGroup>
-        <div
-          cdkDropList
-          [cdkDropListEnterPredicate]="dropListEnterPredicate"
-          (cdkDropListDropped)="dropListDropped($event)"
-        ></div>
+        <div cdkDropList [cdkDropListEnterPredicate]="dropListEnterPredicate" (cdkDropListDropped)="dropListDropped()">
+        </div>
 
-        <div
-          cdkDropList
-          *ngFor="let photo of galleryImages; let i = index"
-          [cdkDropListEnterPredicate]="dropListEnterPredicate"
-          (cdkDropListDropped)="dropListDropped($event)"
-        >
+        <div cdkDropList *ngFor="let photo of galleryImages; let i = index"
+          [cdkDropListEnterPredicate]="dropListEnterPredicate" (cdkDropListDropped)="dropListDropped($event)">
           <div cdkDrag class="photo-element" (cdkDragMoved)="dragMoved($event)">
-            <mat-checkbox (change)="onChange($event, i)" color="warn"
-              >Flag</mat-checkbox
-            >
+            <mat-checkbox (change)="onChange($event, i)" color="warn">Flag</mat-checkbox>
             <img [src]="photo.url" alt="" />
           </div>
         </div>
       </div>
 
       <mat-action-row>
-        <button
-          mat-raised-button
-          color="warn"
-          [disabled]="disableDelete() || isLoading"
-          (click)="onDelete()"
-        >
+        <button mat-raised-button color="warn" [disabled]="disableDelete() || isLoading" (click)="onDelete()">
           Delete
         </button>
       </mat-action-row>

@@ -48,7 +48,6 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() galleryImages: LeaguePicture[];
   panelOpenState = false;
   selectedImagesFormData: FormData = new FormData();
-  // loading: boolean = false;
   leaguePicturesMarkedForDeletion: LeaguePicture[] = [];
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
@@ -57,7 +56,7 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private viewportRuler: ViewportRuler,
-    private galleryService: GalleryService,
+    public galleryService: GalleryService,
     private eventBus: EventBusService
   ) {
     this.target = null;

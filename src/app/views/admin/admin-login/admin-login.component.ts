@@ -22,8 +22,8 @@ import { handleError } from 'src/app/helpers/handleError';
 })
 export class AdminLoginComponent implements OnInit, OnDestroy {
   adminLoginForm: FormGroup = this.fb.group({
-    username: this.fb.control('oski', Validators.required),
-    password: this.fb.control('password', Validators.required),
+    username: this.fb.control(null, Validators.required),
+    password: this.fb.control(null, Validators.required),
     newPassword: this.fb.control(null),
     changePassword: this.fb.control(false)
   });

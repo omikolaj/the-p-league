@@ -1,17 +1,11 @@
-<div [ngClass]="routeAnimationsElements" class="info-wrapper">
+<div class="info-wrapper">
   <mat-card class="info-card">
-    <img
-      mat-card-image
-      src="../../../../../../assets/court.jpg"
-      alt="Empty basketball stadium"
-    />
+    <img mat-card-image src="../../../../../../assets/court.jpg" alt="Empty basketball stadium" />
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>
       <mat-card-title>{{ teamSignUpForm.name }}</mat-card-title>
-      <mat-card-subtitle
-        >{{ teamSignUpForm.contact.firstName }}
-        {{ teamSignUpForm.contact.lastName }}</mat-card-subtitle
-      >
+      <mat-card-subtitle>{{ teamSignUpForm.contact.firstName }}
+        {{ teamSignUpForm.contact.lastName }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <div class="text-wrapper">

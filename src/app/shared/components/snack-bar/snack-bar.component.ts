@@ -19,11 +19,11 @@ import {
 })
 export class SnackBarComponent implements OnInit {
   constructor(
-    @Inject(MAT_SNACK_BAR_DATA) private snackBarData: any,
-    private snackBar: MatSnackBar
-  ) {}
+    @Inject(MAT_SNACK_BAR_DATA) public snackBarData: any,
+    public snackBar: MatSnackBar
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   onDismiss() {
     this.snackBar.dismiss();

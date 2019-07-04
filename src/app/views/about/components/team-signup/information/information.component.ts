@@ -44,12 +44,12 @@ enum GoTo {
 export class InformationComponent implements OnInit {
   @HostBinding('@infoAnimation')
   public animatePage = true;
-
   @Input() teamSignUpForm: TeamSignUpForm;
 
-  constructor(private router: Router, private teamService: TeamService) {}
 
-  ngOnInit() {}
+  constructor(private router: Router, private teamService: TeamService) { }
+
+  ngOnInit() { }
 
   toMerchandise() {
     this.router.navigate(['merchandise']);
