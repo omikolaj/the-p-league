@@ -23,13 +23,13 @@ import { PreOrderService } from 'src/app/core/services/pre-order/pre-order.servi
 })
 export class MerchandisePreOrderDialogComponent implements OnInit {
   preOrderForm: FormGroup = this.fb.group({
-    firstName: this.fb.control('Oski', Validators.required),
-    lastName: this.fb.control('Mikol', Validators.required),
-    phoneNumber: this.fb.control(2163943502, [
+    firstName: this.fb.control(null, Validators.required),
+    lastName: this.fb.control(null, Validators.required),
+    phoneNumber: this.fb.control(null, [
       Validators.required,
       Validators.pattern('[0-9]{0,10}')
     ]),
-    email: this.fb.control('oski@oski.com', [
+    email: this.fb.control(null, [
       Validators.required,
       Validators.email
     ]),
@@ -52,7 +52,7 @@ export class MerchandisePreOrderDialogComponent implements OnInit {
     private route: ActivatedRoute,
     private merchandiseService: MerchandiseService,
     private preOrderService: PreOrderService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.children[0].firstChild.children

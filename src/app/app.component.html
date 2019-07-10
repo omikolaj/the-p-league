@@ -1,40 +1,18 @@
 <div class="dark-theme theme-wrapper">
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav
-      id="side-nav-width"
-      [autoFocus]="true"
-      (openedStart)="sideNavList.sideNavOpening()"
-      (closedStart)="sideNavList.sideNavClosing()"
-      #drawer
-      class="sidenav"
-      mode="push"
-    >
-      <app-sidenav-list
-        #sideNavList
-        [logo]="logo"
-        [appTitle]="title"
-        (sideNavClose)="drawer.close()"
-      >
+    <mat-sidenav id="side-nav-width" [autoFocus]="true" (openedStart)="sideNavList.sideNavOpening()"
+      (closedStart)="sideNavList.sideNavClosing()" #drawer class="sidenav" mode="push">
+      <app-sidenav-list #sideNavList [logo]="logo" [appTitle]="title" (sideNavClose)="drawer.close()">
       </app-sidenav-list>
     </mat-sidenav>
 
-    <mat-sidenav-content
-      [ngStyle]="{ overflow: hideScrollbar ? 'hidden' : null }"
-    >
+    <mat-sidenav-content [ngStyle]="{ overflow: hideScrollbar ? 'hidden' : null }">
       <div class="wrapper">
-        <app-toolbar
-          [logo]="logo"
-          [appTitle]="title"
-          (sidenavToggle)="drawer.toggle()"
-        ></app-toolbar>
+        <app-toolbar [logo]="logo" [appTitle]="title" (sidenavToggle)="drawer.toggle()"></app-toolbar>
 
         <main class="content" [@routeAnimations]="prepareRoute(outlet)">
-          <mat-progress-bar
-            color="accent"
-            *ngIf="loading"
-            mode="indeterminate"
-            style="position: fixed"
-          ></mat-progress-bar>
+          <mat-progress-bar color="warn" *ngIf="loading" mode="indeterminate" style="position: fixed">
+          </mat-progress-bar>
           <router-outlet #outlet="outlet"></router-outlet>
           <router-outlet name="modal"></router-outlet>
         </main>
@@ -54,10 +32,7 @@
                 <fa-icon icon="play-circle"></fa-icon>
                 <span>Slides</span>
               </a>
-              <a
-                href="https://github.com/omikolaj/the-p-league"
-                target="_blank"
-              >
+              <a href="https://github.com/omikolaj/the-p-league" target="_blank">
                 <fa-icon [icon]="['fab', 'github']"></fa-icon>
                 <span>Github</span>
               </a>
@@ -69,10 +44,7 @@
               <span class="year" data-testid="footer-year">{{ year }}</span> -
               The P League
               <br class="d-block d-sm-none" />
-              <a
-                matTooltipPosition="before"
-                href="http://www.clevelandfitnessclub.com/"
-              >
+              <a matTooltipPosition="before" href="http://www.clevelandfitnessclub.com/">
                 <!-- <fa-icon [icon]="['fas','basketball-ball']" size="4x" [spin]="syncRunning"></fa-icon> -->
               </a>
             </div>

@@ -94,7 +94,8 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       ([leaguePicturesToDelete]: [LeaguePicture[], LeaguePicture[]]) => {
         return this.deleteLeaguePicturesAsync(leaguePicturesToDelete);
       }
-    )
+    ),
+    shareReplay()
   );
 
   updatedLeaguePicturesOrder$ = combineLatest([
@@ -105,7 +106,8 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       ([updatedLeaguePictureOrder]: [LeaguePicture[], LeaguePicture[]]) => {
         return this.updateLeaguePicturesOrderAsync(updatedLeaguePictureOrder);
       }
-    )
+    ),
+    shareReplay()
   );
 
   newLatestLeaguePictures$ = combineLatest([
@@ -114,7 +116,8 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
   ]).pipe(
     switchMap(([newLeaguePicture]: [FormData, LeaguePicture[]]) => {
       return this.createLeagueImagesAsync(newLeaguePicture);
-    })
+    }),
+    shareReplay()
   );
 
   resolve(

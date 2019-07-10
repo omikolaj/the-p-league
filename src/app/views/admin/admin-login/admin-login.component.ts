@@ -14,6 +14,8 @@ import {
   SnackBarEvent
 } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
 import { handleError } from 'src/app/helpers/handleError';
+import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
+import { Events, EventBusService } from 'src/app/core/services/event-bus/event-bus.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -35,7 +37,8 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: SnackBarService
+    private snackBar: SnackBarService,
+    private eventBus: EventBusService
   ) { }
 
   ngOnInit() {
@@ -99,13 +102,28 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
   }
 
   loginAdmin(admin: Login) {
+    this.eventBus.emit(new EmitEvent(Events.Loading, true))
     this.subscription.add(
       this.authService
         .authenticate(admin)
-        .pipe(catchError(err => handleError(err, this.snackBar)))
+        .pipe(catchError(err => {
+          this.eventBus.emit(new EmitEvent(Events.Loading, false))
+          return handleError(err, this.snackBar);
+        }))
         .subscribe(_ => {
           this.router.navigate(['merchandise']);
-        })
+          this.snackBar.openSnackBarFromComponent(
+            "Successfully logged in",
+            'Dismiss',
+            SnackBarEvent.Success
+          );
+        },
+          (err) => {
+            handleError(err, this.snackBar);
+          },
+          () => {
+            this.eventBus.emit(new EmitEvent(Events.Loading, false))
+          })
     );
   }
 }

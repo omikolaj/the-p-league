@@ -11,6 +11,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RefreshAccessTokenInterceptor } from './core/interceptors/refresh-access-token/refresh-access-token.service';
 import { ApiRequestPrefixInterceptor } from './core/interceptors/api-request-prefix/api-request-prefix.service';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,8 +42,9 @@ import { ApiRequestPrefixInterceptor } from './core/interceptors/api-request-pre
       provide: HTTP_INTERCEPTORS,
       useClass: RefreshAccessTokenInterceptor,
       multi: true
-    }
+    },
+    { provide: "BASE_API_URL", useValue: environment.backend.baseURL }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

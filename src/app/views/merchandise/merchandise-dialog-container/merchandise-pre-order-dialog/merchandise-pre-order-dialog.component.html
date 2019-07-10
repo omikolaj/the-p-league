@@ -13,12 +13,7 @@
         <ng-template matStepLabel>Contact</ng-template>
 
         <mat-form-field>
-          <input
-            matInput
-            placeholder="First Name"
-            formControlName="firstName"
-            cdkFocusInitial
-          />
+          <input matInput placeholder="First Name" formControlName="firstName" cdkFocusInitial />
           <mat-error>You must provide<strong>First Name</strong></mat-error>
         </mat-form-field>
 
@@ -28,37 +23,17 @@
         </mat-form-field>
 
         <mat-form-field>
-          <input
-            matInput
-            type="number"
-            placeholder="Phone Number"
-            formControlName="phoneNumber"
-          />
-          <mat-error
-            >You must provide a <strong>Phone Number</strong></mat-error
-          >
+          <input matInput type="number" placeholder="Phone Number" formControlName="phoneNumber" />
+          <mat-error>You must provide a <strong>Phone Number</strong></mat-error>
         </mat-form-field>
 
         <mat-form-field>
-          <input
-            matInput
-            type="email"
-            placeholder="E-mail"
-            formControlName="email"
-          />
-          <mat-error
-            >You must provide an <strong>E-mail</strong> address</mat-error
-          >
+          <input matInput type="email" placeholder="E-mail" formControlName="email" />
+          <mat-error>You must provide an <strong>E-mail</strong> address</mat-error>
         </mat-form-field>
 
         <div class="action-buttons">
-          <button
-            style="margin-right: 5px"
-            mat-raised-button
-            color="warn"
-            type="button"
-            (click)="onCancel()"
-          >
+          <button style="margin-right: 5px" mat-raised-button color="warn" type="button" (click)="onCancel()">
             Cancel
           </button>
           <button mat-raised-button color="accent" matStepperNext type="button">
@@ -72,15 +47,10 @@
 
         <div formGroupName="orderDetails">
           <mat-form-field floatLabel="always">
-            <mat-placeholder class="placeholder"
-              >Select Your Size</mat-placeholder
-            >
+            <mat-placeholder class="placeholder">Select Your Size</mat-placeholder>
             <mat-select formControlName="size">
               <mat-option>--</mat-option>
-              <mat-option
-                *ngFor="let size of gearItem.sizes | filteredGearSizes"
-                [value]="size.size"
-              >
+              <mat-option *ngFor="let size of gearItem.sizes | filteredGearSizes" [value]="size.size">
                 {{ sizeEnum[size.size] }}
               </mat-option>
             </mat-select>
@@ -88,61 +58,33 @@
           </mat-form-field>
 
           <mat-form-field>
-            <input
-              matInput
-              type="number"
-              placeholder="Quantity"
-              formControlName="quantity"
-            />
+            <input matInput type="number" placeholder="Quantity" formControlName="quantity" />
             <mat-error>You must specify <strong>quantity</strong></mat-error>
           </mat-form-field>
         </div>
 
         <div id="preferred-contact-lable">
-          <mat-placeholder class="placeholder"
-            >Preferred Contact:</mat-placeholder
-          >
+          <mat-placeholder class="placeholder">Preferred Contact:</mat-placeholder>
         </div>
         <div formGroupName="contactPreference" class="contact-preference">
-          <mat-radio-group
-            formControlName="cellOrEmail"
-            aria-label="Select an option"
-          >
-            <mat-radio-button value="1" [checked]="true"
-              >Text/Call</mat-radio-button
-            >
+          <mat-radio-group formControlName="cellOrEmail" aria-label="Select an option">
+            <mat-radio-button value="1" [checked]="true">Text/Call</mat-radio-button>
             <mat-radio-button value="2">Email</mat-radio-button>
           </mat-radio-group>
         </div>
 
         <div class="action-buttons">
-          <button
-            style="align-self: flex-end; margin-right: 5px;"
-            mat-raised-button
-            color="accent"
-            matStepperPrevious
-            type="button"
-          >
+          <button style="align-self: flex-end; margin-right: 5px;" mat-raised-button color="accent" matStepperPrevious
+            type="button">
             Back
           </button>
 
-          <button
-            class="action-buttons"
-            mat-raised-button
-            color="warn"
-            type="button"
-            (click)="onCancel()"
-          >
+          <button class="action-buttons" mat-raised-button color="warn" type="button" (click)="onCancel()">
             Cancel
           </button>
 
-          <button
-            class="post-button"
-            style="align-self: flex-end;"
-            mat-raised-button
-            color="accent"
-            [disabled]="!preOrderForm.valid || (isLoading$ | async)"
-          >
+          <button class="post-button" style="align-self: flex-end;" mat-raised-button color="accent"
+            [disabled]="!preOrderForm.valid || (isLoading$ | async)">
             Order!
           </button>
         </div>
@@ -156,21 +98,14 @@
     <mat-step>
       <ng-template matStepLabel>Order Summary</ng-template>
       <div>
-        Thank you for your pre-order. You pre-ordered
+        Thank you for your pre-order. You have pre-ordered
         {{ preOrderForm.get("orderDetails").value.quantity }}
         {{ gearItem.name }} for ${{ gearItem.price }} each. Your total is ${{
           computeTotalPrice()
-        }}
-        .We will be sending you a confirmation e-mail shortly
+        }}.We will be sending you a confirmation e-mail shortly.
       </div>
       <div class="action-buttons">
-        <button
-          class="post-button"
-          style="align-self: flex-end;"
-          mat-raised-button
-          color="accent"
-          (click)="onCancel()"
-        >
+        <button class="post-button" style="align-self: flex-end;" mat-raised-button color="accent" (click)="onCancel()">
           Complete
         </button>
       </div>

@@ -1,23 +1,9 @@
-<div
-  [@fadeHeader]="hideToolBarHeader ? 'hide' : 'show'"
-  class="toolbar"
-  [class.mat-elevation-z7]="isSticky"
->
-  <mat-toolbar
-    color="primary"
-    [ngStyle]="{
+<div [@fadeHeader]="hideToolBarHeader ? 'hide' : 'show'" class="toolbar" [class.mat-elevation-z7]="isSticky">
+  <mat-toolbar color="primary" [ngStyle]="{
       backgroundColor: isSticky ? null : 'transparent'
-    }"
-  >
-    <button
-      style="position: absolute"
-      type="button"
-      aria-label="Toggle sidenav"
-      mat-icon-button
-      (click)="onToggleSidenav()"
-      fxHide.xs="false"
-      fxHide.gt-xs="true"
-    >
+    }">
+    <button style="position: absolute" type="button" aria-label="Toggle sidenav" mat-icon-button
+      (click)="onToggleSidenav()" fxHide.xs="false" fxHide.gt-xs="true">
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
 
@@ -29,38 +15,20 @@
           </button>
         </span>
 
-        <a
-          fxFlexAlign="center"
-          fxHide.xs="true"
-          fxHide.lg="false"
-          style="color: white;"
-          href="https://playpass.com/ cleveland-fitness-club/12-team-basketball-schedule-r344505"
-          target="_blank"
-        >
+        <a fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" style="color: white;"
+          href="https://playpass.com/ cleveland-fitness-club/12-team-basketball-schedule-r344505" target="_blank">
           <button style="height: 100%" mat-button>Schedule</button>
         </a>
 
         <ng-container *ngFor="let linkText of headerLinksText">
-          <button
-            fxFlexAlign="center"
-            fxHide.xs="true"
-            fxHide.lg="false"
-            mat-button
-            [routerLink]="'/' + linkText | lowercase"
-            [routerLinkActive]="'active-route'"
-          >
+          <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button
+            [routerLink]="'/' + linkText | lowercase" [routerLinkActive]="'active-route'">
             {{ linkText }}
           </button>
         </ng-container>
 
         <ng-container *ngIf="this.authService.isLoggedIn$ | async">
-          <button
-            fxFlexAlign="center"
-            fxHide.xs="true"
-            fxHide.lg="false"
-            mat-button
-            (click)="logout()"
-          >
+          <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/logout'">
             Logout
           </button>
         </ng-container>

@@ -18,9 +18,6 @@
   <div mat-card-image>
     <app-gallery-viewer [ngxGalleryOptions]="galleryOptions" [images]="gearItem.images"></app-gallery-viewer>
   </div>
-  <ng-container *ngIf="isLoading$ | async">
-    <mat-progress-bar color="warn" mode="indeterminate"></mat-progress-bar>
-  </ng-container>
 
   <mat-card-content>
     <div>

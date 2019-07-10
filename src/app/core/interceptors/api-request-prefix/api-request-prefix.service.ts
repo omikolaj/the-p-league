@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import {
   HttpInterceptor,
   HttpRequest,
@@ -9,15 +9,16 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class ApiRequestPrefixInterceptor implements HttpInterceptor {
-  constructor() {}
+  constructor(@Inject('BASE_API_URL') private baseUrl: string) { }
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const url = 'api/';
+    const url = this.baseUrl + 'api/';
     req = req.clone({
-      url: url + req.url
+      url: url + req.url,
+      withCredentials: true
     });
     return next.handle(req);
   }

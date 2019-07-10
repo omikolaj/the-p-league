@@ -73,7 +73,8 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     switchMap(([updatedGearItem]) => {
       this.loadingSubject.next(true);
       return this.updateGearItemAsync(updatedGearItem);
-    })
+    }),
+    shareReplay()
   );
 
   newLatestGearItems$ = combineLatest([
@@ -83,7 +84,8 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     switchMap(([newGearItem]) => {
       this.loadingSubject.next(true);
       return this.createGearItemAsync(newGearItem);
-    })
+    }),
+    shareReplay()
   );
 
   deleteGearItemsLatest$ = combineLatest([
@@ -91,9 +93,9 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     this.gearItems$
   ]).pipe(
     switchMap(([gearItemToDelete]) => {
-      this.loadingDeleteSubject.next(true);
       return this.deleteGearItemAsync(gearItemToDelete);
-    })
+    }),
+    shareReplay()
   );
 
   resolve(
@@ -221,6 +223,9 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     if (gearItemToDelete === null) {
       return of([]);
     }
+
+    this.eventBus.emit(new EmitEvent(Events.Loading, true))
+
     return combineLatest([
       this.gearItems$,
       this.http.delete<void>(`${this.merchandiseUrl}/${gearItemToDelete.id}`)
@@ -235,7 +240,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         return gearItems;
       }),
       tap(_ => {
-        this.loadingDeleteSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           `Successfully deleted ${gearItemToDelete.name}`,
           'Dismiss',
@@ -243,7 +248,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
         );
       }),
       catchError(err => {
-        this.loadingDeleteSubject.next(false);
+        this.eventBus.emit(new EmitEvent(Events.Loading, false));
         this.snackBarService.openSnackBarFromComponent(
           `Error occured deleting ${gearItemToDelete.name}`,
           'Dismiss',

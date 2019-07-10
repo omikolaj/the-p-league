@@ -12,5 +12,5 @@ export class RolesService {
     .get<string[]>(`users/${this.auth.currentUserId}/roles`)
     .pipe(tap(() => console.log(`users/${this.auth.currentUserId}/roles`)));
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private auth: AuthService) { }
 }

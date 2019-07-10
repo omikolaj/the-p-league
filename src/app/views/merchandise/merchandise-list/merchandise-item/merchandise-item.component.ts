@@ -58,7 +58,6 @@ export class MerchandiseItemComponent {
   sizes = Size;
   galleryOptions: NgxGalleryOptions[] = galleryOptions;
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
-  isLoading$ = this.merchandiseService.loadingDelete$;
 
   constructor(
     private router: Router,

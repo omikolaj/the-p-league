@@ -33,14 +33,14 @@ export class AuthService {
     shareReplay()
   );
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   checkRoles() {
     return this.http.get<string[]>(`users/${this.currentUserId}/roles`);
   }
 
   authenticate(user: Login): Observable<ApplicationToken> {
-    // http request to authenticate admin
+    // http request to authenticate admin    
     return this.http
       .post<ApplicationToken>('login', JSON.stringify(user), this.headers)
       .pipe(

@@ -56,9 +56,9 @@ export class SidenavListComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private snackBar: SnackBarService
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -80,23 +80,5 @@ export class SidenavListComponent implements OnInit, OnDestroy {
   sideNavClosing() {
     console.log('SidenNavClose');
     this.sideNavAnimationState = 'out';
-  }
-  logout() {
-    this.authService.logout().subscribe(
-      loggedOut => {
-        this.snackBar.openSnackBarFromComponent(
-          'You have successfully logged out',
-          'Dismiss',
-          SnackBarEvent.Success
-        );
-      },
-      err => {
-        this.snackBar.openSnackBarFromComponent(
-          'An error occured while logging out',
-          'Dismiss',
-          SnackBarEvent.Error
-        );
-      }
-    );
   }
 }
