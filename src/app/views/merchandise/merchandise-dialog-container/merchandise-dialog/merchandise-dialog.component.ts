@@ -249,12 +249,10 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 
   // Removes user defined image from the uploaded array of images
   onRemoveImage(image: GearImage) {
-    console.log('[BEFORE REMOVE]', this.gearItemImages);
     const index = this.gearItemImages.map(gI => gI.id).indexOf(image.id);
     if (index > -1) {
       this.gearItemImages.splice(index, 1);
     }
-    console.log('[AFTER REMOVE]', this.gearItemImages);
   }
 
   // Hides the div html control that hosts uploaded images if user has not yet uploaded any images

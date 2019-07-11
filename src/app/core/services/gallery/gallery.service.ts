@@ -228,9 +228,6 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
           LeaguePicture[]
         ]) => {
           if (leaguePicturesOrdered.length !== leaguePictures.length) {
-            console.log(
-              'The array length of ordered pictures did not match the length of existing pictures'
-            );
             return leaguePictures;
           }
           // clear old array

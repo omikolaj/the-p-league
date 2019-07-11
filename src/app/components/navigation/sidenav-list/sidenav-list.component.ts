@@ -73,12 +73,10 @@ export class SidenavListComponent implements OnInit, OnDestroy {
   }
 
   sideNavOpening() {
-    console.log('SidenNavOpen');
     this.sideNavAnimationState = 'in';
   }
 
   sideNavClosing() {
-    console.log('SidenNavClose');
     this.sideNavAnimationState = 'out';
   }
 }

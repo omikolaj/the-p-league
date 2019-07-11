@@ -40,7 +40,7 @@ export class AuthService {
   }
 
   authenticate(user: Login): Observable<ApplicationToken> {
-    // http request to authenticate admin    
+    // http request to authenticate admin        
     return this.http
       .post<ApplicationToken>('login', JSON.stringify(user), this.headers)
       .pipe(
@@ -76,7 +76,6 @@ export class AuthService {
   refreshToken(): Observable<ApplicationToken> {
     return this.http.get<ApplicationToken>('token/refresh').pipe(
       map(appToken => {
-        console.log('Setting session. Token: ', appToken);
         return this.setSession(appToken);
       }),
       tap(_ => this.isLoggedInSub.next(true))
@@ -89,7 +88,6 @@ export class AuthService {
     localStorage.removeItem(LOCAL_STORAGE_ITEM);
 
     const expiresAt = moment().add(appToken.expires_in, 'seconds');
-    console.log(new Date(expiresAt.valueOf()));
     const jwtPayload: JwtPayload = this.decodeJwt(appToken.access_token);
     const localStorageItem: LocalStorageItem = {
       sub: jwtPayload.sub,
@@ -109,7 +107,7 @@ export class AuthService {
   }
 
   get wasLoggedIn() {
-    console.log('wasLoggedIn ', this.getExpiration === null ? null : true);
+
     return this.getExpiration === null ? null : true;
   }
 
@@ -118,7 +116,6 @@ export class AuthService {
   }
 
   get isLoggedIn(): boolean {
-    console.log('Is logged in ', moment().isBefore(this.getExpiration));
     // if this.getExpiration is null user was never logged in OR intentially logged out
     if (this.getExpiration === null) {
       return false;
@@ -142,7 +139,6 @@ export class AuthService {
     try {
       return jwt_decode(jwt) as JwtPayload;
     } catch (error) {
-      console.log('[ERROR WHILE DECODING TOKEN]', jwt);
       return null;
     }
   }

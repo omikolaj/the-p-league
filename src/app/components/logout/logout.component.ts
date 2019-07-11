@@ -34,7 +34,6 @@ export class LogoutComponent implements OnInit {
       .pipe(
         catchError(err => {
           this.eventBus.emit(new EmitEvent(Events.Loading, false));
-          console.log('error occured');
           this.location.back();
           this.snackBar.openSnackBarFromComponent(
             'An error occured while logging out',

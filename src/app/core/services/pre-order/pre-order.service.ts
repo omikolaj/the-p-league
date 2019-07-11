@@ -19,7 +19,6 @@ export class PreOrderService extends MerchandiseService {
 
   preOrder$ = this.preOrderAction.asObservable().pipe(
     switchMap((preOrderForm: PreOrderForm) => {
-      console.log('PreORderTriggered');
       return this.preOrderGearItemAsync(preOrderForm);
     })
   );

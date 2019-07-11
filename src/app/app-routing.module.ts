@@ -23,7 +23,7 @@ const routes: Routes = [
         loadChildren: './views/gallery/gallery.module#GalleryModule'
       },
       {
-        path: 'admin',
+        path: 'admin-login',
         loadChildren: './views/admin/admin.module#AdminModule'
       },
       {
@@ -53,4 +53,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

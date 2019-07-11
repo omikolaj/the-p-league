@@ -9,8 +9,7 @@ import { map, tap } from 'rxjs/operators';
 })
 export class RolesService {
   roles$: Observable<string[]> = this.http
-    .get<string[]>(`users/${this.auth.currentUserId}/roles`)
-    .pipe(tap(() => console.log(`users/${this.auth.currentUserId}/roles`)));
+    .get<string[]>(`users/${this.auth.currentUserId}/roles`);
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 }

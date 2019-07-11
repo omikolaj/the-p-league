@@ -12,13 +12,12 @@ export class TeamSignupService {
   teamInfo$: Observable<TeamInfo> = this.teamInfoSubject.asObservable();
   teamInfo;
 
-  constructor() {}
+  constructor() { }
 
   newTeamRequest(teamInfoForm: FormGroup): Observable<TeamInfo> {
     const teamInfo: TeamInfo = this.mapFormToTeamInfo(teamInfoForm);
     return this.teamInfo$.pipe(
       map(v => {
-        console.log('Inside of teamInfo pipe');
         return (this.teamInfo = v);
       })
     );
@@ -32,7 +31,6 @@ export class TeamSignupService {
       cell: teamInfoForm.value.phoneNumber,
       email: teamInfoForm.value.email
     };
-    console.log('teamInfoObject', teamInfo);
     return teamInfo;
   }
 }

@@ -31,7 +31,6 @@ export class SizeEnumToSizePipe implements PipeTransform {
         sizeArray.push(size);
       }
     }
-    console.log('[PIPE]', sizeArray);
     return sizeArray;
   }
 }

@@ -66,7 +66,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     .observe(Breakpoints.Handset)
     .pipe(
       map(result => {
-        console.log(result.breakpoints);
         return result.matches;
       })
     );
@@ -76,7 +75,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     private eventbus: EventBusService,
     private cdRef: ChangeDetectorRef,
     public authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.headerSubscription = this.eventbus.on(

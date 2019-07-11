@@ -97,7 +97,6 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.leaguePicturesMarkedForDeletion.includes(leaguePicture)) {
         this.leaguePicturesMarkedForDeletion = this.leaguePicturesMarkedForDeletion.filter(
           (lP: LeaguePicture) => {
-            console.log('inside lP', lP.id !== leaguePicture.id);
             return lP.id !== leaguePicture.id;
           }
         );
@@ -154,7 +153,6 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
 
       const mimeType = uploadPicture.preview.file.type;
       if (mimeType.match(/image\/*/) == null) {
-        console.log('[Invalid Image]');
         uploadPicture.preview.error = true;
         uploadPicture.preview.message = 'Only images are supported.';
         uploadPicture.preview.src = '../../../../assets/warning.jpg';

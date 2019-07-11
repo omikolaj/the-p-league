@@ -19,7 +19,6 @@ export class DeviceInfoService {
   constructor(private deviceInfo: DeviceDetectorService) { }
 
   mobileFunction(): boolean {
-    console.log('DeviceDetectorService is', this.deviceInfo);
     this.mobile = this.deviceInfo.isMobile() || this.deviceInfo.isTablet();
 
     return this.mobile;
