@@ -3,4 +3,5 @@ export interface Preview {
   error?: boolean;
   message?: string;
   file?: File;
+  name?: string;
 }

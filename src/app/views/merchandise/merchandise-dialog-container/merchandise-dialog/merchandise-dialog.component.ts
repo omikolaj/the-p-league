@@ -249,7 +249,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 
   // Removes user defined image from the uploaded array of images
   onRemoveImage(image: GearImage) {
-    const index = this.gearItemImages.map(gI => gI.id).indexOf(image.id);
+    const index = this.gearItemImages.map(gI => gI.name).indexOf(image.name);
     if (index > -1) {
       this.gearItemImages.splice(index, 1);
     }

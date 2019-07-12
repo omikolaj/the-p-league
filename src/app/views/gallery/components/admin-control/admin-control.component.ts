@@ -47,7 +47,7 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() galleryImages: LeaguePicture[];
   panelOpenState = false;
-  selectedImagesFormData: FormData = new FormData();
+  // selectedImagesFormData: FormData = new FormData();
   leaguePicturesMarkedForDeletion: LeaguePicture[] = [];
   subscriptions: Subscription = new Subscription();
   fileReaders: FileReader[] = [];
@@ -137,16 +137,17 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
       const uploadPicture: LeaguePicture = {
         preview: {
           file: fileList[index],
-          error: false
+          error: false,
+          name: fileList[index].name
         },
         big: '../../../../assets/default_gallery.jpg',
         medium: '../../../../assets/default_gallery.jpg',
         small: '../../../../assets/default_gallery.jpg'
       };
 
-      this.selectedImagesFormData.append(
-        LeagueImageUpload.LeagueImages,
-        fileList[index]
+      this.galleryService.selectedImagesFormData.append(
+        `${LeagueImageUpload.LeagueImages}_${uploadPicture.preview.name}`,
+        uploadPicture.preview.file
       );
 
       this.galleryService.newLeaguePictures.push(uploadPicture);
@@ -179,7 +180,9 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   // After executing onSave I have to re-emit all of the uploaded pictures again
   // which are stored in this.newLeaguePictures, to remove them from the preview
   onSave() {
-    this.galleryService.createLeagueImages(this.selectedImagesFormData);
+
+    // this.galleryService.createLeagueImages(this.galleryService.selectedImagesFormData);
+    this.galleryService.createLeagueImages();
   }
 
   // #region Drag and Drop methods

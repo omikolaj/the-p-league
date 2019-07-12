@@ -27,6 +27,7 @@ import {
   Events
 } from '../event-bus/event-bus.service';
 import { EmitEvent } from '../event-bus/EmitEvent';
+import { LeagueImageUpload } from 'src/app/helpers/Constants/ThePLeagueConstants';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +48,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       big: '../../../../assets/default_gallery.jpg'
     }
   ];
-  // leaguePicturesSubject$ = new BehaviorSubject<LeaguePicture[]>([]);
+  selectedImagesFormData: FormData = new FormData();
   leaguePictures$: Observable<LeaguePicture[]> = new BehaviorSubject<
     LeaguePicture[]
   >([]).asObservable();
@@ -75,6 +76,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     scan<LeaguePicture, LeaguePicture[]>(
       (pictures: LeaguePicture[], newPicture: LeaguePicture) => {
         if (pictures.includes(newPicture)) {
+          this.selectedImagesFormData.delete(`${LeagueImageUpload.LeagueImages}_${newPicture.preview.name}`);
           this.newLeaguePictures = pictures.filter(p => p !== newPicture);
           pictures = [...this.newLeaguePictures];
           return pictures;
@@ -172,7 +174,8 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       this.http.delete<boolean>(this.galleryUrl, options)
     ]).pipe(
       map(([leaguePicsAll]: [LeaguePicture[], boolean]) => {
-        leaguePicsAll.map((lP: LeaguePicture) => {
+        const allLeaguePics = [...leaguePicsAll];
+        allLeaguePics.map((lP: LeaguePicture) => {
           if (leaguePics.includes(lP)) {
             const delIndex = leaguePicsAll.indexOf(lP);
             leaguePicsAll.splice(delIndex, 1);
@@ -278,8 +281,12 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
     this.removePreviewPictureAction.next(leaguePicture);
   }
 
-  createLeagueImages(leaguePictures: FormData) {
-    this.addLeaguePictureAction.next(leaguePictures);
+  // createLeagueImages(leaguePictures: FormData) {
+  //   this.addLeaguePictureAction.next(leaguePictures);
+  // }
+
+  createLeagueImages() {
+    this.addLeaguePictureAction.next(this.selectedImagesFormData);
   }
 
   private createLeagueImagesAsync(
@@ -322,6 +329,7 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
       tap(_ => {
         this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
           this.uploadPicture.next(leaguePicture);
+          console.log("LeaguePicture order is: ", leaguePicture.orderId);
         });
       }),
       tap(_ => {
