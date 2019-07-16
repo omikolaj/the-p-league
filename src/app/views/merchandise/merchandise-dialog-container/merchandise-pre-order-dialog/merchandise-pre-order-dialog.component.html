@@ -10,7 +10,6 @@
   <form [formGroup]="preOrderForm" (ngSubmit)="onSubmit()">
     <mat-horizontal-stepper>
       <mat-step>
-        <ng-template matStepLabel>Contact</ng-template>
 
         <mat-form-field>
           <input matInput placeholder="First Name" formControlName="firstName" cdkFocusInitial />
@@ -20,16 +19,6 @@
         <mat-form-field>
           <input matInput placeholder="Last Name" formControlName="lastName" />
           <mat-error>You must provide <strong>Last Name</strong></mat-error>
-        </mat-form-field>
-
-        <mat-form-field>
-          <input matInput type="number" placeholder="Phone Number" formControlName="phoneNumber" />
-          <mat-error>You must provide a <strong>Phone Number</strong></mat-error>
-        </mat-form-field>
-
-        <mat-form-field>
-          <input matInput type="email" placeholder="E-mail" formControlName="email" />
-          <mat-error>You must provide an <strong>E-mail</strong> address</mat-error>
         </mat-form-field>
 
         <div class="action-buttons">
@@ -43,8 +32,27 @@
       </mat-step>
 
       <mat-step>
-        <ng-template matStepLabel>Details</ng-template>
 
+        <mat-form-field>
+          <input matInput type="number" maxlength="10" minlength="10" placeholder="Phone Number"
+            formControlName="phoneNumber" />
+          <mat-error>You must provide a <strong>Phone Number</strong></mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="email" placeholder="E-mail" formControlName="email" />
+          <mat-error>You must provide an <strong>E-mail</strong> address</mat-error>
+        </mat-form-field>
+
+        <div class="action-buttons">
+          <button style="margin-right: 5px" mat-raised-button matStepperPrevious color="warn">Back</button>
+          <button mat-raised-button color="accent" matStepperNext type="button">
+            Next
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step>
         <div formGroupName="orderDetails">
           <mat-form-field floatLabel="always">
             <mat-placeholder class="placeholder">Select Your Size</mat-placeholder>
