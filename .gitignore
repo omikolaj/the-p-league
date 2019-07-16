@@ -39,6 +39,7 @@ yarn-error.log
 testem.log
 /typings
 NOTES.md
+src/assets/originals
 
 # System Files
 .DS_Store
