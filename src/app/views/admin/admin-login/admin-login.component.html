@@ -1,6 +1,8 @@
 <div style="margin-top: 95px;" class="admin-login-wrapper">
   <form [formGroup]="adminLoginForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="admin-card">
+      <mat-progress-bar color="warn" *ngIf="loading" mode="indeterminate">
+      </mat-progress-bar>
       <mat-card-header style="width: 100%">
         <mat-card-title>
           <h5>Administrative Login</h5>
@@ -13,21 +15,13 @@
             <span style="font-size: smaller">
               Login to gain accesss to the administrative website functionality
             </span>
-            <img
-              class="admin-lock-img"
-              [src]="adminLockImgSrc"
-              alt="Admin Login"
-            />
+            <img class="admin-lock-img" [src]="adminLockImgSrc" alt="Admin Login" />
           </div>
           <div style="width: 100%">
             <div class="row">
               <div class="col">
                 <mat-form-field class="full-width">
-                  <input
-                    formControlName="username"
-                    matInput
-                    placeholder="Username"
-                  />
+                  <input formControlName="username" matInput placeholder="Username" />
                   <mat-error>Username is required</mat-error>
                 </mat-form-field>
               </div>
@@ -36,13 +30,8 @@
             <div class="row">
               <div class="col">
                 <mat-form-field class="full-width">
-                  <input
-                    formControlName="password"
-                    matInput
-                    type="password"
-                    placeholder="Password"
-                    autocomplete="off"
-                  />
+                  <input formControlName="password" matInput type="password" placeholder="Password"
+                    autocomplete="off" />
                   <mat-error>Password is required</mat-error>
                 </mat-form-field>
               </div>
@@ -51,44 +40,23 @@
             <div class="row" *ngIf="changePassword">
               <div class="col">
                 <mat-form-field class="full-width">
-                  <input
-                    formControlName="newPassword"
-                    matInput
-                    type="password"
-                    placeholder="New Password"
-                    autocomplete="off"
-                  />
+                  <input formControlName="newPassword" matInput type="password" placeholder="New Password"
+                    autocomplete="off" />
                   <mat-error>New Password is required</mat-error>
                 </mat-form-field>
               </div>
             </div>
 
-            <mat-slide-toggle
-              formControlName="changePassword"
-              [checked]="adminLoginForm.get('changePassword').value"
-              [labelPosition]="changePassword ? 'before' : 'after'"
-              style="display: block"
-              (toggleChange)="this.changePassword = !this.changePassword"
-              >{{
+            <mat-slide-toggle formControlName="changePassword" [checked]="adminLoginForm.get('changePassword').value"
+              [labelPosition]="changePassword ? 'before' : 'after'" style="display: block"
+              (toggleChange)="this.changePassword = !this.changePassword">{{
                 changePassword ? "Login" : "Update Password"
-              }}</mat-slide-toggle
-            >
-            <button
-              mat-raised-button
-              color="primary"
-              type="submit"
-              [disabled]="!adminLoginForm.valid"
-            >
+              }}</mat-slide-toggle>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!adminLoginForm.valid">
               {{ changePassword ? "Update" : "Login" }}
             </button>
 
-            <button
-              id="cancel"
-              type="button"
-              mat-raised-button
-              color="warn"
-              routerLink="/about"
-            >
+            <button id="cancel" type="button" mat-raised-button color="warn" routerLink="/about">
               Cancel
             </button>
           </div>

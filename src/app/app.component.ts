@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private router: Router,
     private eventbus: EventBusService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.router.events.subscribe(event => {

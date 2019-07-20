@@ -32,6 +32,7 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
   changePassword = false;
   adminLockImgSrc = '../../../../assets/admin_lock.png';
   subscription: Subscription;
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -102,12 +103,14 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
   }
 
   loginAdmin(admin: Login) {
-    this.eventBus.emit(new EmitEvent(Events.Loading, true))
+    // this.eventBus.emit(new EmitEvent(Events.Loading, true))
+    this.loading = true;
     this.subscription.add(
       this.authService
         .authenticate(admin)
         .pipe(catchError(err => {
-          this.eventBus.emit(new EmitEvent(Events.Loading, false))
+          // this.eventBus.emit(new EmitEvent(Events.Loading, false))
+          this.loading = false;
           return handleError(err, this.snackBar);
         }))
         .subscribe(_ => {
@@ -122,7 +125,8 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
             handleError(err, this.snackBar);
           },
           () => {
-            this.eventBus.emit(new EmitEvent(Events.Loading, false))
+            // this.eventBus.emit(new EmitEvent(Events.Loading, false))
+            this.loading = false;
           })
     );
   }
