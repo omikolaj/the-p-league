@@ -15,6 +15,16 @@
       .gradient {
         &::before {
           background: linear-gradient(
+            to top,
+            mat-color($background, background, 0) 0%,
+            mat-color($background, background, 1) 100%
+          );
+        }
+      }
+
+      .gradient-2 {
+        &::before {
+          background: linear-gradient(
             to bottom,
             mat-color($background, background, 0) 0%,
             mat-color($background, background, 1) 100%

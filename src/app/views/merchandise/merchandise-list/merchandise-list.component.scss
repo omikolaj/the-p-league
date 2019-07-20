@@ -55,7 +55,7 @@ mat-paginator {
   }
 
   .parallax {
-    background: url("src/assets/merchandise_welcome.jpg");
+    background: url("src/assets/about.jpg");
     background-size: cover;
 
     /* Set a specific height */
@@ -75,6 +75,18 @@ mat-paginator {
   }
 
   .gradient {
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 51%;
+      right: 0;
+      content: "";
+      z-index: 0;
+    }
+  }
+
+  .gradient-2 {
     &::before {
       position: absolute;
       top: 51%;

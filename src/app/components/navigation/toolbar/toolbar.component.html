@@ -1,7 +1,8 @@
 <div [@fadeHeader]="hideToolBarHeader ? 'hide' : 'show'" class="toolbar" [class.mat-elevation-z7]="isSticky">
-  <mat-toolbar color="primary" [ngStyle]="{
+  <!-- [ngStyle]="{
       backgroundColor: isSticky ? null : 'transparent'
-    }">
+    }" -->
+  <mat-toolbar color="primary">
     <button style="position: absolute" type="button" aria-label="Toggle sidenav" mat-icon-button
       (click)="onToggleSidenav()" fxHide.xs="false" fxHide.gt-xs="true">
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>

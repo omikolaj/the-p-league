@@ -17,7 +17,7 @@ import {
 } from 'src/app/core/services/event-bus/event-bus.service';
 import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
 import { Subscription, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, scan, pairwise, bufferCount } from 'rxjs/operators';
 import { PaginatorService } from 'src/app/core/services/paginator/paginator.service';
 import { DeviceInfoService } from 'src/app/core/services/device-info/device-info.service';
 import { Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
@@ -91,7 +91,14 @@ export class MerchandiseListComponent implements OnInit, OnDestroy {
 
     this.scrollingSubscription = this.scroll
       .scrolled()
-      .subscribe((data: CdkScrollable) => {
+      .pipe(
+        scan<CdkScrollable, number[]>((stack, curr) => {
+          const scrollNumber = curr.getElementRef().nativeElement.scrollTop;
+          stack.push(scrollNumber);
+          return stack.slice(stack.length - 2);
+        }, new Array<number>())
+      )
+      .subscribe((data: number[]) => {
         this.onWindowScroll(data);
       });
   }
@@ -102,11 +109,18 @@ export class MerchandiseListComponent implements OnInit, OnDestroy {
     this.scrollingSubscription.unsubscribe();
   }
 
-  onWindowScroll(data: CdkScrollable) {
-    const scrollTop = data.getElementRef().nativeElement.scrollTop || 0;
-    if (scrollTop > 280) {
+  onWindowScroll(data: number[]) {
+    // Get the last element in the array which would be latest position added
+    const scrollTop = data[data.length - 1] || 0;
+    const secondLastItem = data[data.length - 2] || 0;
+    // if last item is smaller than second last time show toolbar, means were scrolling UP
+    if (scrollTop < secondLastItem) {
+      this.eventbus.emit(new EmitEvent(Events.HideToolbar, false));
+    }
+    else if (scrollTop > 280) {
       this.eventbus.emit(new EmitEvent(Events.HideToolbar, true));
-    } else if (scrollTop < 280) {
+    }
+    else if (scrollTop < 280) {
       this.eventbus.emit(new EmitEvent(Events.HideToolbar, false));
     }
   }

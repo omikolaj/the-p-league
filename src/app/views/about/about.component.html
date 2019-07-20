@@ -3,11 +3,7 @@
     <h1 [ngClass]="routeAnimationsElements" class="welcome-title">WELCOME</h1>
   </div>
 
-  <div
-    [@fadeInOut]="isIn ? 'in' : 'out'"
-    class="background"
-    [ngClass]="routeAnimationsElements"
-  >
+  <div [@fadeInOut]="isIn ? 'in' : 'out'" class="background" [ngClass]="routeAnimationsElements">
     <div class="gradient">
       <div class="container">
         <div style="height: 350px;"></div>
@@ -16,12 +12,8 @@
   </div>
 
   <div class="container">
-    <span
-      [ngClass]="routeAnimationsElements"
-      class="app-gradient center"
-      style="display: block; font-size: x-large;"
-      >LET'S COMPETE</span
-    >
+    <span [ngClass]="routeAnimationsElements" class="app-gradient center"
+      style="display: block; font-size: x-large;">LET'S COMPETE</span>
     <p [ngClass]="routeAnimationsElements" class="info">
       At The P League, we’re all about fun and competitive sports. We will
       provide men’s & women’s basketball leagues. We encourage you to sign up
@@ -32,10 +24,7 @@
   </div>
   <br />
 
-  <div
-    class="second-background"
-    [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'"
-  >
+  <div class="second-background parallax" [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'desktop-parallax'">
     <div class="gradient">
       <div class="container"></div>
     </div>
@@ -46,27 +35,14 @@
   </div>
 
   <div class="container">
-    <span
-      [ngClass]="routeAnimationsElements"
-      class="app-gradient center"
-      style="display: block; font-size: x-large;"
-      >ABOUT THE P LEAGUE</span
-    ><br />
-    <span
-      [ngClass]="routeAnimationsElements"
-      class="app-gradient animations"
-      style="display: block; text-align: center; font-size: larger"
-      >Let's keep it simple and play ball
+    <span [ngClass]="routeAnimationsElements" class="app-gradient center"
+      style="display: block; font-size: x-large;">ABOUT THE P LEAGUE</span><br />
+    <span [ngClass]="routeAnimationsElements" class="app-gradient animations"
+      style="display: block; text-align: center; font-size: larger">Let's keep it simple and play ball
     </span>
     <div [ngClass]="routeAnimationsElements">
-      <fa-icon
-        [ngStyle]="null"
-        [@pulsing]="pulsingState"
-        (@pulsing.done)="onDonePulsing()"
-        class="basketball ball"
-        [icon]="['fas', 'basketball-ball']"
-        size="2x"
-      ></fa-icon>
+      <fa-icon [ngStyle]="null" [@pulsing]="pulsingState" (@pulsing.done)="onDonePulsing()" class="basketball ball"
+        [icon]="['fas', 'basketball-ball']" size="2x"></fa-icon>
     </div>
     <ul [ngClass]="routeAnimationsElements" class="animations">
       <li>
@@ -102,12 +78,7 @@
     </ul>
 
     <div [ngClass]="routeAnimationsElements" class="actions">
-      <a
-        routerLink="/team/signup"
-        mat-raised-button
-        class="actions-main pulsing"
-        color="accent"
-        >Sign Up Your Team Now!
+      <a routerLink="/team/signup" mat-raised-button class="actions-main pulsing" color="accent">Sign Up Your Team Now!
       </a>
     </div>
   </div>

@@ -124,13 +124,15 @@ h1 {
 
 .parallax {
   min-height: 700px;
-  background: url(../../../assets/merchanidse_welcome_2.jpg) no-repeat center top;
-  background-attachment: fixed;
+  background: url(src/assets/merchandise_welcome.jpg) no-repeat center top;
   background-size: cover;
 }
 
+.desktop-parallax {
+  background-attachment: fixed;
+}
+
 .mobile-img {
-  @extend .parallax;
   background-attachment: scroll;
 }
 

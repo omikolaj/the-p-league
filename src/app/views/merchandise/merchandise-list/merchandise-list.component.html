@@ -1,16 +1,30 @@
 <div [ngStyle]="{ marginTop: isSticky ? '50px' : '0' }">
+
   <div class="background " [ngClass]="routeAnimationsElements">
-    <div appIosVH class="gradient" [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'">
+
+    <div class="gradient">
+      <div class="container"></div>
+    </div>
+
+    <div appIosVH class="gradient-2" [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'">
+
       <div class="container">
         <div style="height: 350px;"></div>
       </div>
+
     </div>
+
+
     <div cdkScrollable id="arrow-wrapper">
+
       <div (click)="onArrowClick()" class="arrow-border">
+
         <div class="arrow down"></div>
         <div class="pulse"></div>
+
       </div>
     </div>
+
   </div>
 
   <div style="padding: 0 10px;">
