@@ -1,26 +1,24 @@
 # ThePLeague
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.1.
+An application built to support local client with managing his basketball league. The application has a store, gallery and team sign up section. Special attention was given to the administrative functionality that is hidden behind URL. Users can view pictures from the basketball league, as well as pre-order items from the store.
 
-## Development server
+## Features and Technologies
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Angular for component management and presentation logic
+- Angular Material Components powering a lot of the presentational views
+- SQL Server Database
+- JsonWebToken used for authorizing API end-points
+- ASP.NET Core powered back-end API
 
-## Code scaffolding
+## Usage
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+This application has been deployed to Azure. You can find the live version at https://pleaguefunc.azurewebsites.net. Run npm install and ng serve to install all of the dependencies and start the front end server
 
-## Build
+## Contributing
+Bug reports and pull requests are welcome on GitHub at https://github.com/omikolaj/the-p-league. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## License
+This project is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT)
 
 ## Further help
 
