@@ -186,6 +186,7 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
     if (gearItem === null) {
       return of([]);
     }
+
     return combineLatest([
       this.gearItems$,
       this.http.post<GearItem>(`${this.merchandiseUrl}`, gearItem.formData)

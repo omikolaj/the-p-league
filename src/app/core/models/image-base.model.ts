@@ -1,5 +1,6 @@
 export interface ImageBase {
   id?: string;
+  previewId?: number;
   name?: string;
   size?: number;
   type?: string;

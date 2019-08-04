@@ -181,10 +181,11 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
   }
 
   onFileSelected(event) {
-    this.selectedFileFormData = new FormData();
+    //this.selectedFileFormData = new FormData();
     const length =
       event.target.files.length < 3 ? event.target.files.length : 3;
     const filesObj = <File>event.target.files;
+
 
     // If we have 3 items in the array
     if (this.gearItemImages.length === 3) {
@@ -197,13 +198,18 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
         this.gearItemImages.splice(index, 1, {
           name: filesObj[index].name,
           size: filesObj[index].size,
-          type: filesObj[index].type
+          type: filesObj[index].type,
+          previewId: index
         });
+
+        const tempImage = filesObj[index];
+        tempImage.previewId = index;
 
         this.selectedFileFormData.append(
           GearItemUpload.GearImages,
-          filesObj[index]
+          tempImage
         );
+
       }
     } else if (this.gearItemImages.length > 0 && this.gearItemImages.length < 3) {
       this.gearItemImages = [...this.gearItemImages];
@@ -217,14 +223,18 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
             {
               name: filesObj[index].name,
               size: filesObj[index].size,
-              type: filesObj[index].type
+              type: filesObj[index].type,
+              previewId: index
             },
             ...this.gearItemImages
           ];
 
+          const tempImage = filesObj[index];
+          tempImage.previewId = index;
+
           this.selectedFileFormData.append(
             GearItemUpload.GearImages,
-            filesObj[index]
+            tempImage
           );
         }
       }
@@ -235,13 +245,17 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
           {
             name: filesObj[index].name,
             size: filesObj[index].size,
-            type: filesObj[index].type
+            type: filesObj[index].type,
+            previewId: index
           }
         ];
 
+        const tempImage = filesObj[index];
+        tempImage.previewId = index;
+
         this.selectedFileFormData.append(
           GearItemUpload.GearImages,
-          filesObj[index]
+          tempImage
         );
       }
     }
@@ -252,6 +266,18 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
     const index = this.gearItemImages.map(gI => gI.name).indexOf(image.name);
     if (index > -1) {
       this.gearItemImages.splice(index, 1);
+
+      const newList = this.selectedFileFormData.getAll(GearItemUpload.GearImages).filter((file: any) => {
+        return file.previewId !== image.previewId
+      });
+
+      this.selectedFileFormData = new FormData();
+      newList.forEach(file => {
+        this.selectedFileFormData.append(
+          GearItemUpload.GearImages,
+          file
+        );
+      });
     }
   }
 
