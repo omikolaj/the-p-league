@@ -6,9 +6,7 @@ An application built to support local client with managing his basketball league
 
 - Angular for component management and presentation logic
 - Angular Material Components powering a lot of the presentational views
-- SQL Server Database
-- JsonWebToken used for authorizing API end-points
-- ASP.NET Core powered back-end API
+- [ASP.NET Core powered back-end API](https://github.com/omikolaj/the-p-league-api)
 
 ## Usage
 
