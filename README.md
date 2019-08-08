@@ -1,6 +1,6 @@
 # ThePLeague
 
-An application built to support local client with managing his basketball league. The application has a store, gallery and team sign up section. Special attention was given to the administrative functionality that is hidden behind URL. Users can view pictures from the basketball league, as well as pre-order items from the store.
+An application built to support local client with managing his basketball league. The application has a store, gallery and team sign up section. Special attention was given to the administrative functionality that is hidden behind URL. Users can view pictures from the basketball league, as well as pre-order items from the store. This will be a live application used to manage 8 existing team and manage every team's schedule.
 
 ## Features and Technologies
 
