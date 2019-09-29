@@ -15,6 +15,10 @@ const routes: Routes = [
           './views/about/components/team-signup/team-signup.module#TeamSignupModule'
       },
       {
+        path: 'schedule',
+        loadChildren: './views/schedule/schedule.module#ScheduleModule'
+      },
+      {
         path: 'merchandise',
         loadChildren: './views/merchandise/merchandise.module#MerchandiseModule'
       },

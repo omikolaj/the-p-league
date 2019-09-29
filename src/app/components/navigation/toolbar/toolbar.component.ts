@@ -60,7 +60,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   headerSubscription: Subscription;
   isSticky = true;
   hideToolBarHeader = false;
-  headerLinksText: string[] = ['Merchandise', 'Gallery'];
+  headerLinksText: string[] = ['Schedule','Merchandise', 'Gallery'];
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)

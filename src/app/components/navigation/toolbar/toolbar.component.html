@@ -16,11 +16,6 @@
           </button>
         </span>
 
-        <a fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" style="color: white;"
-          href="https://playpass.com/ cleveland-fitness-club/12-team-basketball-schedule-r344505" target="_blank">
-          <button style="height: 100%" mat-button>Schedule</button>
-        </a>
-
         <ng-container *ngFor="let linkText of headerLinksText">
           <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button
             [routerLink]="'/' + linkText | lowercase" [routerLinkActive]="'active-route'">
