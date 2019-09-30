@@ -10,6 +10,7 @@ export interface AwayTeam extends Team {
     
 }
 
+// Temporary
 export const TEAMS: Team[] = [  
     {name: "A"},
     {name: "B"},

@@ -1,7 +1,9 @@
+import { Moment } from 'moment';
+
 export interface SportSession{
     id?: number,
     name?: string,
-    startDate?: Date,
-    endDate?: Date,
+    startDate?: Moment,
+    endDate?: Moment, 
     totalPrice?: number
 }
