@@ -41,7 +41,7 @@
     "ngx-gallery": "^5.10.0",
     "rxjs": "^6.4.0",
     "shortid": "^2.2.14",
-    "tslib": "^1.9.0",
+    "tslib": "^1.10.0",
     "tslint-angular": "^3.0.2",
     "zone.js": "~0.8.26"
   },

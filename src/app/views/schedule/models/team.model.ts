@@ -18,6 +18,5 @@ export const TEAMS: Team[] = [
     {name: "D"},
     {name: "E"},
     {name: "F"},
-    {name: "G"},
-    {name: "H"},
+    {name: "G"}    
   ]

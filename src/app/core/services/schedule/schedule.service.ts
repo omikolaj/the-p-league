@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Team } from 'src/app/views/schedule/models/team.model';
 import { Match } from 'src/app/views/schedule/models/match.model';
-import { BehaviorSubject } from 'rxjs';
-import { DateTimeRanges } from 'src/app/views/schedule/models/match-time-ranges.model';
+import { DateTimeRanges, TimesOfDay } from 'src/app/views/schedule/models/match-time-ranges.model';
 import * as moment from 'moment';
-import { MatchDays } from 'src/app/views/schedule/models/match-days.enum';
+import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import { MatchTime } from 'src/app/views/schedule/models/match-time.model';
 
 @Injectable()
 export class ScheduleService {
-  
+  private _nextDay: number = 0;
+
+  get nextDay(){
+    return this._nextDay;
+  }
+
+  set nextDay(value: number){
+    this._nextDay = value;
+  }
+
   constructor() { }
 
   generateSchedule(teams: Team[], times: DateTimeRanges): Match[] {
     const dummy: Team = { name: "BYE" };
-    let rounds = [];    
 
     teams = teams.slice();
     let numberOfTeams: number = teams.length;
@@ -35,7 +42,7 @@ export class ScheduleService {
       for (let index = 0; index < numberOfTeams / 2; index++) {
         if (teams[index].name !== dummy.name && teams[numberOfTeams - 1 - index].name !== dummy.name) {
           // in the first round add the first team with the last team  
-          matches.push({homeTeam: teams[index], awayTeam: teams[(numberOfTeams - 1) - index]}) // insert pair as a match                          
+          matches.push({homeTeam: teams[index], awayTeam: teams[(numberOfTeams - 1) - index], dateTime: null}) // insert pair as a match                          
         }
       }
       // take the array of teams (ps)
@@ -49,62 +56,111 @@ export class ScheduleService {
   }
 
   private generateMatchUpTimes(matches: Match[], dtRanges: DateTimeRanges): Match[]{
-    moment.locale('en'); // set to english
+     // set to english
+    moment.locale('en');
+
     // create a copy of the matches array
     matches = matches.slice();
+
     const startDate: moment.Moment = dtRanges.sportSession.startDate;
-    const endDate: moment.Moment = dtRanges.sportSession.endDate;
-    const times: MatchTime[] = dtRanges.times;
+    const endDate: moment.Moment = dtRanges.sportSession.endDate;    
+    // sort in descending order
+    const availableDaysSorted: MatchDay[] = [...dtRanges.days].sort((current, next) => next - current);
 
-    let temp = startDate.clone();
+    let current = startDate.clone();
     let index = 0;
-    while(temp.isSame(endDate) || temp.isBefore(endDate)){
-      // if index is greater than the length of matches return. No longer need to iterate      
-      if(index >= matches.length) break;      
+    
+    while(current.isSame(endDate) || current.isBefore(endDate)){
+      // if index is greater than the length of matches return. No longer need to iterate
+      // This means that the matches array does not have any other match ups we want to schedule                  
       // get day sunday = 7, monday = 1 etc...
-      const dayNum = temp.isoWeekday();
-      // the current date includes one of the days we want to schedule a game
-      if(dtRanges.days.includes(dayNum)){        
+      const currentDayNum = current.isoWeekday();
+      // the current date includes one of the days we want to schedule a game on
+      // dtRanges.days is Tuesday, Friday, Sunday
+      if(dtRanges.days.includes(currentDayNum)){        
         // get next available time
-        const time: MatchTime = this.getNextAvailableTime(times);        
-        matches[index].dateTime = moment(temp).set({hour: time.hour, minute: time.minute});        
-        index++;
-      }
+        const timesForCurrentDay: TimesOfDay = dtRanges.timesOfDays.find(timesOfDay => timesOfDay[currentDayNum] !== undefined);
 
-      let next: number;     
+        const listOfMatchTimesForCurrentDay: MatchTime[] = timesForCurrentDay[currentDayNum].sort((a, b) => a.hour - b.hour);
+        console.log("listOfMatchTimesForCurrentDay: ", listOfMatchTimesForCurrentDay);
+
+        for (let j = 0; j < listOfMatchTimesForCurrentDay.length; j++) {
+          if(index >= matches.length) break; 
+          const time: MatchTime = this.getNextAvailableTime(listOfMatchTimesForCurrentDay);      
+          
+          const match: Match = matches[index];
+          const playedThisWeek = moment().clone().subtract(7, 'days').startOf('day');
+          // check if team has already played this week
+
+          // if match dateTime is before 7 
+          if(match.dateTime.isAfter(playedThisWeek)){
+            // it is within a week old
+            // skip scheduling another match until next week
+            index++;
+            continue;
+          }
+          
+          match.dateTime = moment(current).set({hour: time.hour, minute: time.minute});
+          // add that this team already has a match this week         
+          index++;
+        }        
+      }
 
       ///////////////////////////////////////
       /////////NEDS WORK////////////////////
       //////////////////////////////////////
-      //IF THERE IS ONLY ONE DAY IN THE WEEK THIS BREAKS
-      // OR IF SUNDAY IS NOT IN THE LIST
+      // If next day in the dtRanges.days array is Sunday and currentDayNum is Friday,
+      // I need to add enough days to Friday to make next currentDate be Sunday.
+      // This means we need a way to figure out how many days we need to add
+      // to the currentDate in order to get to the next date in the dtRanges.days array
 
-      // CAN PROBABLY REMOVE THIS
-      if(dayNum === MatchDays.Sunday){
-        next = dtRanges.days[0];
-      }
-      else{
-        // find next biggest day
-        next = dtRanges.days.find(d => d > dayNum);
-
-        // if we did not find next biggest one this means this is the biggest day
-        if(next === undefined){
-          next = dtRanges.days[0];
-        }
-        // then subtract current dayNum from it
-        next = next - dayNum;        
+      // find next dtRanges.days item, that has a value larger than currentDayNum
+      // If we do not find an item, that is larger than currenDayNum,
+      // this means currentDayNum is larger than anything we have in the list
+      // so start at the begning of the dtRanges.days list
+      
+      // Find the next smallest available day in the dtRanges.days list
+      let nextDayNum: number = this.getNextAvailableDay(availableDaysSorted);
+      
+      if(currentDayNum !== MatchDay.Sunday){
+        nextDayNum = nextDayNum - currentDayNum;
       }
 
-      temp.add(next, 'days');
+      // Move to the nextDayNum day in the dtRanges.days list
+      // If next day we want to schedule games on is Monday, and
+      // current date is Friday, we want to add enough days to riday,
+      // to take us to next Monday. Thus, current then becomes 
+      // actual calendar date for that Monday.
+      current.add(nextDayNum, 'days');
     } 
     return matches;
   }
 
+  // Returns next available time when the times array is sorted from earliest games to latest
+  // It will modify the array, but moving first item, in the last place
   private getNextAvailableTime(times: MatchTime[]): MatchTime{
     const time: MatchTime = times[0];
-    times.splice(0, 0, times.pop())
+    times.splice((times.length - 1), 1, times.shift())
     return time;
   }
-  
 
+  private getNextAvailableDay(days: MatchDay[]): MatchDay{    
+    if((this.nextDay === 0) || (this.nextDay === days[0])){
+      return this.nextDay = days.reduce((previousDay, currentDay) => Math.min(previousDay, currentDay));
+    }
+    // if previousDay has been already set
+    else{      
+      return this.nextDay = this.findNextLargerNumber(days, this.nextDay); 
+    }
+  }
+
+  private findNextLargerNumber(days: MatchDay[], day: number): MatchDay{
+    let next = 0, i = 0;    
+    for (; i < days.length; i++) {
+      if(days[i] > day){
+        next = days[i];        
+      }
+    }
+    return next;
+  }
 }

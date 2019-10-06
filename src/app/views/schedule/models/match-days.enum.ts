@@ -1,4 +1,5 @@
-export enum MatchDays{
+export enum MatchDay{
+    None = 0,
     Monday = 1,
     Tuesday = 2,
     Wednesday = 3,
