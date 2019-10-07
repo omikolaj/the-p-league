@@ -49,7 +49,7 @@ export class SidenavListComponent implements OnInit, OnDestroy {
   // logo gets passed in from the toolbar icon that is in the middle.
   @Input() logo: string;
   logo_with_title = '../../../../assets/logo_no_title.png';
-  sidenavListText: string[] = ['Schedule', 'Merchandise', 'Gallery'];
+  sidenavListText: string[] = ['Merchandise', 'Gallery'];
   isLoggedIn$ = this.authService.isLoggedIn$;
   subscription: Subscription;
 

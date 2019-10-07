@@ -1,7 +1,11 @@
 import { Component, OnInit, Self } from '@angular/core';
 import LeagueScheduleDataSource from './league-schedule.datasource';
-import { ScheduleService } from 'src/app/core/services/schedule/schedule.service';
-
+import { DateTimeRanges } from '../../../models/interfaces/match-time-ranges.model';
+import { MatchDay } from '../../../models/match-days.enum';
+import * as moment from 'moment';
+import SessionSchedule from 'src/app/core/services/schedule/models/session-schedule.model';
+import { SessionScheduleService } from 'src/app/core/services/schedule/session-schedule/session-schedule.service';
+import { TEAMS } from '../../../models/interfaces/team.model';
 
 export enum Side{
   Home = 0,
@@ -12,17 +16,39 @@ export enum Side{
   selector: 'app-league-schedule',
   templateUrl: './league-schedule.component.html',
   styleUrls: ['./league-schedule.component.scss'],
-  providers: [ScheduleService]
+  providers: [ SessionScheduleService ]
 })
 export class LeagueScheduleComponent implements OnInit {
   displayedColumns: string[] = ["home", "away", "date"];
   dataSource: LeagueScheduleDataSource;
-  Side = Side;
-  constructor(@Self() public scheduleService: ScheduleService) { }
+  Side = Side;  
+
+  constructor(@Self() public scheduleService: SessionScheduleService) { }
 
   ngOnInit() {
+    const dateTimeRanges: DateTimeRanges = {
+			timesOfDays: [
+				{
+					[MatchDay[MatchDay.Tuesday]]: [
+						{ hour: 20, minute: 0o0 },
+						{ hour: 21, minute: 0o0 },
+						{ hour: 22, minute: 0o0 }
+					]
+				}
+			],
+			days: [
+				MatchDay.Tuesday
+			],
+			sportSession: {
+				startDate: moment(new Date("9-3-2019")),
+				endDate: moment(new Date("11-22-2019"))
+			}
+    }
+
+    const leagueSessionSchedule: SessionSchedule  = new SessionSchedule(TEAMS, dateTimeRanges)
+
     this.dataSource = new LeagueScheduleDataSource(this.scheduleService);
-    this.dataSource.loadSchedule();
+    this.dataSource.createSchedule(leagueSessionSchedule);
   }
 
 }

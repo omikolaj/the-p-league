@@ -15,6 +15,11 @@
             <img [src]="logo" />
           </button>
         </span>
+        
+          <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button
+            [routerLink]="'/schedules'" [routerLinkActive]="'active-route'">
+            Schedule
+          </button>        
 
         <ng-container *ngFor="let linkText of headerLinksText">
           <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button

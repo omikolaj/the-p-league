@@ -15,7 +15,7 @@ const routes: Routes = [
           './views/about/components/team-signup/team-signup.module#TeamSignupModule'
       },
       {
-        path: 'schedule',
+        path: 'schedules',
         loadChildren: './views/schedule/schedule.module#ScheduleModule'
       },
       {
