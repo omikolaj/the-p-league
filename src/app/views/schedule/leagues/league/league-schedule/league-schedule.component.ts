@@ -3,9 +3,11 @@ import LeagueScheduleDataSource from './league-schedule.datasource';
 import { DateTimeRanges } from '../../../models/interfaces/match-time-ranges.model';
 import { MatchDay } from '../../../models/match-days.enum';
 import * as moment from 'moment';
-import SessionSchedule from 'src/app/core/services/schedule/models/session-schedule.model';
 import { SessionScheduleService } from 'src/app/core/services/schedule/session-schedule/session-schedule.service';
+import { League } from '../../../models/interfaces/League.model';
+import { Sport } from '../../../models/sport.enum';
 import { TEAMS } from '../../../models/interfaces/team.model';
+import SessionSchedule from 'src/app/core/services/schedule/models/session-schedule.model';
 
 export enum Side{
   Home = 0,
@@ -39,16 +41,17 @@ export class LeagueScheduleComponent implements OnInit {
 			days: [
 				MatchDay.Tuesday
 			],
-			sportSession: {
+			session: {
 				startDate: moment(new Date("9-3-2019")),
 				endDate: moment(new Date("11-22-2019"))
 			}
     }
 
-    const leagueSessionSchedule: SessionSchedule  = new SessionSchedule(TEAMS, dateTimeRanges)
+		const basketBall: League = { type: Sport.Basketball }
+    const sessionSchedule: SessionSchedule  = new SessionSchedule(TEAMS, dateTimeRanges, basketBall)
 
     this.dataSource = new LeagueScheduleDataSource(this.scheduleService);
-    this.dataSource.createSchedule(leagueSessionSchedule);
+    this.dataSource.createSchedule(sessionSchedule);
   }
 
 }

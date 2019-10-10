@@ -1,15 +1,12 @@
 import { HomeTeam, AwayTeam } from '../interfaces/team.model';
 import { Moment, MomentSetObject } from 'moment';
 import * as moment from 'moment';
-import { IMatch } from '../interfaces/Imatch.model';
 import { SessionScheduleService } from 'src/app/core/services/schedule/session-schedule/session-schedule.service';
-import { MatchTime } from '../interfaces/match-time.model';
-import { matches } from 'lodash';
 
 const TBA: string = "TBA";
 
 // Represents two teams facing each other
-export default class Match implements IMatch{
+export default class Match implements Match{
     dateTime?: moment.Moment;
     homeTeam: HomeTeam;
     awayTeam: AwayTeam;				
@@ -24,8 +21,8 @@ export default class Match implements IMatch{
 			// Monday League - one set of games
 			// Thursday League - one set of games		
 			match.dateTime = moment(date).set(time);
-			match.homeTeam.schedule.lastScheduledGame = match.dateTime
-			match.awayTeam.schedule.lastScheduledGame = match.dateTime			
+			match.homeTeam.sessionSchedule.lastScheduledGame = match.dateTime
+			match.awayTeam.sessionSchedule.lastScheduledGame = match.dateTime			
     }
 	
 

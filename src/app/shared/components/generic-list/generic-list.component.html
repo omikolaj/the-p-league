@@ -1,0 +1,7 @@
+<div class="container">
+  <ng-container *ngFor="let item of list">
+    <div (click)="onItemSelected(item)" class="element">
+      <mat-card>{{ item.name }}</mat-card>
+    </div>
+  </ng-container>
+</div>

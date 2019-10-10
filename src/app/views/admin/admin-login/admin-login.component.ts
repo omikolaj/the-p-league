@@ -6,7 +6,7 @@ import {
 } from '@angular/forms';
 import { Login } from 'src/app/core/models/auth/login.model';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import {
@@ -39,7 +39,8 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private snackBar: SnackBarService,
-    private eventBus: EventBusService
+    private eventBus: EventBusService,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -114,7 +115,7 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
           return handleError(err, this.snackBar);
         }))
         .subscribe(_ => {
-          this.router.navigate(['merchandise']);
+          this.router.navigate(['dashboard'], { relativeTo: this.activatedRoute.parent });
           this.snackBar.openSnackBarFromComponent(
             "Successfully logged in",
             'Dismiss',

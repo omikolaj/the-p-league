@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-export default abstract class ITeamSessionSchedule{
+export default abstract class SessionSchedule{
   protected abstract _lastScheduledGame: moment.Moment;
   abstract get lastScheduledGame(): moment.Moment
   abstract set lastScheduledGame(value: moment.Moment);

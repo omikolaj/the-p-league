@@ -1,7 +1,7 @@
 import * as moment from 'moment';
-import ITeamSessionSchedule from './Iteam-session-schedule.model';
+import SessionSchedule from './session-schedule.model';
 
-export default class TeamSessionSchedule extends ITeamSessionSchedule{
+export default class TeamSessionSchedule extends SessionSchedule{
     private readonly defaultDate: string = "1-1-1990";
     private readonly playedThisWeek: moment.Moment = moment().clone().subtract(7, 'days').startOf('day');
 

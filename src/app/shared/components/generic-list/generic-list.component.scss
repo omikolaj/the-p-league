@@ -1,0 +1,16 @@
+.container{
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: 75px;
+    justify-content: center;
+  
+  .element{
+    align-self: center;
+    max-width: 30%;    
+  }
+
+  .element:hover{
+    border: 2px solid whitesmoke;
+    cursor: pointer;
+  }
+}

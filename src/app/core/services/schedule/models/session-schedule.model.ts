@@ -1,15 +1,19 @@
-import { ILeagueSessionSchedule } from '../interfaces/Ileague-session-schedule.model';
+
 import * as moment from 'moment';
 import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { TimesOfDay } from 'src/app/views/schedule/models/interfaces/times-of-day.model';
 import Match from 'src/app/views/schedule/models/classes/match.model';
 import { DateTimeRanges } from 'src/app/views/schedule/models/interfaces/match-time-ranges.model';
+import { League } from '../../../../views/schedule/models/interfaces/League.model';
+import { Injectable } from '@angular/core';
+import { ISessionSchedule } from '../interfaces/Isession-schedule.model';
 
-export default class SessionSchedule implements ILeagueSessionSchedule{
+export default class SessionSchedule implements ISessionSchedule{    
+    league: League;
     startDate: moment.Moment;    
     endDate: moment.Moment;  
-    teams: Team[];
+    teams: Team[];    
     timesOfDays: TimesOfDay[];
     sessionMatches: Match[];
 
@@ -28,15 +32,13 @@ export default class SessionSchedule implements ILeagueSessionSchedule{
         this._desiredDays = value;
     }
 
-    constructor(private teamsInSession: Team[], private dateTimeRanges: DateTimeRanges) {        
-        this.startDate = dateTimeRanges.sportSession.startDate;
-        this.endDate = dateTimeRanges.sportSession.endDate;
+    constructor(private teamsInSession: Team[], private dateTimeRanges: DateTimeRanges, private sessionLeague: League) {        
+        this.startDate = dateTimeRanges.session.startDate;
+        this.endDate = dateTimeRanges.session.endDate;
         this.teams = teamsInSession;
         this.desiredDays = dateTimeRanges.days
         this.timesOfDays = dateTimeRanges.timesOfDays;
+        this.league = sessionLeague;
     }
-
-    doSomething(){
-
-    }
+    
 }
