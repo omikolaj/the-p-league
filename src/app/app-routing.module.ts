@@ -7,32 +7,32 @@ const routes: Routes = [
     children: [
       {
         path: 'about',
-        loadChildren: './views/about/about.module#AboutModule'
+        loadChildren: () => import('./views/about/about.module').then(m => m.AboutModule)
       },
       {
         path: 'team',
         loadChildren:
-          './views/about/components/team-signup/team-signup.module#TeamSignupModule'
+          () => import('./views/about/components/team-signup/team-signup.module').then(m => m.TeamSignupModule)
       },
       {
         path: 'schedules',
-        loadChildren: './views/schedule/schedule.module#ScheduleModule'
+        loadChildren: () => import('./views/schedule/schedule.module').then(m => m.ScheduleModule)
       },
       {
         path: 'merchandise',
-        loadChildren: './views/merchandise/merchandise.module#MerchandiseModule'
+        loadChildren: () => import('./views/merchandise/merchandise.module').then(m => m.MerchandiseModule)
       },
       {
         path: 'gallery',
-        loadChildren: './views/gallery/gallery.module#GalleryModule'
+        loadChildren: () => import('./views/gallery/gallery.module').then(m => m.GalleryModule)
       },
       {
         path: 'admin',
-        loadChildren: './views/admin/admin.module#AdminModule'
+        loadChildren: () => import('./views/admin/admin.module').then(m => m.AdminModule)
       },
       {
         path: 'logout',
-        loadChildren: './components/logout/logout.module#LogoutModule'
+        loadChildren: () => import('./components/logout/logout.module').then(m => m.LogoutModule)
       },
       {
         path: '',

@@ -7,6 +7,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { AdminControlComponent } from './admin-dashboard/admin-control/admin-control.component';
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
+import { AdminAuthGuard } from './guards/admin-auth.guard';
+import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.service';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,9 @@ import { ScheduleAdministrationComponent } from './schedule/schedule-administrat
       ReactiveFormsModule, 
       SharedModule, 
       AdminRoutingModule
+    ],
+    providers: [
+      AdminAuthGuard      
     ]
 })
 export class AdminModule {}

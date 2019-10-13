@@ -27,10 +27,9 @@ export class AuthService {
     boolean
   >(false);
   isLoggedIn$ = this.isLoggedInSub.asObservable().pipe(
-    map(isLoggedIn => {
+    map(isLoggedIn => {      
       return this.isLoggedIn;
-    }),
-    shareReplay()
+    })    
   );
 
   constructor(private http: HttpClient) { }
@@ -99,10 +98,11 @@ export class AuthService {
     return appToken;
   }
 
-  get currentUserId(): string {
+  get currentUserId(): string | null {
     const storageItem: LocalStorageItem = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_ITEM)
     ) as LocalStorageItem;
+    if(storageItem === null) return null;
     return storageItem.id;
   }
 

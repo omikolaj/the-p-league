@@ -4,23 +4,24 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
 import { CanActivate } from '@angular/router/src/utils/preactivation';
+import { AdminAuthGuard } from './guards/admin-auth.guard';
+import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.service';
 
 const routes: Routes = [
-    { path: '', children: [ 
+    { path: '', resolve: { roles: RolesResolver }, children: [ 
         {
           path: 'login',
-          component: AdminLoginComponent,
-          // canActivate:  
+          component: AdminLoginComponent          
         },       
         {
           path: 'dashboard',
-          component: AdminDashboardComponent,
-          canActivate: [AdminAuthGuard] 
+          component: AdminDashboardComponent,          
+          canActivate: [AdminAuthGuard]                
         },
         {
           path: 'schedule',
-          component: ScheduleAdministrationComponent
-          // canActivate:  
+          component: ScheduleAdministrationComponent,
+          canActivate: [AdminAuthGuard]
         },        
         {
           path: '',

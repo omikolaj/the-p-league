@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import {
   Resolve,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
+  UrlTree,
+  CanActivate
 } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -19,7 +21,8 @@ export class RolesResolver implements Resolve<Observable<string[]>> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<any> | Promise<any> | any {
+  ): Observable<any> | Promise<any> | any {    
+    console.log("Inside of roles resolver")
     if (this.authService.wasLoggedIn) {
       if (!this.authService.isLoggedIn) {
         return this.authService.refreshToken().pipe(
@@ -38,4 +41,5 @@ export class RolesResolver implements Resolve<Observable<string[]>> {
     // if user is not logged in return empty array of 'roles'
     return [];
   }
+
 }

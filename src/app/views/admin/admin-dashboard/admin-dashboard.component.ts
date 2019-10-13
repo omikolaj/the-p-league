@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import AdminControl from '../models/classes/admin-control.model';
 import { AdminControlType } from '../models/admin-control-type.enum';
 import { GenericListItem } from 'src/app/shared/models/interfaces/generic-list-item.model';
-import { Router } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,15 +12,13 @@ import { Router } from '@angular/router';
 })
 export class AdminDashboardComponent implements OnInit {
   adminControls: Array<AdminControl> = new Array<AdminControl>(new AdminControl(AdminControlType.Schedule), new AdminControl(AdminControlType.Gallery), new AdminControl(AdminControlType.Merchandise))
-  constructor(private router: Router) { }
+  constructor(private router: Router, private route: ActivatedRoute ) { }
 
   ngOnInit() {
   }
 
-  openControl(event: GenericListItem){
-    console.log("From AdminControl, event: ", event)
-    // navigate to admin/merchandise || admin/gallery || admin/schedule
-    this.router.navigate([event.name]);
+  openControl(event: GenericListItem){    
+    this.router.navigate([event.name.toLocaleLowerCase()], { relativeTo: this.route.parent });
   }
 
 }

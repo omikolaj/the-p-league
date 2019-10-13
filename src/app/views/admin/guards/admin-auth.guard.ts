@@ -1,18 +1,30 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, ActivatedRoute, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { map } from 'rxjs/operators';
+import { Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { HttpClient } from '@angular/common/http';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AdminAuthGuard implements CanActivate {
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      // Check if user us logged in AND if user is admin if so return true,
-      // redirect to login and THEN return false 
-      // if logged in return true else navigate[login] return false
-      return true; 
-    
+@Injectable()
+export class AdminAuthGuard implements CanActivate {    
+
+  constructor(private authService: AuthService, private router: Router, private http: HttpClient){    
+  }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {    
+    // endpoint users/<user-id>/roles is an authorized route. User has to be logged in to retrieve user roles
+    if(this.authService.currentUserId === null) return this.router.parseUrl('admin/login');
+    return this.http.get<string[]>(`users/${this.authService.currentUserId}/roles`).pipe(
+      map(roles => {
+        if(this.authService.isLoggedIn){                         
+          return roles.includes(Role.Admin);
+          }
+        else{
+            return this.router.parseUrl('admin/login');
+          }         
+        }
+      )
+    )    
   }
 }

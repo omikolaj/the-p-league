@@ -66,6 +66,7 @@ import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { GenericListComponent } from './components/generic-list/generic-list.component';
+import { ListItemComponentDirective } from './directives/list-item-component.directive';
 
 library.add(
   faGithub,
@@ -89,7 +90,7 @@ const globalRippleConfig: RippleGlobalOptions = {
   providers: [
     { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }
   ],
-  declarations: [GalleryViewerComponent, SnackBarComponent, CarouselComponent, GenericListComponent],
+  declarations: [GalleryViewerComponent, SnackBarComponent, CarouselComponent, GenericListComponent, ListItemComponentDirective],
   imports: [
     MatAutocompleteModule,
     MatBadgeModule,
@@ -181,7 +182,8 @@ const globalRippleConfig: RippleGlobalOptions = {
     CommonModule,
     CarouselModule,
     CarouselComponent,
-    GenericListComponent
+    GenericListComponent,
+    ListItemComponentDirective
   ],
   entryComponents: [SnackBarComponent]
 })
