@@ -31,33 +31,33 @@
 
 // Necessary to overwrite dynamically
 // generated styling that is applied to angular material components
-:host /deep/ .mat-horizontal-content-container {
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 24px;
-}
+// :host /deep/ .mat-horizontal-content-container {
+//   padding-left: 0;
+//   padding-right: 0;
+//   padding-bottom: 24px;
+// }
 
-:host /deep/ .mat-form-field.mat-focused .mat-form-field-label {
-  color: rgba(255, 255, 255, 0.7);
-}
+// :host /deep/ .mat-form-field.mat-focused .mat-form-field-label {
+//   color: rgba(255, 255, 255, 0.7);
+// }
 
-:host /deep/ .mat-chip-list-stacked .mat-chip-list-wrapper .mat-standard-chip {
-  width: auto;
-}
+// :host /deep/ .mat-chip-list-stacked .mat-chip-list-wrapper .mat-standard-chip {
+//   width: auto;
+// }
 
 .upload-image-chips {
   margin-bottom: 10px;
 }
 
-:host /deep/ #imagesToUploadContainer mat-form-field div:nth-child(2) {
-  display: none;
-}
+// :host /deep/ #imagesToUploadContainer mat-form-field div:nth-child(2) {
+//   display: none;
+// }
 
 mat-slide-toggle {
   padding-left: 10px;
   display: inline-block !important;
 }
 
-:host /deep/ .mat-horizontal-content-container {
-  padding-bottom: 0px !important;
-}
+// :host /deep/ .mat-horizontal-content-container {
+//   padding-bottom: 0px !important;
+// }

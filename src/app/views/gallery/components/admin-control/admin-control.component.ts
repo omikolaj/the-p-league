@@ -35,8 +35,8 @@ import {
 export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   //#region DragAndDrop Properties
-  @ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<CdkDropList>;
-  @ViewChild(CdkDropList) placeholder: CdkDropList;
+  @ViewChild(CdkDropListGroup, { static: false }) listGroup: CdkDropListGroup<CdkDropList>;
+  @ViewChild(CdkDropList, { static: false }) placeholder: CdkDropList;
   public target: CdkDropList;
   public targetIndex: number;
   public source: CdkDropList;

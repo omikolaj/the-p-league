@@ -1,5 +1,22 @@
 <div class="wrapper">
-  <p>
-    schedule-administration works!
-  </p>
+  
+  <mat-tab-group #matGroup [(selectedIndex)]="nextTab">
+
+    <mat-tab label="League">
+      <app-league-administration></app-league-administration>
+
+      <button mat-button (click)="onNext()">Next</button>
+
+    </mat-tab>
+
+    <mat-tab label="Session">
+      <app-session-administration></app-session-administration>
+    </mat-tab>
+
+    <mat-tab label="Schedule">
+      Next tab value: {{ nextTab }}
+      <button mat-button (click)="onNext()">Next</button>
+    </mat-tab>
+  </mat-tab-group>
+  
 </div>

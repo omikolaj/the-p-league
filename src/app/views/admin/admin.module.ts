@@ -8,19 +8,27 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { AdminControlComponent } from './admin-dashboard/admin-control/admin-control.component';
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
 import { AdminAuthGuard } from './guards/admin-auth.guard';
-import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.service';
+import { CoreModule } from 'src/app/core/core.module';
+import { LeagueAdministrationComponent } from './schedule/league-administration/league-administration.component';
+import { SessionAdministrationComponent } from './schedule/session-administration/session-administration.component';
 
 @NgModule({
   declarations: [
       AdminLoginComponent, 
-      AdminDashboardComponent, 
-      AdminControlComponent, 
-      ScheduleAdministrationComponent
+      AdminDashboardComponent,       
+      ScheduleAdministrationComponent,
+      AdminControlComponent,
+      LeagueAdministrationComponent,
+      SessionAdministrationComponent
+    ],
+    entryComponents: [
+      AdminControlComponent
     ],
   imports: [
       CommonModule, 
       ReactiveFormsModule, 
       SharedModule, 
+      CoreModule,
       AdminRoutingModule
     ],
     providers: [

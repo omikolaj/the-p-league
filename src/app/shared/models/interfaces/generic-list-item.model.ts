@@ -1,4 +1,6 @@
+import { Type } from '@angular/core';
+
 export interface GenericListItem{
-  name: string,
-  
+  name: string;
+  component: Type<any>;
 }

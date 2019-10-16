@@ -32,8 +32,8 @@ import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MerchandiseListComponent implements OnInit, OnDestroy {
-  @ViewChild('gearUp') merchandiseCards: ElementRef;
-  @ViewChild('paginator') paginator: MatPaginator;
+  @ViewChild('gearUp', { static: false }) merchandiseCards: ElementRef;
+  @ViewChild('paginator', { static: false }) paginator: MatPaginator;
 
   routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
   gearItems: GearItem[] = [];

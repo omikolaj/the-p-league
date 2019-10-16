@@ -38,7 +38,9 @@ import {
   MatTooltipModule,
   MatTreeModule,
   RippleGlobalOptions,
-  MAT_RIPPLE_GLOBAL_OPTIONS
+  MAT_RIPPLE_GLOBAL_OPTIONS,
+  MAT_TABS_CONFIG,
+  MatTabsConfig
 } from '@angular/material';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -67,6 +69,7 @@ import { CarouselComponent } from './components/carousel/carousel.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { GenericListComponent } from './components/generic-list/generic-list.component';
 import { ListItemComponentDirective } from './directives/list-item-component.directive';
+import { GenericListItemComponent } from './components/generic-list/generic-list-item/generic-list-item.component';
 
 library.add(
   faGithub,
@@ -88,9 +91,9 @@ const globalRippleConfig: RippleGlobalOptions = {
 
 @NgModule({
   providers: [
-    { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }
+    { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }    
   ],
-  declarations: [GalleryViewerComponent, SnackBarComponent, CarouselComponent, GenericListComponent, ListItemComponentDirective],
+  declarations: [GalleryViewerComponent, SnackBarComponent, CarouselComponent, GenericListComponent, ListItemComponentDirective, GenericListItemComponent],
   imports: [
     MatAutocompleteModule,
     MatBadgeModule,
@@ -126,7 +129,7 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule,
+    MatTreeModule,    
 
     FontAwesomeModule,
 
@@ -172,7 +175,7 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule,
+    MatTreeModule,    
 
     FontAwesomeModule,
 
@@ -183,7 +186,7 @@ const globalRippleConfig: RippleGlobalOptions = {
     CarouselModule,
     CarouselComponent,
     GenericListComponent,
-    ListItemComponentDirective
+    ListItemComponentDirective    
   ],
   entryComponents: [SnackBarComponent]
 })

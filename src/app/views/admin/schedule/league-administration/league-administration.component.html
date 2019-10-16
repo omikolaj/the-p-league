@@ -1,0 +1,27 @@
+<form [formGroup]="newSessionForm">
+
+        <mat-form-field>
+        <input type="text" placeholder="Sport Category" aria-label="Category" matInput formControlName="newSportCategory"
+          [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let sportType of sportTypes | enumToArray" [value]="sportType">
+            {{ sportType }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="League Name...">
+      </mat-form-field>      
+
+    <div>
+      <mat-form-field>
+        <mat-label>Leagues</mat-label>
+        <mat-select formControlName="selectedLeagues" multiple>
+          <mat-option *ngFor="let league of leagues" [value]="league.name">{{league.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      </div>
+
+      </form>
