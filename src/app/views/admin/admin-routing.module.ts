@@ -4,7 +4,8 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
 import { AdminAuthGuard } from './guards/admin-auth.guard';
-import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.service';
+import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
+import { ScheduleAdministrationResolver } from 'src/app/core/services/resolvers/schedule-administration/schedule-administration.resolver';
 
 const routes: Routes = [
     { path: '', resolve: { roles: RolesResolver }, children: [ 
@@ -20,7 +21,8 @@ const routes: Routes = [
         {
           path: 'schedule',
           component: ScheduleAdministrationComponent,
-          canActivate: [AdminAuthGuard]
+          canActivate: [AdminAuthGuard],
+          resolve: { sports: ScheduleAdministrationResolver }
         },        
         {
           path: '',

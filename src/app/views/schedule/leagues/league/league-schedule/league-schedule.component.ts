@@ -47,7 +47,7 @@ export class LeagueScheduleComponent implements OnInit {
 			}
     }
 
-		const basketBall: League = { type: Sport.Basketball }
+		const basketBall: League = { type: { name: "Basketball" } }
     const sessionSchedule: SessionSchedule  = new SessionSchedule(TEAMS, dateTimeRanges, basketBall)
 
     this.dataSource = new LeagueScheduleDataSource(this.scheduleService);

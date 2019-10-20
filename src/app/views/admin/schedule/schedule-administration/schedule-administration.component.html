@@ -3,17 +3,25 @@
   <mat-tab-group #matGroup [(selectedIndex)]="nextTab">
 
     <mat-tab label="League">
-      <app-league-administration></app-league-administration>
-
-      <button mat-button (click)="onNext()">Next</button>
-
+      <app-admin-add [type]="addLeagueType" (itemAdded)="onItemAdded($event)"></app-admin-add>
+      <app-league-administration [sports]="sports"></app-league-administration>      
+      <div>
+        <button mat-raised-button>New</button>
+        <button mat-raised-button>Play Offs</button>
+        <button mat-raised-button>Modify</button>        
+      </div>
+      
     </mat-tab>
 
-    <mat-tab label="Session">
-      <app-session-administration></app-session-administration>
+    <mat-tab label="New Schedule">
+      <ng-template matTabContent>
+        <app-admin-add [type]="addTeamType" (itemAdded)="onItemAdded($event)"></app-admin-add>
+        <app-new-schedule></app-new-schedule>
+      </ng-template>
+      
     </mat-tab>
 
-    <mat-tab label="Schedule">
+    <mat-tab label="Preview">
       Next tab value: {{ nextTab }}
       <button mat-button (click)="onNext()">Next</button>
     </mat-tab>

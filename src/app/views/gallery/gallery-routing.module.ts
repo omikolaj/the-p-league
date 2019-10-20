@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { GalleryGridListComponent } from './gallery-grid-list.component';
-import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.service';
+import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
 import { GalleryService } from 'src/app/core/services/gallery/gallery.service';
 
 const routes: Routes = [

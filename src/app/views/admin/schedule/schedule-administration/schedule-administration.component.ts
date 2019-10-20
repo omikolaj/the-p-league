@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@ang
 import { Sport } from 'src/app/views/schedule/models/sport.enum';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { MatTabGroup } from '@angular/material';
+import { AdminAdd } from '../../models/admin-add-type.model';
+import { ActivatedRoute } from '@angular/router';
+import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -10,28 +13,40 @@ import { MatTabGroup } from '@angular/material';
   styleUrls: ['./schedule-administration.component.scss']
 })
 export class ScheduleAdministrationComponent implements OnInit {
-  leagues: League[] = [{ name: "Monday", type: Sport.Basketball }, { name: "Friday", type: Sport.Basketball }, { name: "Sunday", type: Sport.Basketball }]
-  newSessionForm: FormGroup = new FormGroup({    
-    'newSportCategory': new FormControl(null),
-    'selectedLeagues': new FormControl(this.leagues, Validators.required)
-  })
+  addLeagueType: AdminAdd = { kind: 'league', sportTypes: Sport, title: 'Add', description: 'Sport/League' };
+  addTeamType: AdminAdd;
+  leagues: League[] = [];
+  sports: SportType[] = [];  
 
   get sportTypes(){
     return Sport;
   }
 
-  constructor(private fb: FormBuilder) { }
-
-  ngOnInit() {    
-  }
-
-  onNext(){
+  constructor(private fb: FormBuilder, private route: ActivatedRoute) {
     
   }
 
-  onAddLeague(){    
-    const control = new FormControl(null, Validators.required);
-    (<FormArray>this.newSessionForm.get('newLeagues')).push(control);
+  ngOnInit() {     
+    this.sports = this.route.snapshot.data.sports;        
+    this.addTeamType = { kind: 'team', title: 'Add', description: 'Team', leagues: [] }  
   }
+
+  onItemAdded(event){
+    console.log(event)
+  }
+
+  onNewSchedule(){
+    //TODO filter list of leagues to selected ones
+  }
+
+  onPlayOffsSchedule(){
+    //TODO filter list of leagues to selected ones
+  }
+
+  onModifySchedule(){
+    //TODO filter list of leagues to selected ones
+  }
+
+  
 
 }

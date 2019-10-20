@@ -1,0 +1,12 @@
+<ng-container *ngFor="let sport of sports" >
+  
+<mat-card>{{ sport.name }}
+  <mat-card-actions class="sport-action-buttons">
+    <button mat-raised-button color="accent">Edit</button>
+    <button mat-raised-button color="warn">Delete</button>
+  </mat-card-actions>
+</mat-card>
+
+<app-edit-leagues-list [sport]="sport" [leagues]="sport.leagues" (selectedLeagues)="onLeagueSelectionChange($event)"></app-edit-leagues-list>
+
+</ng-container>

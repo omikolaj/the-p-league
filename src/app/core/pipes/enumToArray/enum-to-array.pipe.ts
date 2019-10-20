@@ -6,10 +6,8 @@ import { Sport } from 'src/app/views/schedule/models/sport.enum';
 })
 export class EnumToArrayPipe implements PipeTransform {
 
-  transform(data: any): any {
-    console.log("data", data);
-    const keys = Object.keys(data);
-    console.log("inside pipe");    
+  transform(data: any): any {    
+    const keys = Object.keys(data);    
     return keys.slice(keys.length / 2).filter(name => name !== Sport[Sport.None]);
   }
 

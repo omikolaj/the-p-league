@@ -1,0 +1,16 @@
+<ng-container *ngFor="let league of leagues">
+
+  <app-edit-teams-list [league]="league" [teams]="league.teams"></app-edit-teams-list>
+  
+  <app-new-session-schedule></app-new-session-schedule>
+
+  <mat-divider></mat-divider>
+
+</ng-container>
+
+<ng-container *ngIf="unassignedTeams.length > 0; then unassigned">
+</ng-container>
+
+<ng-template #unassigned>
+  <app-unassigned [teams]="unassignedTeams"></app-unassigned>
+</ng-template>

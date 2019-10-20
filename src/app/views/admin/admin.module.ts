@@ -9,8 +9,13 @@ import { AdminControlComponent } from './admin-dashboard/admin-control/admin-con
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
 import { AdminAuthGuard } from './guards/admin-auth.guard';
 import { CoreModule } from 'src/app/core/core.module';
-import { LeagueAdministrationComponent } from './schedule/league-administration/league-administration.component';
-import { SessionAdministrationComponent } from './schedule/session-administration/session-administration.component';
+import { LeagueAdministrationComponent } from './schedule/schedule-administration/league-administration/league-administration.component';
+import { AdminAddComponent } from './schedule/components/admin-add/admin-add.component';
+import { EditLeaguesListComponent } from './schedule/schedule-administration/league-administration/edit-leagues-list/edit-leagues-list.component';
+import { NewScheduleComponent } from './schedule/schedule-administration/new-schedule/new-schedule.component';
+import { NewSessionScheduleComponent } from './schedule/schedule-administration/new-schedule/new-session-schedule/new-session-schedule.component';
+import { EditTeamsListComponent } from './schedule/schedule-administration/new-schedule/edit-teams-list/edit-teams-list.component';
+import { UnassignedComponent } from './schedule/components/unassigned/unassigned.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +24,12 @@ import { SessionAdministrationComponent } from './schedule/session-administratio
       ScheduleAdministrationComponent,
       AdminControlComponent,
       LeagueAdministrationComponent,
-      SessionAdministrationComponent
+      AdminAddComponent,
+      EditLeaguesListComponent,
+      NewScheduleComponent,
+      NewSessionScheduleComponent,
+      EditTeamsListComponent,
+      UnassignedComponent
     ],
     entryComponents: [
       AdminControlComponent

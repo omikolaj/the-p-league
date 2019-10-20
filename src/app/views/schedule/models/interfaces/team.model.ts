@@ -16,11 +16,11 @@ export interface AwayTeam extends Team {
 
 // Temporary
 export const TEAMS: Team[] = [  
-    {name: "A", sessionSchedule: new TeamSessionSchedule()},
-    {name: "B", sessionSchedule: new TeamSessionSchedule()},
-    {name: "C", sessionSchedule: new TeamSessionSchedule()},
-    {name: "D", sessionSchedule: new TeamSessionSchedule()},
-    {name: "E", sessionSchedule: new TeamSessionSchedule()},
-    {name: "F", sessionSchedule: new TeamSessionSchedule()},
-    {name: "G", sessionSchedule: new TeamSessionSchedule()}    
+    {name: "Manchester United FC", sessionSchedule: new TeamSessionSchedule()},
+    {name: "Arsenal F.C", sessionSchedule: new TeamSessionSchedule()},
+    {name: "Chelsea F.C", sessionSchedule: new TeamSessionSchedule()},
+    {name: "Manchester City F.C", sessionSchedule: new TeamSessionSchedule()},
+    {name: "Liverpool F.C", sessionSchedule: new TeamSessionSchedule()},
+    {name: "Tottenham Hotspur F.C", sessionSchedule: new TeamSessionSchedule()},
+    {name: "Leicester City F.C", sessionSchedule: new TeamSessionSchedule()}    
   ]

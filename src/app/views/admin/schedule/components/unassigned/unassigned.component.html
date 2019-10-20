@@ -1,0 +1,25 @@
+<h3>Unassigned Teams</h3>
+
+<ng-container *ngFor="let team of unassignedTeams">
+
+  <mat-form-field>
+    <input matInput [value]="team.name" [readonly]="true">
+  </mat-form-field>
+
+  <mat-form-field>
+  <mat-label>League</mat-label>
+  <mat-select >
+    <mat-option>-- None --</mat-option>
+    <mat-optgroup *ngFor="let sport of sports" [label]="sport.name"
+                  >
+      <mat-option *ngFor="let league of sport.leagues" [value]="league.id">
+        {{league.name}}
+      </mat-option>
+    </mat-optgroup>
+  </mat-select>
+</mat-form-field>
+<div class="action-buttons">
+  <button mat-raised-button color="accent">Assign</button>  
+</div>
+
+</ng-container>

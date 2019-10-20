@@ -13,7 +13,7 @@ import { MerchandiseDialogComponent } from './merchandise-dialog-container/merch
 import { GearImageViewPipe } from 'src/app/core/pipes/gear-image-view/gear-image-view.pipe';
 import { IosVHDirective } from 'src/app/core/directives/iosVH/ios-vh.directive';
 import { HasRoleDirective } from 'src/app/core/directives/has-role/has-role.directive';
-import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.service';
+import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
 import {
   MerchandisePreOrderDialogComponent
 } from './merchandise-dialog-container/merchandise-pre-order-dialog/merchandise-pre-order-dialog.component';

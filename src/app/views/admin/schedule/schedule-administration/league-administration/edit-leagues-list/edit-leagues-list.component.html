@@ -1,0 +1,10 @@
+
+<mat-selection-list (selectionChange)="onSelectionChange($event)">
+  <mat-list-option *ngFor="let league of leagues; let i=index;" [value]="league.id">    
+    {{league.name}}
+  </mat-list-option>    
+</mat-selection-list>
+<div class="edit-actions-buttons" *ngIf="leagues.length > 0">
+  <button mat-raised-button color="accent">Edit</button>
+  <button mat-raised-button color="warn">Delete</button>
+</div>
