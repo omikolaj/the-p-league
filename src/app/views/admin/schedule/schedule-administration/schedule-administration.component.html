@@ -1,40 +1,24 @@
 <div class="wrapper">
-  <mat-tab-group
-    #matGroup
-    (selectedTabChange)="reset($event)"
-    [selectedIndex]="nextTab"
-  >
+  <mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
     <mat-tab label="League">
-      <app-add-leagues></app-add-leagues>
+      <app-add-leagues [newSportLeagueForm]="newSportLeagueForm" (onNewSportLeague)="onNewSportLeague($event)"></app-add-leagues>
       <!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
-      <ng-container *ngFor="let sport of sports">
-        <app-league-administration
-          [sportType]="sport"
-        ></app-league-administration>
+      <ng-container *ngIf="sports$ | async as sports">
+        <ng-container *ngFor="let sport of sports">
+          <app-league-administration [sportType]="sport"></app-league-administration>
+        </ng-container>
+        <div>
+          <button mat-raised-button (click)="onNewSchedule()" [disabled]="checkSelection()">
+            New
+          </button>
+          <button mat-raised-button (click)="onPlayOffsSchedule()" [disabled]="checkSelection()">
+            Play Offs
+          </button>
+          <button mat-raised-button (click)="onModifySchedule()" [disabled]="checkExistingSchedule()">
+            Modify
+          </button>
+        </div>
       </ng-container>
-      <div>
-        <button
-          mat-raised-button
-          (click)="onNewSchedule()"
-          [disabled]="checkSelection()"
-        >
-          New
-        </button>
-        <button
-          mat-raised-button
-          (click)="onPlayOffsSchedule()"
-          [disabled]="checkSelection()"
-        >
-          Play Offs
-        </button>
-        <button
-          mat-raised-button
-          (click)="onModifySchedule()"
-          [disabled]="checkExistingSchedule()"
-        >
-          Modify
-        </button>
-      </div>
     </mat-tab>
 
     <mat-tab [label]="tabTitle" [disabled]="checkSelection()">
@@ -44,8 +28,6 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Preview" [disabled]="checkSelection()">
-      Next tab value: {{ nextTab }}
-    </mat-tab>
+    <mat-tab label="Preview" [disabled]="checkSelection()"> Next tab value: {{ nextTab }} </mat-tab>
   </mat-tab-group>
 </div>

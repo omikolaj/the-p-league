@@ -6,33 +6,36 @@ import { ScheduleAdministrationComponent } from './schedule/schedule-administrat
 import { AdminAuthGuard } from './guards/admin-auth.guard';
 import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
 import { ScheduleAdministrationResolver } from 'src/app/core/services/resolvers/schedule-administration/schedule-administration.resolver';
+import { ScheduleAdministrationService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration.service';
 
 const routes: Routes = [
-    { path: '', resolve: { roles: RolesResolver }, children: [ 
-        {
-          path: 'login',
-          component: AdminLoginComponent          
-        },       
-        {
-          path: 'dashboard',
-          component: AdminDashboardComponent,          
-          canActivate: [AdminAuthGuard]                
-        },
-        {
-          path: 'schedule',
-          component: ScheduleAdministrationComponent,
-          canActivate: [AdminAuthGuard],
-          resolve: { sports: ScheduleAdministrationResolver }
-        },        
-        {
-          path: '',
-          redirectTo: 'dashboard',
-          pathMatch: 'full'
-        }       
-      ] 
-    },
-    
-  ];
+  {
+    path: '',
+    resolve: { roles: RolesResolver },
+    children: [
+      {
+        path: 'login',
+        component: AdminLoginComponent
+      },
+      {
+        path: 'dashboard',
+        component: AdminDashboardComponent,
+        canActivate: [AdminAuthGuard]
+      },
+      {
+        path: 'schedule',
+        component: ScheduleAdministrationComponent,
+        canActivate: [AdminAuthGuard],
+        resolve: [ScheduleAdministrationService]
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+    ]
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

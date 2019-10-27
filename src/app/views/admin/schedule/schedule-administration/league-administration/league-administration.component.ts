@@ -1,43 +1,33 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { League } from "src/app/views/schedule/models/interfaces/League.model";
-import { Sport } from "src/app/views/schedule/models/sport.enum";
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder
-} from "@angular/forms";
-import { AdminAdd } from "../../../models/admin-add-type.model";
-import { ScheduleAdministrationService } from "src/app/core/services/schedule/schedule-administration/schedule-administration.service";
-import { LeagueAdministrationService } from "src/app/core/services/schedule/schedule-administration/league-administration/league-administration.service";
-import { SelectedLeagues } from "src/app/core/services/schedule/interfaces/selected-leagues.model";
-import { SportType } from "src/app/views/schedule/models/interfaces/sport-type.model";
-import { cloneDeep } from "lodash";
-import { EditLeagueControl } from "../../models/edit-league-control.model";
+import { Component, OnInit, Input } from '@angular/core';
+import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { Sport } from 'src/app/views/schedule/models/sport.enum';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { AdminAdd } from '../../../models/admin-add-type.model';
+import { ScheduleAdministrationService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration.service';
+import { LeagueAdministrationService } from 'src/app/core/services/schedule/schedule-administration/league-administration/league-administration.service';
+import { SelectedLeagues } from 'src/app/core/services/schedule/interfaces/selected-leagues.model';
+import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
+import { cloneDeep } from 'lodash';
+import { EditLeagueControl } from '../../models/edit-league-control.model';
 
 @Component({
-  selector: "app-league-administration",
-  templateUrl: "./league-administration.component.html",
-  styleUrls: ["./league-administration.component.scss"]
+  selector: 'app-league-administration',
+  templateUrl: './league-administration.component.html',
+  styleUrls: ['./league-administration.component.scss']
 })
 export class LeagueAdministrationComponent implements OnInit {
-  private _sportType: SportType;
-  get sportType(): SportType {
-    return this._sportType;
-  }
-  @Input()
-  set sportType(value: SportType) {
-    this._sportType = { ...value };
-  }
+  @Input() sportType: SportType;
+
   editForm: FormGroup;
 
-  constructor(
-    private leagueAdminService: LeagueAdministrationService,
-    private fb: FormBuilder
-  ) {}
+  constructor(private leagueAdminService: LeagueAdministrationService, private fb: FormBuilder) {}
 
   ngOnInit() {
     this.initEditForm();
+  }
+
+  ngOnDestroy() {
+    console.log('destroying league admin');
   }
 
   initEditForm() {
@@ -51,7 +41,6 @@ export class LeagueAdministrationComponent implements OnInit {
         selected: this.fb.control(false)
       })
     );
-
     this.editForm = this.fb.group({
       leagues: this.fb.array([...leagueNameControls])
     });
@@ -59,26 +48,28 @@ export class LeagueAdministrationComponent implements OnInit {
 
   onLeagueSelectionChange(selectedLeagueControls: EditLeagueControl[]) {
     const sportType: SportType = cloneDeep(this.sportType);
-    const selectedLeagues = sportType.leagues.filter(s =>
-      selectedLeagueControls.some(c => c.id === s.id)
-    );
+    const selectedLeagues = sportType.leagues.filter(s => selectedLeagueControls.some(c => c.id === s.id));
     sportType.leagues = selectedLeagues;
     this.leagueAdminService.onSelectedLeagues(sportType);
   }
 
   onUpdatedLeagues(updatedLeagueNames: FormGroup) {
     const sportTypeToUpdate = cloneDeep(this.sportType);
-    const updated: EditLeagueControl[] = updatedLeagueNames.value
-      .leagues as EditLeagueControl[];
+    const updated: EditLeagueControl[] = updatedLeagueNames.value.leagues as EditLeagueControl[];
 
     for (let index = 0; index < updated.length; index++) {
       const league = sportTypeToUpdate.leagues[index];
       league.name = updated.find(control => control.id === league.id).name;
     }
-    this.leagueAdminService.updateLeagueNames(sportTypeToUpdate);
+    this.leagueAdminService.updateSportType(sportTypeToUpdate);
   }
 
-  onItemAdded(event) {
-    console.debug("onItemAdded: ", event);
+  onDeletedLeagues(leagueIDsToDelete: string[]) {
+    const sportTypeWithRemovedLeagues = cloneDeep(this.sportType);
+    for (let index = 0; index < leagueIDsToDelete.length; index++) {
+      const deleteID = leagueIDsToDelete[index];
+      sportTypeWithRemovedLeagues.leagues = sportTypeWithRemovedLeagues.leagues.filter(l => l.id !== deleteID);
+    }
+    this.leagueAdminService.updateSportType(sportTypeWithRemovedLeagues);
   }
 }
