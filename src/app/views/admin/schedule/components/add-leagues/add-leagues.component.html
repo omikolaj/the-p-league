@@ -1,0 +1,41 @@
+<mat-accordion hideToggle="true">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon"
+          >add</mat-icon
+        >
+        {{ title }}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ description }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <!-- START -- contents -->
+
+    <div>
+      <mat-form-field>
+        <input
+          type="text"
+          placeholder="Sport"
+          aria-label="sports"
+          matInput
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let sport of sportTypes" [value]="sport.name">
+            {{ sport.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="League Name" />
+      </mat-form-field>
+    </div>
+    <button mat-raised-button color="accent" (click)="onAddItem()">Add</button>
+
+    <!-- END -- contents -->
+  </mat-expansion-panel>
+</mat-accordion>

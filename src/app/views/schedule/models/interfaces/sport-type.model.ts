@@ -1,6 +1,8 @@
-import { League } from './League.model';
+import { League } from "./League.model";
 
-export interface SportType{
+export interface SportType {
+  id?: string;
   name: string;
   leagues?: League[];
+  readonly?: boolean;
 }

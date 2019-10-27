@@ -18,7 +18,7 @@ export class UnassignedComponent implements OnInit {
   constructor(private leagueAdminService: LeagueAdministrationService, private scheduleAdminService: ScheduleAdministrationService) { }
 
   ngOnInit() {
-    this.sports = this.scheduleAdminService.sportTypes;
+    this.sports = this.leagueAdminService.sportTypes;
     this.leagues = this.leagueAdminService.leagues;
     console.log("unassigned teams");
   }

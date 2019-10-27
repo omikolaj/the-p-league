@@ -7,5 +7,6 @@ export interface Session{
     name?: string,
     startDate?: Moment,
     endDate?: Moment, 
-    totalPrice?: number
+    totalPrice?: number,
+    active?: boolean
 }

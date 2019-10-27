@@ -1,15 +1,17 @@
 <ng-container *ngFor="let league of leagues">
+  <app-team-administration [league]="league"></app-team-administration>
 
-  <app-edit-teams-list [league]="league" [teams]="league.teams"></app-edit-teams-list>
-  
   <app-new-session-schedule></app-new-session-schedule>
 
   <mat-divider></mat-divider>
-
 </ng-container>
 
 <ng-container *ngIf="unassignedTeams.length > 0; then unassigned">
 </ng-container>
+
+<div>
+  <button mat-stroked-button color="accent">Generate</button>
+</div>
 
 <ng-template #unassigned>
   <app-unassigned [teams]="unassignedTeams"></app-unassigned>

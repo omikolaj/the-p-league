@@ -1,30 +1,51 @@
 <div class="wrapper">
-  
-  <mat-tab-group #matGroup [(selectedIndex)]="nextTab">
-
+  <mat-tab-group
+    #matGroup
+    (selectedTabChange)="reset($event)"
+    [selectedIndex]="nextTab"
+  >
     <mat-tab label="League">
-      <app-admin-add [type]="addLeagueType" (itemAdded)="onItemAdded($event)"></app-admin-add>
-      <app-league-administration [sports]="sports"></app-league-administration>      
+      <app-add-leagues></app-add-leagues>
+      <!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
+      <ng-container *ngFor="let sport of sports">
+        <app-league-administration
+          [sportType]="sport"
+        ></app-league-administration>
+      </ng-container>
       <div>
-        <button mat-raised-button>New</button>
-        <button mat-raised-button>Play Offs</button>
-        <button mat-raised-button>Modify</button>        
+        <button
+          mat-raised-button
+          (click)="onNewSchedule()"
+          [disabled]="checkSelection()"
+        >
+          New
+        </button>
+        <button
+          mat-raised-button
+          (click)="onPlayOffsSchedule()"
+          [disabled]="checkSelection()"
+        >
+          Play Offs
+        </button>
+        <button
+          mat-raised-button
+          (click)="onModifySchedule()"
+          [disabled]="checkExistingSchedule()"
+        >
+          Modify
+        </button>
       </div>
-      
     </mat-tab>
 
-    <mat-tab label="New Schedule">
+    <mat-tab [label]="tabTitle" [disabled]="checkSelection()">
       <ng-template matTabContent>
-        <app-admin-add [type]="addTeamType" (itemAdded)="onItemAdded($event)"></app-admin-add>
+        <app-add-teams [sportType]="sports"></app-add-teams>
         <app-new-schedule></app-new-schedule>
       </ng-template>
-      
     </mat-tab>
 
-    <mat-tab label="Preview">
+    <mat-tab label="Preview" [disabled]="checkSelection()">
       Next tab value: {{ nextTab }}
-      <button mat-button (click)="onNext()">Next</button>
     </mat-tab>
   </mat-tab-group>
-  
 </div>

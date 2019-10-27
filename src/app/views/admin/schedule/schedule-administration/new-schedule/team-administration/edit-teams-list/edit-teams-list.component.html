@@ -1,0 +1,42 @@
+<mat-expansion-panel expanded="true">
+  <mat-expansion-panel-header>
+    {{ league.type.name }} - {{ league.name }}
+  </mat-expansion-panel-header>
+
+  <mat-selection-list #teamsList>
+    <!-- <h3 matSubheader>
+      {{ league.type.name }} - {{ league.name }}
+    </h3> -->
+    <mat-list-option *ngFor="let team of teams">
+      <mat-icon matListIcon>sports_basketball</mat-icon>
+      <h4 matLine>{{team.name}}</h4>
+      <p matLine> Placeholder </p>
+    </mat-list-option>
+    <p>Number of teams selected: {{ teamsList.selectedOptions.selected.length }}</p>
+  </mat-selection-list>
+
+  <mat-action-row>
+    <button mat-stroked-button color="accent">Unassign</button>
+    <button mat-stroked-button color="accent">Edit</button>
+    <button mat-stroked-button color="warn">Delete</button>
+  </mat-action-row>
+</mat-expansion-panel>
+
+
+
+<!-- <mat-selection-list #teamsList>
+  <h3 matSubheader>
+    {{ league.type.name }} - {{ league.name }}
+  </h3>
+  <mat-list-option *ngFor="let team of teams">
+    <mat-icon matListIcon>sports_basketball</mat-icon>
+    <h4 matLine>{{team.name}}</h4>
+    <p matLine> Placeholder </p>
+  </mat-list-option>
+  <p>Number of teams selected: {{ teamsList.selectedOptions.selected.length }}</p>
+</mat-selection-list>
+<div class="edit-actions-buttons">
+  <button mat-stroked-button color="accent">Unassign</button>
+  <button mat-stroked-button color="accent">Edit</button>
+  <button mat-stroked-button color="warn">Delete</button>
+</div> -->

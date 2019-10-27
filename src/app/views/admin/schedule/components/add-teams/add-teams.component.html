@@ -1,0 +1,40 @@
+<mat-accordion hideToggle="true">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon"
+          >add</mat-icon
+        >
+        {{ title }}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ description }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <!-- START -- contents -->
+
+    <div>
+      <mat-form-field>
+        <input matInput placeholder="Team Name" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>League</mat-label>
+        <mat-select>
+          <!-- <mat-option>-- None --</mat-option> -->
+          <mat-optgroup *ngFor="let sport of sportType" [label]="sport.name">
+            <mat-option
+              *ngFor="let league of sport.leagues"
+              [value]="league.name"
+            >
+              {{ league.name }}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- END -- contents -->
+  </mat-expansion-panel>
+</mat-accordion>

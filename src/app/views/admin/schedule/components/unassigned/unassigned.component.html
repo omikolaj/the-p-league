@@ -1,6 +1,9 @@
-<h3>Unassigned Teams</h3>
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    Unassigned Teams
+  </mat-expansion-panel-header>
 
-<ng-container *ngFor="let team of unassignedTeams">
+  <ng-container *ngFor="let team of unassignedTeams">
 
   <mat-form-field>
     <input matInput [value]="team.name" [readonly]="true">
@@ -18,8 +21,13 @@
     </mat-optgroup>
   </mat-select>
 </mat-form-field>
-<div class="action-buttons">
-  <button mat-raised-button color="accent">Assign</button>  
-</div>
 
 </ng-container>
+
+  <mat-action-row>
+    <button mat-raised-button color="accent">Assign</button>  
+  </mat-action-row>
+</mat-expansion-panel>
+
+
+

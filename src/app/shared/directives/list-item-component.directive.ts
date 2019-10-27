@@ -1,12 +1,8 @@
-import { Directive, ViewContainerRef } from '@angular/core';
+import { Directive, ViewContainerRef } from "@angular/core";
 
 @Directive({
-  selector: '[appListItemComponent]'
+  selector: "[appListItemComponent]"
 })
 export class ListItemComponentDirective {
-
-  constructor(public viewContainerRef: ViewContainerRef) {
-    console.log("Inside of appListItemComponent Directive");
-   }
-
+  constructor(public viewContainerRef: ViewContainerRef) {}
 }

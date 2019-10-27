@@ -1,4 +1,4 @@
-<mat-accordion>
+<mat-accordion hideToggle="true">
 
   <mat-expansion-panel>
 
@@ -6,55 +6,59 @@
 
       <mat-panel-title>
         <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
-        {{ addType?.title }}
+        {{ title }}
       </mat-panel-title>
       <mat-panel-description>
-        {{ addType?.description }}
+        {{ description }}
       </mat-panel-description>
 
     </mat-expansion-panel-header>
 
-<!-- START -- contents -->
+    <!-- START -- contents -->
 
-<div [ngSwitch]="addType?.kind">
+    <div [ngSwitch]="for">
 
-  <!-- render add team -->
-  <div *ngSwitchCase="'team'">
-    <mat-form-field>
-      <input matInput placeholder="Team Name">
-    </mat-form-field>
+      <!-- render add team -->
 
-    <mat-form-field>
-      <mat-label>League</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let league of addType?.leagues" [value]="league.name">
-          {{ league.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+      <div *ngSwitchCase="'team'">
+        <mat-form-field>
+          <input matInput placeholder="Team Name">
+        </mat-form-field>
 
-  <div *ngSwitchCase="'league'">
-    <mat-form-field>
-      <input type="text" placeholder="Sport" aria-label="sports" matInput
-        [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let sport of addType?.sportTypes | enumToArray" [value]="sport">
-          {{ sport }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+        <mat-form-field>
+          <mat-label>League</mat-label>
+          <mat-select>
+            <!-- <mat-option>-- None --</mat-option> -->
+            <mat-optgroup *ngFor="let sport of addType?.sportTypes" [label]="sport.name">
+              <mat-option *ngFor="let league of sport.leagues" [value]="league.name">
+                {{league.name}}
+              </mat-option>
+            </mat-optgroup>
+          </mat-select>
+        </mat-form-field>
 
-    <mat-form-field>
-      <input matInput placeholder="League Name">
-    </mat-form-field>
-  </div>
-  <button mat-raised-button color="accent" (click)=onAddItem()>Add</button>
-</div>
+      </div>
+
+      <div *ngSwitchCase="'league'">
+        <mat-form-field>
+          <input type="text" placeholder="Sport" aria-label="sports" matInput [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let sport of addType?.sportTypes" [value]="sport.name">
+              {{ sport.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="League Name">
+        </mat-form-field>
+      </div>
+      <button mat-raised-button color="accent" (click)=onAddItem()>Add</button>
+    </div>
 
 
 
-<!-- END -- contents -->
+    <!-- END -- contents -->
 
   </mat-expansion-panel>
 
