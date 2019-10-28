@@ -17,14 +17,14 @@ import { combineLatest } from 'rxjs';
   providedIn: 'root'
 })
 export class ScheduleAdministrationService implements OnInit, Resolve<Observable<SportType[]>> {
-  private _sportTypes: SportType[];
+  // private _sportTypes: SportType[];
 
-  get sportTypes(): SportType[] {
-    return this._sportTypes;
-  }
-  set sportTypes(value: SportType[]) {
-    this._sportTypes = value;
-  }
+  // get sportTypes(): SportType[] {
+  //   return this._sportTypes;
+  // }
+  // set sportTypes(value: SportType[]) {
+  //   this._sportTypes = value;
+  // }
 
   private _sportTypesSubject = new BehaviorSubject<SportType[]>([]);
   sportTypes$: Observable<SportType[]> = this._sportTypesSubject.asObservable();
@@ -108,6 +108,22 @@ export class ScheduleAdministrationService implements OnInit, Resolve<Observable
 
   ngOnInit() {}
 
+  updateSportType(updatedSportType: SportType) {
+    const sportTypes = this._sportTypesSubject.getValue();
+    const existingSportType = sportTypes.find(sT => sT.id === updatedSportType.id);
+    // ~indexToReplace is terse version of if(indexToReplace > -1)
+    if (~existingSportType) {
+      //TODO sport incorrect cloning logic fix
+      const indexToReplace = sportTypes.indexOf(existingSportType);
+      sportTypes[indexToReplace] = updatedSportType;
+      const clone = cloneDeep(existingSportType);
+      sportTypes.splice(indexToReplace, 1, clone);
+      this._sportTypesSubject.next(sportTypes);
+    } else {
+      console.warn('SportType to upate NOT FOUND');
+    }
+  }
+
   addSport(newSport: SportType) {
     newSport.id = '1232';
     for (let index = 0; index < newSport.leagues.length; index++) {
@@ -115,7 +131,7 @@ export class ScheduleAdministrationService implements OnInit, Resolve<Observable
       league.id = `${index + 6}`;
     }
     const sportTypes = this._sportTypesSubject.getValue();
-    // only add league to the given sportType
+    // TODO only add league to the given sportType
     const existingSportType = sportTypes.find(s => s.name);
     if (~existingSportType) {
       const index = sportTypes.indexOf(existingSportType);

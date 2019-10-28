@@ -12,15 +12,14 @@ import { ScheduleAdministrationService } from 'src/app/core/services/schedule/sc
 })
 export class UnassignedComponent implements OnInit {
   @Input('teams') unassignedTeams: Team[];
-  leagues: League[] = []
+  leagues: League[] = [];
   sports: SportType[];
 
-  constructor(private leagueAdminService: LeagueAdministrationService, private scheduleAdminService: ScheduleAdministrationService) { }
+  constructor(private leagueAdminService: LeagueAdministrationService, private scheduleAdminService: ScheduleAdministrationService) {}
 
   ngOnInit() {
-    this.sports = this.leagueAdminService.sportTypes;
-    this.leagues = this.leagueAdminService.leagues;
-    console.log("unassigned teams");
+    // this.sports = this.leagueAdminService.sportTypes;
+    // this.leagues = this.leagueAdminService.leagues;
+    // console.log("unassigned teams");
   }
-
 }

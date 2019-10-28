@@ -20,7 +20,11 @@ export class LeagueAdministrationComponent implements OnInit {
 
   editForm: FormGroup;
 
-  constructor(private leagueAdminService: LeagueAdministrationService, private fb: FormBuilder) {}
+  constructor(
+    private leagueAdminService: LeagueAdministrationService,
+    private fb: FormBuilder,
+    private scheduleAdminService: ScheduleAdministrationService
+  ) {}
 
   ngOnInit() {
     this.initEditForm();
@@ -61,7 +65,7 @@ export class LeagueAdministrationComponent implements OnInit {
       const league = sportTypeToUpdate.leagues[index];
       league.name = updated.find(control => control.id === league.id).name;
     }
-    this.leagueAdminService.updateSportType(sportTypeToUpdate);
+    this.scheduleAdminService.updateSportType(sportTypeToUpdate);
   }
 
   onDeletedLeagues(leagueIDsToDelete: string[]) {
@@ -70,6 +74,6 @@ export class LeagueAdministrationComponent implements OnInit {
       const deleteID = leagueIDsToDelete[index];
       sportTypeWithRemovedLeagues.leagues = sportTypeWithRemovedLeagues.leagues.filter(l => l.id !== deleteID);
     }
-    this.leagueAdminService.updateSportType(sportTypeWithRemovedLeagues);
+    this.scheduleAdminService.updateSportType(sportTypeWithRemovedLeagues);
   }
 }

@@ -32,12 +32,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 
   @ViewChild('matGroup', { static: false }) matTabGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private scheduleAdminService: ScheduleAdministrationService,
-    private leagueAdminService: LeagueAdministrationService
-  ) {}
+  constructor(private fb: FormBuilder, private scheduleAdminService: ScheduleAdministrationService) {}
 
   ngOnInit() {
     this.initForms();
@@ -136,13 +131,11 @@ export class ScheduleAdministrationComponent implements OnInit {
   }
 
   onPlayOffsSchedule() {
-    //TODO filter list of leagues to selected ones
     this.tabTitle = 'Playoffs';
     this.nextTab = 1;
   }
 
   onModifySchedule() {
-    //TODO filter list of leagues to selected ones
     this.tabTitle = 'Modify';
     this.nextTab = 1;
   }
