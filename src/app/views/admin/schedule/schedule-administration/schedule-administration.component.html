@@ -3,9 +3,13 @@
     <mat-tab label="League">
       <app-add-leagues [newSportLeagueForm]="newSportLeagueForm" (onNewSportLeague)="onNewSportLeague($event)"></app-add-leagues>
       <!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
-      <ng-container *ngIf="sports$ | async as sports">
-        <ng-container *ngFor="let sport of sports">
-          <app-league-administration [sportType]="sport"></app-league-administration>
+      <ng-container *ngIf="sportTypes$ | async as sports">
+        <ng-container *ngFor="let sport of sports.sportTypes">
+          <app-league-administration
+            (deletedSport)="onDeleteSport($event)"
+            (updatedSport)="onUpdateSport($event)"
+            [sportType]="sport"
+          ></app-league-administration>
         </ng-container>
         <div>
           <button mat-raised-button (click)="onNewSchedule()" [disabled]="checkSelection()">
@@ -24,7 +28,7 @@
     <mat-tab [label]="tabTitle" [disabled]="checkSelection()">
       <ng-template matTabContent>
         <app-add-teams [sportType]="sports"></app-add-teams>
-        <app-new-schedule></app-new-schedule>
+        <ng-container *ngComponentOutlet="adminComponent"></ng-container>
       </ng-template>
     </mat-tab>
 

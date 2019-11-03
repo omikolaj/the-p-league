@@ -2,7 +2,7 @@
   <mat-selection-list formArrayName="leagues" (selectionChange)="onSelectionChange($event)" [disabled]="disableListSelection">
     <mat-list-option *ngFor="let league of leagues; let i = index" [value]="league.id" [selected]="league.selected">
       <ng-container [formGroupName]="i">
-        <mat-form-field [appearance]="league?.readonly ? 'none' : 'legacy'">
+        <mat-form-field [appearance]="league?.readonly ? 'none' : 'legacy'" appAllowSpaces>
           <input formControlName="name" matInput [value]="league?.name" [readonly]="league?.readonly" />
         </mat-form-field>
       </ng-container>

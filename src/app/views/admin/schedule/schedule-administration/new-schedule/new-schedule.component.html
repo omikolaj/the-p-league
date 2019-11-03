@@ -6,12 +6,7 @@
   <mat-divider></mat-divider>
 </ng-container>
 
-<ng-container *ngIf="unassignedTeams.length > 0; then unassigned">
-</ng-container>
-
-<div>
-  <button mat-stroked-button color="accent">Generate</button>
-</div>
+<ng-container *ngIf="unassignedTeams.length > 0; then unassigned"> </ng-container>
 
 <ng-template #unassigned>
   <app-unassigned [teams]="unassignedTeams"></app-unassigned>

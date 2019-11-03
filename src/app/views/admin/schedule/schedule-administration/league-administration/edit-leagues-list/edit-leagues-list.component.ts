@@ -10,23 +10,22 @@ import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angula
   styleUrls: ['./edit-leagues-list.component.scss']
 })
 export class EditLeaguesListComponent implements OnInit {
+  @Output() selectedLeagues = new EventEmitter<EditLeagueControl[]>();
+  @Output() updatedLeagues = new EventEmitter<FormGroup>();
+  @Output() deletedLeagues = new EventEmitter<string[]>();
+  @ViewChild(MatSelectionList, { static: false }) leaguesList: MatSelectionList;
+
   private _editLeaguesForm: FormGroup;
   @Input()
   set editLeaguesForm(value) {
     if (!this._editLeaguesForm) {
-      console.log('settings new form');
       this._editLeaguesForm = value;
     }
   }
   get editLeaguesForm() {
     return this._editLeaguesForm;
   }
-  @Output() selectedLeagues = new EventEmitter<EditLeagueControl[]>();
-  @Output() updatedLeagues = new EventEmitter<FormGroup>();
-  @Output() deletedLeagues = new EventEmitter<string[]>();
-  @ViewChild(MatSelectionList, { static: false }) leaguesList: MatSelectionList;
 
-  disableListSelection: boolean = false;
   get disableEdit(): boolean {
     return this.numberOfSelectedLeagues > 0 ? false : true;
   }
@@ -34,13 +33,15 @@ export class EditLeaguesListComponent implements OnInit {
     const disable = this.numberOfSelectedLeagues > 0 ? false : true;
     return disable || this.disableListSelection;
   }
+
   private numberOfSelectedLeagues: number = 0;
+  disableListSelection: boolean = false;
   leagues: EditLeagueControl[] = [];
 
   constructor() {}
 
   ngOnInit() {
-    this.leagues = this.editLeaguesForm.value.leagues as Array<EditLeagueControl>;
+    this.leagues = [...(this.editLeaguesForm.value.leagues as Array<EditLeagueControl>)];
   }
   ngOnDestroy() {
     console.log('destroying edit leagues');
@@ -57,7 +58,6 @@ export class EditLeaguesListComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('Inside Edit-Leagues-List onSubmit');
     this.disableListSelection ? this.onSave() : this.onEdit();
   }
 
@@ -85,15 +85,18 @@ export class EditLeaguesListComponent implements OnInit {
   editLeagues(leagueIDs: string[]) {
     // store selected options
     const leagues = this.editLeaguesForm.get('leagues') as FormArray;
-    for (let index = 0; index < leagueIDs.length; index++) {
+
+    for (let index = 0; index < leagues.value.length; index++) {
       const league = leagues.at(index);
-      if (leagueIDs.some(id => league.value.id === id)) {
+      if (leagueIDs.some(id => id === (league.value as EditLeagueControl).id)) {
+        const league = leagues.at(index);
         league.patchValue({
           readonly: !league.value.readonly,
           selected: true
         });
       }
     }
+    this.editLeaguesForm.updateValueAndValidity();
     this.leagues = [...leagues.value];
   }
 

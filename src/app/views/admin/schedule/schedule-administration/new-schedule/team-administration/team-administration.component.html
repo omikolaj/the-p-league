@@ -1,4 +1,5 @@
 <app-edit-teams-list
-  [league]="league"
-  [teams]="league.teams"
+  (updatedTeams)="onUpdatedTeams($event)"
+  (selectedTeamsChange)="onSelectedTeamsChange($event)"
+  [teamsForm]="teamsForm"
 ></app-edit-teams-list>

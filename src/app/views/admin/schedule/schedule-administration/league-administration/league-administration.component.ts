@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Sport } from 'src/app/views/schedule/models/sport.enum';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
@@ -17,8 +17,12 @@ import { EditLeagueControl } from '../../models/edit-league-control.model';
 })
 export class LeagueAdministrationComponent implements OnInit {
   @Input() sportType: SportType;
+  @Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
+  @Output() updatedSport: EventEmitter<SportType> = new EventEmitter<SportType>();
 
   editForm: FormGroup;
+  sportTypeForm: FormGroup;
+  readonlySportName: boolean = true;
 
   constructor(
     private leagueAdminService: LeagueAdministrationService,
@@ -26,12 +30,23 @@ export class LeagueAdministrationComponent implements OnInit {
     private scheduleAdminService: ScheduleAdministrationService
   ) {}
 
+  //#region ng LifeCycle hooks
+
   ngOnInit() {
-    this.initEditForm();
+    this.initForms();
   }
 
   ngOnDestroy() {
     console.log('destroying league admin');
+  }
+
+  //#endregion
+
+  //#region Forms
+
+  initForms() {
+    this.initEditForm();
+    this.initSportTypeForm();
   }
 
   initEditForm() {
@@ -46,9 +61,36 @@ export class LeagueAdministrationComponent implements OnInit {
       })
     );
     this.editForm = this.fb.group({
-      leagues: this.fb.array([...leagueNameControls])
+      leagues: this.fb.array(leagueNameControls)
     });
   }
+
+  initSportTypeForm() {
+    this.sportTypeForm = this.fb.group({
+      name: this.fb.control(this.sportType.name)
+    });
+  }
+
+  onSubmit() {
+    this.readonlySportName ? this.onEditSportType() : this.onSaveSportType();
+  }
+
+  onEditSportType() {
+    this.readonlySportName = !this.readonlySportName;
+  }
+
+  onSaveSportType() {
+    this.readonlySportName = !this.readonlySportName;
+    // update sport type name
+    this.sportType.name = this.sportTypeForm.get('name').value;
+    this.updatedSport.emit(this.sportType);
+  }
+
+  onDeleteSportType() {
+    this.deletedSport.emit(this.sportType.id);
+  }
+
+  //#endregion
 
   onLeagueSelectionChange(selectedLeagueControls: EditLeagueControl[]) {
     const sportType: SportType = cloneDeep(this.sportType);
@@ -63,7 +105,11 @@ export class LeagueAdministrationComponent implements OnInit {
 
     for (let index = 0; index < updated.length; index++) {
       const league = sportTypeToUpdate.leagues[index];
-      league.name = updated.find(control => control.id === league.id).name;
+      const updatedLeague = updated.find(control => control.id === league.id);
+      // map properties from user interface to existing objects to reflect changes
+      league.name = updatedLeague.name;
+      league.selected = updatedLeague.selected;
+      league.readonly = updatedLeague.readonly;
     }
     this.scheduleAdminService.updateSportType(sportTypeToUpdate);
   }

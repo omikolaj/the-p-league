@@ -6,6 +6,7 @@ import { ScheduleAdministrationComponent } from './schedule/schedule-administrat
 import { AdminAuthGuard } from './guards/admin-auth.guard';
 import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
 import { ScheduleAdministrationService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration.service';
+import { ScheduleAdministrationResolver } from 'src/app/core/services/resolvers/schedule/schedule-administration-resolver.resolver';
 
 const routes: Routes = [
   {
@@ -25,7 +26,7 @@ const routes: Routes = [
         path: 'schedule',
         component: ScheduleAdministrationComponent,
         canActivate: [AdminAuthGuard],
-        resolve: [ScheduleAdministrationService]
+        resolve: [ScheduleAdministrationResolver]
       },
       {
         path: '',

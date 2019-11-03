@@ -1,18 +1,18 @@
+import { Type } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
-import { Sport } from 'src/app/views/schedule/models/sport.enum';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { MatTabGroup, MatTabChangeEvent } from '@angular/material';
-import { AdminAdd } from '../../models/admin-add-type.model';
-import { ActivatedRoute } from '@angular/router';
+import { MatTabChangeEvent } from '@angular/material';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { ScheduleAdministrationService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration.service';
 import { TabTitles } from '../models/tab-titles.model';
-import { LeagueAdministrationService } from 'src/app/core/services/schedule/schedule-administration/league-administration/league-administration.service';
-import { calendarFormat } from 'moment';
-import { startWith, map, flatMap, switchMap, tap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { ClearFormType } from '../models/clear-form-type.model';
+import { NewScheduleComponent } from './new-schedule/new-schedule.component';
+import { ModifyScheduleComponent } from './modify/modify-schedule.component';
+import { SportTypeState } from 'src/app/store/state/sport-type.state';
+import { Select } from '@ngxs/store';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -28,11 +28,18 @@ export class ScheduleAdministrationComponent implements OnInit {
   newTeamForm: FormGroup;
   sports$: Observable<SportType[]> = this.scheduleAdminService.sportTypes$;
   sportTypes: SportType[];
+
+  adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
+
+  @Select(SportTypeState) sportTypes$: Observable<SportType[]>;
+
   private _unsubscribe$ = new Subject<void>();
 
   @ViewChild('matGroup', { static: false }) matTabGroup;
 
   constructor(private fb: FormBuilder, private scheduleAdminService: ScheduleAdministrationService) {}
+
+  //#region LifeCycle Hooks
 
   ngOnInit() {
     this.initForms();
@@ -43,14 +50,18 @@ export class ScheduleAdministrationComponent implements OnInit {
     this._unsubscribe$.complete();
   }
 
+  //#endregion
+
   checkSelection(): boolean {
     return this.scheduleAdminService.checkLeagueSelection();
   }
 
+  //#region Forms
+
   initForms() {
     this.sports$.pipe(takeUntil(this._unsubscribe$)).subscribe(sportTypes => {
       this.initNewSportAndLeagueForm(sportTypes);
-      this.initNewTeamsForm(sportTypes);
+      this.initNewTeamsForm();
     });
   }
 
@@ -67,20 +78,7 @@ export class ScheduleAdministrationComponent implements OnInit {
     });
   }
 
-  initNewTeamsForm(sportTypes) {}
-
-  onNewSportLeague(newSportLeague: FormGroup) {
-    this.clearForm('league');
-    const newSportType: SportType = {
-      name: newSportLeague.get('sportType').value,
-      leagues: [
-        {
-          name: newSportLeague.get('leagueName').value
-        }
-      ]
-    };
-    this.scheduleAdminService.addSport(newSportType);
-  }
+  initNewTeamsForm() {}
 
   clearForm(formType: ClearFormType) {
     switch (formType) {
@@ -107,16 +105,32 @@ export class ScheduleAdministrationComponent implements OnInit {
     }
   }
 
-  checkExistingSchedule(): boolean {
-    const isDisabled = this.checkSelection();
-    if (!isDisabled) {
-      return this.scheduleAdminService.checkExistingSchedule();
-    }
-    return isDisabled;
+  //#endregion
+
+  //#region Event Handlers
+
+  onUpdateSport(sportType: SportType) {
+    this.scheduleAdminService.updateSportType(sportType);
   }
 
-  reset(event: MatTabChangeEvent) {
-    this.nextTab = event.index;
+  onDeleteSport(id: string) {
+    this.scheduleAdminService.deleteSportType(id);
+  }
+
+  onNewSportLeague(newSportLeague: FormGroup) {
+    this.clearForm('league');
+    // leagues array has to be initialized
+    const newSportType: SportType = {
+      name: newSportLeague.get('sportType').value,
+      leagues: []
+    };
+    // check if we are adding a league if so add id temporary
+    const newLeagueName = newSportLeague.get('leagueName').value;
+    if (newLeagueName) {
+      const newLeagueID = (Math.floor(Math.random() * 100) + 1).toString();
+      newSportType.leagues.push({ name: newLeagueName, id: newLeagueID });
+    }
+    this.scheduleAdminService.addSport(newSportType);
   }
 
   onItemAdded(event) {
@@ -127,7 +141,7 @@ export class ScheduleAdministrationComponent implements OnInit {
     // Update tab to 'New Schedule' and navigate to it
     this.tabTitle = 'New Schedule';
     this.nextTab = 1;
-    console.log(this.matTabGroup);
+    this.adminComponent = NewScheduleComponent;
   }
 
   onPlayOffsSchedule() {
@@ -138,5 +152,20 @@ export class ScheduleAdministrationComponent implements OnInit {
   onModifySchedule() {
     this.tabTitle = 'Modify';
     this.nextTab = 1;
+    this.adminComponent = ModifyScheduleComponent;
+  }
+
+  //#endregion
+
+  checkExistingSchedule(): boolean {
+    const isDisabled = this.checkSelection();
+    if (!isDisabled) {
+      return this.scheduleAdminService.checkExistingSchedule();
+    }
+    return isDisabled;
+  }
+
+  reset(event: MatTabChangeEvent) {
+    this.nextTab = event.index;
   }
 }

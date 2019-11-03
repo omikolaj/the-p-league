@@ -12,6 +12,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RefreshAccessTokenInterceptor } from './core/interceptors/refresh-access-token/refresh-access-token.service';
 import { ApiRequestPrefixInterceptor } from './core/interceptors/api-request-prefix/api-request-prefix.service';
 import { environment } from 'src/environments/environment';
+import { NgxsModule } from '@ngxs/store';
+import { SportTypeState } from './store/state/sport-type.state';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,15 +24,24 @@ import { environment } from 'src/environments/environment';
     HttpClientModule,
 
     // core & shared
-    NavigationModule,
     SharedModule,
+    CoreModule,
 
     // features
-    CoreModule,
+    NavigationModule,
 
     // app
     AppRoutingModule,
-    DeviceDetectorModule.forRoot()
+    DeviceDetectorModule.forRoot(),
+
+    //NGXS Store
+    NgxsModule.forRoot([], {
+      developmentMode: true,
+      selectorOptions: {
+        suppressErrors: false,
+        injectContainerState: false
+      }
+    })
   ],
   providers: [
     {
@@ -43,8 +54,8 @@ import { environment } from 'src/environments/environment';
       useClass: RefreshAccessTokenInterceptor,
       multi: true
     },
-    { provide: "BASE_API_URL", useValue: environment.backend.baseURL }
+    { provide: 'BASE_API_URL', useValue: environment.backend.baseURL }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -3,6 +3,7 @@ import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team, TEAMS } from 'src/app/views/schedule/models/interfaces/team.model';
 import TeamSessionSchedule from 'src/app/views/schedule/models/classes/team-session-schedule.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,151 +11,8 @@ import TeamSessionSchedule from 'src/app/views/schedule/models/classes/team-sess
 export class LeagueAdministrationService {
   selectedLeaguesOfSportType: SportType[] = [];
   teams: Team[] = TEAMS;
-  // private _sportTypes: SportType[] = [];
-
-  // get sportTypes(): SportType[] {
-  //   // currently gets set in schedule-admin.resolver
-  //   return this._sportTypes;
-  // }
-
-  // set sportTypes(value: SportType[]) {
-  //   if (this._sportTypes.length < 1) {
-  //     this._sportTypes = [
-  //       {
-  //         name: 'Basketball',
-  //         leagues: [
-  //           {
-  //             name: 'Monday',
-  //             id: '1',
-  //             type: { id: '4', name: 'Basketball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Friday',
-  //             id: '2',
-  //             type: { id: '4', name: 'Basketball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Sunday',
-  //             id: '3',
-  //             type: { id: '4', name: 'Basketball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         name: 'Volleyball',
-  //         leagues: [
-  //           {
-  //             name: 'Monday',
-  //             id: '6',
-  //             type: { id: '4', name: 'Volleyball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Friday',
-  //             id: '5',
-  //             type: { id: '4', name: 'Volleyball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Saturday',
-  //             id: '4',
-  //             type: { id: '4', name: 'Volleyball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         name: 'Soccer',
-  //         leagues: [
-  //           {
-  //             name: 'Saturday',
-  //             id: '4',
-  //             type: { id: '4', name: 'Soccer' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           }
-  //         ]
-  //       }
-  //     ];
-  //     [
-  //       {
-  //         name: 'Basketball',
-  //         leagues: [
-  //           {
-  //             name: 'Monday',
-  //             id: '1',
-  //             type: { id: '4', name: 'Basketball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Friday',
-  //             id: '2',
-  //             type: { id: '4', name: 'Basketball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Sunday',
-  //             id: '3',
-  //             type: { id: '4', name: 'Basketball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         name: 'Volleyball',
-  //         leagues: [
-  //           {
-  //             name: 'Monday',
-  //             id: '6',
-  //             type: { id: '4', name: 'Volleyball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Friday',
-  //             id: '5',
-  //             type: { id: '4', name: 'Volleyball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           },
-  //           {
-  //             name: 'Saturday',
-  //             id: '4',
-  //             type: { id: '4', name: 'Volleyball' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         name: 'Soccer',
-  //         leagues: [
-  //           {
-  //             name: 'Saturday',
-  //             id: '4',
-  //             type: { id: '4', name: 'Soccer' },
-  //             teams: [...this.teams],
-  //             readonly: true
-  //           }
-  //         ]
-  //       }
-  //     ];
-  //   } else {
-  //     this._sportTypes = value;
-  //   }
-  // }
+  private _allSelectedLeaguesSubject: BehaviorSubject<League[]> = new BehaviorSubject<League[]>([]);
+  allSelectedLeagues$ = this._allSelectedLeaguesSubject.asObservable();
 
   get allSelectedLeagues(): League[] {
     let chosenLeagues: League[] = [];
@@ -165,6 +23,7 @@ export class LeagueAdministrationService {
         chosenLeagues.push(league);
       }
     }
+    this._allSelectedLeaguesSubject.next(chosenLeagues);
     return chosenLeagues;
   }
 
@@ -178,13 +37,14 @@ export class LeagueAdministrationService {
   }
 
   get leagues(): League[] {
-    let allLeagues: League[] = [];
-    this.sportTypes.map(s => {
-      if (s.leagues.length > 0) {
-        allLeagues = [...allLeagues, ...s.leagues];
-      }
-    });
-    return allLeagues;
+    // let allLeagues: League[] = [];
+    // this.sportTypes.map(s => {
+    //   if (s.leagues.length > 0) {
+    //     allLeagues = [...allLeagues, ...s.leagues];
+    //   }
+    // });
+    // return allLeagues;
+    return [];
   }
 
   constructor() {}
@@ -205,16 +65,20 @@ export class LeagueAdministrationService {
     }
   }
 
-  // updateSportType(updatedSportType: SportType) {
-  //   const existingSportType = this.sportTypes.find(sT => sT.id === updatedSportType.id);
-  //   const indexToReplace = this.sportTypes.indexOf(existingSportType);
-  //   // ~indexToReplace is terse version of if(indexToReplace > -1)
-  //   if (~indexToReplace) {
-  //     this.sportTypes[indexToReplace] = updatedSportType;
-  //   } else {
-  //     console.warn('SportType to upate NOT FOUND');
-  //   }
-  // }
+  updateTeams(teams: Team[]) {
+    const allLeagues = this._allSelectedLeaguesSubject.getValue();
+    const leagueToUpdate = allLeagues.find(l => l.id === teams[0].leagueID);
+
+    if (leagueToUpdate) {
+      for (let index = 0; index < teams.length; index++) {
+        const team = teams[index];
+        const existingTeam = leagueToUpdate.teams.find(t => t.id === team.id);
+        existingTeam.name = team.name;
+      }
+    }
+    this._allSelectedLeaguesSubject.next(allLeagues);
+    console.log('updated teams', this.allSelectedLeagues);
+  }
 
   deleteLeagues() {}
 }

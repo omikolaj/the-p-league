@@ -1,9 +1,13 @@
-<mat-card
-  >{{ sportType.name }}
-  <mat-card-actions class="sport-action-buttons">
-    <button mat-raised-button color="accent">Edit</button>
-    <button mat-raised-button color="warn">Delete</button>
-  </mat-card-actions>
+<mat-card>
+  <form [formGroup]="sportTypeForm" (ngSubmit)="onSubmit()" novalidate>
+    <mat-form-field [appearance]="readonlySportName ? 'none' : 'legacy'">
+      <input matInput formControlName="name" type="text" [readonly]="readonlySportName" />
+    </mat-form-field>
+    <mat-card-actions class="sport-action-buttons">
+      <button mat-raised-button color="accent">{{ readonlySportName ? 'Edit' : 'Save' }}</button>
+      <button mat-raised-button color="warn" [disabled]="!readonlySportName" (click)="onDeleteSportType()">Delete</button>
+    </mat-card-actions>
+  </form>
 </mat-card>
 
 <app-edit-leagues-list

@@ -1,3 +1,4 @@
+import { ScheduleAdministrationResolver } from './../../../core/services/resolvers/schedule/schedule-administration-resolver.resolver';
 import { Component, OnInit, Type } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
@@ -13,15 +14,17 @@ import { AdminControl } from '../models/interfaces/admin-control.model';
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
-  adminControls: Array<AdminControl> = new Array<AdminControl>( { component: AdminControlComponent, name: AdminControlType[AdminControlType.Schedule] }, { component: AdminControlComponent, name: AdminControlType[AdminControlType.Gallery] }, { component: AdminControlComponent, name: AdminControlType[AdminControlType.Merchandise] } )
+  adminControls: Array<AdminControl> = new Array<AdminControl>(
+    { component: AdminControlComponent, name: AdminControlType[AdminControlType.Schedule] },
+    { component: AdminControlComponent, name: AdminControlType[AdminControlType.Gallery] },
+    { component: AdminControlComponent, name: AdminControlType[AdminControlType.Merchandise] }
+  );
 
-  constructor(private router: Router, private route: ActivatedRoute ) { }
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  openControl(event: GenericListItem){    
+  openControl(event: GenericListItem) {
     this.router.navigate([event.name.toLocaleLowerCase()], { relativeTo: this.route.parent });
   }
-
 }

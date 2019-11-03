@@ -45,20 +45,9 @@ import {
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faPlayCircle,
-  faRocket,
-  faBasketballBall,
-  faUndo
-} from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faRocket, faBasketballBall, faUndo } from '@fortawesome/free-solid-svg-icons';
 
-import {
-  faGithub,
-  faMediumM,
-  faTwitter,
-  faInstagram,
-  faYoutube
-} from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faMediumM, faTwitter, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { GalleryViewerComponent } from './components/gallery-viewer/gallery-viewer.component';
@@ -70,18 +59,9 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { GenericListComponent } from './components/generic-list/generic-list.component';
 import { ListItemComponentDirective } from './directives/list-item-component.directive';
 import { GenericListItemComponent } from './components/generic-list/generic-list-item/generic-list-item.component';
+import { CdkPortalOutlet, CdkPortal, PortalModule } from '@angular/cdk/portal';
 
-library.add(
-  faGithub,
-  faMediumM,
-  faTwitter,
-  faInstagram,
-  faYoutube,
-  faPlayCircle,
-  faRocket,
-  faBasketballBall,
-  faUndo
-);
+library.add(faGithub, faMediumM, faTwitter, faInstagram, faYoutube, faPlayCircle, faRocket, faBasketballBall, faUndo);
 
 // This is used for controling the Angular ripples effect globally
 // https://material.angular.io/components/ripple/api
@@ -90,10 +70,15 @@ const globalRippleConfig: RippleGlobalOptions = {
 };
 
 @NgModule({
-  providers: [
-    { provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }    
+  providers: [{ provide: MAT_RIPPLE_GLOBAL_OPTIONS, useValue: globalRippleConfig }],
+  declarations: [
+    GalleryViewerComponent,
+    SnackBarComponent,
+    CarouselComponent,
+    GenericListComponent,
+    ListItemComponentDirective,
+    GenericListItemComponent
   ],
-  declarations: [GalleryViewerComponent, SnackBarComponent, CarouselComponent, GenericListComponent, ListItemComponentDirective, GenericListItemComponent],
   imports: [
     MatAutocompleteModule,
     MatBadgeModule,
@@ -129,7 +114,7 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule,    
+    MatTreeModule,
 
     FontAwesomeModule,
 
@@ -138,7 +123,8 @@ const globalRippleConfig: RippleGlobalOptions = {
     NgxGalleryModule,
     ReactiveFormsModule,
     CommonModule,
-    CarouselModule
+    CarouselModule,
+    PortalModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -175,7 +161,7 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule,    
+    MatTreeModule,
 
     FontAwesomeModule,
 
@@ -186,7 +172,8 @@ const globalRippleConfig: RippleGlobalOptions = {
     CarouselModule,
     CarouselComponent,
     GenericListComponent,
-    ListItemComponentDirective    
+    ListItemComponentDirective,
+    PortalModule
   ],
   entryComponents: [SnackBarComponent]
 })
