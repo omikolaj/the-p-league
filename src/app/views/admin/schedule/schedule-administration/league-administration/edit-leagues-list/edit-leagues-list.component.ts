@@ -1,8 +1,10 @@
+import { log } from 'util';
 import { EditLeagueControl } from './../../../models/edit-league-control.model';
 import { FormGroup, FormArray } from '@angular/forms';
 import { Component, OnInit, Input, Output, ViewChild, QueryList, EventEmitter, ViewChildren } from '@angular/core';
 
 import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angular/material';
+import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 
 @Component({
   selector: 'app-edit-leagues-list',
@@ -10,7 +12,7 @@ import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angula
   styleUrls: ['./edit-leagues-list.component.scss']
 })
 export class EditLeaguesListComponent implements OnInit {
-  @Output() selectedLeagues = new EventEmitter<EditLeagueControl[]>();
+  @Output() selectedLeagues = new EventEmitter<MatSelectionListChange>();
   @Output() updatedLeagues = new EventEmitter<FormGroup>();
   @Output() deletedLeagues = new EventEmitter<string[]>();
   @ViewChild(MatSelectionList, { static: false }) leaguesList: MatSelectionList;
@@ -49,12 +51,12 @@ export class EditLeaguesListComponent implements OnInit {
 
   onSelectionChange(event: MatSelectionListChange) {
     this.numberOfSelectedLeagues = event.source.selectedOptions.selected.length;
-    const selectedLeagueControls: EditLeagueControl[] = [];
-    for (let index = 0; index < this.numberOfSelectedLeagues; index++) {
-      const id = event.source.selectedOptions.selected[index].value;
-      selectedLeagueControls.push(this.leagues.find(l => l.id === id));
-    }
-    this.selectedLeagues.emit(selectedLeagueControls);
+    // const selectedLeagueControls: League[] = [];
+    // for (let index = 0; index < this.numberOfSelectedLeagues; index++) {
+    //   const id = event.source.selectedOptions.selected[index].value;
+    //   selectedLeagueControls.push(this.leagues.find(l => l.id === id));
+    // }
+    this.selectedLeagues.emit(event);
   }
 
   onSubmit() {

@@ -1,3 +1,4 @@
+import { SportTypeState } from './../../../../store/state/sport-type.state';
 import { Type } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -5,14 +6,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { MatTabChangeEvent } from '@angular/material';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { ScheduleAdministrationService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration.service';
+import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { TabTitles } from '../models/tab-titles.model';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { ClearFormType } from '../models/clear-form-type.model';
 import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 import { ModifyScheduleComponent } from './modify/modify-schedule.component';
-import { SportTypeState } from 'src/app/store/state/sport-type.state';
-import { Select } from '@ngxs/store';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -20,24 +19,15 @@ import { Select } from '@ngxs/store';
   styleUrls: ['./schedule-administration.component.scss']
 })
 export class ScheduleAdministrationComponent implements OnInit {
-  leagues: League[] = [];
-  //sports: SportType[] = [];
+  sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
+  @ViewChild('matGroup', { static: false }) matTabGroup;
+  private _unsubscribe$ = new Subject<void>();
   tabTitle: TabTitles = 'Schedule';
   nextTab: 0 | 1 | 2 | number;
   newSportLeagueForm: FormGroup;
-  newTeamForm: FormGroup;
-  sports$: Observable<SportType[]> = this.scheduleAdminService.sportTypes$;
-  sportTypes: SportType[];
-
   adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 
-  @Select(SportTypeState) sportTypes$: Observable<SportType[]>;
-
-  private _unsubscribe$ = new Subject<void>();
-
-  @ViewChild('matGroup', { static: false }) matTabGroup;
-
-  constructor(private fb: FormBuilder, private scheduleAdminService: ScheduleAdministrationService) {}
+  constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
 
   //#region LifeCycle Hooks
 
@@ -53,28 +43,20 @@ export class ScheduleAdministrationComponent implements OnInit {
   //#endregion
 
   checkSelection(): boolean {
-    return this.scheduleAdminService.checkLeagueSelection();
+    return this.scheduleAdminFacade.checkLeagueSelection();
   }
 
   //#region Forms
 
   initForms() {
-    this.sports$.pipe(takeUntil(this._unsubscribe$)).subscribe(sportTypes => {
-      this.initNewSportAndLeagueForm(sportTypes);
-      this.initNewTeamsForm();
-    });
+    this.initNewSportAndLeagueForm();
+    this.initNewTeamsForm();
   }
 
-  initNewSportAndLeagueForm(sportTypes) {
-    const sportNameControls = sportTypes.map(s =>
-      this.fb.group({
-        name: this.fb.control(s.name)
-      })
-    );
+  initNewSportAndLeagueForm() {
     this.newSportLeagueForm = this.fb.group({
       sportType: this.fb.control(null, Validators.required),
-      leagueName: this.fb.control(null),
-      sportNames: this.fb.array([...sportNameControls])
+      leagueName: this.fb.control(null)
     });
   }
 
@@ -84,17 +66,6 @@ export class ScheduleAdministrationComponent implements OnInit {
     switch (formType) {
       case 'league':
         this.newSportLeagueForm.get('sportType').reset();
-        let sportNames = [];
-        this.sports$.pipe(
-          switchMap(s =>
-            s.map(sportType => {
-              return {
-                name: sportType.name
-              };
-            })
-          )
-        );
-        this.newSportLeagueForm.get('sportNames').patchValue(sportNames);
         this.newSportLeagueForm.get('leagueName').reset();
         break;
       case 'team':
@@ -110,27 +81,46 @@ export class ScheduleAdministrationComponent implements OnInit {
   //#region Event Handlers
 
   onUpdateSport(sportType: SportType) {
-    this.scheduleAdminService.updateSportType(sportType);
+    this.scheduleAdminFacade.updateSportType(sportType);
   }
 
   onDeleteSport(id: string) {
-    this.scheduleAdminService.deleteSportType(id);
+    // check if sport contains leagues if so do not delete
+    const sportTypeToDelete = this.scheduleAdminFacade.store.selectSnapshot<SportType>(SportTypeState.getSportTypeByID(id));
+    if (sportTypeToDelete.leagues.length > 0) {
+      console.warn('Cannot delete sport type that has leagues assigned to it');
+      return;
+    }
+    this.scheduleAdminFacade.deleteSportType(id);
   }
 
   onNewSportLeague(newSportLeague: FormGroup) {
     this.clearForm('league');
-    // leagues array has to be initialized
+
     const newSportType: SportType = {
       name: newSportLeague.get('sportType').value,
       leagues: []
     };
-    // check if we are adding a league if so add id temporary
-    const newLeagueName = newSportLeague.get('leagueName').value;
-    if (newLeagueName) {
-      const newLeagueID = (Math.floor(Math.random() * 100) + 1).toString();
-      newSportType.leagues.push({ name: newLeagueName, id: newLeagueID });
+    let newLeague: League = {
+      name: newSportLeague.get('leagueName').value
+    };
+
+    if (newLeague.name) {
+      newSportType.leagues.push(newLeague);
     }
-    this.scheduleAdminService.addSport(newSportType);
+
+    const sportTypes: SportType[] = this.scheduleAdminFacade.store.selectSnapshot(state => state.types.sports);
+    // check if were adding to existing sport type
+    const existingSport = sportTypes.find(s => s.name === newSportType.name);
+
+    // means were adding new league to existing sport
+    if (existingSport) {
+      newLeague.sportTypeID = existingSport.id;
+      //existingSport.leagues = [...existingSport.leagues, newLeague];
+      this.scheduleAdminFacade.addLeague(newLeague);
+    } else {
+      this.scheduleAdminFacade.addSportType(newSportType);
+    }
   }
 
   onItemAdded(event) {
@@ -160,7 +150,7 @@ export class ScheduleAdministrationComponent implements OnInit {
   checkExistingSchedule(): boolean {
     const isDisabled = this.checkSelection();
     if (!isDisabled) {
-      return this.scheduleAdminService.checkExistingSchedule();
+      return this.scheduleAdminFacade.checkExistingSchedule();
     }
     return isDisabled;
   }

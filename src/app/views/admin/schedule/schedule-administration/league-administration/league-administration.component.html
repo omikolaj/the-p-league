@@ -5,7 +5,7 @@
     </mat-form-field>
     <mat-card-actions class="sport-action-buttons">
       <button mat-raised-button color="accent">{{ readonlySportName ? 'Edit' : 'Save' }}</button>
-      <button mat-raised-button color="warn" [disabled]="!readonlySportName" (click)="onDeleteSportType()">Delete</button>
+      <button mat-raised-button color="warn" [disabled]="!readonlySportName" type="button" (click)="onDeleteSportType()">Delete</button>
     </mat-card-actions>
   </form>
 </mat-card>

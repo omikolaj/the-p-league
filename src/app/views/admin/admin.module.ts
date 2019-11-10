@@ -23,6 +23,7 @@ import { ModifyScheduleComponent } from './schedule/schedule-administration/modi
 import { ModifyMatchUpComponent } from './schedule/schedule-administration/modify/modify-match-up/modify-match-up.component';
 import { NgxsModule } from '@ngxs/store';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
+import { LeagueState } from 'src/app/store/state/league.state';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,7 @@ import { SportTypeState } from 'src/app/store/state/sport-type.state';
     ModifyMatchUpComponent
   ],
   entryComponents: [AdminControlComponent, NewScheduleComponent, ModifyScheduleComponent],
-  imports: [CommonModule, ReactiveFormsModule, SharedModule, CoreModule, AdminRoutingModule, NgxsModule.forFeature([SportTypeState])],
+  imports: [CommonModule, ReactiveFormsModule, SharedModule, CoreModule, AdminRoutingModule, NgxsModule.forFeature([SportTypeState, LeagueState])],
   providers: [AdminAuthGuard]
 })
 export class AdminModule {}

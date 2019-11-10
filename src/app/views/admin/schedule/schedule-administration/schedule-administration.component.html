@@ -1,10 +1,15 @@
 <div class="wrapper">
   <mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
     <mat-tab label="League">
-      <app-add-leagues [newSportLeagueForm]="newSportLeagueForm" (onNewSportLeague)="onNewSportLeague($event)"></app-add-leagues>
-      <!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
-      <ng-container *ngIf="sportTypes$ | async as sports">
-        <ng-container *ngFor="let sport of sports.sportTypes">
+      <ng-container *ngIf="sportTypes$ | async as types">
+        <app-add-leagues
+          [sportTypes]="types.sports"
+          [newSportLeagueForm]="newSportLeagueForm"
+          (onNewSportLeague)="onNewSportLeague($event)"
+        ></app-add-leagues>
+        <!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
+
+        <ng-container *ngFor="let sport of types.sports">
           <app-league-administration
             (deletedSport)="onDeleteSport($event)"
             (updatedSport)="onUpdateSport($event)"

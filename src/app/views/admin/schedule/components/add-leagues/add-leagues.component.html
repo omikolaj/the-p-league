@@ -17,7 +17,7 @@
         <mat-form-field>
           <input formControlName="sportType" type="text" placeholder="Sport" aria-label="sports" matInput [matAutocomplete]="auto" />
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let sport of newSportLeagueForm.get('sportNames').value" [value]="sport.name">
+            <mat-option *ngFor="let sport of sportTypes" [value]="sport?.name">
               {{ sport.name }}
             </mat-option>
           </mat-autocomplete>

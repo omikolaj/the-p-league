@@ -1,14 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { Sport } from 'src/app/views/schedule/models/sport.enum';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { AdminAdd } from '../../../models/admin-add-type.model';
-import { ScheduleAdministrationService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration.service';
-import { LeagueAdministrationService } from 'src/app/core/services/schedule/schedule-administration/league-administration/league-administration.service';
-import { SelectedLeagues } from 'src/app/core/services/schedule/interfaces/selected-leagues.model';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
+import { LeagueService } from 'src/app/core/services/schedule/schedule-administration/league/league.service';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { cloneDeep } from 'lodash';
 import { EditLeagueControl } from '../../models/edit-league-control.model';
+import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { MatSelectionListChange } from '@angular/material';
 
 @Component({
   selector: 'app-league-administration',
@@ -24,11 +22,7 @@ export class LeagueAdministrationComponent implements OnInit {
   sportTypeForm: FormGroup;
   readonlySportName: boolean = true;
 
-  constructor(
-    private leagueAdminService: LeagueAdministrationService,
-    private fb: FormBuilder,
-    private scheduleAdminService: ScheduleAdministrationService
-  ) {}
+  constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
 
   //#region ng LifeCycle hooks
 
@@ -43,7 +37,6 @@ export class LeagueAdministrationComponent implements OnInit {
   //#endregion
 
   //#region Forms
-
   initForms() {
     this.initEditForm();
     this.initSportTypeForm();
@@ -57,7 +50,8 @@ export class LeagueAdministrationComponent implements OnInit {
         // controls initial value for readonly field
         readonly: this.fb.control(true),
         // controls initial value for rather the check box is selected or not
-        selected: this.fb.control(false)
+        selected: this.fb.control(false),
+        sportTypeID: this.fb.control(this.sportType.id)
       })
     );
     this.editForm = this.fb.group({
@@ -82,8 +76,9 @@ export class LeagueAdministrationComponent implements OnInit {
   onSaveSportType() {
     this.readonlySportName = !this.readonlySportName;
     // update sport type name
-    this.sportType.name = this.sportTypeForm.get('name').value;
-    this.updatedSport.emit(this.sportType);
+    const sportTypeClone = cloneDeep(this.sportType);
+    sportTypeClone.name = this.sportTypeForm.get('name').value;
+    this.updatedSport.emit(sportTypeClone);
   }
 
   onDeleteSportType() {
@@ -92,13 +87,17 @@ export class LeagueAdministrationComponent implements OnInit {
 
   //#endregion
 
-  onLeagueSelectionChange(selectedLeagueControls: EditLeagueControl[]) {
-    const sportType: SportType = cloneDeep(this.sportType);
-    const selectedLeagues = sportType.leagues.filter(s => selectedLeagueControls.some(c => c.id === s.id));
-    sportType.leagues = selectedLeagues;
-    this.leagueAdminService.onSelectedLeagues(sportType);
+  onLeagueSelectionChange(selectedLeaguesEvent: MatSelectionListChange) {
+    this.scheduleAdminFacade.updateSelectedLeaguesForSportTypeID(selectedLeaguesEvent.source.selectedOptions.selected, this.sportType.id);
   }
 
+  //#region Event handlers
+
+  /**
+   * Event handler for when edit-leagues component emits
+   * FormGroup with updated league names
+   * @param  {FormGroup} updatedLeagueNames
+   */
   onUpdatedLeagues(updatedLeagueNames: FormGroup) {
     const sportTypeToUpdate = cloneDeep(this.sportType);
     const updated: EditLeagueControl[] = updatedLeagueNames.value.leagues as EditLeagueControl[];
@@ -111,15 +110,23 @@ export class LeagueAdministrationComponent implements OnInit {
       league.selected = updatedLeague.selected;
       league.readonly = updatedLeague.readonly;
     }
-    this.scheduleAdminService.updateSportType(sportTypeToUpdate);
+    this.scheduleAdminFacade.updateSportType(sportTypeToUpdate);
   }
 
+  /**
+   * Event handler for when edit-leagues component emits
+   * an array of league ids to be deleted
+   * @param  {string[]} leagueIDsToDelete
+   */
   onDeletedLeagues(leagueIDsToDelete: string[]) {
     const sportTypeWithRemovedLeagues = cloneDeep(this.sportType);
     for (let index = 0; index < leagueIDsToDelete.length; index++) {
       const deleteID = leagueIDsToDelete[index];
       sportTypeWithRemovedLeagues.leagues = sportTypeWithRemovedLeagues.leagues.filter(l => l.id !== deleteID);
     }
-    this.scheduleAdminService.updateSportType(sportTypeWithRemovedLeagues);
+    // we just want to update the sport type with latest league changes
+    this.scheduleAdminFacade.updateSportType(sportTypeWithRemovedLeagues);
   }
+
+  //#endregion
 }

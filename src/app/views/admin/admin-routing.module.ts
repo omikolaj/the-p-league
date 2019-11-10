@@ -5,7 +5,6 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
 import { AdminAuthGuard } from './guards/admin-auth.guard';
 import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
-import { ScheduleAdministrationService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration.service';
 import { ScheduleAdministrationResolver } from 'src/app/core/services/resolvers/schedule/schedule-administration-resolver.resolver';
 
 const routes: Routes = [

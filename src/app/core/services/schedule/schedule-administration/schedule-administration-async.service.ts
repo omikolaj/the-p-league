@@ -4,90 +4,32 @@ import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.m
 import { Observable, of, throwError } from 'rxjs';
 import { Team, TEAMS } from 'src/app/views/schedule/models/interfaces/team.model';
 import { delay } from 'rxjs/internal/operators/delay';
+import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { ScheduleAsyncService } from '../schedule-async.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ScheduleAdministrationAsyncService {
-  teams: Team[] = TEAMS;
-  constructor(private http: HttpClient) {}
+export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
+  constructor(protected http: HttpClient) {
+    super(http);
+  }
 
-  fetchAllSportTypes(): Observable<SportType[]> {
-    return of([
-      {
-        name: 'Basketball',
-        id: '1',
-        leagues: [
-          {
-            name: 'Monday',
-            id: '1',
-            type: { id: '4', name: 'Basketball' },
-            teams: [...this.teams],
-            readonly: true,
-            selected: false
-          },
-          {
-            name: 'Friday',
-            id: '2',
-            type: { id: '4', name: 'Basketball' },
-            teams: [...this.teams],
-            readonly: true,
-            selected: false
-          },
-          {
-            name: 'Sunday',
-            id: '3',
-            type: { id: '4', name: 'Basketball' },
-            teams: [...this.teams],
-            readonly: true,
-            selected: false
-          }
-        ]
-      },
-      {
-        name: 'Volleyball',
-        id: '2',
-        leagues: [
-          {
-            name: 'Monday',
-            id: '6',
-            type: { id: '4', name: 'Volleyball' },
-            teams: [...this.teams],
-            readonly: true,
-            selected: false
-          },
-          {
-            name: 'Friday',
-            id: '5',
-            type: { id: '4', name: 'Volleyball' },
-            teams: [...this.teams],
-            readonly: true,
-            selected: false
-          },
-          {
-            name: 'Saturday',
-            id: '4',
-            type: { id: '4', name: 'Volleyball' },
-            teams: [...this.teams],
-            readonly: true,
-            selected: false
-          }
-        ]
-      },
-      {
-        name: 'Soccer',
-        id: '3',
-        leagues: [
-          {
-            name: 'Saturday',
-            id: '4',
-            type: { id: '4', name: 'Soccer' },
-            teams: [...this.teams],
-            readonly: true,
-            selected: false
-          }
-        ]
-      }
-    ]).pipe(delay(1000));
+  addSport(newSportType: SportType): Observable<SportType> {
+    return of(newSportType).pipe(delay(100));
+  }
+
+  updateSportTypes(updatedSportType: SportType): Observable<SportType> {
+    console.log('inside async updateSportTypes', updatedSportType);
+    return of(updatedSportType).pipe(delay(100));
+  }
+
+  deleteSportType(id: string): Observable<string> {
+    return of(id).pipe(delay(100));
+  }
+
+  addLeague(newLeague: League): Observable<League> {
+    newLeague.id = (Math.floor(Math.random() * 100) + 1).toString();
+    return of(newLeague).pipe(delay(100));
   }
 }

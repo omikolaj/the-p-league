@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective, FormControl, FormControlName } from '@angular/forms';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { LeagueAdministrationService } from 'src/app/core/services/schedule/schedule-administration/league-administration/league-administration.service';
+import { LeagueService } from 'src/app/core/services/schedule/schedule-administration/league/league.service';
 import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
 import { MatAccordion, MatExpansionPanelState, MatExpansionPanel } from '@angular/material';
 
@@ -15,6 +15,7 @@ export class AddLeaguesComponent implements OnInit {
   title: string = 'Add';
   description: string = 'Sport/League';
   @Input() newSportLeagueForm: FormGroup;
+  @Input() sportTypes: SportType[];
   @Output() onNewSportLeague: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
   @ViewChild(MatExpansionPanel, { static: false })
   matExpansionPanel: MatExpansionPanel;
