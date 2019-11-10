@@ -11,7 +11,7 @@ import { MatAccordion, MatExpansionPanelState, MatExpansionPanel } from '@angula
   templateUrl: './add-leagues.component.html',
   styleUrls: ['./add-leagues.component.scss']
 })
-export class AddLeaguesComponent implements OnInit {
+export class AddLeaguesComponent {
   title: string = 'Add';
   description: string = 'Sport/League';
   @Input() newSportLeagueForm: FormGroup;
@@ -19,17 +19,8 @@ export class AddLeaguesComponent implements OnInit {
   @Output() onNewSportLeague: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
   @ViewChild(MatExpansionPanel, { static: false })
   matExpansionPanel: MatExpansionPanel;
-  sportNames: any[] = [];
 
   constructor() {}
-
-  ngOnInit() {
-    // sport names are coming in as a FormArray data,
-    // because reseting form validations requires a resetForm() call
-    // this would also clear the list of sportNames
-    // instead we are saving it in a local variable and saving it for the future
-    //this.sportNames = [...this.newSportLeagueForm.get('sportNames').value];
-  }
 
   onSubmit(formGroupDirective: FormGroupDirective) {
     const newSportLeague = cloneDeep(this.newSportLeagueForm);

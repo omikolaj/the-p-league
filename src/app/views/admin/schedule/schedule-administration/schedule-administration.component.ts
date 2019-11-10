@@ -8,7 +8,6 @@ import { MatTabChangeEvent } from '@angular/material';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { TabTitles } from '../models/tab-titles.model';
-import { switchMap } from 'rxjs/operators';
 import { ClearFormType } from '../models/clear-form-type.model';
 import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 import { ModifyScheduleComponent } from './modify/modify-schedule.component';
@@ -25,6 +24,7 @@ export class ScheduleAdministrationComponent implements OnInit {
   tabTitle: TabTitles = 'Schedule';
   nextTab: 0 | 1 | 2 | number;
   newSportLeagueForm: FormGroup;
+  newTeamForm: FormGroup;
   adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 
   constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
@@ -60,7 +60,12 @@ export class ScheduleAdministrationComponent implements OnInit {
     });
   }
 
-  initNewTeamsForm() {}
+  initNewTeamsForm() {
+    this.newTeamForm = this.fb.group({
+      name: this.fb.control(null, Validators.required),
+      leagueName: this.fb.control(null, Validators.required)
+    });
+  }
 
   clearForm(formType: ClearFormType) {
     switch (formType) {
@@ -122,6 +127,8 @@ export class ScheduleAdministrationComponent implements OnInit {
       this.scheduleAdminFacade.addSportType(newSportType);
     }
   }
+
+  onNewTeam(newTeam: FormGroup) {}
 
   onItemAdded(event) {
     console.log(event);

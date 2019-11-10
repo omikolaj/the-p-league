@@ -32,6 +32,7 @@ export class LeagueState {
 
   @Selector()
   static getSelected(state: LeagueModel) {
+    console.log('returning all selected leagues', state);
     return state.selected;
   }
 

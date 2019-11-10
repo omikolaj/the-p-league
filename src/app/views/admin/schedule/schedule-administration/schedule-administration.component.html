@@ -1,7 +1,7 @@
 <div class="wrapper">
-  <mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
-    <mat-tab label="League">
-      <ng-container *ngIf="sportTypes$ | async as types">
+  <ng-container *ngIf="sportTypes$ | async as types">
+    <mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
+      <mat-tab label="League">
         <app-add-leagues
           [sportTypes]="types.sports"
           [newSportLeagueForm]="newSportLeagueForm"
@@ -27,16 +27,16 @@
             Modify
           </button>
         </div>
-      </ng-container>
-    </mat-tab>
+      </mat-tab>
 
-    <mat-tab [label]="tabTitle" [disabled]="checkSelection()">
-      <ng-template matTabContent>
-        <app-add-teams [sportType]="sports"></app-add-teams>
-        <ng-container *ngComponentOutlet="adminComponent"></ng-container>
-      </ng-template>
-    </mat-tab>
+      <mat-tab [label]="tabTitle" [disabled]="checkSelection()">
+        <ng-template matTabContent>
+          <app-add-teams [sportType]="types.sports" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
+          <ng-container *ngComponentOutlet="adminComponent"></ng-container>
+        </ng-template>
+      </mat-tab>
 
-    <mat-tab label="Preview" [disabled]="checkSelection()"> Next tab value: {{ nextTab }} </mat-tab>
-  </mat-tab-group>
+      <mat-tab label="Preview" [disabled]="checkSelection()"> Next tab value: {{ nextTab }} </mat-tab>
+    </mat-tab-group>
+  </ng-container>
 </div>

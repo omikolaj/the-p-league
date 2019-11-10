@@ -1,9 +1,11 @@
-<ng-container *ngFor="let league of leagues">
-  <app-team-administration [league]="league"></app-team-administration>
+<ng-container *ngIf="leagues$ | async as leagues">
+  <ng-container *ngFor="let league of leagues">
+    <app-team-administration [league]="league"></app-team-administration>
 
-  <app-new-session-schedule></app-new-session-schedule>
+    <app-new-session-schedule></app-new-session-schedule>
 
-  <mat-divider></mat-divider>
+    <mat-divider></mat-divider>
+  </ng-container>
 </ng-container>
 
 <ng-container *ngIf="unassignedTeams.length > 0; then unassigned"> </ng-container>

@@ -2,9 +2,7 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon"
-          >add</mat-icon
-        >
+        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
         {{ title }}
       </mat-panel-title>
       <mat-panel-description>
@@ -14,26 +12,28 @@
 
     <!-- START -- contents -->
 
-    <div>
+    <form [formGroup]="newTeamForm" (ngSubmit)="onSubmit(formDirective)" #formDirective="ngForm" novalidate>
       <mat-form-field>
-        <input matInput placeholder="Team Name" />
+        <input formControlName="name" matInput placeholder="Team Name" />
+        <mat-error>Team name is required</mat-error>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>League</mat-label>
-        <mat-select>
+        <mat-select formControlName="leagueName">
           <!-- <mat-option>-- None --</mat-option> -->
           <mat-optgroup *ngFor="let sport of sportType" [label]="sport.name">
-            <mat-option
-              *ngFor="let league of sport.leagues"
-              [value]="league.name"
-            >
+            <mat-option *ngFor="let league of sport.leagues" [value]="league.name">
               {{ league.name }}
             </mat-option>
           </mat-optgroup>
         </mat-select>
+        <mat-error>You must select a league</mat-error>
       </mat-form-field>
-    </div>
+      <button mat-raised-button color="accent" [disabled]="!newTeamForm.valid">
+        Add
+      </button>
+    </form>
 
     <!-- END -- contents -->
   </mat-expansion-panel>
