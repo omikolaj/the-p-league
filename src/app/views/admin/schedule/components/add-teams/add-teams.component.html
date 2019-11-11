@@ -20,10 +20,10 @@
 
       <mat-form-field>
         <mat-label>League</mat-label>
-        <mat-select formControlName="leagueName">
+        <mat-select formControlName="leagueID">
           <!-- <mat-option>-- None --</mat-option> -->
           <mat-optgroup *ngFor="let sport of sportType" [label]="sport.name">
-            <mat-option *ngFor="let league of sport.leagues" [value]="league.name">
+            <mat-option *ngFor="let league of sport.leagues" [value]="league.id">
               {{ league.name }}
             </mat-option>
           </mat-optgroup>

@@ -1,3 +1,4 @@
+import { SportTypeStateModel } from 'src/app/store/state/sport-type.state';
 import { SportTypeState } from './../../../../store/state/sport-type.state';
 import { Type } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
@@ -11,6 +12,7 @@ import { TabTitles } from '../models/tab-titles.model';
 import { ClearFormType } from '../models/clear-form-type.model';
 import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 import { ModifyScheduleComponent } from './modify/modify-schedule.component';
+import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -63,22 +65,8 @@ export class ScheduleAdministrationComponent implements OnInit {
   initNewTeamsForm() {
     this.newTeamForm = this.fb.group({
       name: this.fb.control(null, Validators.required),
-      leagueName: this.fb.control(null, Validators.required)
+      leagueID: this.fb.control(null, Validators.required)
     });
-  }
-
-  clearForm(formType: ClearFormType) {
-    switch (formType) {
-      case 'league':
-        this.newSportLeagueForm.get('sportType').reset();
-        this.newSportLeagueForm.get('leagueName').reset();
-        break;
-      case 'team':
-        break;
-
-      default:
-        break;
-    }
   }
 
   //#endregion
@@ -100,7 +88,8 @@ export class ScheduleAdministrationComponent implements OnInit {
   }
 
   onNewSportLeague(newSportLeague: FormGroup) {
-    this.clearForm('league');
+    this.newSportLeagueForm.get('sportType').reset();
+    this.newSportLeagueForm.get('leagueName').reset();
 
     const newSportType: SportType = {
       name: newSportLeague.get('sportType').value,
@@ -114,7 +103,7 @@ export class ScheduleAdministrationComponent implements OnInit {
       newSportType.leagues.push(newLeague);
     }
 
-    const sportTypes: SportType[] = this.scheduleAdminFacade.store.selectSnapshot(state => state.types.sports);
+    const sportTypes: SportType[] = this.scheduleAdminFacade.store.selectSnapshot(SportTypeState.getSportTypes);
     // check if were adding to existing sport type
     const existingSport = sportTypes.find(s => s.name === newSportType.name);
 
@@ -128,7 +117,16 @@ export class ScheduleAdministrationComponent implements OnInit {
     }
   }
 
-  onNewTeam(newTeam: FormGroup) {}
+  onNewTeam(newTeamForm: FormGroup) {
+    this.newTeamForm.get('name').reset();
+    this.newTeamForm.get('leagueID').reset();
+    const newTeam: Team = {
+      name: newTeamForm.get('name').value,
+      leagueID: newTeamForm.get('leagueID').value
+    };
+    console.log('newTeam', newTeam);
+    this.scheduleAdminFacade.addTeam(newTeam);
+  }
 
   onItemAdded(event) {
     console.log(event);

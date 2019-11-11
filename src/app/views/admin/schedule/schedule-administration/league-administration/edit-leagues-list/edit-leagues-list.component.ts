@@ -12,6 +12,7 @@ import { League } from 'src/app/views/schedule/models/interfaces/League.model';
   styleUrls: ['./edit-leagues-list.component.scss']
 })
 export class EditLeaguesListComponent implements OnInit {
+  @Input() leagues: League[];
   @Output() selectedLeagues = new EventEmitter<MatSelectionListChange>();
   @Output() updatedLeagues = new EventEmitter<FormGroup>();
   @Output() deletedLeagues = new EventEmitter<string[]>();
@@ -38,12 +39,12 @@ export class EditLeaguesListComponent implements OnInit {
 
   private numberOfSelectedLeagues: number = 0;
   disableListSelection: boolean = false;
-  leagues: EditLeagueControl[] = [];
+  //leagues: EditLeagueControl[] = [];
 
   constructor() {}
 
   ngOnInit() {
-    this.leagues = [...(this.editLeaguesForm.value.leagues as Array<EditLeagueControl>)];
+    //this.leagues = [...(this.editLeaguesForm.value.leagues as Array<EditLeagueControl>)];
   }
   ngOnDestroy() {
     console.log('destroying edit leagues');

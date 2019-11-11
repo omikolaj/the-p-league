@@ -1,4 +1,4 @@
-import { LeagueState } from 'src/app/store/state/league.state';
+import { LeagueState, LeagueStateModel } from 'src/app/store/state/league.state';
 import { MatListOption } from '@angular/material';
 import { Injectable } from '@angular/core';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
@@ -79,8 +79,8 @@ export class LeagueService {
   }
 
   private updateSelection(selected: SelectedLeagues): League[] {
-    const selectedState: League[] = this.store.selectSnapshot(state => state.leagues.selected);
-
+    const selectedState: League[] = this.store.selectSnapshot(LeagueState.getSelected);
+    console.log('selected', selectedState);
     let updated: League[] = [];
     // if the length is not zero means we have existing selected items
     if (selectedState.length !== 0) {

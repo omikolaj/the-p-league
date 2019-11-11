@@ -3,17 +3,18 @@
     <mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
       <mat-tab label="League">
         <app-add-leagues
-          [sportTypes]="types.sports"
+          [sportTypes]="types"
           [newSportLeagueForm]="newSportLeagueForm"
           (onNewSportLeague)="onNewSportLeague($event)"
         ></app-add-leagues>
         <!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
 
-        <ng-container *ngFor="let sport of types.sports">
+        <ng-container *ngFor="let sport of types">
           <app-league-administration
             (deletedSport)="onDeleteSport($event)"
             (updatedSport)="onUpdateSport($event)"
             [sportType]="sport"
+            [sportTypeID]="sport.id"
           ></app-league-administration>
         </ng-container>
         <div>
@@ -31,7 +32,7 @@
 
       <mat-tab [label]="tabTitle" [disabled]="checkSelection()">
         <ng-template matTabContent>
-          <app-add-teams [sportType]="types.sports" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
+          <app-add-teams [sportType]="types" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
           <ng-container *ngComponentOutlet="adminComponent"></ng-container>
         </ng-template>
       </mat-tab>

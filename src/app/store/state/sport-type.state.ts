@@ -1,13 +1,20 @@
-import { tap, catchError, switchMap } from 'rxjs/operators';
+import { cloneDeep } from 'lodash';
+import { SportTypeStateModel } from 'src/app/store/state/sport-type.state';
+import { Leagues } from 'src/app/store/actions/league.actions';
+import { tap, catchError, switchMap, filter } from 'rxjs/operators';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { State, Selector, StateContext, Action, createSelector } from '@ngxs/store';
 import { Schedule } from '../actions/schedule.actions';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
-import { Leagues } from '../actions/league.actions';
-import { patch, updateItem, append, removeItem } from '@ngxs/store/operators';
+import { patch, updateItem, append, removeItem, insertItem } from '@ngxs/store/operators';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+
 export interface SportTypeStateModel {
-  sports: SportType[];
+  entities: {
+    [id: string]: SportType;
+  };
+  IDs: string[];
   loading: boolean;
   error?: any | null;
 }
@@ -15,7 +22,8 @@ export interface SportTypeStateModel {
 @State<SportTypeStateModel>({
   name: 'types',
   defaults: {
-    sports: [],
+    entities: {},
+    IDs: [],
     loading: false
   }
 })
@@ -23,18 +31,18 @@ export class SportTypeState {
   constructor(private scheduleAdminAsyncService: ScheduleAdministrationAsyncService) {}
 
   @Selector()
-  static getSportTypes(state) {
-    return state.sports;
+  static getSportTypes(state: SportTypeStateModel) {
+    return Object.values(state.entities);
   }
 
   @Selector()
   static getSportTypeByID(id: string) {
     return createSelector(
-      [SportTypeState],
+      [SportTypeState.getSportTypes],
       state => {
-        const sportType = state.types.sports.find(s => s.id === id);
-        if (sportType) {
-          return sportType;
+        const sportTypeEntityID = Object.keys(state.types.entities).find(entityID => entityID === id);
+        if (sportTypeEntityID) {
+          return state.types.entities[sportTypeEntityID];
         }
       }
     );
@@ -46,8 +54,13 @@ export class SportTypeState {
   fetchAll(ctx: StateContext<SportTypeStateModel>) {
     return this.scheduleAdminAsyncService.fetchAllSportTypes().pipe(
       tap(fetchedSportTypes => {
+        let fetchedSports: {} = {};
+        fetchedSportTypes.forEach(s => {
+          fetchedSports[s.id] = s;
+        });
         ctx.setState({
-          sports: fetchedSportTypes,
+          entities: fetchedSports,
+          IDs: fetchedSportTypes.map(s => s.id),
           loading: true
         });
       }),
@@ -79,15 +92,14 @@ export class SportTypeState {
 
   @Action(Schedule.AddSportType)
   add(ctx: StateContext<SportTypeStateModel>, action: Schedule.AddSportType) {
-    return this.scheduleAdminAsyncService.addSport(action.newSportType).pipe(
-      tap(newSport => {
-        const state = ctx.getState();
-        ctx.patchState({
-          sports: [...state.sports, newSport],
-          loading: true
-        });
+    const state = ctx.getState();
+    ctx.setState(
+      patch<SportTypeStateModel>({
+        entities: patch({ [action.newSportType.id]: action.newSportType }),
+        IDs: append([action.newSportType.id])
       })
     );
+    console.log('sport type leagues', ctx.getState());
   }
 
   @Action(Schedule.AddSportTypeSuccess)
@@ -101,11 +113,9 @@ export class SportTypeState {
   //#region Update
   @Action(Schedule.UpdateSportType)
   update(ctx: StateContext<SportTypeStateModel>, action: Schedule.UpdateSportType) {
-    const state = ctx.getState();
     ctx.setState(
-      patch({
-        ...state,
-        sports: updateItem(s => s.id === action.updatedSportType.id, action.updatedSportType)
+      patch<SportTypeStateModel>({
+        entities: patch({ [action.updatedSportType.id]: action.updatedSportType })
       })
     );
   }
@@ -121,10 +131,17 @@ export class SportTypeState {
   @Action(Schedule.DeleteSportType)
   delete(ctx: StateContext<SportTypeStateModel>, action: Schedule.DeleteSportType) {
     const state = ctx.getState();
+    const updatedSportEntities = {};
+    Object.keys(state.entities).map(i => {
+      if (i !== action.id) {
+        updatedSportEntities[i] = state.entities[i];
+      }
+    });
+
     ctx.setState(
-      patch({
-        ...state,
-        sports: removeItem<SportType>(s => s.id === action.id)
+      patch<SportTypeStateModel>({
+        entities: cloneDeep(updatedSportEntities),
+        IDs: state.IDs.filter(id => id !== action.id)
       })
     );
   }
@@ -135,20 +152,4 @@ export class SportTypeState {
   @Action(Schedule.DeleteSportTypeFailed)
   deleteFailed() {}
   //#endregion
-
-  @Action(Schedule.AddLeague)
-  addLeagueToSportType(ctx: StateContext<SportTypeStateModel>, action: Schedule.AddLeague) {
-    const state = ctx.getState();
-    ctx.setState(
-      patch({
-        ...state,
-        sports: updateItem(
-          s => s.id === action.newLeague.sportTypeID,
-          patch<SportType>({
-            leagues: append([action.newLeague])
-          })
-        )
-      })
-    );
-  }
 }

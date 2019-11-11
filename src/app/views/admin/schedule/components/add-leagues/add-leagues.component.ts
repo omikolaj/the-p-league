@@ -22,6 +22,8 @@ export class AddLeaguesComponent {
 
   constructor() {}
 
+  ngOnInit() {}
+
   onSubmit(formGroupDirective: FormGroupDirective) {
     const newSportLeague = cloneDeep(this.newSportLeagueForm);
     // necessary to reset validations

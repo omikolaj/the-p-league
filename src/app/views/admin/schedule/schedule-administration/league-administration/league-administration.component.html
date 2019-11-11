@@ -10,9 +10,12 @@
   </form>
 </mat-card>
 
-<app-edit-leagues-list
-  [editLeaguesForm]="editForm"
-  (selectedLeagues)="onLeagueSelectionChange($event)"
-  (updatedLeagues)="onUpdatedLeagues($event)"
-  (deletedLeagues)="onDeletedLeagues($event)"
-></app-edit-leagues-list>
+<ng-container *ngIf="leagues$ | async as leagues">
+  <app-edit-leagues-list
+    [leagues]="leagues"
+    [editLeaguesForm]="editForm"
+    (selectedLeagues)="onLeagueSelectionChange($event)"
+    (updatedLeagues)="onUpdatedLeagues($event)"
+    (deletedLeagues)="onDeletedLeagues($event)"
+  ></app-edit-leagues-list>
+</ng-container>

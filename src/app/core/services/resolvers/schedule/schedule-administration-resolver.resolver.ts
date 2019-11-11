@@ -1,3 +1,4 @@
+import { Leagues } from 'src/app/store/actions/league.actions';
 import { tap, first, takeUntil, map, switchMap, debounce, debounceTime } from 'rxjs/operators';
 import { combineLatest, race, scheduled, iif, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -28,7 +29,10 @@ export class ScheduleAdministrationResolver implements Resolve<Schedule.FetchAll
     | Promise<Schedule.FetchAllSportTypesSuccess | Schedule.FetchAllSportTypesFailed> {
     this.store.dispatch(new Schedule.FetchAllSportTypes());
 
-    const responseOK: Observable<Schedule.FetchAllSportTypesSuccess> = this.actions$.pipe(ofAction(Schedule.FetchAllSportTypesSuccess));
+    const responseOK: Observable<Schedule.FetchAllSportTypesSuccess> = this.actions$.pipe(
+      ofAction(Schedule.FetchAllSportTypesSuccess),
+      tap(() => this.store.dispatch(new Leagues.GetAllLeagues()))
+    );
 
     const responseError = this.actions$.pipe(
       ofAction(Schedule.FetchAllSportTypesFailed),

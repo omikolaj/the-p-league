@@ -32,4 +32,17 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
     newLeague.id = (Math.floor(Math.random() * 100) + 1).toString();
     return of(newLeague).pipe(delay(100));
   }
+
+  updateLeagues(updatedLeagues: League[]): Observable<League[]> {
+    return of(updatedLeagues).pipe(delay(100));
+  }
+
+  deleteLeagues(leaguesToDelete: string[]): Observable<string[]> {
+    return of(leaguesToDelete).pipe(delay(100));
+  }
+
+  addTeam(newTeam: Team): Observable<Team> {
+    newTeam.id = (Math.floor(Math.random() * 100) + 1).toString();
+    return of(newTeam).pipe(delay(100));
+  }
 }

@@ -10,12 +10,13 @@ import { Schedule } from 'src/app/store/actions/schedule.actions';
 import { Leagues } from 'src/app/store/actions/league.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { MatListOption } from '@angular/material';
+import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScheduleAdministrationFacade implements OnInit {
-  @Select(SportTypeState) sports$: Observable<SportType[]>;
+  @Select(SportTypeState.getSportTypes) sports$: Observable<SportType[]>;
   @Select(LeagueState.getSelected) selectedLeagues$: Observable<League[]>;
 
   constructor(private scheduleAdminAsync: ScheduleAdministrationAsyncService, private leagueService: LeagueService, public store: Store) {}
@@ -47,7 +48,17 @@ export class ScheduleAdministrationFacade implements OnInit {
   //#region Leagues
 
   addLeague(newLeague: League): void {
-    this.scheduleAdminAsync.addLeague(newLeague).subscribe(() => this.store.dispatch(new Schedule.AddLeague(newLeague)));
+    this.scheduleAdminAsync.addLeague(newLeague).subscribe(() => this.store.dispatch(new Leagues.AddLeague(newLeague)));
+  }
+
+  updateLeagues(updatedLeagues: League[]) {
+    this.scheduleAdminAsync.updateLeagues(updatedLeagues).subscribe(() => this.store.dispatch(new Leagues.UpdateLeagues(updatedLeagues)));
+  }
+
+  deleteLeagues(leagueIDsToDelete: string[]): void {
+    this.scheduleAdminAsync
+      .deleteLeagues(leagueIDsToDelete)
+      .subscribe(deletedLeagueIDs => this.store.dispatch(new Leagues.DeleteLeagues(deletedLeagueIDs)));
   }
 
   updateSelectedLeagues(allSelected): void {
@@ -64,6 +75,14 @@ export class ScheduleAdministrationFacade implements OnInit {
     return; //this.leagueAdminService.allSelectedLeagues.length < 1;
   }
 
+  //#endregion
+
+  //#region Teams
+  addTeam(newTeam: Team): void {
+    this.scheduleAdminAsync.addTeam(newTeam).subscribe(newTeam => {
+      this.store.dispatch(new Leagues.AddTeam(newTeam));
+    });
+  }
   //#endregion
 
   checkExistingSchedule() {

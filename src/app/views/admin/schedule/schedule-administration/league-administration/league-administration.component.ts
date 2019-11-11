@@ -7,6 +7,11 @@ import { cloneDeep } from 'lodash';
 import { EditLeagueControl } from '../../models/edit-league-control.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { MatSelectionListChange } from '@angular/material';
+import { LeagueStateModel, LeagueState } from 'src/app/store/state/league.state';
+import { Observable } from 'rxjs';
+import { SportTypeState } from 'src/app/store/state/sport-type.state';
+import { Select } from '@ngxs/store';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-league-administration',
@@ -14,19 +19,21 @@ import { MatSelectionListChange } from '@angular/material';
   styleUrls: ['./league-administration.component.scss']
 })
 export class LeagueAdministrationComponent implements OnInit {
-  @Input() sportType: SportType;
+  leagues$: Observable<League[]>;
+  @Input() sportTypeID: string;
+  @Input() sportType;
   @Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
   @Output() updatedSport: EventEmitter<SportType> = new EventEmitter<SportType>();
 
   editForm: FormGroup;
   sportTypeForm: FormGroup;
   readonlySportName: boolean = true;
-
   constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
 
   //#region ng LifeCycle hooks
 
   ngOnInit() {
+    this.leagues$ = this.scheduleAdminFacade.store.select(LeagueState.getAllLeaguesForSportTypeID).pipe(map(filterFn => filterFn(this.sportTypeID)));
     this.initForms();
   }
 
@@ -101,7 +108,7 @@ export class LeagueAdministrationComponent implements OnInit {
   onUpdatedLeagues(updatedLeagueNames: FormGroup) {
     const sportTypeToUpdate = cloneDeep(this.sportType);
     const updated: EditLeagueControl[] = updatedLeagueNames.value.leagues as EditLeagueControl[];
-
+    const updatedLeagues: League[] = [];
     for (let index = 0; index < updated.length; index++) {
       const league = sportTypeToUpdate.leagues[index];
       const updatedLeague = updated.find(control => control.id === league.id);
@@ -109,8 +116,10 @@ export class LeagueAdministrationComponent implements OnInit {
       league.name = updatedLeague.name;
       league.selected = updatedLeague.selected;
       league.readonly = updatedLeague.readonly;
+      updatedLeagues.push(league);
     }
-    this.scheduleAdminFacade.updateSportType(sportTypeToUpdate);
+
+    this.scheduleAdminFacade.updateLeagues(updatedLeagues);
   }
 
   /**
@@ -119,13 +128,12 @@ export class LeagueAdministrationComponent implements OnInit {
    * @param  {string[]} leagueIDsToDelete
    */
   onDeletedLeagues(leagueIDsToDelete: string[]) {
-    const sportTypeWithRemovedLeagues = cloneDeep(this.sportType);
-    for (let index = 0; index < leagueIDsToDelete.length; index++) {
-      const deleteID = leagueIDsToDelete[index];
-      sportTypeWithRemovedLeagues.leagues = sportTypeWithRemovedLeagues.leagues.filter(l => l.id !== deleteID);
-    }
-    // we just want to update the sport type with latest league changes
-    this.scheduleAdminFacade.updateSportType(sportTypeWithRemovedLeagues);
+    // const sportTypeWithRemovedLeagues = cloneDeep(this.sportType);
+    // for (let index = 0; index < leagueIDsToDelete.length; index++) {
+    //   const deleteID = leagueIDsToDelete[index];
+    //   sportTypeWithRemovedLeagues.leagues = sportTypeWithRemovedLeagues.leagues.filter(l => l.id !== deleteID);
+    // }
+    this.scheduleAdminFacade.deleteLeagues(leagueIDsToDelete);
   }
 
   //#endregion
