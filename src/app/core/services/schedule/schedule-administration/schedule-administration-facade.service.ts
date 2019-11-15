@@ -1,4 +1,4 @@
-import { LeagueState } from 'src/app/store/state/league.state';
+import { LeagueState, LeagueStateModel } from 'src/app/store/state/league.state';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
 import { Injectable, OnInit } from '@angular/core';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
@@ -11,6 +11,7 @@ import { Leagues } from 'src/app/store/actions/league.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { MatListOption } from '@angular/material';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -55,20 +56,15 @@ export class ScheduleAdministrationFacade implements OnInit {
     this.scheduleAdminAsync.updateLeagues(updatedLeagues).subscribe(() => this.store.dispatch(new Leagues.UpdateLeagues(updatedLeagues)));
   }
 
-  deleteLeagues(leagueIDsToDelete: string[]): void {
-    this.scheduleAdminAsync
-      .deleteLeagues(leagueIDsToDelete)
-      .subscribe(deletedLeagueIDs => this.store.dispatch(new Leagues.DeleteLeagues(deletedLeagueIDs)));
+  deleteLeagues(sportTypeID: string): void {
+    const leagueIDsToDelete: string[] = this.store.selectSnapshot(LeagueState.getSelectedForSportTypeID(sportTypeID));
+    this.scheduleAdminAsync.deleteLeagues(leagueIDsToDelete).subscribe(deletedLeagueIDs => {
+      this.store.dispatch(new Leagues.DeleteLeagues(deletedLeagueIDs));
+    });
   }
 
-  updateSelectedLeagues(allSelected): void {
-    this.store.dispatch(new Leagues.UpdateSelectedLeagues(allSelected));
-  }
-
-  updateSelectedLeaguesForSportTypeID(selectedOptions: MatListOption[], sportTypeID: string): void {
-    const updatedLeagues = this.leagueService.updateSelectedLeaguesForSportTypeID(selectedOptions, sportTypeID);
-
-    this.updateSelectedLeagues(updatedLeagues);
+  updateSelectedLeagues(selectedIDs: string[], sportTypeID: string): void {
+    this.store.dispatch(new Leagues.UpdateSelectedLeagues(selectedIDs, sportTypeID));
   }
 
   checkLeagueSelection(): boolean {

@@ -29,10 +29,7 @@ export class ScheduleAdministrationResolver implements Resolve<Schedule.FetchAll
     | Promise<Schedule.FetchAllSportTypesSuccess | Schedule.FetchAllSportTypesFailed> {
     this.store.dispatch(new Schedule.FetchAllSportTypes());
 
-    const responseOK: Observable<Schedule.FetchAllSportTypesSuccess> = this.actions$.pipe(
-      ofAction(Schedule.FetchAllSportTypesSuccess),
-      tap(() => this.store.dispatch(new Leagues.GetAllLeagues()))
-    );
+    const responseOK: Observable<Schedule.FetchAllSportTypesSuccess> = this.actions$.pipe(ofAction(Schedule.FetchAllSportTypesSuccess));
 
     const responseError = this.actions$.pipe(
       ofAction(Schedule.FetchAllSportTypesFailed),

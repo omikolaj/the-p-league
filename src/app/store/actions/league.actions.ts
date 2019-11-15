@@ -3,8 +3,9 @@ import { League } from '../../views/schedule/models/interfaces/league.model';
 import { SelectedLeagues } from 'src/app/views/admin/schedule/models/selected-leagues.model';
 
 export namespace Leagues {
-  export class GetAllLeagues {
-    static readonly type = '[Schedule] GetAllLeagues';
+  export class FetchLeagues {
+    static readonly type = '[Schedule] FetchLeagues';
+    constructor(public leagues: League[]) {}
   }
   export class AddLeague {
     static readonly type = '[Schedule API] AddLeague';
@@ -28,14 +29,17 @@ export namespace Leagues {
     static readonly type = '[Schedule API] UpdateLeaguesFailed';
     constructor(public error: any) {}
   }
-
   export class DeleteLeagues {
     static readonly type = '[Schedule] DeleteLeagues';
     constructor(public deleteIDs: string[]) {}
   }
+  export class DeleteSelectedLeagues {
+    static readonly type = '[Schedule] DeleteSelectedLeagues';
+    constructor(public deleteIDs: string[]) {}
+  }
   export class UpdateSelectedLeagues {
     static readonly type = '[Schedule] UpdateSelectedLeagues';
-    constructor(public selected: League[]) {}
+    constructor(public selected: string[], public sportTypeID: string) {}
   }
 
   export class AddTeam {

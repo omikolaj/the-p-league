@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { LeagueService } from 'src/app/core/services/schedule/schedule-administration/league/league.service';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
@@ -11,7 +11,7 @@ import { LeagueStateModel, LeagueState } from 'src/app/store/state/league.state'
 import { Observable } from 'rxjs';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
 import { Select } from '@ngxs/store';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-league-administration',
@@ -21,7 +21,8 @@ import { map } from 'rxjs/operators';
 export class LeagueAdministrationComponent implements OnInit {
   leagues$: Observable<League[]>;
   @Input() sportTypeID: string;
-  @Input() sportType;
+  leagues: League[]; // currently not used
+  @Input() sportType; // want to rid of this do not use
   @Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
   @Output() updatedSport: EventEmitter<SportType> = new EventEmitter<SportType>();
 
@@ -33,7 +34,12 @@ export class LeagueAdministrationComponent implements OnInit {
   //#region ng LifeCycle hooks
 
   ngOnInit() {
-    this.leagues$ = this.scheduleAdminFacade.store.select(LeagueState.getAllLeaguesForSportTypeID).pipe(map(filterFn => filterFn(this.sportTypeID)));
+    this.leagues$ = this.scheduleAdminFacade.store.select(LeagueState.getAllLeaguesForSportTypeID).pipe(
+      map(filterFn => {
+        return (this.leagues = filterFn(this.sportTypeID));
+      })
+    );
+
     this.initForms();
   }
 
@@ -53,12 +59,12 @@ export class LeagueAdministrationComponent implements OnInit {
     const leagueNameControls = this.sportType.leagues.map(l =>
       this.fb.group({
         name: this.fb.control(l.name, Validators.required),
-        id: this.fb.control(l.id),
-        // controls initial value for readonly field
-        readonly: this.fb.control(true),
-        // controls initial value for rather the check box is selected or not
-        selected: this.fb.control(false),
-        sportTypeID: this.fb.control(this.sportType.id)
+        id: this.fb.control(l.id)
+        // // controls initial value for readonly field
+        // readonly: this.fb.control(true),
+        // // controls initial value for rather the check box is selected or not
+        // selected: this.fb.control(false),
+        // sportTypeID: this.fb.control(this.sportType.id)
       })
     );
     this.editForm = this.fb.group({
@@ -95,7 +101,13 @@ export class LeagueAdministrationComponent implements OnInit {
   //#endregion
 
   onLeagueSelectionChange(selectedLeaguesEvent: MatSelectionListChange) {
-    this.scheduleAdminFacade.updateSelectedLeaguesForSportTypeID(selectedLeaguesEvent.source.selectedOptions.selected, this.sportType.id);
+    const ids: string[] = [];
+    for (let index = 0; index < selectedLeaguesEvent.source.selectedOptions.selected.length; index++) {
+      const matListOption = selectedLeaguesEvent.source.selectedOptions.selected[index];
+      ids.push(matListOption.value);
+    }
+    console.log('ids', ids);
+    this.scheduleAdminFacade.updateSelectedLeagues(ids, this.sportTypeID);
   }
 
   //#region Event handlers
@@ -106,34 +118,32 @@ export class LeagueAdministrationComponent implements OnInit {
    * @param  {FormGroup} updatedLeagueNames
    */
   onUpdatedLeagues(updatedLeagueNames: FormGroup) {
-    const sportTypeToUpdate = cloneDeep(this.sportType);
-    const updated: EditLeagueControl[] = updatedLeagueNames.value.leagues as EditLeagueControl[];
+    const leaguesFormArray = updatedLeagueNames.get('leagues') as FormArray;
     const updatedLeagues: League[] = [];
-    for (let index = 0; index < updated.length; index++) {
-      const league = sportTypeToUpdate.leagues[index];
-      const updatedLeague = updated.find(control => control.id === league.id);
-      // map properties from user interface to existing objects to reflect changes
-      league.name = updatedLeague.name;
-      league.selected = updatedLeague.selected;
-      league.readonly = updatedLeague.readonly;
-      updatedLeagues.push(league);
+    for (let index = 0; index < leaguesFormArray.length; index++) {
+      const control = leaguesFormArray.at(index);
+      if (this.leagues.some(l => l.id === control.value.id)) {
+        const league = this.leagues.find(l => l.id === control.value.id);
+        if (league.name !== control.value.name) {
+          updatedLeagues.push({
+            id: control.value.id,
+            name: control.value.name,
+            sportTypeID: league.sportTypeID,
+            selected: league.selected,
+            readonly: league.readonly
+          });
+        }
+      }
     }
-
     this.scheduleAdminFacade.updateLeagues(updatedLeagues);
   }
 
   /**
    * Event handler for when edit-leagues component emits
    * an array of league ids to be deleted
-   * @param  {string[]} leagueIDsToDelete
    */
-  onDeletedLeagues(leagueIDsToDelete: string[]) {
-    // const sportTypeWithRemovedLeagues = cloneDeep(this.sportType);
-    // for (let index = 0; index < leagueIDsToDelete.length; index++) {
-    //   const deleteID = leagueIDsToDelete[index];
-    //   sportTypeWithRemovedLeagues.leagues = sportTypeWithRemovedLeagues.leagues.filter(l => l.id !== deleteID);
-    // }
-    this.scheduleAdminFacade.deleteLeagues(leagueIDsToDelete);
+  onDeletedLeagues() {
+    this.scheduleAdminFacade.deleteLeagues(this.sportTypeID);
   }
 
   //#endregion

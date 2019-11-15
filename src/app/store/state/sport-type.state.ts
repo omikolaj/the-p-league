@@ -37,15 +37,12 @@ export class SportTypeState {
 
   @Selector()
   static getSportTypeByID(id: string) {
-    return createSelector(
-      [SportTypeState.getSportTypes],
-      state => {
-        const sportTypeEntityID = Object.keys(state.types.entities).find(entityID => entityID === id);
-        if (sportTypeEntityID) {
-          return state.types.entities[sportTypeEntityID];
-        }
+    return createSelector([SportTypeState.getSportTypes], state => {
+      const sportTypeEntityID = Object.keys(state.types.entities).find(entityID => entityID === id);
+      if (sportTypeEntityID) {
+        return state.types.entities[sportTypeEntityID];
       }
-    );
+    });
   }
 
   //#region FetchAll
@@ -62,6 +59,12 @@ export class SportTypeState {
           entities: fetchedSports,
           IDs: fetchedSportTypes.map(s => s.id),
           loading: true
+        });
+        return fetchedSportTypes;
+      }),
+      tap(sportTypes => {
+        sportTypes.map(s => {
+          ctx.dispatch(new Leagues.FetchLeagues(s.leagues));
         });
       }),
       switchMap(() => ctx.dispatch(new Schedule.FetchAllSportTypesSuccess())),

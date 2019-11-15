@@ -1,15 +1,13 @@
 import { Leagues } from 'src/app/store/actions/league.actions';
-import { cloneDeep } from 'lodash';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { SportTypeState, SportTypeStateModel } from './sport-type.state';
-import { State, Selector, Action, StateContext, createSelector, Store, StateOperator } from '@ngxs/store';
+import { SportTypeState } from './sport-type.state';
+import { State, Selector, Action, StateContext, Store, createSelector } from '@ngxs/store';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
-import { patch, updateItem, append } from '@ngxs/store/operators';
+import { patch, append } from '@ngxs/store/operators';
 
 export interface LeagueStateModel {
   entities: {
-    [id: string]: any;
+    [id: string]: League;
   };
   IDs: string[];
   selected: League[];
@@ -30,7 +28,7 @@ export class LeagueState {
   constructor(private store: Store) {}
 
   @Selector([LeagueState, SportTypeState.getSportTypes])
-  static getAll(leaguestate, sportTypesState) {
+  static getAll(sportTypesState) {
     let allLeagues: League[] = [];
     for (let index = 0; index < sportTypesState.length; index++) {
       const sportType: SportType = sportTypesState[index];
@@ -41,36 +39,49 @@ export class LeagueState {
 
   @Selector()
   static getSelected(state: LeagueStateModel) {
-    return state.selected;
+    return Object.values(state.entities).map(l => {
+      if (l.selected) {
+        return l;
+      }
+    });
   }
 
   @Selector()
   static getAllLeaguesForSportTypeID(state: LeagueStateModel) {
     return (id: string) => {
-      const leagues: League[] = [];
-      const leagueObjects = Object.values(state.entities);
-      leagueObjects.map((l: League) => {
+      const leaguesMatch: League[] = [];
+      Object.values(state.entities).map(l => {
         if (l.sportTypeID === id) {
-          leagues.push(l);
+          leaguesMatch.push(l);
         }
       });
-      console.log('logging get all leagues for sport id', leagues);
-      return leagues;
+      return leaguesMatch;
     };
   }
 
-  @Action(Leagues.GetAllLeagues)
-  getAll(ctx: StateContext<LeagueStateModel>) {
-    const action = this.store.selectSnapshot(LeagueState.getAll);
-    const state = ctx.getState();
-    let allLeagues = {};
-    action.forEach(l => {
-      allLeagues[l.id] = l;
+  static getSelectedForSportTypeID(id: string) {
+    return createSelector([LeagueState], (state: LeagueStateModel) => {
+      const leagueIDsToDelete: string[] = [];
+      Object.values(state.entities).forEach(l => {
+        if (l.sportTypeID === id) {
+          if (l.selected) {
+            leagueIDsToDelete.push(l.id);
+          }
+        }
+      });
+      return leagueIDsToDelete;
     });
-    ctx.setState({
-      entities: allLeagues,
-      IDs: action.map(l => l.id),
-      selected: [...state.selected]
+  }
+
+  @Action(Leagues.FetchLeagues)
+  fetchAll(ctx: StateContext<LeagueStateModel>, action: Leagues.FetchLeagues) {
+    action.leagues.forEach(l => {
+      ctx.setState(
+        patch<LeagueStateModel>({
+          entities: patch({ [l.id]: l }),
+          IDs: append([l.id])
+        })
+      );
     });
   }
 
@@ -82,7 +93,6 @@ export class LeagueState {
         IDs: append([action.newLeague.id])
       })
     );
-    console.log('league add state', ctx.getState());
   }
 
   @Action(Leagues.UpdateLeagues)
@@ -96,7 +106,6 @@ export class LeagueState {
         })
       );
     });
-    console.log('leagues state update', ctx.getState());
   }
 
   @Action(Leagues.DeleteLeagues)
@@ -104,27 +113,44 @@ export class LeagueState {
     const state = ctx.getState();
     const updatedLeagueEntities = {};
     const updatedIDs = [];
-    action.deleteIDs.forEach(deleteID => {
-      Object.keys(state.entities).map(i => {
-        if (i !== deleteID) {
-          updatedLeagueEntities[i] = state.entities[i];
-          updatedIDs.push(i);
-        }
-      });
-    });
+    for (let index = 0; index < Object.keys(state.entities).length; index++) {
+      const keepID = Object.keys(state.entities)[index];
+      // if the delete ids list does NOT contain the currently iterating id, keep it
+      if (!action.deleteIDs.includes(keepID)) {
+        updatedLeagueEntities[keepID] = state.entities[keepID];
+      }
+    }
     ctx.patchState({
       ...state,
-      entities: cloneDeep(updatedLeagueEntities),
+      entities: updatedLeagueEntities,
       IDs: updatedIDs
     });
   }
 
   @Action(Leagues.UpdateSelectedLeagues)
   updatedSelected(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateSelectedLeagues) {
-    const state = ctx.getState();
-    ctx.patchState({
-      ...state,
-      selected: [...action.selected]
-    });
+    const state = {
+      ...ctx.getState(),
+      entities: { ...ctx.getState().entities }
+    };
+    for (let index = 0; index < Object.values(ctx.getState().entities).length; index++) {
+      const league: League = { ...Object.values(state.entities)[index] };
+      // if the current league sport type ID matches the incoming
+      if (league.sportTypeID === action.sportTypeID) {
+        // if the list of selected leagues has any id matching current league id
+        if (action.selected.some(selectedID => selectedID === league.id)) {
+          league.selected = true;
+        } else {
+          league.selected = false;
+        }
+        state.entities[league.id] = league;
+      }
+    }
+
+    ctx.setState(
+      patch<LeagueStateModel>({
+        entities: state.entities
+      })
+    );
   }
 }

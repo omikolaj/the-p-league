@@ -28,7 +28,7 @@ export class ScheduleAsyncService {
             sportTypeID: '1'
           },
           {
-            name: 'Friday',
+            name: 'Tuesday',
             id: '2',
             type: { id: '4', name: 'Basketball' },
             teams: [...this.teams],
@@ -37,7 +37,7 @@ export class ScheduleAsyncService {
             sportTypeID: '1'
           },
           {
-            name: 'Sunday',
+            name: 'Wednesday',
             id: '3',
             type: { id: '4', name: 'Basketball' },
             teams: [...this.teams],
@@ -52,7 +52,7 @@ export class ScheduleAsyncService {
         id: '2',
         leagues: [
           {
-            name: 'Monday',
+            name: 'Thursday',
             id: '6',
             type: { id: '4', name: 'Volleyball' },
             teams: [...this.teams],
@@ -85,7 +85,7 @@ export class ScheduleAsyncService {
         id: '3',
         leagues: [
           {
-            name: 'Saturday',
+            name: 'Sunday',
             id: '9',
             type: { id: '4', name: 'Soccer' },
             teams: [...this.teams],
