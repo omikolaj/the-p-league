@@ -95,14 +95,13 @@ export class SportTypeState {
 
   @Action(Schedule.AddSportType)
   add(ctx: StateContext<SportTypeStateModel>, action: Schedule.AddSportType) {
-    const state = ctx.getState();
+    console.log('Adding sporttype');
     ctx.setState(
       patch<SportTypeStateModel>({
         entities: patch({ [action.newSportType.id]: action.newSportType }),
         IDs: append([action.newSportType.id])
       })
     );
-    console.log('sport type leagues', ctx.getState());
   }
 
   @Action(Schedule.AddSportTypeSuccess)

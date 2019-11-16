@@ -6,6 +6,7 @@ import { Team, TEAMS } from 'src/app/views/schedule/models/interfaces/team.model
 import { delay } from 'rxjs/internal/operators/delay';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { ScheduleAsyncService } from '../schedule-async.service';
+import * as cuid from 'cuid';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,12 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
   }
 
   addSport(newSportType: SportType): Observable<SportType> {
-    return of(newSportType).pipe(delay(100));
+    console.log('inside add sport type');
+    newSportType.id = cuid();
+    return of(newSportType).pipe(delay(1000));
   }
 
   updateSportTypes(updatedSportType: SportType): Observable<SportType> {
-    console.log('inside async updateSportTypes', updatedSportType);
     return of(updatedSportType).pipe(delay(100));
   }
 
@@ -29,7 +31,8 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
   }
 
   addLeague(newLeague: League): Observable<League> {
-    newLeague.id = (Math.floor(Math.random() * 100) + 1).toString();
+    console.log('inside add league');
+    newLeague.id = cuid();
     return of(newLeague).pipe(delay(100));
   }
 
@@ -42,7 +45,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
   }
 
   addTeam(newTeam: Team): Observable<Team> {
-    newTeam.id = (Math.floor(Math.random() * 100) + 1).toString();
+    newTeam.id = cuid();
     return of(newTeam).pipe(delay(100));
   }
 }

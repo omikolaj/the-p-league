@@ -13,6 +13,7 @@ import { ClearFormType } from '../models/clear-form-type.model';
 import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 import { ModifyScheduleComponent } from './modify/modify-schedule.component';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { LeagueState } from 'src/app/store/state/league.state';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -58,7 +59,8 @@ export class ScheduleAdministrationComponent implements OnInit {
   initNewSportAndLeagueForm() {
     this.newSportLeagueForm = this.fb.group({
       sportType: this.fb.control(null, Validators.required),
-      leagueName: this.fb.control(null)
+      leagueName: this.fb.control(null),
+      sportTypeID: this.fb.control(null)
     });
   }
 
@@ -73,14 +75,18 @@ export class ScheduleAdministrationComponent implements OnInit {
 
   //#region Event Handlers
 
-  onUpdateSport(sportType: SportType) {
-    this.scheduleAdminFacade.updateSportType(sportType);
+  onUpdateSport(updatedSport: { id: string; name: string }) {
+    const sportType: SportType = this.scheduleAdminFacade.store.selectSnapshot(SportTypeState.getSportTypeByID(updatedSport.id));
+    const updatedSportType: SportType = {
+      id: sportType.id,
+      name: updatedSport.name
+    };
+    this.scheduleAdminFacade.updateSportType(updatedSportType);
   }
 
   onDeleteSport(id: string) {
-    // check if sport contains leagues if so do not delete
-    const sportTypeToDelete = this.scheduleAdminFacade.store.selectSnapshot<SportType>(SportTypeState.getSportTypeByID(id));
-    if (sportTypeToDelete.leagues.length > 0) {
+    const leaguesForSportTypeToDelete: League[] = this.scheduleAdminFacade.store.selectSnapshot(LeagueState.getLeaguesForSportTypeID(id));
+    if (leaguesForSportTypeToDelete.length > 0) {
       console.warn('Cannot delete sport type that has leagues assigned to it');
       return;
     }
@@ -90,31 +96,65 @@ export class ScheduleAdministrationComponent implements OnInit {
   onNewSportLeague(newSportLeague: FormGroup) {
     this.newSportLeagueForm.get('sportType').reset();
     this.newSportLeagueForm.get('leagueName').reset();
+    this.newSportLeagueForm.get('sportTypeID').reset();
 
-    const newSportType: SportType = {
-      name: newSportLeague.get('sportType').value,
-      leagues: []
+    // const newSportType: SportType = {
+    //   name: newSportLeague.get('sportType').value,
+    //   leagues: []
+    // };
+    // let newLeague: League = {
+    //   name: newSportLeague.get('leagueName').value
+    // };
+
+    const newSportAndOrLeague: { sportName: string; leagueName: string; sportTypeID: string } = {
+      sportName: newSportLeague.get('sportType').value,
+      leagueName: newSportLeague.get('leagueName').value,
+      sportTypeID: newSportLeague.get('sportTypeID').value
     };
-    let newLeague: League = {
-      name: newSportLeague.get('leagueName').value
-    };
 
-    if (newLeague.name) {
-      newSportType.leagues.push(newLeague);
-    }
-
-    const sportTypes: SportType[] = this.scheduleAdminFacade.store.selectSnapshot(SportTypeState.getSportTypes);
-    // check if were adding to existing sport type
-    const existingSport = sportTypes.find(s => s.name === newSportType.name);
-
-    // means were adding new league to existing sport
-    if (existingSport) {
-      newLeague.sportTypeID = existingSport.id;
-      //existingSport.leagues = [...existingSport.leagues, newLeague];
-      this.scheduleAdminFacade.addLeague(newLeague);
+    // if we have sportTypeID were adding to existing sport type
+    if (newSportAndOrLeague.sportTypeID) {
+      if (newSportAndOrLeague.leagueName) {
+        const newLeague: League = {
+          name: newSportAndOrLeague.leagueName,
+          sportTypeID: newSportAndOrLeague.sportTypeID
+        };
+        this.scheduleAdminFacade.addLeague(newLeague);
+      }
     } else {
-      this.scheduleAdminFacade.addSportType(newSportType);
+      // sanity check to ensure we have new sport name
+      if (newSportAndOrLeague.sportName) {
+        // if we are also adding a league with the sport
+        const newSportType: SportType = {
+          name: newSportAndOrLeague.sportName
+        };
+        // are we also adding new league?
+        if (newSportAndOrLeague.leagueName) {
+          const league: League = {
+            name: newSportAndOrLeague.leagueName
+          };
+          this.scheduleAdminFacade.addSportAndLeague(newSportType, league);
+        } else {
+          this.scheduleAdminFacade.addSportType(newSportType);
+        }
+      }
     }
+
+    // if (newLeague.name) {
+    //   newSportType.leagues.push(newLeague);
+    // }
+
+    // const sportTypes: SportType[] = this.scheduleAdminFacade.store.selectSnapshot(SportTypeState.getSportTypes);
+    // // check if were adding to existing sport type
+    // const existingSport = sportTypes.find(s => s.name === newSportType.name);
+
+    // // means were adding new league to existing sport
+    // if (existingSport) {
+    //   newLeague.sportTypeID = existingSport.id;
+    //   this.scheduleAdminFacade.addLeague(newLeague);
+    // } else {
+    //   this.scheduleAdminFacade.addSportType(newSportType);
+    // }
   }
 
   onNewTeam(newTeamForm: FormGroup) {

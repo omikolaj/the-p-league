@@ -3,7 +3,7 @@ import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedu
 import { Injectable, OnInit } from '@angular/core';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { LeagueService } from './league/league.service';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, concat } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
 import { Schedule } from 'src/app/store/actions/schedule.actions';
@@ -11,7 +11,7 @@ import { Leagues } from 'src/app/store/actions/league.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { MatListOption } from '@angular/material';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { tap } from 'rxjs/operators';
+import { tap, concatMap, switchMap, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -32,13 +32,26 @@ export class ScheduleAdministrationFacade implements OnInit {
     });
   }
 
-  updateSportType(updatedSportType: SportType) {
+  addSportAndLeague(newSportType: SportType, newLeague: League): void {
+    this.scheduleAdminAsync
+      .addSport(newSportType)
+      .pipe(
+        tap(newSportType => {
+          newLeague.sportTypeID = newSportType.id;
+          this.addLeague(newLeague);
+          return newSportType;
+        })
+      )
+      .subscribe(newSportType => this.store.dispatch(new Schedule.AddSportType(newSportType)));
+  }
+
+  updateSportType(updatedSportType: SportType): void {
     this.scheduleAdminAsync.updateSportTypes(updatedSportType).subscribe(updatedSportType => {
       this.store.dispatch(new Schedule.UpdateSportType(updatedSportType));
     });
   }
 
-  deleteSportType(id: string) {
+  deleteSportType(id: string): void {
     this.scheduleAdminAsync.deleteSportType(id).subscribe(id => {
       this.store.dispatch(new Schedule.DeleteSportType(id));
     });
@@ -52,12 +65,12 @@ export class ScheduleAdministrationFacade implements OnInit {
     this.scheduleAdminAsync.addLeague(newLeague).subscribe(() => this.store.dispatch(new Leagues.AddLeague(newLeague)));
   }
 
-  updateLeagues(updatedLeagues: League[]) {
+  updateLeagues(updatedLeagues: League[]): void {
     this.scheduleAdminAsync.updateLeagues(updatedLeagues).subscribe(() => this.store.dispatch(new Leagues.UpdateLeagues(updatedLeagues)));
   }
 
   deleteLeagues(sportTypeID: string): void {
-    const leagueIDsToDelete: string[] = this.store.selectSnapshot(LeagueState.getSelectedForSportTypeID(sportTypeID));
+    const leagueIDsToDelete: string[] = this.store.selectSnapshot(LeagueState.getSelectedLeagueIDsForSportTypeID(sportTypeID));
     this.scheduleAdminAsync.deleteLeagues(leagueIDsToDelete).subscribe(deletedLeagueIDs => {
       this.store.dispatch(new Leagues.DeleteLeagues(deletedLeagueIDs));
     });

@@ -31,9 +31,7 @@ export class EditLeaguesListComponent implements OnInit, OnDestroy {
 
   constructor() {}
 
-  ngOnInit() {
-    console.log('logging incoming leagues', this.leagues);
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     console.log('destroying edit leagues');
@@ -60,5 +58,12 @@ export class EditLeaguesListComponent implements OnInit, OnDestroy {
   onDelete() {
     this.numberOfSelectedLeagues = 0;
     this.deletedLeagues.emit();
+  }
+
+  trackByFn(index: number, league: League) {
+    // there seems to be a bug with Angular
+    // without trackByFn the view does not update correctly
+    // DO NOT DELETE
+    return index;
   }
 }

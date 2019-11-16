@@ -1,21 +1,21 @@
-<mat-card>
-  <form [formGroup]="sportTypeForm" (ngSubmit)="onSubmit()" novalidate>
-    <mat-form-field [appearance]="readonlySportName ? 'none' : 'legacy'">
-      <input matInput formControlName="name" type="text" [readonly]="readonlySportName" />
-    </mat-form-field>
-    <mat-card-actions class="sport-action-buttons">
-      <button mat-raised-button color="accent">{{ readonlySportName ? 'Edit' : 'Save' }}</button>
-      <button mat-raised-button color="warn" [disabled]="!readonlySportName" type="button" (click)="onDeleteSportType()">Delete</button>
-    </mat-card-actions>
-  </form>
-</mat-card>
-
 <ng-container *ngIf="leagues$ | async as leagues">
+  <mat-card>
+    <form [formGroup]="sportTypeForm" (ngSubmit)="onSubmit()" novalidate>
+      <mat-form-field [appearance]="readonlySportName ? 'none' : 'legacy'">
+        <input matInput formControlName="name" type="text" [readonly]="readonlySportName" />
+      </mat-form-field>
+      <mat-card-actions class="sport-action-buttons">
+        <button mat-raised-button color="accent">{{ readonlySportName ? 'Edit' : 'Save' }}</button>
+        <button mat-raised-button color="warn" [disabled]="!readonlySportName" type="button" (click)="onDeleteSportType()">Delete</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+
   <app-edit-leagues-list
     [leagues]="leagues"
     [editLeaguesForm]="editForm"
     (selectedLeagues)="onLeagueSelectionChange($event)"
-    (updatedLeagues)="onUpdatedLeagues($event)"
+    (updatedLeagues)="onUpdatedLeagues($event, leagues)"
     (deletedLeagues)="onDeletedLeagues()"
   ></app-edit-leagues-list>
 </ng-container>

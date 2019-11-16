@@ -1,6 +1,6 @@
 <form [formGroup]="editLeaguesForm" (ngSubmit)="onSubmit()">
   <mat-selection-list formArrayName="leagues" (selectionChange)="onSelectionChange($event)" [disabled]="disableListSelection">
-    <mat-list-option *ngFor="let league of leagues; let i = index" [value]="league.id" [selected]="league.selected">
+    <mat-list-option *ngFor="let league of leagues; let i = index; trackBy: trackByFn" [value]="league.id" [selected]="league.selected">
       <ng-container [formGroupName]="i">
         <mat-form-field [appearance]="!disableListSelection ? 'none' : 'legacy'" appAllowSpaces>
           <input formControlName="name" matInput [value]="league?.name" />

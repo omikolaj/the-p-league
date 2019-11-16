@@ -1,16 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
-import { LeagueService } from 'src/app/core/services/schedule/schedule-administration/league/league.service';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { cloneDeep } from 'lodash';
-import { EditLeagueControl } from '../../models/edit-league-control.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { MatSelectionListChange } from '@angular/material';
-import { LeagueStateModel, LeagueState } from 'src/app/store/state/league.state';
+import { LeagueState } from 'src/app/store/state/league.state';
 import { Observable } from 'rxjs';
-import { SportTypeState } from 'src/app/store/state/sport-type.state';
-import { Select } from '@ngxs/store';
 import { map, tap } from 'rxjs/operators';
 
 @Component({
@@ -20,11 +15,9 @@ import { map, tap } from 'rxjs/operators';
 })
 export class LeagueAdministrationComponent implements OnInit {
   leagues$: Observable<League[]>;
-  @Input() sportTypeID: string;
-  leagues: League[]; // currently not used
-  @Input() sportType; // want to rid of this do not use
+  @Input() sportType: SportType;
   @Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
-  @Output() updatedSport: EventEmitter<SportType> = new EventEmitter<SportType>();
+  @Output() updatedSportName: EventEmitter<{ id: string; name: string }> = new EventEmitter<{ id: string; name: string }>();
 
   editForm: FormGroup;
   sportTypeForm: FormGroup;
@@ -35,12 +28,11 @@ export class LeagueAdministrationComponent implements OnInit {
 
   ngOnInit() {
     this.leagues$ = this.scheduleAdminFacade.store.select(LeagueState.getAllLeaguesForSportTypeID).pipe(
-      map(filterFn => {
-        return (this.leagues = filterFn(this.sportTypeID));
+      map(filterFn => filterFn(this.sportType.id)),
+      tap(leagues => {
+        this.initForms(leagues);
       })
     );
-
-    this.initForms();
   }
 
   ngOnDestroy() {
@@ -50,21 +42,16 @@ export class LeagueAdministrationComponent implements OnInit {
   //#endregion
 
   //#region Forms
-  initForms() {
-    this.initEditForm();
+  initForms(leagues: League[]) {
+    this.initEditForm(leagues);
     this.initSportTypeForm();
   }
 
-  initEditForm() {
-    const leagueNameControls = this.sportType.leagues.map(l =>
+  initEditForm(leagues: League[]) {
+    const leagueNameControls = leagues.map(l =>
       this.fb.group({
         name: this.fb.control(l.name, Validators.required),
         id: this.fb.control(l.id)
-        // // controls initial value for readonly field
-        // readonly: this.fb.control(true),
-        // // controls initial value for rather the check box is selected or not
-        // selected: this.fb.control(false),
-        // sportTypeID: this.fb.control(this.sportType.id)
       })
     );
     this.editForm = this.fb.group({
@@ -88,10 +75,11 @@ export class LeagueAdministrationComponent implements OnInit {
 
   onSaveSportType() {
     this.readonlySportName = !this.readonlySportName;
-    // update sport type name
-    const sportTypeClone = cloneDeep(this.sportType);
-    sportTypeClone.name = this.sportTypeForm.get('name').value;
-    this.updatedSport.emit(sportTypeClone);
+    const updatedSport = {
+      id: this.sportType.id,
+      name: this.sportTypeForm.get('name').value
+    };
+    this.updatedSportName.emit(updatedSport);
   }
 
   onDeleteSportType() {
@@ -99,31 +87,34 @@ export class LeagueAdministrationComponent implements OnInit {
   }
 
   //#endregion
-
+  /**
+   * @param  {MatSelectionListChange} selectedLeaguesEvent   *
+   * Gets triggered each time user makes a list selection
+   */
   onLeagueSelectionChange(selectedLeaguesEvent: MatSelectionListChange) {
     const ids: string[] = [];
     for (let index = 0; index < selectedLeaguesEvent.source.selectedOptions.selected.length; index++) {
       const matListOption = selectedLeaguesEvent.source.selectedOptions.selected[index];
       ids.push(matListOption.value);
     }
-    console.log('ids', ids);
-    this.scheduleAdminFacade.updateSelectedLeagues(ids, this.sportTypeID);
+    this.scheduleAdminFacade.updateSelectedLeagues(ids, this.sportType.id);
   }
 
   //#region Event handlers
 
   /**
+   * @param  {FormGroup} updatedLeagueNames
+   * @param {League[]} leagues
    * Event handler for when edit-leagues component emits
    * FormGroup with updated league names
-   * @param  {FormGroup} updatedLeagueNames
    */
-  onUpdatedLeagues(updatedLeagueNames: FormGroup) {
+  onUpdatedLeagues(updatedLeagueNames: FormGroup, leagues: League[]) {
     const leaguesFormArray = updatedLeagueNames.get('leagues') as FormArray;
     const updatedLeagues: League[] = [];
     for (let index = 0; index < leaguesFormArray.length; index++) {
       const control = leaguesFormArray.at(index);
-      if (this.leagues.some(l => l.id === control.value.id)) {
-        const league = this.leagues.find(l => l.id === control.value.id);
+      if (leagues.some(l => l.id === control.value.id)) {
+        const league = leagues.find(l => l.id === control.value.id);
         if (league.name !== control.value.name) {
           updatedLeagues.push({
             id: control.value.id,
@@ -143,7 +134,7 @@ export class LeagueAdministrationComponent implements OnInit {
    * an array of league ids to be deleted
    */
   onDeletedLeagues() {
-    this.scheduleAdminFacade.deleteLeagues(this.sportTypeID);
+    this.scheduleAdminFacade.deleteLeagues(this.sportType.id);
   }
 
   //#endregion

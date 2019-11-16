@@ -59,17 +59,29 @@ export class LeagueState {
     };
   }
 
-  static getSelectedForSportTypeID(id: string) {
+  static getSelectedLeagueIDsForSportTypeID(id: string) {
     return createSelector([LeagueState], (state: LeagueStateModel) => {
-      const leagueIDsToDelete: string[] = [];
+      const selectedLeagueIDs: string[] = [];
       Object.values(state.entities).forEach(l => {
         if (l.sportTypeID === id) {
           if (l.selected) {
-            leagueIDsToDelete.push(l.id);
+            selectedLeagueIDs.push(l.id);
           }
         }
       });
-      return leagueIDsToDelete;
+      return selectedLeagueIDs;
+    });
+  }
+
+  static getLeaguesForSportTypeID(id: string) {
+    return createSelector([LeagueState], (state: LeagueStateModel) => {
+      const leagues: League[] = [];
+      Object.values(state.entities).forEach(l => {
+        if (l.sportTypeID === id) {
+          leagues.push(l);
+        }
+      });
+      return leagues;
     });
   }
 
@@ -87,6 +99,7 @@ export class LeagueState {
 
   @Action(Leagues.AddLeague)
   add(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeague) {
+    console.log('Adding league');
     ctx.setState(
       patch<LeagueStateModel>({
         entities: patch({ [action.newLeague.id]: action.newLeague }),
@@ -118,6 +131,7 @@ export class LeagueState {
       // if the delete ids list does NOT contain the currently iterating id, keep it
       if (!action.deleteIDs.includes(keepID)) {
         updatedLeagueEntities[keepID] = state.entities[keepID];
+        updatedIDs.push(keepID);
       }
     }
     ctx.patchState({
