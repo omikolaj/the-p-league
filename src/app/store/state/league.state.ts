@@ -39,11 +39,13 @@ export class LeagueState {
 
   @Selector()
   static getSelected(state: LeagueStateModel) {
-    return Object.values(state.entities).map(l => {
+    const selectedLeagues: League[] = [];
+    Object.values(state.entities).map(l => {
       if (l.selected) {
-        return l;
+        selectedLeagues.push(l);
       }
     });
+    return selectedLeagues;
   }
 
   @Selector()
@@ -85,8 +87,8 @@ export class LeagueState {
     });
   }
 
-  @Action(Leagues.FetchLeagues)
-  fetchAll(ctx: StateContext<LeagueStateModel>, action: Leagues.FetchLeagues) {
+  @Action(Leagues.AddLeagues)
+  addLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeagues) {
     action.leagues.forEach(l => {
       ctx.setState(
         patch<LeagueStateModel>({
@@ -99,7 +101,6 @@ export class LeagueState {
 
   @Action(Leagues.AddLeague)
   add(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeague) {
-    console.log('Adding league');
     ctx.setState(
       patch<LeagueStateModel>({
         entities: patch({ [action.newLeague.id]: action.newLeague }),
@@ -121,33 +122,14 @@ export class LeagueState {
     });
   }
 
-  @Action(Leagues.DeleteLeagues)
-  delete(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteLeagues) {
-    const state = ctx.getState();
-    const updatedLeagueEntities = {};
-    const updatedIDs = [];
-    for (let index = 0; index < Object.keys(state.entities).length; index++) {
-      const keepID = Object.keys(state.entities)[index];
-      // if the delete ids list does NOT contain the currently iterating id, keep it
-      if (!action.deleteIDs.includes(keepID)) {
-        updatedLeagueEntities[keepID] = state.entities[keepID];
-        updatedIDs.push(keepID);
-      }
-    }
-    ctx.patchState({
-      ...state,
-      entities: updatedLeagueEntities,
-      IDs: updatedIDs
-    });
-  }
-
   @Action(Leagues.UpdateSelectedLeagues)
   updatedSelected(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateSelectedLeagues) {
     const state = {
       ...ctx.getState(),
       entities: { ...ctx.getState().entities }
     };
-    for (let index = 0; index < Object.values(ctx.getState().entities).length; index++) {
+
+    for (let index = 0; index < Object.values(state.entities).length; index++) {
       const league: League = { ...Object.values(state.entities)[index] };
       // if the current league sport type ID matches the incoming
       if (league.sportTypeID === action.sportTypeID) {
@@ -166,5 +148,25 @@ export class LeagueState {
         entities: state.entities
       })
     );
+  }
+
+  @Action(Leagues.DeleteLeagues)
+  delete(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteLeagues) {
+    const state = ctx.getState();
+    const updatedLeagueEntities = {};
+    const updatedIDs = [];
+    for (let index = 0; index < Object.keys(state.entities).length; index++) {
+      const keepID = Object.keys(state.entities)[index];
+      // if the delete ids list does NOT contain the currently iterating id, keep it
+      if (!action.deleteIDs.includes(keepID)) {
+        updatedLeagueEntities[keepID] = { ...state.entities[keepID] };
+        updatedIDs.push(keepID);
+      }
+    }
+    ctx.patchState({
+      ...state,
+      entities: updatedLeagueEntities,
+      IDs: updatedIDs
+    });
   }
 }

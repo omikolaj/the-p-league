@@ -1,5 +1,11 @@
-<app-edit-teams-list
-  (updatedTeams)="onUpdatedTeams($event)"
-  (selectedTeamsChange)="onSelectedTeamsChange($event)"
-  [teamsForm]="teamsForm"
-></app-edit-teams-list>
+<ng-container *ngIf="teams$ | async as teams">
+  <app-edit-teams-list
+    (onUpdatedTeams)="onUpdatedTeams($event)"
+    (onDeletedTeams)="onDeletedTeamsHandler()"
+    (onUnassignTeams)="onUnassignHandler()"
+    (onTeamSelectionChange)="onSelectedTeamsChangeHandler($event)"
+    [teamsForm]="teamsForm"
+    [teams]="teams"
+    [league]="league"
+  ></app-edit-teams-list>
+</ng-container>

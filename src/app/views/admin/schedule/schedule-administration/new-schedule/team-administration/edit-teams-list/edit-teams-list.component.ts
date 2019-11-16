@@ -1,9 +1,10 @@
 import { EditTeamControl } from './../../../../models/edit-team-control.model';
-import { MatSelectionListChange } from '@angular/material';
+import { MatSelectionListChange, MatSelectionList } from '@angular/material';
 import { SportType } from './../../../../../../schedule/models/interfaces/sport-type.model';
 import { FormGroup } from '@angular/forms';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 
 @Component({
   selector: 'app-edit-teams-list',
@@ -12,46 +13,44 @@ import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 })
 export class EditTeamsListComponent implements OnInit {
   @Input() teamsForm: FormGroup;
-  @Output() unassignedTeams: EventEmitter<Team[]> = new EventEmitter<Team[]>();
-  @Output() updatedTeams: EventEmitter<Team[]> = new EventEmitter<Team[]>();
-  @Output() deletedTeams: EventEmitter<Team[]> = new EventEmitter<Team[]>();
-  @Output() selectedTeamsChange: EventEmitter<EditTeamControl[]> = new EventEmitter<EditTeamControl[]>();
-
-  teams: EditTeamControl[] = [];
-  leagueName: string;
-  leagueType: string;
+  @Input() teams: Team[];
+  @Input() league: League;
+  @Output() onUnassignTeams: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onUpdatedTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+  @Output() onDeletedTeams: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onTeamSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
   disableListSelection: boolean = false;
-  numberOfSelectedTeams: number;
+  // assumes we have at least one team selected when initialized
+  private numberOfSelectedTeams: number = 1;
+  get disableEdit(): boolean {
+    return this.numberOfSelectedTeams > 0 ? false : true;
+  }
+  get disableDelete(): boolean {
+    const disable = this.numberOfSelectedTeams > 0 ? false : true;
+    return disable || this.disableListSelection;
+  }
+  @ViewChild(MatSelectionList, { static: false }) teamList: MatSelectionList;
 
   constructor() {}
 
   //#region ng LifeCycle Hooks
 
-  ngOnInit() {
-    const leagueControl = this.teamsForm.get('league');
-    this.leagueName = leagueControl.get('name').value;
-    this.leagueType = (leagueControl.get('type').value as SportType).name;
-    this.teams = this.teamsForm.get('teams').value;
-  }
+  ngOnInit() {}
 
   //#endregion
 
   onSelectionChange(event: MatSelectionListChange) {
     this.numberOfSelectedTeams = event.source.selectedOptions.selected.length;
-
-    const selectedTeamControls: EditTeamControl[] = [];
-    for (let index = 0; index < this.numberOfSelectedTeams; index++) {
-      const id = event.source.selectedOptions.selected[index].value;
-      selectedTeamControls.push(this.teams.find(t => t.id === id));
-    }
-    this.selectedTeamsChange.emit(selectedTeamControls);
+    this.onTeamSelectionChange.emit(event);
   }
 
   onSubmit() {
     this.disableListSelection ? this.onSaveHandler() : this.onEditHandler();
   }
 
-  onUnassignHandler() {}
+  onUnassignHandler() {
+    this.onUnassignTeams.emit();
+  }
 
   onEditHandler() {
     this.disableListSelection = !this.disableListSelection;
@@ -59,14 +58,11 @@ export class EditTeamsListComponent implements OnInit {
 
   onSaveHandler() {
     this.disableListSelection = !this.disableListSelection;
+    this.onUpdatedTeams.emit(this.teamsForm);
+  }
 
-    const updatedTeamControls: EditTeamControl[] = [];
-    const updatedControls = this.teamsForm.get('teams').value;
-    for (let index = 0; index < updatedControls.length; index++) {
-      const updatedTeamControl = updatedControls[index] as EditTeamControl;
-      updatedTeamControls.push(updatedTeamControl);
-    }
-
-    this.updatedTeams.emit(updatedTeamControls);
+  onDeleteHandler() {
+    this.numberOfSelectedTeams = 0;
+    this.onDeletedTeams.emit();
   }
 }

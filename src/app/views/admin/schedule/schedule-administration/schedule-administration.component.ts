@@ -98,14 +98,6 @@ export class ScheduleAdministrationComponent implements OnInit {
     this.newSportLeagueForm.get('leagueName').reset();
     this.newSportLeagueForm.get('sportTypeID').reset();
 
-    // const newSportType: SportType = {
-    //   name: newSportLeague.get('sportType').value,
-    //   leagues: []
-    // };
-    // let newLeague: League = {
-    //   name: newSportLeague.get('leagueName').value
-    // };
-
     const newSportAndOrLeague: { sportName: string; leagueName: string; sportTypeID: string } = {
       sportName: newSportLeague.get('sportType').value,
       leagueName: newSportLeague.get('leagueName').value,
@@ -139,32 +131,17 @@ export class ScheduleAdministrationComponent implements OnInit {
         }
       }
     }
-
-    // if (newLeague.name) {
-    //   newSportType.leagues.push(newLeague);
-    // }
-
-    // const sportTypes: SportType[] = this.scheduleAdminFacade.store.selectSnapshot(SportTypeState.getSportTypes);
-    // // check if were adding to existing sport type
-    // const existingSport = sportTypes.find(s => s.name === newSportType.name);
-
-    // // means were adding new league to existing sport
-    // if (existingSport) {
-    //   newLeague.sportTypeID = existingSport.id;
-    //   this.scheduleAdminFacade.addLeague(newLeague);
-    // } else {
-    //   this.scheduleAdminFacade.addSportType(newSportType);
-    // }
   }
 
   onNewTeam(newTeamForm: FormGroup) {
     this.newTeamForm.get('name').reset();
     this.newTeamForm.get('leagueID').reset();
+
     const newTeam: Team = {
       name: newTeamForm.get('name').value,
       leagueID: newTeamForm.get('leagueID').value
     };
-    console.log('newTeam', newTeam);
+
     this.scheduleAdminFacade.addTeam(newTeam);
   }
 

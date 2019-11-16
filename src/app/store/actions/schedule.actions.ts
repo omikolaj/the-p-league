@@ -65,11 +65,4 @@ export namespace Schedule {
   }
 
   //#endregion
-
-  //#region Teams
-  export class AddTeam {
-    static readonly type = '[Schedule API] AddTeam';
-    constructor(public newTeam: Team) {}
-  }
-  //#endregion
 }

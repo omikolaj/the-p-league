@@ -17,7 +17,6 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
   }
 
   addSport(newSportType: SportType): Observable<SportType> {
-    console.log('inside add sport type');
     newSportType.id = cuid();
     return of(newSportType).pipe(delay(1000));
   }
@@ -31,7 +30,6 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
   }
 
   addLeague(newLeague: League): Observable<League> {
-    console.log('inside add league');
     newLeague.id = cuid();
     return of(newLeague).pipe(delay(100));
   }
@@ -47,5 +45,13 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
   addTeam(newTeam: Team): Observable<Team> {
     newTeam.id = cuid();
     return of(newTeam).pipe(delay(100));
+  }
+
+  updateTeams(updatedTeams: Team[]): Observable<Team[]> {
+    return of(updatedTeams).pipe(delay(100));
+  }
+
+  deleteTeams(teamsToDelete: string[]): Observable<string[]> {
+    return of(teamsToDelete).pipe(delay(100));
   }
 }

@@ -12,6 +12,8 @@ import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { MatListOption } from '@angular/material';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { tap, concatMap, switchMap, map } from 'rxjs/operators';
+import { Teams } from 'src/app/store/actions/team.actions';
+import { TeamState } from 'src/app/store/state/team.state';
 
 @Injectable({
   providedIn: 'root'
@@ -88,9 +90,22 @@ export class ScheduleAdministrationFacade implements OnInit {
 
   //#region Teams
   addTeam(newTeam: Team): void {
-    this.scheduleAdminAsync.addTeam(newTeam).subscribe(newTeam => {
-      this.store.dispatch(new Leagues.AddTeam(newTeam));
+    this.scheduleAdminAsync.addTeam(newTeam).subscribe(newTeam => this.store.dispatch(new Teams.AddTeam(newTeam)));
+  }
+
+  updateTeams(updatedTeams: Team[]): void {
+    this.scheduleAdminAsync.updateTeams(updatedTeams).subscribe(updatedTeams => this.store.dispatch(new Teams.UpdateTeams(updatedTeams)));
+  }
+
+  deleteTeams(leagueID: string) {
+    const teamIDsToDelete: string[] = this.store.selectSnapshot(TeamState.getSelectedTeamIDsForLeagueID(leagueID));
+    this.scheduleAdminAsync.deleteTeams(teamIDsToDelete).subscribe(deletedTeamIDs => {
+      this.store.dispatch(new Teams.DeleteTeams(deletedTeamIDs));
     });
+  }
+
+  updateTeamSelection(selectedIDs: string[], leagueID: string): void {
+    this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, leagueID));
   }
   //#endregion
 

@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team, TEAMS } from 'src/app/views/schedule/models/interfaces/team.model';
 import { HttpClient } from '@angular/common/http';
-import { delay } from 'rxjs/operators';
+import { delay, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +21,8 @@ export class ScheduleAsyncService {
           {
             name: 'Monday',
             id: '1',
-            type: { id: '4', name: 'Basketball' },
-            teams: [...this.teams],
+            type: 'Basketball',
+            teams: this.teams.filter(t => t.leagueID === '1'),
             readonly: true,
             selected: false,
             sportTypeID: '1'
@@ -30,8 +30,8 @@ export class ScheduleAsyncService {
           {
             name: 'Tuesday',
             id: '2',
-            type: { id: '4', name: 'Basketball' },
-            teams: [...this.teams],
+            type: 'Basketball',
+            teams: this.teams.filter(t => t.leagueID === '2'),
             readonly: true,
             selected: false,
             sportTypeID: '1'
@@ -39,8 +39,8 @@ export class ScheduleAsyncService {
           {
             name: 'Wednesday',
             id: '3',
-            type: { id: '4', name: 'Basketball' },
-            teams: [...this.teams],
+            type: 'Basketball',
+            teams: this.teams.filter(t => t.leagueID === '3'),
             readonly: true,
             selected: false,
             sportTypeID: '1'
@@ -53,9 +53,9 @@ export class ScheduleAsyncService {
         leagues: [
           {
             name: 'Thursday',
-            id: '6',
-            type: { id: '4', name: 'Volleyball' },
-            teams: [...this.teams],
+            id: '4',
+            type: 'Volleyball',
+            teams: this.teams.filter(t => t.leagueID === '4'),
             readonly: true,
             selected: false,
             sportTypeID: '2'
@@ -63,17 +63,17 @@ export class ScheduleAsyncService {
           {
             name: 'Friday',
             id: '5',
-            type: { id: '4', name: 'Volleyball' },
-            teams: [...this.teams],
+            type: 'Volleyball',
+            teams: this.teams.filter(t => t.leagueID === '5'),
             readonly: true,
             selected: false,
             sportTypeID: '2'
           },
           {
             name: 'Saturday',
-            id: '4',
-            type: { id: '4', name: 'Volleyball' },
-            teams: [...this.teams],
+            id: '6',
+            type: 'Volleyball',
+            teams: this.teams.filter(t => t.leagueID === '6'),
             readonly: true,
             selected: false,
             sportTypeID: '2'
@@ -87,8 +87,8 @@ export class ScheduleAsyncService {
           {
             name: 'Sunday',
             id: '9',
-            type: { id: '4', name: 'Soccer' },
-            teams: [...this.teams],
+            type: 'Soccer',
+            teams: this.teams.filter(t => t.leagueID === '9'),
             readonly: true,
             selected: false,
             sportTypeID: '3'

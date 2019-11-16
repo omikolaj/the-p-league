@@ -8,8 +8,8 @@
   </ng-container>
 </ng-container>
 
-<ng-container *ngIf="unassignedTeams.length > 0; then unassigned"> </ng-container>
-
-<ng-template #unassigned>
-  <app-unassigned [teams]="unassignedTeams"></app-unassigned>
-</ng-template>
+<ng-container *ngIf="unassignedTeams.length > 0; then unassigned">
+  <ng-template #unassigned>
+    <app-unassigned [teams]="unassignedTeams"></app-unassigned>
+  </ng-template>
+</ng-container>

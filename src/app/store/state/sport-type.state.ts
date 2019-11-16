@@ -9,6 +9,7 @@ import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedu
 import { patch, updateItem, append, removeItem, insertItem } from '@ngxs/store/operators';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { Teams } from '../actions/team.actions';
 
 export interface SportTypeStateModel {
   entities: {
@@ -64,7 +65,13 @@ export class SportTypeState {
       }),
       tap(sportTypes => {
         sportTypes.map(s => {
-          ctx.dispatch(new Leagues.FetchLeagues(s.leagues));
+          ctx.dispatch(new Leagues.AddLeagues(s.leagues));
+        });
+        return sportTypes;
+      }),
+      tap(sportTypes => {
+        sportTypes.map(s => {
+          s.leagues.map(l => ctx.dispatch(new Teams.AddTeams(l.teams)));
         });
       }),
       switchMap(() => ctx.dispatch(new Schedule.FetchAllSportTypesSuccess())),

@@ -7,6 +7,7 @@ import { MatSelectionListChange } from '@angular/material';
 import { LeagueState } from 'src/app/store/state/league.state';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
 
 @Component({
   selector: 'app-league-administration',
@@ -18,11 +19,11 @@ export class LeagueAdministrationComponent implements OnInit {
   @Input() sportType: SportType;
   @Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
   @Output() updatedSportName: EventEmitter<{ id: string; name: string }> = new EventEmitter<{ id: string; name: string }>();
-
   editForm: FormGroup;
   sportTypeForm: FormGroup;
   readonlySportName: boolean = true;
-  constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
+
+  constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService) {}
 
   //#region ng LifeCycle hooks
 
@@ -92,11 +93,8 @@ export class LeagueAdministrationComponent implements OnInit {
    * Gets triggered each time user makes a list selection
    */
   onLeagueSelectionChange(selectedLeaguesEvent: MatSelectionListChange) {
-    const ids: string[] = [];
-    for (let index = 0; index < selectedLeaguesEvent.source.selectedOptions.selected.length; index++) {
-      const matListOption = selectedLeaguesEvent.source.selectedOptions.selected[index];
-      ids.push(matListOption.value);
-    }
+    const ids: string[] = this.scheduleHelper.onSelectionChange(selectedLeaguesEvent);
+
     this.scheduleAdminFacade.updateSelectedLeagues(ids, this.sportType.id);
   }
 

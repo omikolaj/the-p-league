@@ -31,7 +31,11 @@ export class LeagueScheduleComponent implements OnInit {
     const dateTimeRanges: DateTimeRanges = {
       timesOfDays: [
         {
-          [MatchDay[MatchDay.Tuesday]]: [{ hour: 20, minute: 0o0 }, { hour: 21, minute: 0o0 }, { hour: 22, minute: 0o0 }]
+          [MatchDay[MatchDay.Tuesday]]: [
+            { hour: 20, minute: 0o0 },
+            { hour: 21, minute: 0o0 },
+            { hour: 22, minute: 0o0 }
+          ]
         }
       ],
       days: [MatchDay.Tuesday],
@@ -41,7 +45,7 @@ export class LeagueScheduleComponent implements OnInit {
       }
     };
 
-    const basketBall: League = { name: 'Monday', type: { name: 'Basketball' } };
+    const basketBall: League = { name: 'Monday', type: 'Basketball' };
     const sessionSchedule: SessionSchedule = new SessionSchedule(TEAMS, dateTimeRanges, basketBall);
 
     this.dataSource = new LeagueScheduleDataSource(this.scheduleService);
