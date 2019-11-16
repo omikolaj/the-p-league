@@ -17,6 +17,11 @@ export namespace Teams {
     constructor(public updatedTeams: Team[]) {}
   }
 
+  export class UnassignTeams {
+    static readonly type = '[Schedule API] UnassignTeams';
+    constructor(public unassignIDs: string[]) {}
+  }
+
   export class DeleteTeams {
     static readonly type = '[Schedule API] DeleteTeams';
     constructor(public deleteIDs: string[]) {}
@@ -26,12 +31,4 @@ export namespace Teams {
     static readonly type = '[Schedule] UpdateSelectedTeams';
     constructor(public selected: string[], public leagueID: string) {}
   }
-
-  // export class AddTeamSuccess {
-  //   static readonly type = '[Schedule API] AddTeamSuccess';
-  // }
-  // export class AddTeamFailed {
-  //   static readonly type = '[Schedule API] AddTeamFailed';
-  //   constructor(public error: any) {}
-  // }
 }

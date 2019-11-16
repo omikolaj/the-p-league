@@ -139,7 +139,8 @@ export class ScheduleAdministrationComponent implements OnInit {
 
     const newTeam: Team = {
       name: newTeamForm.get('name').value,
-      leagueID: newTeamForm.get('leagueID').value
+      leagueID: newTeamForm.get('leagueID').value,
+      selected: true
     };
 
     this.scheduleAdminFacade.addTeam(newTeam);

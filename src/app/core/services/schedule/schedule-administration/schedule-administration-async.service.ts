@@ -16,6 +16,8 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
     super(http);
   }
 
+  //#region
+
   addSport(newSportType: SportType): Observable<SportType> {
     newSportType.id = cuid();
     return of(newSportType).pipe(delay(1000));
@@ -28,6 +30,10 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
   deleteSportType(id: string): Observable<string> {
     return of(id).pipe(delay(100));
   }
+
+  //#endregion
+
+  //#region
 
   addLeague(newLeague: League): Observable<League> {
     newLeague.id = cuid();
@@ -42,6 +48,10 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
     return of(leaguesToDelete).pipe(delay(100));
   }
 
+  //#endregion
+
+  //#region Teams
+
   addTeam(newTeam: Team): Observable<Team> {
     newTeam.id = cuid();
     return of(newTeam).pipe(delay(100));
@@ -51,7 +61,13 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
     return of(updatedTeams).pipe(delay(100));
   }
 
+  unassignTeams(teamsToUnassign: string[]): Observable<string[]> {
+    return of(teamsToUnassign).pipe(delay(100));
+  }
+
   deleteTeams(teamsToDelete: string[]): Observable<string[]> {
     return of(teamsToDelete).pipe(delay(100));
   }
+
+  //#endregion
 }

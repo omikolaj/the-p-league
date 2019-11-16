@@ -5,7 +5,7 @@ import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { SportTypeState } from './sport-type.state';
 import { State, Selector, Action, StateContext, Store, createSelector } from '@ngxs/store';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { patch, append } from '@ngxs/store/operators';
+import { patch, append, removeItem } from '@ngxs/store/operators';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { LeagueStateModel } from './league.state';
 import { Teams } from '../actions/team.actions';
@@ -113,23 +113,46 @@ export class TeamState {
     });
   }
 
-  @Action(Teams.DeleteTeams)
-  delete(ctx: StateContext<TeamStateModel>, action: Teams.DeleteTeams) {
+  @Action(Teams.UnassignTeams)
+  unassign(ctx: StateContext<TeamStateModel>, action: Teams.UnassignTeams) {
     const state = ctx.getState();
-    const updatedTeamEntities = {};
-    const updatedIDs = [];
-    for (let index = 0; index < Object.keys(state.entities).length; index++) {
-      const keepID = Object.keys(state.entities)[index];
-      if (!action.deleteIDs.includes(keepID)) {
-        updatedTeamEntities[keepID] = { ...state.entities[keepID] };
-        updatedIDs.push(keepID);
+    for (let index = 0; index < action.unassignIDs.length; index++) {
+      const unassignID = action.unassignIDs[index];
+      const unassignTeam: Team = { ...Object.values(state.entities).find(t => t.id === unassignID) };
+      if (unassignTeam) {
+        unassignTeam.leagueID = '-1';
+        unassignTeam.assigned = false;
+        unassignTeam.selected = false;
+        ctx.setState(
+          patch<TeamStateModel>({
+            entities: patch({
+              [unassignTeam.id]: unassignTeam
+            })
+          })
+        );
       }
     }
-    ctx.patchState({
-      ...state,
-      entities: updatedTeamEntities,
-      IDs: updatedIDs
-    });
+  }
+
+  @Action(Teams.DeleteTeams)
+  delete(ctx: StateContext<TeamStateModel>, action: Teams.DeleteTeams) {
+    const state = {
+      ...ctx.getState(),
+      entities: { ...ctx.getState().entities }
+    };
+    for (let index = 0; index < action.deleteIDs.length; index++) {
+      const deleteID = action.deleteIDs[index];
+      const deleteTeam: Team = { ...Object.values(state.entities).find(t => t.id === deleteID) };
+      if (deleteTeam) {
+        delete state.entities[deleteID];
+        ctx.setState(
+          patch<TeamStateModel>({
+            entities: state.entities,
+            IDs: removeItem(id => id === deleteID)
+          })
+        );
+      }
+    }
   }
 
   @Action(Teams.UpdateSelectedTeams)

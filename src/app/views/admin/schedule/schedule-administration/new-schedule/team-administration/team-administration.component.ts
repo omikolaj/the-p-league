@@ -54,7 +54,9 @@ export class TeamAdministrationComponent implements OnInit {
     this.scheduleAdminFacade.deleteTeams(this.league.id);
   }
 
-  onUnassignHandler() {}
+  onUnassignHandler() {
+    this.scheduleAdminFacade.unassignTeams(this.league.id);
+  }
 
   onUpdatedTeams(updatedTeams: FormGroup) {
     const teamsToUpdate: Team[] = [];

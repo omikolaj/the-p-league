@@ -29,9 +29,7 @@ export class ScheduleAdministrationFacade implements OnInit {
   //#region SportTypes
 
   addSportType(newSport: SportType): void {
-    this.scheduleAdminAsync.addSport(newSport).subscribe(newSport => {
-      this.store.dispatch(new Schedule.AddSportType(newSport));
-    });
+    this.scheduleAdminAsync.addSport(newSport).subscribe(newSport => this.store.dispatch(new Schedule.AddSportType(newSport)));
   }
 
   addSportAndLeague(newSportType: SportType, newLeague: League): void {
@@ -48,15 +46,13 @@ export class ScheduleAdministrationFacade implements OnInit {
   }
 
   updateSportType(updatedSportType: SportType): void {
-    this.scheduleAdminAsync.updateSportTypes(updatedSportType).subscribe(updatedSportType => {
-      this.store.dispatch(new Schedule.UpdateSportType(updatedSportType));
-    });
+    this.scheduleAdminAsync
+      .updateSportTypes(updatedSportType)
+      .subscribe(updatedSportType => this.store.dispatch(new Schedule.UpdateSportType(updatedSportType)));
   }
 
   deleteSportType(id: string): void {
-    this.scheduleAdminAsync.deleteSportType(id).subscribe(id => {
-      this.store.dispatch(new Schedule.DeleteSportType(id));
-    });
+    this.scheduleAdminAsync.deleteSportType(id).subscribe(id => this.store.dispatch(new Schedule.DeleteSportType(id)));
   }
 
   //#endregion
@@ -73,9 +69,9 @@ export class ScheduleAdministrationFacade implements OnInit {
 
   deleteLeagues(sportTypeID: string): void {
     const leagueIDsToDelete: string[] = this.store.selectSnapshot(LeagueState.getSelectedLeagueIDsForSportTypeID(sportTypeID));
-    this.scheduleAdminAsync.deleteLeagues(leagueIDsToDelete).subscribe(deletedLeagueIDs => {
-      this.store.dispatch(new Leagues.DeleteLeagues(deletedLeagueIDs));
-    });
+    this.scheduleAdminAsync
+      .deleteLeagues(leagueIDsToDelete)
+      .subscribe(deletedLeagueIDs => this.store.dispatch(new Leagues.DeleteLeagues(deletedLeagueIDs)));
   }
 
   updateSelectedLeagues(selectedIDs: string[], sportTypeID: string): void {
@@ -97,11 +93,16 @@ export class ScheduleAdministrationFacade implements OnInit {
     this.scheduleAdminAsync.updateTeams(updatedTeams).subscribe(updatedTeams => this.store.dispatch(new Teams.UpdateTeams(updatedTeams)));
   }
 
+  unassignTeams(leagueID: string) {
+    const teamIDsToUnassign: string[] = this.store.selectSnapshot(TeamState.getSelectedTeamIDsForLeagueID(leagueID));
+    this.scheduleAdminAsync
+      .unassignTeams(teamIDsToUnassign)
+      .subscribe(unassignedTeamIDs => this.store.dispatch(new Teams.UnassignTeams(unassignedTeamIDs)));
+  }
+
   deleteTeams(leagueID: string) {
     const teamIDsToDelete: string[] = this.store.selectSnapshot(TeamState.getSelectedTeamIDsForLeagueID(leagueID));
-    this.scheduleAdminAsync.deleteTeams(teamIDsToDelete).subscribe(deletedTeamIDs => {
-      this.store.dispatch(new Teams.DeleteTeams(deletedTeamIDs));
-    });
+    this.scheduleAdminAsync.deleteTeams(teamIDsToDelete).subscribe(deletedTeamIDs => this.store.dispatch(new Teams.DeleteTeams(deletedTeamIDs)));
   }
 
   updateTeamSelection(selectedIDs: string[], leagueID: string): void {
