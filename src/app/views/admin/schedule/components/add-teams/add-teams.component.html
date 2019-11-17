@@ -22,8 +22,8 @@
         <mat-label>League</mat-label>
         <mat-select formControlName="leagueID">
           <!-- <mat-option>-- None --</mat-option> -->
-          <mat-optgroup *ngFor="let sport of sportType" [label]="sport.name">
-            <mat-option *ngFor="let league of sport.leagues" [value]="league.id">
+          <mat-optgroup *ngFor="let pair of sportLeaguePairs" [label]="pair.sportName">
+            <mat-option *ngFor="let league of pair.leagueNames" [value]="league.id">
               {{ league.name }}
             </mat-option>
           </mat-optgroup>

@@ -58,18 +58,19 @@ export class TeamAdministrationComponent implements OnInit {
     this.scheduleAdminFacade.unassignTeams(this.league.id);
   }
 
+  //TODO refactor into helper method same logic as in league-administration.component onUpdatedLeagues
   onUpdatedTeams(updatedTeams: FormGroup) {
+    this.teams$.pipe(map(teams => console.log('inside teams$ pipe', teams)));
     const teamsToUpdate: Team[] = [];
     const teamsFormArray = updatedTeams.get('teams') as FormArray;
     for (let index = 0; index < teamsFormArray.length; index++) {
       const currentTeam = teamsFormArray.at(index);
-      if (this.teams.some(t => t.name !== currentTeam.value.name)) {
+      if (!this.teams.find(t => t.name === currentTeam.value.name)) {
         const existingTeam = this.teams.find(t => t.id === currentTeam.value.id);
         const teamToUpdate: Team = {
           id: existingTeam.id,
           name: currentTeam.value.name,
           leagueID: existingTeam.leagueID,
-          assigned: existingTeam.assigned,
           selected: existingTeam.selected
         };
         teamsToUpdate.push(teamToUpdate);

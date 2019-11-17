@@ -8,7 +8,6 @@ export interface Team {
   sessionScheduleID?: string;
   leagueID?: string;
   selected?: boolean;
-  assigned?: boolean;
 }
 
 export interface HomeTeam extends Team {}

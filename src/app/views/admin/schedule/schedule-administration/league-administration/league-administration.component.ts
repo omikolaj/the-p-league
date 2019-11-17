@@ -100,12 +100,7 @@ export class LeagueAdministrationComponent implements OnInit {
 
   //#region Event handlers
 
-  /**
-   * @param  {FormGroup} updatedLeagueNames
-   * @param {League[]} leagues
-   * Event handler for when edit-leagues component emits
-   * FormGroup with updated league names
-   */
+  //TODO refactor into helper method same logic as in team-administration.component onUpdatedTeams
   onUpdatedLeagues(updatedLeagueNames: FormGroup, leagues: League[]) {
     const leaguesFormArray = updatedLeagueNames.get('leagues') as FormArray;
     const updatedLeagues: League[] = [];

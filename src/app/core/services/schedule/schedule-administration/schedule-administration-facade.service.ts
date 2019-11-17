@@ -5,7 +5,7 @@ import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.m
 import { LeagueService } from './league/league.service';
 import { Observable, BehaviorSubject, concat } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
-import { SportTypeState } from 'src/app/store/state/sport-type.state';
+import { SportTypeState, SportTypeStateModel } from 'src/app/store/state/sport-type.state';
 import { Schedule } from 'src/app/store/actions/schedule.actions';
 import { Leagues } from 'src/app/store/actions/league.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
@@ -14,6 +14,7 @@ import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { tap, concatMap, switchMap, map } from 'rxjs/operators';
 import { Teams } from 'src/app/store/actions/team.actions';
 import { TeamState } from 'src/app/store/state/team.state';
+import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ import { TeamState } from 'src/app/store/state/team.state';
 export class ScheduleAdministrationFacade implements OnInit {
   @Select(SportTypeState.getSportTypes) sports$: Observable<SportType[]>;
   @Select(LeagueState.getSelected) selectedLeagues$: Observable<League[]>;
+  @Select(TeamState.getUnassigned) unassignedTeams$: Observable<Team[]>;
+  sportTypesLeaguesPairs$: Observable<SportTypesLeaguesPairs[]> = this.store.select(SportTypeState.getSportTypesLeaguesPairs);
 
   constructor(private scheduleAdminAsync: ScheduleAdministrationAsyncService, private leagueService: LeagueService, public store: Store) {}
 

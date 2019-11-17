@@ -3,7 +3,7 @@ import { SportTypeState } from './../../../../store/state/sport-type.state';
 import { Type } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControlOptions } from '@angular/forms';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { MatTabChangeEvent } from '@angular/material';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
@@ -14,6 +14,8 @@ import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 import { ModifyScheduleComponent } from './modify/modify-schedule.component';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { LeagueState } from 'src/app/store/state/league.state';
+import { SportTypesLeaguesPairs } from '../models/sport-types-leagues-pairs.model';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -22,6 +24,8 @@ import { LeagueState } from 'src/app/store/state/league.state';
 })
 export class ScheduleAdministrationComponent implements OnInit {
   sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
+  unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
+  sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
   @ViewChild('matGroup', { static: false }) matTabGroup;
   private _unsubscribe$ = new Subject<void>();
   tabTitle: TabTitles = 'Schedule';
@@ -146,8 +150,8 @@ export class ScheduleAdministrationComponent implements OnInit {
     this.scheduleAdminFacade.addTeam(newTeam);
   }
 
-  onItemAdded(event) {
-    console.log(event);
+  onAssignTeams(assignTeamForm: FormGroup) {
+    console.log('logging assignTeamForm', assignTeamForm);
   }
 
   onNewSchedule() {

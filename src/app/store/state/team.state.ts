@@ -28,15 +28,27 @@ export interface TeamStateModel {
   }
 })
 export class TeamState {
+  private static readonly Unassigned = '-1';
   constructor() {}
 
   @Selector()
   static getTeams(state: TeamStateModel) {
     const teams: Team[] = [];
-    Object.values(state.entities).map(t => {
+    Object.values(state.entities).forEach(t => {
       teams.push(t);
     });
     return teams;
+  }
+
+  @Selector()
+  static getUnassigned(state: TeamStateModel) {
+    const unassignedTeams: Team[] = [];
+    Object.values(state.entities).forEach(t => {
+      if (t.leagueID === this.Unassigned) {
+        unassignedTeams.push(t);
+      }
+    });
+    return unassignedTeams;
   }
 
   @Selector()
@@ -121,7 +133,6 @@ export class TeamState {
       const unassignTeam: Team = { ...Object.values(state.entities).find(t => t.id === unassignID) };
       if (unassignTeam) {
         unassignTeam.leagueID = '-1';
-        unassignTeam.assigned = false;
         unassignTeam.selected = false;
         ctx.setState(
           patch<TeamStateModel>({
@@ -135,15 +146,22 @@ export class TeamState {
   }
 
   @Action(Teams.DeleteTeams)
+  /**
+   * @param  {StateContext<TeamStateModel>} ctx
+   * @param  {Teams.DeleteTeams} action
+   * This approach seems more efficient of deleting things
+   * It has more code because we have to copy frozen objects
+   */
   delete(ctx: StateContext<TeamStateModel>, action: Teams.DeleteTeams) {
     const state = {
-      ...ctx.getState(),
-      entities: { ...ctx.getState().entities }
+      ...ctx.getState()
     };
     for (let index = 0; index < action.deleteIDs.length; index++) {
       const deleteID = action.deleteIDs[index];
-      const deleteTeam: Team = { ...Object.values(state.entities).find(t => t.id === deleteID) };
+      const deleteTeam: Team = Object.values(state.entities).find(t => t.id === deleteID);
       if (deleteTeam) {
+        state.entities = { ...state.entities };
+        state.entities[deleteID] = { ...state.entities[deleteID] };
         delete state.entities[deleteID];
         ctx.setState(
           patch<TeamStateModel>({

@@ -3,6 +3,7 @@ import { FormGroup, Form, FormGroupDirective } from '@angular/forms';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { MatExpansionPanel } from '@angular/material';
+import { SportTypesLeaguesPairs } from '../../models/sport-types-leagues-pairs.model';
 
 @Component({
   selector: 'app-add-teams',
@@ -13,7 +14,7 @@ export class AddTeamsComponent {
   title: string = 'Add';
   description: string = 'Team';
   @Input() newTeamForm: FormGroup;
-  @Input() sportType: SportType;
+  @Input() sportLeaguePairs: SportTypesLeaguesPairs[];
   @Output() onNewTeam: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
   @ViewChild(MatExpansionPanel, { static: false })
   matExpansionPanel: MatExpansionPanel;

@@ -46,6 +46,7 @@ export class LeagueService {
 
   updateSelectedLeagues(updatedLeagues: MatListOption[]): League[] {
     const allLeagues = this.store.selectSnapshot(LeagueState.getAll);
+    console.log('all leagues are', allLeagues);
     const updatedLeauges: League[] = [];
     updatedLeagues.forEach(matListOption => {
       const leagueToUpdate = cloneDeep(allLeagues.find(l => l.id === matListOption.value));
@@ -72,92 +73,4 @@ export class LeagueService {
     this._allSelectedLeaguesSubject.next(allLeagues);
     console.log('updated teams', this.allSelectedLeagues);
   }
-
-  // updateSelectedLeaguesForSportTypeID(
-  //   selectedOptions: MatListOption[],
-  //   sportTypeID: string
-  // ): League[] {
-  //   let readyForUpdate: League[] = [];
-  //   if (selectedOptions.length < 1) {
-  //     const selectedLeagues = this.store.selectSnapshot(
-  //       LeagueState.getSelected
-  //     );
-  //     let selectedLeague;
-  //     selectedLeagues.forEach(l => {
-  //       const league = cloneDeep(l);
-  //       league.selected = !league.selected;
-  //       selectedLeague = league;
-  //     });
-  //     //readyForUpdate.push(selectedLeague);
-  //   } else {
-  //     const allLeagues: League[] = this.store.selectSnapshot(
-  //       LeagueState.getAll
-  //     );
-  //     const selected: League[] = [];
-  //     for (let index = 0; index < selectedOptions.length; index++) {
-  //       const id = selectedOptions[index].value;
-  //       let selectedLeague;
-  //       allLeagues.find(l => {
-  //         if (l.id === id) {
-  //           const league = cloneDeep(l);
-  //           league.selected = !league.selected;
-  //           selectedLeague = league;
-  //         }
-  //       });
-  //       selected.push(selectedLeague);
-  //     }
-  //     readyForUpdate = this.updateSelectedLeagues(selected, sportTypeID);
-  //   }
-  //   console.log("readyforupdate", readyForUpdate);
-  //   return readyForUpdate;
-  // }
-
-  // private updateSelectedLeagues(
-  //   selected: League[],
-  //   sportTypeID: string
-  // ): League[] {
-  //   const selectedLeagues: SelectedLeagues = {
-  //     sportTypeID: sportTypeID,
-  //     leagues: selected
-  //   };
-
-  //   const readyForUpdate = this.updateSelection(selectedLeagues);
-  //   return readyForUpdate;
-  // }
-
-  // private updateSelection(selected: SelectedLeagues): League[] {
-  //   const selectedState: League[] = this.store.selectSnapshot(
-  //     LeagueState.getSelected
-  //   );
-  //   console.log("selected", selectedState);
-  //   let updated: League[] = [];
-  //   // if the length is not zero means we have existing selected items
-  //   if (selectedState.length !== 0) {
-  //     // if incoming selected lists are not zero, we need to replace
-  //     if (selected.leagues.length !== 0) {
-  //       if (
-  //         selectedState.find(sel => sel.sportTypeID === selected.sportTypeID)
-  //       ) {
-  //         updated = selectedState.filter(
-  //           sel => sel.sportTypeID !== selected.sportTypeID
-  //         );
-  //         updated = [...updated, ...selected.leagues];
-  //       }
-  //       // brand new selected league type
-  //       else {
-  //         updated = [...selectedState, ...selected.leagues];
-  //       }
-  //     }
-  //     // else we need to remove old items
-  //     else {
-  //       updated = selectedState.filter(
-  //         sel => sel.sportTypeID !== selected.sportTypeID
-  //       );
-  //     }
-  //   } else {
-  //     // state selected is empty
-  //     updated = [...selected.leagues];
-  //   }
-  //   return updated;
-  // }
 }

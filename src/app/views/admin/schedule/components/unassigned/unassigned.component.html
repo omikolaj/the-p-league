@@ -3,31 +3,31 @@
     Unassigned Teams
   </mat-expansion-panel-header>
 
-  <ng-container *ngFor="let team of unassignedTeams">
+  <form [formGroup]="assignTeamsForm" (ngSubmit)="onSubmit()" novalidate>
+    <ng-container *ngFor="let team of unassignedTeams; let i = index">
+      <ng-container formArrayName="unassignedTeams">
+        <ng-container [formGroupName]="i">
+          <mat-form-field>
+            <input formControlName="teamName" matInput [value]="team.name" [readonly]="true" />
+          </mat-form-field>
 
-  <mat-form-field>
-    <input matInput [value]="team.name" [readonly]="true">
-  </mat-form-field>
+          <mat-form-field>
+            <mat-label>League</mat-label>
+            <mat-select formControlName="leagueID">
+              <mat-option>-- None --</mat-option>
+              <mat-optgroup *ngFor="let pair of sportLeaguePairs" [label]="pair.sportName">
+                <mat-option *ngFor="let league of pair.leagueNames" [value]="league.id">
+                  {{ league.name }}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+      </ng-container>
+    </ng-container>
 
-  <mat-form-field>
-  <mat-label>League</mat-label>
-  <mat-select >
-    <mat-option>-- None --</mat-option>
-    <mat-optgroup *ngFor="let sport of sports" [label]="sport.name"
-                  >
-      <mat-option *ngFor="let league of sport.leagues" [value]="league.id">
-        {{league.name}}
-      </mat-option>
-    </mat-optgroup>
-  </mat-select>
-</mat-form-field>
-
-</ng-container>
-
-  <mat-action-row>
-    <button mat-raised-button color="accent">Assign</button>  
-  </mat-action-row>
+    <mat-action-row>
+      <button mat-raised-button color="accent">Assign</button>
+    </mat-action-row>
+  </form>
 </mat-expansion-panel>
-
-
-

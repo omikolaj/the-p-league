@@ -25,16 +25,11 @@ export interface LeagueStateModel {
   }
 })
 export class LeagueState {
-  constructor(private store: Store) {}
+  constructor() {}
 
-  @Selector([LeagueState, SportTypeState.getSportTypes])
-  static getAll(sportTypesState) {
-    let allLeagues: League[] = [];
-    for (let index = 0; index < sportTypesState.length; index++) {
-      const sportType: SportType = sportTypesState[index];
-      allLeagues = [...allLeagues, ...sportType.leagues];
-    }
-    return allLeagues;
+  @Selector()
+  static getAll(state: LeagueStateModel) {
+    return Object.values(state.entities);
   }
 
   @Selector()
@@ -151,6 +146,14 @@ export class LeagueState {
   }
 
   @Action(Leagues.DeleteLeagues)
+  /**
+   * @param  {StateContext<LeagueStateModel>} ctx
+   * @param  {Leagues.DeleteLeagues} action
+   * This is another approach to deleting items. The second approach
+   * to deleting items is inside the teams state and it appears to be more
+   * efficient. Keeping this for reference in case something goes wrong
+   * with either one
+   */
   delete(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteLeagues) {
     const state = ctx.getState();
     const updatedLeagueEntities = {};

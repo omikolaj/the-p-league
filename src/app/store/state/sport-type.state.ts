@@ -10,6 +10,8 @@ import { patch, updateItem, append, removeItem, insertItem } from '@ngxs/store/o
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { Teams } from '../actions/team.actions';
+import { LeagueState, LeagueStateModel } from './league.state';
+import { SportTypesLeaguesPairs, LeagueNameIDPair } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
 
 export interface SportTypeStateModel {
   entities: {
@@ -44,6 +46,30 @@ export class SportTypeState {
         return state.types.entities[sportTypeEntityID];
       }
     });
+  }
+
+  @Selector([SportTypeState, LeagueState])
+  static getSportTypesLeaguesPairs(state: SportTypeStateModel, leagueState: LeagueStateModel) {
+    const pairs: SportTypesLeaguesPairs[] = [];
+    Object.values(state.entities).forEach(s => {
+      pairs.push({
+        sportID: s.id,
+        sportName: s.name,
+        leagueNames: []
+      });
+    });
+
+    Object.values(leagueState.entities).forEach(l => {
+      pairs.forEach(pair => {
+        if (pair.sportID === l.sportTypeID) {
+          pair.leagueNames.push({
+            id: l.id,
+            name: l.name
+          });
+        }
+      });
+    });
+    return pairs;
   }
 
   //#region FetchAll

@@ -1,20 +1,21 @@
 <div class="wrapper">
-  <ng-container *ngIf="sportTypes$ | async as types">
+  <ng-container *ngIf="sportLeaguePairs$ | async as pairs">
     <mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
       <mat-tab label="League">
         <app-add-leagues
-          [sportTypes]="types"
+          [sportLeaguePairs]="pairs"
           [newSportLeagueForm]="newSportLeagueForm"
           (onNewSportLeague)="onNewSportLeague($event)"
         ></app-add-leagues>
         <!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
-
-        <ng-container *ngFor="let sport of types">
-          <app-league-administration
-            (deletedSport)="onDeleteSport($event)"
-            (updatedSport)="onUpdateSport($event)"
-            [sportType]="sport"
-          ></app-league-administration>
+        <ng-container *ngIf="sportTypes$ | async as types">
+          <ng-container *ngFor="let sport of types">
+            <app-league-administration
+              (deletedSport)="onDeleteSport($event)"
+              (updatedSport)="onUpdateSport($event)"
+              [sportType]="sport"
+            ></app-league-administration>
+          </ng-container>
         </ng-container>
         <div>
           <button mat-raised-button (click)="onNewSchedule()" [disabled]="checkSelection()">
@@ -31,7 +32,8 @@
 
       <mat-tab [label]="tabTitle" [disabled]="checkSelection()">
         <ng-template matTabContent>
-          <app-add-teams [sportType]="types" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
+          <app-add-teams [sportLeaguePairs]="pairs" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
+
           <ng-container *ngComponentOutlet="adminComponent"></ng-container>
         </ng-template>
       </mat-tab>

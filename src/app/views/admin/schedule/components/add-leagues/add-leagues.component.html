@@ -17,8 +17,8 @@
         <mat-form-field>
           <input formControlName="sportType" type="text" placeholder="Sport" aria-label="sports" matInput [matAutocomplete]="auto" />
           <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-            <mat-option *ngFor="let sport of sportTypes" [value]="sport">
-              {{ sport.name }}
+            <mat-option *ngFor="let pair of sportLeaguePairs" [value]="pair">
+              {{ pair.sportName }}
             </mat-option>
           </mat-autocomplete>
           <mat-hint>Volleyball, Basketball etc</mat-hint>

@@ -7,6 +7,7 @@ import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
 import { MatAccordion, MatExpansionPanelState, MatExpansionPanel, MatAutocomplete, MatOption, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, tap } from 'rxjs/operators';
+import { SportTypesLeaguesPairs } from '../../models/sport-types-leagues-pairs.model';
 
 @Component({
   selector: 'app-add-leagues',
@@ -17,7 +18,7 @@ export class AddLeaguesComponent {
   title: string = 'Add';
   description: string = 'Sport/League';
   @Input() newSportLeagueForm: FormGroup;
-  @Input() sportTypes: SportType[];
+  @Input() sportLeaguePairs: SportTypesLeaguesPairs[];
   @Output() onNewSportLeague: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
   @ViewChild(MatExpansionPanel, { static: false }) matExpansionPanel: MatExpansionPanel;
   @ViewChild('auto', { static: false }) autoComplete: MatAutocomplete;
@@ -54,14 +55,14 @@ export class AddLeaguesComponent {
     this.selectedSport = undefined;
   }
 
-  displayFn(sportType?: SportType) {
-    return sportType ? sportType.name : undefined;
+  displayFn(pair?: SportTypesLeaguesPairs) {
+    return pair ? pair.sportName : undefined;
   }
 
   private addSportTypeIDIfExists() {
     if (this.selectedSport) {
-      const sportType: SportType = this.selectedSport.option.value as SportType;
-      this.newSportLeagueForm.get('sportTypeID').setValue(sportType.id);
+      const pair: SportTypesLeaguesPairs = this.selectedSport.option.value as SportTypesLeaguesPairs;
+      this.newSportLeagueForm.get('sportTypeID').setValue(pair.sportID);
     }
   }
 }
