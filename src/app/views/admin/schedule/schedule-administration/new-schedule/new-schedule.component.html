@@ -1,6 +1,16 @@
 <ng-container *ngIf="leagues$ | async as leagues">
   <ng-container *ngFor="let league of leagues">
-    <app-team-administration [league]="league"></app-team-administration>
+    <ng-container *ngIf="getTeamsForLeagueID(league?.id) | async as teams">
+      <app-edit-teams-list
+        (onUpdateTeams)="onUpdateTeamsHandler($event, league?.id)"
+        (onDeleteTeams)="onDeleteTeamsHandler(league?.id)"
+        (onUnassignTeams)="onUnassignTeamsHandler(league?.id)"
+        (onSelectionChange)="onTeamsSelectionChangeHandler($event, league?.id)"
+        [teamsForm]="teamsForm"
+        [teams]="teams"
+        [league]="league"
+      ></app-edit-teams-list>
+    </ng-container>
 
     <app-new-session-schedule></app-new-session-schedule>
 
@@ -8,14 +18,10 @@
   </ng-container>
 </ng-container>
 
-<ng-container *ngIf="unassignedTeams$ | async as unassignedTeams">
-  <ng-container *ngIf="sportLeaguePairs$ | async as pairs">
-    <app-unassigned
-      *ngIf="unassignedTeams?.length > 0"
-      [teams]="unassignedTeams"
-      [sportLeaguePairs]="pairs"
-      [assignTeamsForm]="assignTeamsForm"
-      (onAssignTeamsToLeagues)="onAssignTeams($event)"
-    ></app-unassigned>
-  </ng-container>
+<ng-container *ngIf="unassignedTeamsData$ | async as data">
+  <app-unassigned
+    [sportLeaguePairs]="data.pairs"
+    [assignTeamsForm]="assignTeamsForm"
+    (onAssignTeamsToLeagues)="onAssignTeams($event)"
+  ></app-unassigned>
 </ng-container>

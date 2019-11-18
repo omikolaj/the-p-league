@@ -11,7 +11,7 @@ import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { Teams } from '../actions/team.actions';
 import { LeagueState, LeagueStateModel } from './league.state';
-import { SportTypesLeaguesPairs, LeagueNameIDPair } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
+import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
 
 export interface SportTypeStateModel {
   entities: {

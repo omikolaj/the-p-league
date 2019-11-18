@@ -35,3 +35,6 @@ export const ErrorCodes: string[] = [
   'league_image_order',
   'password_update'
 ];
+
+// Used to indicate that a team is unassigned
+export const UNASSIGNED: string = '-1';

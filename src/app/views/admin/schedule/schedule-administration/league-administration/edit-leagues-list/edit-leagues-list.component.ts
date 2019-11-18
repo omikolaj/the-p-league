@@ -1,5 +1,4 @@
 import { log } from 'util';
-import { EditLeagueControl } from './../../../models/edit-league-control.model';
 import { FormGroup, FormArray } from '@angular/forms';
 import { Component, OnInit, Input, Output, ViewChild, QueryList, EventEmitter, ViewChildren, OnDestroy, SimpleChanges } from '@angular/core';
 

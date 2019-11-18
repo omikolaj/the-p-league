@@ -1,49 +1,74 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 
 import { TabTitles } from '../../models/tab-titles.model';
-import { Observable, pairs } from 'rxjs';
-import { AbstractControlOptions, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { map } from 'rxjs/operators';
-import { SportTypesLeaguesPairs } from '../../models/sport-types-leagues-pairs.model';
+import { Observable, combineLatest } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { map, tap, filter } from 'rxjs/operators';
+import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { MatSelectionListChange } from '@angular/material';
+import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
 
 @Component({
   selector: 'app-new-schedule',
   templateUrl: './new-schedule.component.html',
-  styleUrls: ['./new-schedule.component.scss']
+  styleUrls: ['./new-schedule.component.scss'],
+  providers: [ScheduleHelperService]
 })
 export class NewScheduleComponent implements OnInit {
   tab: TabTitles = 'New Schedule';
   assignTeamsForm: FormGroup;
-  leagues$: Observable<League[]> = this.scheduleAdminFacade.selectedLeagues$;
-  unassignedTeams$: Observable<Team[]>;
-  sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
+  teamsForm: FormGroup;
 
-  constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private fb: FormBuilder) {}
+  leagues$: Observable<League[]> = this.scheduleAdminFacade.selectedLeagues$.pipe(
+    tap(leagues => {
+      leagues.forEach(l => {
+        // if teams is undefined return empty array
+        this.initEditTeamsForm(l.teams || []);
+      });
+    })
+  );
+  unassignedTeamsData$ = combineLatest(this.scheduleAdminFacade.unassignedTeams$, this.scheduleAdminFacade.sportTypesLeaguesPairs$).pipe(
+    map(([unassignedTeams, pairs]) => {
+      return {
+        unassignedTeams: unassignedTeams,
+        // pairs are required for unassigned-teams component to display
+        // all available sports and leagues to which you can assign a team to
+        pairs: pairs
+      };
+    }),
+    filter(data => data.unassignedTeams === []),
+    tap(data => {
+      this.initAssignTeamsForm(data.unassignedTeams);
+    })
+  );
 
-  ngOnInit() {
-    this.unassignedTeams$ = this.scheduleAdminFacade.unassignedTeams$.pipe(
-      map(teams => {
-        this.initForms(teams);
-        return teams;
-      })
-    );
+  /**
+   * @param  {string} leagueID
+   * @returns Observable
+   * Exposes a stream of teams for the given league ID
+   */
+  getTeamsForLeagueID(leagueID: string): Observable<Team[]> {
+    // the store only gets quiried once, and then whenever value has changed
+    return this.scheduleAdminFacade.getTeamsForLeagueID(leagueID);
   }
 
-  initForms(teams: Team[]) {
-    this.initAssignTeamsForm(teams);
-  }
+  constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService, private fb: FormBuilder) {}
 
-  initAssignTeamsForm(teams: Team[]) {
+  ngOnInit() {}
+
+  //#region Init Forms
+
+  initAssignTeamsForm(unassignedTeams: Team[]) {
     const assignTeamControls = [];
-    teams.forEach(t => {
+    unassignedTeams.forEach(t => {
       assignTeamControls.push(
         this.fb.group({
           teamName: this.fb.control(t.name),
-          leagueID: this.fb.control(null)
+          teamID: this.fb.control(t.id),
+          leagueID: this.fb.control(UNASSIGNED)
         })
       );
     });
@@ -53,7 +78,67 @@ export class NewScheduleComponent implements OnInit {
     });
   }
 
-  onAssignTeams(assignedTeamsForm: FormGroup) {
-    console.log('assignedTeamForm', assignedTeamsForm);
+  initEditTeamsForm(teams: Team[]) {
+    const teamNameControls = teams.map(t =>
+      this.fb.group({
+        id: this.fb.control(t.id),
+        name: this.fb.control(t.name, Validators.required)
+      })
+    );
+
+    this.teamsForm = this.fb.group({
+      teams: this.fb.array(teamNameControls)
+    });
   }
+
+  //#endregion
+
+  //#region Event Handlers
+
+  onAssignTeams(assignedTeamsForm: FormGroup) {
+    const formControls = [...assignedTeamsForm.get('unassignedTeams')['controls']];
+    const teamsToAssign: Team[] = [];
+    for (let index = 0; index < formControls.length; index++) {
+      const control: FormGroup = formControls[index];
+      if (control.value.leagueID !== UNASSIGNED) {
+        teamsToAssign.push({
+          id: control.value.teamID,
+          leagueID: control.value.leagueID
+        });
+      }
+    }
+    this.scheduleAdminFacade.assignTeams(teamsToAssign);
+  }
+
+  /**
+   * @param  {FormGroup} updatedTeams
+   * Fired whenever user updates team names in the edit-teams-list component
+   */
+  onUpdateTeamsHandler(updatedTeamNames: FormGroup) {
+    const teamsToUpdate: Team[] = [];
+    const teamsFormArray = updatedTeamNames.get('teams') as FormArray;
+    for (let index = 0; index < teamsFormArray.length; index++) {
+      const currentTeam = teamsFormArray.at(index);
+      teamsToUpdate.push({
+        id: currentTeam.value.id,
+        name: currentTeam.value.name
+      });
+    }
+    this.scheduleAdminFacade.updateTeams(teamsToUpdate);
+  }
+
+  onTeamsSelectionChangeHandler(selectedTeamsEvent: MatSelectionListChange, leagueID: string) {
+    const ids: string[] = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
+    this.scheduleAdminFacade.updateTeamSelection(ids, leagueID);
+  }
+
+  onUnassignTeamsHandler(leagueID: string) {
+    this.scheduleAdminFacade.unassignTeams(leagueID);
+  }
+
+  onDeleteTeamsHandler(leagueID: string) {
+    this.scheduleAdminFacade.deleteTeams(leagueID);
+  }
+
+  //#endregion
 }

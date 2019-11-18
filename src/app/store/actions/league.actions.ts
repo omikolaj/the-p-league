@@ -1,6 +1,5 @@
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { League } from '../../views/schedule/models/interfaces/league.model';
-import { SelectedLeagues } from 'src/app/views/admin/schedule/models/selected-leagues.model';
 
 export namespace Leagues {
   export class AddLeagues {

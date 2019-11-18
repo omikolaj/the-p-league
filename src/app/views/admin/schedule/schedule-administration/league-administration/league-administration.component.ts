@@ -12,7 +12,8 @@ import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-a
 @Component({
   selector: 'app-league-administration',
   templateUrl: './league-administration.component.html',
-  styleUrls: ['./league-administration.component.scss']
+  styleUrls: ['./league-administration.component.scss'],
+  providers: [ScheduleHelperService]
 })
 export class LeagueAdministrationComponent implements OnInit {
   leagues$: Observable<League[]>;
@@ -99,27 +100,34 @@ export class LeagueAdministrationComponent implements OnInit {
   }
 
   //#region Event handlers
-
-  //TODO refactor into helper method same logic as in team-administration.component onUpdatedTeams
+  /**
+   * @param  {FormGroup} updatedLeagueNames
+   * @param  {League[]} leagues
+   * Fired whenever user updates league names in the edit-leagues-list component
+   */
   onUpdatedLeagues(updatedLeagueNames: FormGroup, leagues: League[]) {
+    const leaguesToUpdate: League[] = [];
     const leaguesFormArray = updatedLeagueNames.get('leagues') as FormArray;
-    const updatedLeagues: League[] = [];
     for (let index = 0; index < leaguesFormArray.length; index++) {
-      const control = leaguesFormArray.at(index);
-      if (leagues.some(l => l.id === control.value.id)) {
-        const league = leagues.find(l => l.id === control.value.id);
-        if (league.name !== control.value.name) {
-          updatedLeagues.push({
-            id: control.value.id,
-            name: control.value.name,
-            sportTypeID: league.sportTypeID,
-            selected: league.selected,
-            readonly: league.readonly
-          });
-        }
-      }
+      const currentLeague = leaguesFormArray.at(index);
+      leaguesToUpdate.push({
+        id: currentLeague.value.id,
+        name: currentLeague.value.name
+      });
+      // if (leagues.some(l => l.id === currentLeague.value.id)) {
+      //   const league = leagues.find(l => l.id === currentLeague.value.id);
+      //   if (league.name !== currentLeague.value.name) {
+      //     updatedLeagues.push({
+      //       id: currentLeague.value.id,
+      //       name: currentLeague.value.name,
+      //       sportTypeID: league.sportTypeID,
+      //       selected: league.selected,
+      //       readonly: league.readonly
+      //     });
+      //   }
+      // }
     }
-    this.scheduleAdminFacade.updateLeagues(updatedLeagues);
+    this.scheduleAdminFacade.updateLeagues(leaguesToUpdate);
   }
 
   /**

@@ -65,6 +65,10 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
     return of(teamsToUnassign).pipe(delay(100));
   }
 
+  assignTeams(teamsToAssign: Team[]) {
+    return of(teamsToAssign).pipe(delay(100));
+  }
+
   deleteTeams(teamsToDelete: string[]): Observable<string[]> {
     return of(teamsToDelete).pipe(delay(100));
   }

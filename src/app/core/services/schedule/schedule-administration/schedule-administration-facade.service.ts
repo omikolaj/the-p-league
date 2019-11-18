@@ -25,9 +25,13 @@ export class ScheduleAdministrationFacade implements OnInit {
   @Select(TeamState.getUnassigned) unassignedTeams$: Observable<Team[]>;
   sportTypesLeaguesPairs$: Observable<SportTypesLeaguesPairs[]> = this.store.select(SportTypeState.getSportTypesLeaguesPairs);
 
-  constructor(private scheduleAdminAsync: ScheduleAdministrationAsyncService, private leagueService: LeagueService, public store: Store) {}
+  constructor(private scheduleAdminAsync: ScheduleAdministrationAsyncService, public store: Store) {}
 
   ngOnInit() {}
+
+  getTeamsForLeagueID(leagueID: string): Observable<Team[]> {
+    return this.store.select(TeamState.getAllTeamsForLeagueID).pipe(map(filterFn => filterFn(leagueID)));
+  }
 
   //#region SportTypes
 
@@ -101,6 +105,10 @@ export class ScheduleAdministrationFacade implements OnInit {
     this.scheduleAdminAsync
       .unassignTeams(teamIDsToUnassign)
       .subscribe(unassignedTeamIDs => this.store.dispatch(new Teams.UnassignTeams(unassignedTeamIDs)));
+  }
+
+  assignTeams(teams: Team[]) {
+    this.scheduleAdminAsync.assignTeams(teams).subscribe(teams => this.store.dispatch(new Teams.AssignTeams(teams)));
   }
 
   deleteTeams(leagueID: string) {

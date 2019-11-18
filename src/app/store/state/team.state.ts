@@ -1,14 +1,10 @@
 import { TeamStateModel } from './team.state';
-import { log } from 'util';
-import { Leagues } from 'src/app/store/actions/league.actions';
-import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { SportTypeState } from './sport-type.state';
-import { State, Selector, Action, StateContext, Store, createSelector } from '@ngxs/store';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
+import { State, Selector, Action, StateContext, createSelector } from '@ngxs/store';
 import { patch, append, removeItem } from '@ngxs/store/operators';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { LeagueStateModel } from './league.state';
 import { Teams } from '../actions/team.actions';
+import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { updateTeam } from './state-helpers';
 
 export interface TeamStateModel {
   entities: {
@@ -28,7 +24,6 @@ export interface TeamStateModel {
   }
 })
 export class TeamState {
-  private static readonly Unassigned = '-1';
   constructor() {}
 
   @Selector()
@@ -44,7 +39,7 @@ export class TeamState {
   static getUnassigned(state: TeamStateModel) {
     const unassignedTeams: Team[] = [];
     Object.values(state.entities).forEach(t => {
-      if (t.leagueID === this.Unassigned) {
+      if (t.leagueID === UNASSIGNED) {
         unassignedTeams.push(t);
       }
     });
@@ -54,12 +49,14 @@ export class TeamState {
   @Selector()
   static getAllTeamsForLeagueID(state: TeamStateModel) {
     return (id: string) => {
+      console.log('returning teams begin');
       const teamsMatch: Team[] = [];
       Object.values(state.entities).forEach(t => {
         if (t.leagueID === id) {
           teamsMatch.push(t);
         }
       });
+      console.log(`returning teams for id ${id}`, teamsMatch);
       return teamsMatch;
     };
   }
@@ -114,15 +111,26 @@ export class TeamState {
 
   @Action(Teams.UpdateTeams)
   update(ctx: StateContext<TeamStateModel>, action: Teams.UpdateTeams) {
+    // copy over the state
+    const state = { ...ctx.getState(), entities: { ...ctx.getState().entities } };
     action.updatedTeams.forEach(updatedTeam => {
-      ctx.setState(
-        patch<TeamStateModel>({
-          entities: patch({
-            [updatedTeam.id]: updatedTeam
-          })
-        })
-      );
+      // copy over specific entity object
+      const existingTeam: Team = { ...state.entities[updatedTeam.id] };
+      // delete the entity object from the current entities list, because
+      // we will be inserting an updated one in its place
+      delete state.entities[updatedTeam.id];
+      // get updated team
+      const updated = updateTeam(updatedTeam, existingTeam);
+      // insert the updated team
+      state.entities[updated.id] = updated;
     });
+    // perform a single store update reducing number of change detection cycles
+    ctx.setState(
+      patch({
+        ...state,
+        entities: state.entities
+      })
+    );
   }
 
   @Action(Teams.UnassignTeams)
@@ -132,12 +140,36 @@ export class TeamState {
       const unassignID = action.unassignIDs[index];
       const unassignTeam: Team = { ...Object.values(state.entities).find(t => t.id === unassignID) };
       if (unassignTeam) {
-        unassignTeam.leagueID = '-1';
+        unassignTeam.leagueID = UNASSIGNED;
         unassignTeam.selected = false;
+        //TODO updating state one by one will cause new value to be emitted
+        // it would be better to do it in bulk
         ctx.setState(
           patch<TeamStateModel>({
             entities: patch({
               [unassignTeam.id]: unassignTeam
+            })
+          })
+        );
+      }
+    }
+  }
+
+  @Action(Teams.AssignTeams)
+  assign(ctx: StateContext<TeamStateModel>, action: Teams.AssignTeams) {
+    const state = ctx.getState();
+    for (let index = 0; index < action.assignTeams.length; index++) {
+      const team = action.assignTeams[index];
+      const changeAssignmentTeam: Team = { ...Object.values(state.entities).find(t => t.id === team.id) };
+      if (changeAssignmentTeam) {
+        changeAssignmentTeam.leagueID = team.leagueID;
+        changeAssignmentTeam.selected = false;
+        //TODO updating state one by one will cause new value to be emitted
+        // it would be better to do it in bulk
+        ctx.setState(
+          patch<TeamStateModel>({
+            entities: patch({
+              [changeAssignmentTeam.id]: changeAssignmentTeam
             })
           })
         );

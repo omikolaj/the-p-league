@@ -1,6 +1,5 @@
-import { EditTeamControl } from './../../../../models/edit-team-control.model';
 import { MatSelectionListChange, MatSelectionList } from '@angular/material';
-import { SportType } from './../../../../../../schedule/models/interfaces/sport-type.model';
+import { SportType } from '../../../../../schedule/models/interfaces/sport-type.model';
 import { FormGroup } from '@angular/forms';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
@@ -16,9 +15,9 @@ export class EditTeamsListComponent implements OnInit {
   @Input() teams: Team[];
   @Input() league: League;
   @Output() onUnassignTeams: EventEmitter<void> = new EventEmitter<void>();
-  @Output() onUpdatedTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
-  @Output() onDeletedTeams: EventEmitter<void> = new EventEmitter<void>();
-  @Output() onTeamSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
+  @Output() onUpdateTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+  @Output() onDeleteTeams: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
   disableListSelection: boolean = false;
   // assumes we have at least one team selected when initialized
   private numberOfSelectedTeams: number = 1;
@@ -39,9 +38,9 @@ export class EditTeamsListComponent implements OnInit {
 
   //#endregion
 
-  onSelectionChange(event: MatSelectionListChange) {
+  onTeamSelectionChange(event: MatSelectionListChange) {
     this.numberOfSelectedTeams = event.source.selectedOptions.selected.length;
-    this.onTeamSelectionChange.emit(event);
+    this.onSelectionChange.emit(event);
   }
 
   onSubmit() {
@@ -58,11 +57,11 @@ export class EditTeamsListComponent implements OnInit {
 
   onSaveHandler() {
     this.disableListSelection = !this.disableListSelection;
-    this.onUpdatedTeams.emit(this.teamsForm);
+    this.onUpdateTeams.emit(this.teamsForm);
   }
 
   onDeleteHandler() {
     this.numberOfSelectedTeams = 0;
-    this.onDeletedTeams.emit();
+    this.onDeleteTeams.emit();
   }
 }

@@ -1,3 +1,4 @@
+import { Sport } from './../../../schedule/models/sport.enum';
 import { SportTypeStateModel } from 'src/app/store/state/sport-type.state';
 import { SportTypeState } from './../../../../store/state/sport-type.state';
 import { Type } from '@angular/core';
@@ -9,13 +10,12 @@ import { MatTabChangeEvent } from '@angular/material';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { TabTitles } from '../models/tab-titles.model';
-import { ClearFormType } from '../models/clear-form-type.model';
 import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 import { ModifyScheduleComponent } from './modify/modify-schedule.component';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { LeagueState } from 'src/app/store/state/league.state';
 import { SportTypesLeaguesPairs } from '../models/sport-types-leagues-pairs.model';
-import { map, tap } from 'rxjs/operators';
+import { AddSportOrLeague } from '../models/add-sport-or-league.model';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -102,34 +102,26 @@ export class ScheduleAdministrationComponent implements OnInit {
     this.newSportLeagueForm.get('leagueName').reset();
     this.newSportLeagueForm.get('sportTypeID').reset();
 
-    const newSportAndOrLeague: { sportName: string; leagueName: string; sportTypeID: string } = {
-      sportName: newSportLeague.get('sportType').value,
-      leagueName: newSportLeague.get('leagueName').value,
-      sportTypeID: newSportLeague.get('sportTypeID').value
+    const newSportType: SportType = {
+      name: newSportLeague.get('sportType').value
+    };
+    const newLeague: League = {
+      name: newSportLeague.get('leagueName').value,
+      sportTypeID: newSportLeague.get('sportTypeID').value,
+      type: newSportType.name
     };
 
     // if we have sportTypeID were adding to existing sport type
-    if (newSportAndOrLeague.sportTypeID) {
-      if (newSportAndOrLeague.leagueName) {
-        const newLeague: League = {
-          name: newSportAndOrLeague.leagueName,
-          sportTypeID: newSportAndOrLeague.sportTypeID
-        };
+    if (newLeague.sportTypeID) {
+      if (newLeague.name) {
         this.scheduleAdminFacade.addLeague(newLeague);
       }
     } else {
       // sanity check to ensure we have new sport name
-      if (newSportAndOrLeague.sportName) {
-        // if we are also adding a league with the sport
-        const newSportType: SportType = {
-          name: newSportAndOrLeague.sportName
-        };
+      if (newSportType.name) {
         // are we also adding new league?
-        if (newSportAndOrLeague.leagueName) {
-          const league: League = {
-            name: newSportAndOrLeague.leagueName
-          };
-          this.scheduleAdminFacade.addSportAndLeague(newSportType, league);
+        if (newLeague.name) {
+          this.scheduleAdminFacade.addSportAndLeague(newSportType, newLeague);
         } else {
           this.scheduleAdminFacade.addSportType(newSportType);
         }
@@ -148,10 +140,6 @@ export class ScheduleAdministrationComponent implements OnInit {
     };
 
     this.scheduleAdminFacade.addTeam(newTeam);
-  }
-
-  onAssignTeams(assignTeamForm: FormGroup) {
-    console.log('logging assignTeamForm', assignTeamForm);
   }
 
   onNewSchedule() {

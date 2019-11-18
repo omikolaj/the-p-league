@@ -4,6 +4,7 @@ import { SportTypeState } from './sport-type.state';
 import { State, Selector, Action, StateContext, Store, createSelector } from '@ngxs/store';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { patch, append } from '@ngxs/store/operators';
+import { updateLeague } from './state-helpers';
 
 export interface LeagueStateModel {
   entities: {
@@ -106,15 +107,19 @@ export class LeagueState {
 
   @Action(Leagues.UpdateLeagues)
   update(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateLeagues) {
+    const state = { ...ctx.getState(), entities: { ...ctx.getState().entities } };
     action.updatedLeagues.forEach(updatedLeague => {
-      ctx.setState(
-        patch<LeagueStateModel>({
-          entities: patch({
-            [updatedLeague.id]: updatedLeague
-          })
-        })
-      );
+      const existingLeague: League = { ...state.entities[updatedLeague.id] };
+      delete state.entities[updatedLeague.id];
+      const updated = updateLeague(updatedLeague, existingLeague);
+      state.entities[updated.id] = updated;
     });
+    ctx.setState(
+      patch({
+        ...state,
+        entities: state.entities
+      })
+    );
   }
 
   @Action(Leagues.UpdateSelectedLeagues)

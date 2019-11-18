@@ -7,7 +7,6 @@ import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.m
 import { Team, TEAMS } from 'src/app/views/schedule/models/interfaces/team.model';
 import TeamSessionSchedule from 'src/app/views/schedule/models/classes/team-session-schedule.model';
 import { BehaviorSubject } from 'rxjs';
-import { SelectedLeagues } from 'src/app/views/admin/schedule/models/selected-leagues.model';
 import { Store } from '@ngxs/store';
 
 @Injectable({
