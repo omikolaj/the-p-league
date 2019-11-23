@@ -1,10 +1,15 @@
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { League } from '../../views/schedule/models/interfaces/league.model';
+import { NormalizedSchema } from 'normalizr';
 
 export namespace Teams {
-  export class AddTeams {
-    static readonly type = '[Schedule] AddTeams';
-    constructor(public teams: Team[]) {}
+  // export class AddTeams {
+  //   static readonly type = '[Schedule] AddTeams';
+  //   constructor(public teams: Team[]) {}
+  // }
+  export class InitializeTeams {
+    static readonly type = '[Schedule] InitializeTeams';
+    constructor(public teams: { [key: string]: Team }) {}
   }
   export class AddTeam {
     static readonly type = '[Schedule API] AddTeam';

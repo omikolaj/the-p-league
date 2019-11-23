@@ -4,7 +4,7 @@ import { SportTypeState } from './sport-type.state';
 import { State, Selector, Action, StateContext, Store, createSelector } from '@ngxs/store';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { patch, append } from '@ngxs/store/operators';
-import { updateLeague } from './state-helpers';
+import { updateEntity } from './state-helpers';
 
 export interface LeagueStateModel {
   entities: {
@@ -83,16 +83,35 @@ export class LeagueState {
     });
   }
 
-  @Action(Leagues.AddLeagues)
-  addLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeagues) {
-    action.leagues.forEach(l => {
-      ctx.setState(
-        patch<LeagueStateModel>({
-          entities: patch({ [l.id]: l }),
-          IDs: append([l.id])
-        })
-      );
-    });
+  // @Action(Leagues.AddLeagues)
+  // addLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeagues) {
+  //   action.leagues.forEach(l => {
+  //     ctx.setState(
+  //       patch<LeagueStateModel>({
+  //         entities: patch({ [l.id]: l }),
+  //         IDs: append([l.id])
+  //       })
+  //     );
+  //   });
+  // }
+
+  @Action(Leagues.InitializeLeagues)
+  initializeLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.InitializeLeagues) {
+    console.warn('UPDATE LEAGUE MODEL TO ONLY INCLUDE ARRAY OF TEAM IDS TO MATCH NORMALIZED STATE');
+    ctx.setState(
+      patch<LeagueStateModel>({
+        entities: action.leagues,
+        IDs: Object.keys(action.leagues).map(id => id)
+      })
+    );
+    // action.leagues.forEach(l => {
+    //   ctx.setState(
+    //     patch<LeagueStateModel>({
+    //       entities: patch({ [l.id]: l }),
+    //       IDs: append([l.id])
+    //     })
+    //   );
+    // });
   }
 
   @Action(Leagues.AddLeague)
@@ -111,7 +130,7 @@ export class LeagueState {
     action.updatedLeagues.forEach(updatedLeague => {
       const existingLeague: League = { ...state.entities[updatedLeague.id] };
       delete state.entities[updatedLeague.id];
-      const updated = updateLeague(updatedLeague, existingLeague);
+      const updated = updateEntity(updatedLeague, existingLeague);
       state.entities[updated.id] = updated;
     });
     ctx.setState(
@@ -148,6 +167,7 @@ export class LeagueState {
         entities: state.entities
       })
     );
+    console.log('updated selected leagues', ctx.getState().entities);
   }
 
   @Action(Leagues.DeleteLeagues)

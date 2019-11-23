@@ -1,69 +1,29 @@
-import { cloneDeep } from 'lodash';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 /**
- * @param  {Team} incoming
- * @param  {Team} existing
- * @returns Team
- * Updates a single with values that have changed returning fresh copy
+ * @param  {T} incoming
+ * @param  {T} existing
+ * @returns T
+ * Updates entity object returning fresh copy of passed in entity
  */
-export function updateTeam(incoming: Team, existing: Team): Team {
-  let updated: Team = cloneDeep(existing);
-  console.warn(
-    'state-helpers.updateTeam. See if we can get rid of cloneDeep lodash dependency. When we do { ...existing } does it also clone properties that are classes? Check with Object.isFrozen(existing.sessionSchedule)'
-  );
-  // does leagueID exist
-  if (incoming.leagueID) {
-    // if leagueIDs are different, update
-    if (existing.leagueID !== incoming.leagueID) {
-      updated.leagueID = incoming.leagueID;
-    }
-  }
-  if (incoming.name) {
-    if (existing.name !== incoming.name) {
-      updated.name = incoming.name;
-    }
-  }
-  if (incoming.selected) {
-    if (existing.selected !== incoming.selected) {
-      updated.selected = incoming.selected;
-    }
+export function updateEntity<T>(incoming: T, existing: T): T {
+  let updated: T = existing;
+
+  for (let index = 0; index < Object.getOwnPropertyNames(incoming).length; index++) {
+    const key = Object.getOwnPropertyNames(incoming)[index];
+    updated[key] = incoming[key];
   }
   return updated;
 }
 
 /**
- * @param  {League} incoming
- * @param  {League} existing
- * @returns League
- * Updates a single with values that have changed returning fresh copy
+ * @param  {{[key:string]:{entities:any}}} entitiesToMerge
+ *  This method is intended to be used with normalizr.js library. In order to denormalize the state, you have to pass in the entire state as a single object. To avoid having sports, leagues and teams all inside one entities object, they are seperated into their own NGXS state files. This class is intended to union all three of those entities. this.store.selectSnapshot(state => state) will return an object that will looks something like this {sports: {...}, leagues: {...}, teams: {...}}. Plus any other state that might be added in the future
  */
-export function updateLeague(incoming: League, existing: League): League {
-  let updated: League = cloneDeep(existing);
-  console.warn(
-    'state-helpers.updateLeague. See if we can get rid of cloneDeep lodash dependency. When we do { ...existing } does it also clone properties that are classes? Check with Object.isFrozen(existing.sessions)'
-  );
-  // does sportTypeID exist
-  if (incoming.sportTypeID) {
-    // if sportTypeIDs are different, update
-    if (existing.sportTypeID !== incoming.sportTypeID) {
-      updated.sportTypeID = incoming.sportTypeID;
-    }
+export function unionEntities(entitiesToMerge: { [key: string]: { entities: any } }) {
+  let merged = {};
+
+  for (let index = 0; index < Object.getOwnPropertyNames(entitiesToMerge).length; index++) {
+    const key = Object.getOwnPropertyNames(entitiesToMerge)[index];
+    merged[key] = entitiesToMerge[key].entities;
   }
-  if (incoming.name) {
-    if (existing.name !== incoming.name) {
-      updated.name = incoming.name;
-    }
-  }
-  if (incoming.selected) {
-    if (existing.selected !== incoming.selected) {
-      updated.selected = incoming.selected;
-    }
-  }
-  if (incoming.type) {
-    if (existing.type !== incoming.type) {
-      updated.type = incoming.type;
-    }
-  }
-  return updated;
+  return merged;
 }

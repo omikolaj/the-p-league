@@ -1,3 +1,5 @@
+import { TeamState } from 'src/app/store/state/team.state';
+import { TeamStateModel } from './../../../../../store/state/team.state';
 import { Component, OnInit } from '@angular/core';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
@@ -6,7 +8,7 @@ import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { TabTitles } from '../../models/tab-titles.model';
 import { Observable, combineLatest } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { map, tap, filter } from 'rxjs/operators';
+import { map, tap, filter, switchMap } from 'rxjs/operators';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { MatSelectionListChange } from '@angular/material';
 import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
@@ -25,8 +27,11 @@ export class NewScheduleComponent implements OnInit {
   leagues$: Observable<League[]> = this.scheduleAdminFacade.selectedLeagues$.pipe(
     tap(leagues => {
       leagues.forEach(l => {
+        const teamsForLeague = this.scheduleAdminFacade.store.selectSnapshot(TeamState.getTeamsForLeagueID(l.id));
+        console.log('what is l.id', l.id);
+        console.log('what is teamsForLeague', teamsForLeague);
         // if teams is undefined return empty array
-        this.initEditTeamsForm(l.teams || []);
+        this.initEditTeamsForm(teamsForLeague || []);
       });
     })
   );

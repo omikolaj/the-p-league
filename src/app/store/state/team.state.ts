@@ -4,7 +4,8 @@ import { patch, append, removeItem } from '@ngxs/store/operators';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { Teams } from '../actions/team.actions';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
-import { updateTeam } from './state-helpers';
+import { updateEntity } from './state-helpers';
+import { produce } from 'immer';
 
 export interface TeamStateModel {
   entities: {
@@ -87,16 +88,14 @@ export class TeamState {
     });
   }
 
-  @Action(Teams.AddTeams)
-  addTeams(ctx: StateContext<TeamStateModel>, action: Teams.AddTeams) {
-    action.teams.forEach(t => {
-      ctx.setState(
-        patch<TeamStateModel>({
-          entities: patch({ [t.id]: t }),
-          IDs: append([t.id])
-        })
-      );
-    });
+  @Action(Teams.InitializeTeams)
+  initializeTeams(ctx: StateContext<TeamStateModel>, action: Teams.InitializeTeams) {
+    ctx.setState(
+      patch<TeamStateModel>({
+        entities: action.teams,
+        IDs: Object.keys(action.teams).map(id => id)
+      })
+    );
   }
 
   @Action(Teams.AddTeam)
@@ -111,26 +110,46 @@ export class TeamState {
 
   @Action(Teams.UpdateTeams)
   update(ctx: StateContext<TeamStateModel>, action: Teams.UpdateTeams) {
+    // it is expermintation state perferebly we will use immer directly
+    //www.ngxs.io/recipes/immutability-helpers#immer
+    // produce(ctx, (draft: TeamStateModel) => {
+    //   action.updatedTeams.forEach(updatedTeam => {
+    //     const entityUpdated = updateEntity(updatedTeam, draft.entities[updatedTeam.id]);
+    //     draft.entities[entityUpdated.id] = entityUpdated;
+    //   });
+    //   return draft;
+    // });
+    // pure immer
+    const state = produce(ctx.getState(), draft => {
+      action.updatedTeams.forEach(updatedTeam => {
+        const entityUpdated = updateEntity(updatedTeam, draft.entities[updatedTeam.id]);
+        draft.entities[entityUpdated.id] = entityUpdated;
+      });
+      return draft;
+    }) as TeamStateModel;
+
+    ctx.setState(state);
+    console.log('logging updated teams state', ctx.getState().entities);
     // copy over the state
-    const state = { ...ctx.getState(), entities: { ...ctx.getState().entities } };
-    action.updatedTeams.forEach(updatedTeam => {
-      // copy over specific entity object
-      const existingTeam: Team = { ...state.entities[updatedTeam.id] };
-      // delete the entity object from the current entities list, because
-      // we will be inserting an updated one in its place
-      delete state.entities[updatedTeam.id];
-      // get updated team
-      const updated = updateTeam(updatedTeam, existingTeam);
-      // insert the updated team
-      state.entities[updated.id] = updated;
-    });
-    // perform a single store update reducing number of change detection cycles
-    ctx.setState(
-      patch({
-        ...state,
-        entities: state.entities
-      })
-    );
+    // const state = { ...ctx.getState(), entities: { ...ctx.getState().entities } };
+    // action.updatedTeams.forEach(updatedTeam => {
+    //   // copy over specific entity object
+    //   const existingTeam: Team = { ...state.entities[updatedTeam.id] };
+    //   // delete the entity object from the current entities list, because
+    //   // we will be inserting an updated one in its place
+    //   delete state.entities[updatedTeam.id];
+    //   // get updated team
+    //   const updated = updateEntity(updatedTeam, existingTeam);
+    //   // insert the updated team
+    //   state.entities[updated.id] = updated;
+    // });
+    // // perform a single store update reducing number of change detection cycles
+    // ctx.setState(
+    //   patch({
+    //     ...state,
+    //     entities: state.entities
+    //   })
+    // );
   }
 
   @Action(Teams.UnassignTeams)

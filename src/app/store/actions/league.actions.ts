@@ -1,10 +1,16 @@
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { League } from '../../views/schedule/models/interfaces/league.model';
+import { SportTypeStateModel } from '../state/sport-type.state';
+import { NormalizedSchema } from 'normalizr';
 
 export namespace Leagues {
-  export class AddLeagues {
-    static readonly type = '[Schedule] AddLeagues';
-    constructor(public leagues: League[]) {}
+  // export class AddLeagues {
+  //   static readonly type = '[Schedule] AddLeagues';
+  //   constructor(public leagues: League[]) {}
+  // }
+  export class InitializeLeagues {
+    static readonly type = '[Schedule] InitializeLeagues';
+    constructor(public leagues: { [key: string]: League }) {}
   }
   export class AddLeague {
     static readonly type = '[Schedule API] AddLeague';

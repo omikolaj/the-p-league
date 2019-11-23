@@ -1,17 +1,17 @@
+import { Teams } from 'src/app/store/actions/team.actions';
 import { cloneDeep } from 'lodash';
 import { SportTypeStateModel } from 'src/app/store/state/sport-type.state';
 import { Leagues } from 'src/app/store/actions/league.actions';
-import { tap, catchError, switchMap, filter } from 'rxjs/operators';
+import { tap, catchError, switchMap, map } from 'rxjs/operators';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { State, Selector, StateContext, Action, createSelector } from '@ngxs/store';
 import { Schedule } from '../actions/schedule.actions';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
-import { patch, updateItem, append, removeItem, insertItem } from '@ngxs/store/operators';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { Teams } from '../actions/team.actions';
+import { patch, append } from '@ngxs/store/operators';
 import { LeagueState, LeagueStateModel } from './league.state';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
+import { sportListSchema } from './schema';
+import { normalize } from 'normalizr';
 
 export interface SportTypeStateModel {
   entities: {
@@ -38,12 +38,11 @@ export class SportTypeState {
     return Object.values(state.entities);
   }
 
-  @Selector()
   static getSportTypeByID(id: string) {
-    return createSelector([SportTypeState.getSportTypes], state => {
-      const sportTypeEntityID = Object.keys(state.types.entities).find(entityID => entityID === id);
+    return createSelector([SportTypeState], (state: SportTypeStateModel) => {
+      const sportTypeEntityID = Object.keys(state.entities).find(entityID => entityID === id);
       if (sportTypeEntityID) {
-        return state.types.entities[sportTypeEntityID];
+        return state.entities[sportTypeEntityID];
       }
     });
   }
@@ -77,29 +76,19 @@ export class SportTypeState {
   @Action(Schedule.FetchAllSportTypes)
   fetchAll(ctx: StateContext<SportTypeStateModel>) {
     return this.scheduleAdminAsyncService.fetchAllSportTypes().pipe(
-      tap(fetchedSportTypes => {
-        let fetchedSports: {} = {};
-        fetchedSportTypes.forEach(s => {
-          fetchedSports[s.id] = s;
-        });
-        ctx.setState({
-          entities: fetchedSports,
-          IDs: fetchedSportTypes.map(s => s.id),
-          loading: true
-        });
-        return fetchedSportTypes;
+      map(fetchedSportTypes => normalize(fetchedSportTypes, sportListSchema)),
+      tap(normalizedData => {
+        ctx.setState(
+          patch<SportTypeStateModel>({
+            entities: normalizedData.entities['sports'],
+            IDs: normalizedData.result,
+            loading: true
+          })
+        );
+        return normalizedData;
       }),
-      tap(sportTypes => {
-        sportTypes.map(s => {
-          ctx.dispatch(new Leagues.AddLeagues(s.leagues));
-        });
-        return sportTypes;
-      }),
-      tap(sportTypes => {
-        sportTypes.map(s => {
-          s.leagues.map(l => ctx.dispatch(new Teams.AddTeams(l.teams)));
-        });
-      }),
+      tap(normalizedData => ctx.dispatch(new Leagues.InitializeLeagues(normalizedData.entities['leagues']))),
+      tap(normalizedData => ctx.dispatch(new Teams.InitializeTeams(normalizedData.entities['teams']))),
       switchMap(() => ctx.dispatch(new Schedule.FetchAllSportTypesSuccess())),
       catchError(err => ctx.dispatch(new Schedule.FetchAllSportTypesFailed(err)))
     );

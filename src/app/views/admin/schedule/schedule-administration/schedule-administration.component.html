@@ -12,7 +12,7 @@
           <ng-container *ngFor="let sport of types">
             <app-league-administration
               (deletedSport)="onDeleteSport($event)"
-              (updatedSport)="onUpdateSport($event)"
+              (updatedSportName)="onUpdateSport($event)"
               [sportType]="sport"
             ></app-league-administration>
           </ng-container>
