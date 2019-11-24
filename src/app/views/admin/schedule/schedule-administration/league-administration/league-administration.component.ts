@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
@@ -12,7 +12,8 @@ import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-a
   selector: 'app-league-administration',
   templateUrl: './league-administration.component.html',
   styleUrls: ['./league-administration.component.scss'],
-  providers: [ScheduleHelperService]
+  providers: [ScheduleHelperService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LeagueAdministrationComponent implements OnInit {
   leagues$: Observable<League[]>;
@@ -99,8 +100,10 @@ export class LeagueAdministrationComponent implements OnInit {
 
   //#endregion
   /**
-   * @param  {MatSelectionListChange} selectedLeaguesEvent   *
+   * @param  {MatSelectionListChange} selectedLeaguesEvent
+   *
    * Gets triggered each time user makes a list selection
+   * It only updates the selected property on each selected leagues    *
    */
   onLeagueSelectionChange(selectedLeaguesEvent: MatSelectionListChange) {
     const ids: string[] = this.scheduleHelper.onSelectionChange(selectedLeaguesEvent);
@@ -123,18 +126,6 @@ export class LeagueAdministrationComponent implements OnInit {
         id: currentLeague.value.id,
         name: currentLeague.value.name
       });
-      // if (leagues.some(l => l.id === currentLeague.value.id)) {
-      //   const league = leagues.find(l => l.id === currentLeague.value.id);
-      //   if (league.name !== currentLeague.value.name) {
-      //     updatedLeagues.push({
-      //       id: currentLeague.value.id,
-      //       name: currentLeague.value.name,
-      //       sportTypeID: league.sportTypeID,
-      //       selected: league.selected,
-      //       readonly: league.readonly
-      //     });
-      //   }
-      // }
     }
     this.scheduleAdminFacade.updateLeagues(leaguesToUpdate);
   }

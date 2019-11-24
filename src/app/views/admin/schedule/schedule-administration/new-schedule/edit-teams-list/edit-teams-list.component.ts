@@ -1,13 +1,15 @@
 import { MatSelectionListChange, MatSelectionList } from '@angular/material';
 import { FormGroup } from '@angular/forms';
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 
 @Component({
   selector: 'app-edit-teams-list',
   templateUrl: './edit-teams-list.component.html',
-  styleUrls: ['./edit-teams-list.component.scss']
+  styleUrls: ['./edit-teams-list.component.scss'],
+  //TODO ensure this is not causing issues
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditTeamsListComponent implements OnInit {
   @Input() teamsForm: FormGroup;

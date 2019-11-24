@@ -19,16 +19,13 @@ export interface SportTypeStateModel {
     [id: string]: SportType;
   };
   IDs: string[];
-  loading: boolean;
-  error?: any | null;
 }
 
 @State<SportTypeStateModel>({
   name: 'types',
   defaults: {
     entities: {},
-    IDs: [],
-    loading: false
+    IDs: []
   }
 })
 export class SportTypeState {
@@ -37,15 +34,6 @@ export class SportTypeState {
   @Selector()
   static getSportTypes(state: SportTypeStateModel) {
     return Object.values(state.entities);
-  }
-
-  static getSportTypeByID(id: string) {
-    return createSelector([SportTypeState], (state: SportTypeStateModel) => {
-      const sportTypeEntityID = Object.keys(state.entities).find(entityID => entityID === id);
-      if (sportTypeEntityID) {
-        return state.entities[sportTypeEntityID];
-      }
-    });
   }
 
   @Selector([SportTypeState, LeagueState])
@@ -82,8 +70,7 @@ export class SportTypeState {
         ctx.setState(
           patch<SportTypeStateModel>({
             entities: normalizedData.entities['sports'],
-            IDs: normalizedData.result,
-            loading: true
+            IDs: normalizedData.result
           })
         );
       }),
@@ -94,22 +81,22 @@ export class SportTypeState {
     );
   }
 
+  /**
+   * @param  {} Sports.FetchAllSportTypesSuccess
+   *
+   * TODO remove these when replaced
+   * Currently used in the resolver, even though it is empty method
+   */
   @Action(Sports.FetchAllSportTypesSuccess)
-  fetchSuccess(ctx: StateContext<SportTypeStateModel>) {
-    console.log('Inside of fetchAllSportTypesSuccess action');
-    ctx.patchState({
-      loading: false,
-      error: null
-    });
-  }
-
+  fetchSuccess(ctx: StateContext<SportTypeStateModel>) {}
+  /**
+   * @param  {} Sports.FetchAllSportTypesFailed
+   *
+   * TODO remove these when replaced
+   * Currently used in the resolver, even though it is empty method
+   */
   @Action(Sports.FetchAllSportTypesFailed)
-  fetchFailed(ctx: StateContext<SportTypeStateModel>, action: Sports.FetchAllSportTypesFailed) {
-    ctx.patchState({
-      loading: false,
-      error: action.error
-    });
-  }
+  fetchFailed(ctx: StateContext<SportTypeStateModel>, action: Sports.FetchAllSportTypesFailed) {}
 
   //#endregion
 
@@ -127,18 +114,14 @@ export class SportTypeState {
     );
   }
 
-  @Action(Sports.AddSportTypeSuccess)
-  addSuccess() {}
-
-  @Action(Sports.AddSportTypeFailed)
-  addFailed() {}
-
-  @Action(Sports.AddSportTypeLeagueID)
-  addLeagueID(ctx: StateContext<SportTypeStateModel>, action: Sports.AddSportTypeLeagueID) {
+  @Action(Sports.AddLeagueIDsToSportType)
+  addLeagueIDs(ctx: StateContext<SportTypeStateModel>, action: Sports.AddLeagueIDsToSportType) {
     ctx.setState(
       produce((draft: SportTypeStateModel) => {
-        // in case we have not initialized the leagues array, initialize it than add the league id
-        draft.entities[action.sportTypeID].leagues = (draft.entities[action.sportTypeID].leagues || []).concat([action.leagueID]);
+        action.payload.forEach(pair => {
+          // in case we have not initialized the leagues array, initialize it than add the league id
+          draft.entities[pair.sportTypeID].leagues = (draft.entities[pair.sportTypeID].leagues || []).concat([pair.ids]);
+        });
       })
     );
   }
@@ -146,6 +129,7 @@ export class SportTypeState {
   //#endregion
 
   //#region Update
+
   @Action(Sports.UpdateSportType)
   update(ctx: StateContext<SportTypeStateModel>, action: Sports.UpdateSportType) {
     ctx.setState(
@@ -154,15 +138,10 @@ export class SportTypeState {
       })
     );
   }
-
-  @Action(Sports.UpdateSportTypeSuccess)
-  updateSuccess() {}
-
-  @Action(Sports.UpdateSportTypeFailed)
-  updateFailed() {}
   //#endregion
 
   //#region Delete
+
   @Action(Sports.DeleteSportType)
   delete(ctx: StateContext<SportTypeStateModel>, action: Sports.DeleteSportType) {
     ctx.setState(
@@ -173,14 +152,8 @@ export class SportTypeState {
     );
   }
 
-  @Action(Sports.DeleteSportTypeSuccess)
-  deleteSuccess() {}
-
-  @Action(Sports.DeleteSportTypeFailed)
-  deleteFailed() {}
-
-  @Action(Sports.DeleteSportTypeLeagueIDs)
-  addSportTypeID(ctx: StateContext<SportTypeStateModel>, action: Sports.DeleteSportTypeLeagueIDs) {
+  @Action(Sports.DeleteLeagueIDsFromSportType)
+  addSportTypeID(ctx: StateContext<SportTypeStateModel>, action: Sports.DeleteLeagueIDsFromSportType) {
     ctx.setState(
       produce((draft: SportTypeStateModel) => {
         action.deleteIDs.forEach(deleteID => {

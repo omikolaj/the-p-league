@@ -12,16 +12,13 @@ export interface TeamStateModel {
     [id: string]: Team;
   };
   IDs: string[];
-  loading?: boolean;
-  error?: any;
 }
 
 @State<TeamStateModel>({
   name: 'teams',
   defaults: {
     entities: {},
-    IDs: [],
-    loading: false
+    IDs: []
   }
 })
 export class TeamState {
@@ -41,7 +38,6 @@ export class TeamState {
   @Selector()
   static getAllForLeagueID(state: TeamStateModel) {
     return (id: string) => {
-      console.log('returning teams begin');
       return Object.values(state.entities).filter(t => t.leagueID === id);
     };
   }
@@ -78,13 +74,16 @@ export class TeamState {
     );
   }
 
-  @Action(Teams.UnassignTeams)
-  unassign(ctx: StateContext<TeamStateModel>, action: Teams.UnassignTeams) {
+  @Action(Teams.UpdateSelectedTeams)
+  updateSelected(ctx: StateContext<TeamStateModel>, action: Teams.UpdateSelectedTeams) {
     ctx.setState(
       produce((draft: TeamStateModel) => {
-        action.unassignIDs.forEach(unassignID => {
-          draft.entities[unassignID].leagueID = UNASSIGNED;
-          draft.entities[unassignID].selected = false;
+        action.effected.forEach(effectedID => {
+          if (action.selected.some(selectedID => selectedID === effectedID)) {
+            draft.entities[effectedID].selected = true;
+          } else {
+            draft.entities[effectedID].selected = false;
+          }
         });
       })
     );
@@ -102,6 +101,18 @@ export class TeamState {
     );
   }
 
+  @Action(Teams.UnassignTeams)
+  unassign(ctx: StateContext<TeamStateModel>, action: Teams.UnassignTeams) {
+    ctx.setState(
+      produce((draft: TeamStateModel) => {
+        action.unassignIDs.forEach(unassignID => {
+          draft.entities[unassignID].leagueID = UNASSIGNED;
+          draft.entities[unassignID].selected = false;
+        });
+      })
+    );
+  }
+
   @Action(Teams.DeleteTeams)
   delete(ctx: StateContext<TeamStateModel>, action: Teams.DeleteTeams) {
     ctx.setState(
@@ -109,21 +120,6 @@ export class TeamState {
         action.deleteIDs.forEach(deleteID => {
           delete draft.entities[deleteID];
           draft.IDs = draft.IDs.filter(id => id !== deleteID);
-        });
-      })
-    );
-  }
-
-  @Action(Teams.UpdateSelectedTeams)
-  updateSelected(ctx: StateContext<TeamStateModel>, action: Teams.UpdateSelectedTeams) {
-    ctx.setState(
-      produce((draft: TeamStateModel) => {
-        action.effected.forEach(effectedID => {
-          if (action.selected.some(selectedID => selectedID === effectedID)) {
-            draft.entities[effectedID].selected = true;
-          } else {
-            draft.entities[effectedID].selected = false;
-          }
         });
       })
     );

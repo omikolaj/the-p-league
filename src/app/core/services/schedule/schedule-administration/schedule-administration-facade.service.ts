@@ -77,9 +77,10 @@ export class ScheduleAdministrationFacade implements OnInit {
   //#region Leagues
 
   addLeague(newLeague: League): void {
+    const addLeageIDsToSportType: { sportTypeID: string; ids: string[] }[] = this.scheduleAdminHelper.generateLeagueIDsForSportType([newLeague]);
     this.scheduleAdminAsync
       .addLeague(newLeague)
-      .subscribe(() => this.store.dispatch([new Sports.AddSportTypeLeagueID(newLeague.sportTypeID, newLeague.id), new Leagues.AddLeague(newLeague)]));
+      .subscribe(() => this.store.dispatch([new Sports.AddLeagueIDsToSportType(addLeageIDsToSportType), new Leagues.AddLeague(newLeague)]));
   }
 
   updateLeagues(updatedLeagues: League[]): void {
@@ -95,7 +96,7 @@ export class ScheduleAdministrationFacade implements OnInit {
     this.scheduleAdminAsync
       .deleteLeagues(leagueIDsToDelete)
       .subscribe(deletedLeagueIDs =>
-        this.store.dispatch([new Sports.DeleteSportTypeLeagueIDs(sportTypeID, deletedLeagueIDs), new Leagues.DeleteLeagues(deletedLeagueIDs)])
+        this.store.dispatch([new Sports.DeleteLeagueIDsFromSportType(sportTypeID, deletedLeagueIDs), new Leagues.DeleteLeagues(deletedLeagueIDs)])
       );
   }
 
@@ -112,44 +113,101 @@ export class ScheduleAdministrationFacade implements OnInit {
   //#endregion
 
   //#region Teams
-  addTeam(newTeam: Team): void {
-    this.scheduleAdminAsync
-      .addTeam(newTeam)
-      .subscribe(newTeam => this.store.dispatch([new Leagues.AddLeagueTeamID(newTeam.leagueID, newTeam.id), new Teams.AddTeam(newTeam)]));
-  }
 
+  /**
+   * @param  {Team} inNewTeam
+   * @returns void
+   *
+   * Performs async request to add new team.
+   * It then updates the leagues state by passing in an array of objects
+   * that represent the newly added team with information required to update league state,
+   * and at the same time it will update teams state by simply passing in the new team returned
+   * from the async request
+   */
+  addTeam(inNewTeam: Team): void {
+    this.scheduleAdminAsync
+      .addTeam(inNewTeam)
+      .subscribe(newTeam =>
+        this.store.dispatch([new Leagues.AddTeamIDsToLeague([{ leagueID: newTeam.leagueID, ids: [newTeam.id] }]), new Teams.AddTeam(newTeam)])
+      );
+  }
+  /**
+   * @param  {Team[]} updatedTeams
+   *
+   * Updates the passed in teams
+   */
   updateTeams(updatedTeams: Team[]): void {
     this.scheduleAdminAsync.updateTeams(updatedTeams).subscribe(updatedTeams => this.store.dispatch(new Teams.UpdateTeams(updatedTeams)));
   }
 
-  unassignTeams(leagueID: string): void {
-    const teamIDs = this.store.selectSnapshot<string[]>(state => state.leagues.entities[leagueID].teams);
-    const teamEntities = this.store.selectSnapshot<{ [key: string]: Team }>(state => state.teams.entities);
-
-    const teamIDsToUnassign = this.scheduleAdminHelper.findSelectedIDs(teamIDs, teamEntities);
-
+  /**
+   * @param  {string} leagueID
+   * @param  {string[]} teamIDsToUnassign
+   *
+   * Performs an async request and unassigns teams from their leagues
+   * based on the passed in teamIDsToUnassign array, it then dispatches
+   * two actions at the same time, one is to update the leagues teams
+   * property (property that contains team ids assigned to this league)
+   * and the other one is to update each teams leagueID property to '-1'
+   */
+  unassignTeams(leagueID: string, teamIDsToUnassign: string[]): void {
     this.scheduleAdminAsync
       .unassignTeams(teamIDsToUnassign)
-      .subscribe(unassignedTeamIDs => this.store.dispatch(new Teams.UnassignTeams(unassignedTeamIDs)));
-  }
-
-  assignTeams(teams: Team[]): void {
-    this.scheduleAdminAsync.assignTeams(teams).subscribe(teams => this.store.dispatch(new Teams.AssignTeams(teams)));
-  }
-
-  deleteTeams(leagueID: string): void {
-    const teamIDs = this.store.selectSnapshot<string[]>(state => state.leagues.entities[leagueID].teams);
-    const teamEntities = this.store.selectSnapshot<{ [key: string]: Team }>(state => state.teams.entities);
-
-    const teamIDsToDelete = this.scheduleAdminHelper.findSelectedIDs(teamIDs, teamEntities);
-
-    this.scheduleAdminAsync
-      .deleteTeams(teamIDsToDelete)
-      .subscribe(deletedTeamIDs =>
-        this.store.dispatch([new Leagues.DeleteLeagueTeamIDs(leagueID, deletedTeamIDs), new Teams.DeleteTeams(deletedTeamIDs)])
+      .subscribe(unassignedTeamIDs =>
+        this.store.dispatch([new Leagues.DeleteTeamIDsFromLeague(leagueID, teamIDsToUnassign), new Teams.UnassignTeams(unassignedTeamIDs)])
       );
   }
 
+  /**
+   * @param  {Team[]} teams
+   * @returns void
+   *
+   * Receives an array of teams that were selected by the user, in order to assign them
+   * to the corresponding league. Each team object already contains the leagueID
+   * property populated with the leagueID value it is suppoed to be assigned to.
+   * This method takes the teams array and generates a new array of pairs where each pair is
+   * the league ID and list of teams to assign (since this could be a list of teams that must be
+   * assigned to different leagues).
+   * It then dispatches two actions at the same time
+   * to update each league entity's teams property with assigned teams
+   */
+  assignTeams(teams: Team[]): void {
+    const addTeamIDsToLeague: { leagueID: string; ids: string[] }[] = this.scheduleAdminHelper.generateTeamIDsForLeague(teams);
+    this.scheduleAdminAsync
+      .assignTeams(teams)
+      .subscribe(teams => this.store.dispatch([new Leagues.AddTeamIDsToLeague(addTeamIDsToLeague), new Teams.AssignTeams(teams)]));
+  }
+
+  /**
+   * @param  {string} leagueID
+   * @param  {string[]} teamIDsToDelete
+   * @returns void
+   *
+   * Performs an async request which deletes the teams based on the
+   * teamIDsToDelete array
+   * It then dispatches two actions, one is to update
+   * the given league teams property
+   * (teams proeprty is a list of team ids assigned to this league)
+   * and then deletes the team from the teams state
+   */
+  deleteTeams(leagueID: string, teamIDsToDelete: string[]): void {
+    this.scheduleAdminAsync
+      .deleteTeams(teamIDsToDelete)
+      .subscribe(deletedTeamIDs =>
+        this.store.dispatch([new Leagues.DeleteTeamIDsFromLeague(leagueID, deletedTeamIDs), new Teams.DeleteTeams(deletedTeamIDs)])
+      );
+  }
+
+  /**
+   * @param  {string[]} selectedIDs
+   * @param  {string} leagueID
+   * @returns void
+   *
+   * Updates the selected property setting it to true for every
+   * selected id and sets it to false for all other not effected
+   * teams.
+   * Currently NOT being used
+   */
   updateTeamSelection(selectedIDs: string[], leagueID: string): void {
     const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>(state => state.leagues.entities[leagueID].teams);
     this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs));

@@ -14,11 +14,14 @@ import { League } from 'src/app/views/schedule/models/interfaces/League.model';
   selector: 'app-new-schedule',
   templateUrl: './new-schedule.component.html',
   styleUrls: ['./new-schedule.component.scss'],
-  providers: [ScheduleHelperService]
+  providers: [ScheduleHelperService],
+  // TODO test this to ensure its not causing unexpected behavior
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewScheduleComponent implements OnInit {
   tab: TabTitles = 'New Schedule';
   assignTeamsForm: FormGroup;
+  selectedTeamIDs: string[] = [];
 
   leagues$: Observable<{ league: League; teams: Team[] }[]> = combineLatest([
     this.scheduleAdminFacade.selectedLeagues$,
@@ -40,14 +43,15 @@ export class NewScheduleComponent implements OnInit {
 
   constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService, private fb: FormBuilder) {}
 
-  ngOnInit() {
-    this.unassignedTeamsData$.subscribe(v => console.log('unassignedTeams data', v));
-  }
+  ngOnInit() {}
 
   //#region Init Forms
 
+  /**
+   * @param  {Team[]} unassignedTeams
+   * Initializes form for the unassigned-teams component
+   */
   initAssignTeamsForm(unassignedTeams: Team[]) {
-    console.log('initializing assignTeamsForm', unassignedTeams);
     const assignTeamControls = [];
     unassignedTeams.forEach(t => {
       assignTeamControls.push(
@@ -128,17 +132,16 @@ export class NewScheduleComponent implements OnInit {
     this.scheduleAdminFacade.updateTeams(teamsToUpdate);
   }
 
-  onTeamsSelectionChangeHandler(selectedTeamsEvent: MatSelectionListChange, leagueID: string) {
-    const ids: string[] = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
-    this.scheduleAdminFacade.updateTeamSelection(ids, leagueID);
+  onTeamsSelectionChangeHandler(selectedTeamsEvent: MatSelectionListChange) {
+    this.selectedTeamIDs = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
   }
 
   onUnassignTeamsHandler(leagueID: string) {
-    this.scheduleAdminFacade.unassignTeams(leagueID);
+    this.scheduleAdminFacade.unassignTeams(leagueID, this.selectedTeamIDs);
   }
 
   onDeleteTeamsHandler(leagueID: string) {
-    this.scheduleAdminFacade.deleteTeams(leagueID);
+    this.scheduleAdminFacade.deleteTeams(leagueID, this.selectedTeamIDs);
   }
 
   //#endregion

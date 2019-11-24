@@ -3,7 +3,7 @@
 
   <form [formGroup]="teamsForm" (ngSubmit)="onSubmit()" novalidate>
     <mat-selection-list #teamsList formArrayName="teams" [disabled]="disableListSelection" (selectionChange)="onTeamSelectionChange($event)">
-      <mat-list-option *ngFor="let team of teams; let i = index" [selected]="team.selected" [value]="team?.id">
+      <mat-list-option *ngFor="let team of teams; let i = index" [value]="team?.id">
         <mat-icon matListIcon>sports_basketball</mat-icon>
         <ng-container *ngIf="!disableListSelection; else editTeams">
           <h4 matLine>{{ team.name }}</h4>

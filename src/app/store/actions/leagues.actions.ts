@@ -9,27 +9,13 @@ export namespace Leagues {
     static readonly type = '[Schedule API] AddLeague';
     constructor(public newLeague: League) {}
   }
-  export class AddLeagueTeamID {
-    static readonly type = '[Schedule] AddLeagueTeamID';
-    constructor(public leagueID: string, public addID: string) {}
-  }
-  export class AddLeagueSuccess {
-    static readonly type = '[Schedule API] AddLeagueSuccess';
-  }
-  export class AddLeagueFailed {
-    static readonly type = '[Schedule API] AddLeagueFailed';
-    constructor(public error: any) {}
+  export class AddTeamIDsToLeague {
+    static readonly type = '[Schedule] AddTeamIDsToLeague';
+    constructor(public payload: { leagueID: string; ids?: string[] }[]) {}
   }
   export class UpdateLeagues {
     static readonly type = '[Schedule API] UpdateLeagues';
     constructor(public updatedLeagues: League[]) {}
-  }
-  export class UpdateLeaguesSuccess {
-    static readonly type = '[Schedule API] UpdateLeaguesSuccess';
-  }
-  export class UpdateLeaguesFailed {
-    static readonly type = '[Schedule API] UpdateLeaguesFailed';
-    constructor(public error: any) {}
   }
   export class UpdateSelectedLeagues {
     static readonly type = '[Schedule] UpdateSelectedLeagues';
@@ -39,12 +25,8 @@ export namespace Leagues {
     static readonly type = '[Schedule] DeleteLeagues';
     constructor(public deleteIDs: string[]) {}
   }
-  export class DeleteSelectedLeagues {
-    static readonly type = '[Schedule] DeleteSelectedLeagues';
-    constructor(public deleteIDs: string[]) {}
-  }
-  export class DeleteLeagueTeamIDs {
-    static readonly type = '[Schedule] DeleteLeagueTeamIDs';
+  export class DeleteTeamIDsFromLeague {
+    static readonly type = '[Schedule] DeleteTeamIDsFromLeague';
     constructor(public leagueID: string, public deleteIDs: string[]) {}
   }
 }

@@ -113,6 +113,8 @@ export class ScheduleAdministrationComponent implements OnInit {
         }
       }
     }
+
+    // reset the form
     this.newSportLeagueForm.get('sportType').reset();
     this.newSportLeagueForm.get('leagueName').reset();
     this.newSportLeagueForm.get('sportTypeID').reset();

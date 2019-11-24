@@ -4,7 +4,7 @@
       (onUpdateTeams)="onUpdateTeamsHandler($event, data.league?.id)"
       (onDeleteTeams)="onDeleteTeamsHandler(data.league?.id)"
       (onUnassignTeams)="onUnassignTeamsHandler(data.league?.id)"
-      (onSelectionChange)="onTeamsSelectionChangeHandler($event, data.league?.id)"
+      (onSelectionChange)="onTeamsSelectionChangeHandler($event)"
       [teamsForm]="data.form"
       [teams]="data.teams"
       [league]="data.league"

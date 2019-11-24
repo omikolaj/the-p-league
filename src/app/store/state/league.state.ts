@@ -10,18 +10,13 @@ export interface LeagueStateModel {
     [id: string]: League;
   };
   IDs: string[];
-  selected: League[];
-  loading?: boolean;
-  error?: any;
 }
 
 @State<LeagueStateModel>({
   name: 'leagues',
   defaults: {
     entities: {},
-    IDs: [],
-    selected: [],
-    loading: false
+    IDs: []
   }
 })
 export class LeagueState {
@@ -44,7 +39,6 @@ export class LeagueState {
 
   @Action(Leagues.InitializeLeagues)
   initializeLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.InitializeLeagues) {
-    console.warn('UPDATE LEAGUE MODEL TO ONLY INCLUDE ARRAY OF TEAM IDS TO MATCH NORMALIZED STATE');
     ctx.setState(
       produce((draft: LeagueStateModel) => {
         draft.entities = action.leagues;
@@ -63,14 +57,15 @@ export class LeagueState {
     );
   }
 
-  @Action(Leagues.AddLeagueTeamID)
-  addTeamID(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeagueTeamID) {
+  @Action(Leagues.AddTeamIDsToLeague)
+  addTeamIDs(ctx: StateContext<LeagueStateModel>, action: Leagues.AddTeamIDsToLeague) {
     ctx.setState(
       produce((draft: LeagueStateModel) => {
-        if (action.addID !== UNASSIGNED) {
-          // in case we have not initialized the teams array, initialize it than add the team id
-          draft.entities[action.leagueID].teams = (draft.entities[action.leagueID].teams || []).concat([action.addID]);
-        }
+        action.payload.forEach(pair => {
+          if (pair.leagueID !== UNASSIGNED) {
+            draft.entities[pair.leagueID].teams = (draft.entities[pair.leagueID].teams || []).concat([pair.ids]);
+          }
+        });
       })
     );
   }
@@ -113,8 +108,8 @@ export class LeagueState {
     );
   }
 
-  @Action(Leagues.DeleteLeagueTeamIDs)
-  deleteTeamID(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteLeagueTeamIDs) {
+  @Action(Leagues.DeleteTeamIDsFromLeague)
+  deleteTeamIDs(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteTeamIDsFromLeague) {
     ctx.setState(
       produce((draft: LeagueStateModel) => {
         action.deleteIDs.forEach(deleteID => {

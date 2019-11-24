@@ -1,5 +1,4 @@
-import { League } from './League.model';
-
+// TODO Convert leagues types from any[] to string[]
 export interface SportType {
   id?: string;
   name: string;
