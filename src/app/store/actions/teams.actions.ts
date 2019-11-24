@@ -38,6 +38,6 @@ export namespace Teams {
 
   export class UpdateSelectedTeams {
     static readonly type = '[Schedule] UpdateSelectedTeams';
-    constructor(public selected: string[], public leagueID: string) {}
+    constructor(public selected: string[], public effected: string[]) {}
   }
 }

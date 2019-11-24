@@ -1,8 +1,7 @@
-import { log } from 'util';
-import { FormGroup, FormArray } from '@angular/forms';
-import { Component, OnInit, Input, Output, ViewChild, QueryList, EventEmitter, ViewChildren, OnDestroy, SimpleChanges } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 
-import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angular/material';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 
 @Component({
@@ -16,8 +15,6 @@ export class EditLeaguesListComponent implements OnInit, OnDestroy {
   @Output() selectedLeagues = new EventEmitter<MatSelectionListChange>();
   @Output() updatedLeagues = new EventEmitter<FormGroup>();
   @Output() deletedLeagues = new EventEmitter<void>();
-  @ViewChild(MatSelectionList, { static: false }) leaguesList: MatSelectionList;
-
   disableListSelection: boolean = false;
   private numberOfSelectedLeagues: number = 0;
   get disableEdit(): boolean {
@@ -59,7 +56,7 @@ export class EditLeaguesListComponent implements OnInit, OnDestroy {
     this.deletedLeagues.emit();
   }
 
-  trackByFn(index: number, league: League) {
+  trackByFn(index: number) {
     // there seems to be a bug with Angular
     // without trackByFn the view does not update correctly
     // DO NOT DELETE

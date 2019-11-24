@@ -1,42 +1,53 @@
-import { LeagueState, LeagueStateModel } from 'src/app/store/state/league.state';
+import { LeagueState } from 'src/app/store/state/league.state';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
 import { Injectable, OnInit } from '@angular/core';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { LeagueService } from './league/league.service';
-import { Observable, BehaviorSubject, concat } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
-import { SportTypeState, SportTypeStateModel } from 'src/app/store/state/sport-type.state';
-import { Schedule } from 'src/app/store/actions/schedule.actions';
-import { Leagues } from 'src/app/store/actions/league.actions';
+import { SportTypeState } from 'src/app/store/state/sport-type.state';
+import { Sports } from 'src/app/store/actions/sports.actions';
+import { Leagues } from 'src/app/store/actions/leagues.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { MatListOption } from '@angular/material';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { tap, concatMap, switchMap, map } from 'rxjs/operators';
-import { Teams } from 'src/app/store/actions/team.actions';
+import { tap, map } from 'rxjs/operators';
+import { Teams } from 'src/app/store/actions/teams.actions';
 import { TeamState } from 'src/app/store/state/team.state';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
+import { ScheduleAdministrationHelperService } from './schedule-administration-helper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScheduleAdministrationFacade implements OnInit {
-  @Select(SportTypeState.getSportTypes) sports$: Observable<SportType[]>;
-  @Select(LeagueState.getSelected) selectedLeagues$: Observable<League[]>;
-  @Select(TeamState.getUnassigned) unassignedTeams$: Observable<Team[]>;
-  sportTypesLeaguesPairs$: Observable<SportTypesLeaguesPairs[]> = this.store.select(SportTypeState.getSportTypesLeaguesPairs);
+  //#region Streams
 
-  constructor(private scheduleAdminAsync: ScheduleAdministrationAsyncService, public store: Store) {}
+  @Select(SportTypeState.getSportTypes) sports$: Observable<SportType[]>;
+  @Select(SportTypeState.getSportTypesLeaguesPairs) sportTypesLeaguesPairs$: Observable<SportTypesLeaguesPairs[]>;
+
+  @Select(LeagueState.getAllForSportTypeID) getAllForSportTypeID$: Observable<(id: string) => League[]>;
+  @Select(LeagueState.getSelected) selectedLeagues$: Observable<League[]>;
+
+  @Select(TeamState.getUnassigned) unassignedTeams$: Observable<Team[]>;
+  @Select(TeamState.getAllForLeagueID) getAllForLeagueID$: Observable<(id: string) => Team[]>;
+
+  //#endregion
+
+  //#region Snapshots
+
+  //#region
+
+  constructor(
+    private scheduleAdminAsync: ScheduleAdministrationAsyncService,
+    private store: Store,
+    private scheduleAdminHelper: ScheduleAdministrationHelperService
+  ) {}
 
   ngOnInit() {}
-
-  getTeamsForLeagueID(leagueID: string): Observable<Team[]> {
-    return this.store.select(TeamState.getAllTeamsForLeagueID).pipe(map(filterFn => filterFn(leagueID)));
-  }
 
   //#region SportTypes
 
   addSportType(newSport: SportType): void {
-    this.scheduleAdminAsync.addSport(newSport).subscribe(newSport => this.store.dispatch(new Schedule.AddSportType(newSport)));
+    this.scheduleAdminAsync.addSport(newSport).subscribe(newSport => this.store.dispatch(new Sports.AddSportType(newSport)));
   }
 
   addSportAndLeague(newSportType: SportType, newLeague: League): void {
@@ -46,20 +57,19 @@ export class ScheduleAdministrationFacade implements OnInit {
         tap(newSportType => {
           newLeague.sportTypeID = newSportType.id;
           this.addLeague(newLeague);
-          return newSportType;
         })
       )
-      .subscribe(newSportType => this.store.dispatch(new Schedule.AddSportType(newSportType)));
+      .subscribe(newSportType => this.store.dispatch(new Sports.AddSportType(newSportType)));
   }
 
   updateSportType(updatedSportType: SportType): void {
     this.scheduleAdminAsync
       .updateSportTypes(updatedSportType)
-      .subscribe(updatedSportType => this.store.dispatch(new Schedule.UpdateSportType(updatedSportType)));
+      .subscribe(updatedSportType => this.store.dispatch(new Sports.UpdateSportType(updatedSportType)));
   }
 
   deleteSportType(id: string): void {
-    this.scheduleAdminAsync.deleteSportType(id).subscribe(id => this.store.dispatch(new Schedule.DeleteSportType(id)));
+    this.scheduleAdminAsync.deleteSportType(id).subscribe(id => this.store.dispatch(new Sports.DeleteSportType(id)));
   }
 
   //#endregion
@@ -67,7 +77,9 @@ export class ScheduleAdministrationFacade implements OnInit {
   //#region Leagues
 
   addLeague(newLeague: League): void {
-    this.scheduleAdminAsync.addLeague(newLeague).subscribe(() => this.store.dispatch(new Leagues.AddLeague(newLeague)));
+    this.scheduleAdminAsync
+      .addLeague(newLeague)
+      .subscribe(() => this.store.dispatch([new Sports.AddSportTypeLeagueID(newLeague.sportTypeID, newLeague.id), new Leagues.AddLeague(newLeague)]));
   }
 
   updateLeagues(updatedLeagues: League[]): void {
@@ -75,14 +87,22 @@ export class ScheduleAdministrationFacade implements OnInit {
   }
 
   deleteLeagues(sportTypeID: string): void {
-    const leagueIDsToDelete: string[] = this.store.selectSnapshot(LeagueState.getSelectedLeagueIDsForSportTypeID(sportTypeID));
+    const leagueIDs = this.store.selectSnapshot<string[]>(state => state.types.entities[sportTypeID].leagues);
+    const leagueEntities = this.store.selectSnapshot<{ [key: string]: League }>(state => state.leagues.entities);
+
+    const leagueIDsToDelete = this.scheduleAdminHelper.findSelectedIDs(leagueIDs, leagueEntities);
+
     this.scheduleAdminAsync
       .deleteLeagues(leagueIDsToDelete)
-      .subscribe(deletedLeagueIDs => this.store.dispatch(new Leagues.DeleteLeagues(deletedLeagueIDs)));
+      .subscribe(deletedLeagueIDs =>
+        this.store.dispatch([new Sports.DeleteSportTypeLeagueIDs(sportTypeID, deletedLeagueIDs), new Leagues.DeleteLeagues(deletedLeagueIDs)])
+      );
   }
 
   updateSelectedLeagues(selectedIDs: string[], sportTypeID: string): void {
-    this.store.dispatch(new Leagues.UpdateSelectedLeagues(selectedIDs, sportTypeID));
+    const effectedLeagueIDs: string[] = this.store.selectSnapshot<string[]>(state => state.types.entities[sportTypeID].leagues);
+
+    this.store.dispatch(new Leagues.UpdateSelectedLeagues(selectedIDs, effectedLeagueIDs));
   }
 
   checkLeagueSelection(): boolean {
@@ -93,31 +113,46 @@ export class ScheduleAdministrationFacade implements OnInit {
 
   //#region Teams
   addTeam(newTeam: Team): void {
-    this.scheduleAdminAsync.addTeam(newTeam).subscribe(newTeam => this.store.dispatch(new Teams.AddTeam(newTeam)));
+    this.scheduleAdminAsync
+      .addTeam(newTeam)
+      .subscribe(newTeam => this.store.dispatch([new Leagues.AddLeagueTeamID(newTeam.leagueID, newTeam.id), new Teams.AddTeam(newTeam)]));
   }
 
   updateTeams(updatedTeams: Team[]): void {
     this.scheduleAdminAsync.updateTeams(updatedTeams).subscribe(updatedTeams => this.store.dispatch(new Teams.UpdateTeams(updatedTeams)));
   }
 
-  unassignTeams(leagueID: string) {
-    const teamIDsToUnassign: string[] = this.store.selectSnapshot(TeamState.getSelectedTeamIDsForLeagueID(leagueID));
+  unassignTeams(leagueID: string): void {
+    const teamIDs = this.store.selectSnapshot<string[]>(state => state.leagues.entities[leagueID].teams);
+    const teamEntities = this.store.selectSnapshot<{ [key: string]: Team }>(state => state.teams.entities);
+
+    const teamIDsToUnassign = this.scheduleAdminHelper.findSelectedIDs(teamIDs, teamEntities);
+
     this.scheduleAdminAsync
       .unassignTeams(teamIDsToUnassign)
       .subscribe(unassignedTeamIDs => this.store.dispatch(new Teams.UnassignTeams(unassignedTeamIDs)));
   }
 
-  assignTeams(teams: Team[]) {
+  assignTeams(teams: Team[]): void {
     this.scheduleAdminAsync.assignTeams(teams).subscribe(teams => this.store.dispatch(new Teams.AssignTeams(teams)));
   }
 
-  deleteTeams(leagueID: string) {
-    const teamIDsToDelete: string[] = this.store.selectSnapshot(TeamState.getSelectedTeamIDsForLeagueID(leagueID));
-    this.scheduleAdminAsync.deleteTeams(teamIDsToDelete).subscribe(deletedTeamIDs => this.store.dispatch(new Teams.DeleteTeams(deletedTeamIDs)));
+  deleteTeams(leagueID: string): void {
+    const teamIDs = this.store.selectSnapshot<string[]>(state => state.leagues.entities[leagueID].teams);
+    const teamEntities = this.store.selectSnapshot<{ [key: string]: Team }>(state => state.teams.entities);
+
+    const teamIDsToDelete = this.scheduleAdminHelper.findSelectedIDs(teamIDs, teamEntities);
+
+    this.scheduleAdminAsync
+      .deleteTeams(teamIDsToDelete)
+      .subscribe(deletedTeamIDs =>
+        this.store.dispatch([new Leagues.DeleteLeagueTeamIDs(leagueID, deletedTeamIDs), new Teams.DeleteTeams(deletedTeamIDs)])
+      );
   }
 
   updateTeamSelection(selectedIDs: string[], leagueID: string): void {
-    this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, leagueID));
+    const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>(state => state.leagues.entities[leagueID].teams);
+    this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs));
   }
   //#endregion
 

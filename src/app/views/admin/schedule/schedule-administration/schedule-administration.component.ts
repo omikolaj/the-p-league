@@ -1,10 +1,8 @@
-import { Sport } from './../../../schedule/models/sport.enum';
-import { SportTypeStateModel } from 'src/app/store/state/sport-type.state';
-import { SportTypeState } from './../../../../store/state/sport-type.state';
+import { Login } from './../../../../core/models/auth/login.model';
 import { Type } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControlOptions } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { MatTabChangeEvent } from '@angular/material';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
@@ -13,9 +11,7 @@ import { TabTitles } from '../models/tab-titles.model';
 import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 import { ModifyScheduleComponent } from './modify/modify-schedule.component';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { LeagueState } from 'src/app/store/state/league.state';
 import { SportTypesLeaguesPairs } from '../models/sport-types-leagues-pairs.model';
-import { AddSportOrLeague } from '../models/add-sport-or-league.model';
 
 @Component({
   selector: 'app-schedule-administration',
@@ -80,28 +76,18 @@ export class ScheduleAdministrationComponent implements OnInit {
   //#region Event Handlers
 
   onUpdateSport(updatedSport: { id: string; name: string }) {
-    const sportType: SportType = this.scheduleAdminFacade.store.selectSnapshot(SportTypeState.getSportTypeByID(updatedSport.id));
     const updatedSportType: SportType = {
-      id: sportType.id,
+      id: updatedSport.id,
       name: updatedSport.name
     };
     this.scheduleAdminFacade.updateSportType(updatedSportType);
   }
 
   onDeleteSport(id: string) {
-    const leaguesForSportTypeToDelete: League[] = this.scheduleAdminFacade.store.selectSnapshot(LeagueState.getLeaguesForSportTypeID(id));
-    if (leaguesForSportTypeToDelete.length > 0) {
-      console.warn('Cannot delete sport type that has leagues assigned to it');
-      return;
-    }
     this.scheduleAdminFacade.deleteSportType(id);
   }
 
   onNewSportLeague(newSportLeague: FormGroup) {
-    this.newSportLeagueForm.get('sportType').reset();
-    this.newSportLeagueForm.get('leagueName').reset();
-    this.newSportLeagueForm.get('sportTypeID').reset();
-
     const newSportType: SportType = {
       name: newSportLeague.get('sportType').value
     };
@@ -127,6 +113,9 @@ export class ScheduleAdministrationComponent implements OnInit {
         }
       }
     }
+    this.newSportLeagueForm.get('sportType').reset();
+    this.newSportLeagueForm.get('leagueName').reset();
+    this.newSportLeagueForm.get('sportTypeID').reset();
   }
 
   onNewTeam(newTeamForm: FormGroup) {

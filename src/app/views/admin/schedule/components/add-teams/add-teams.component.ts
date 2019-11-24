@@ -1,7 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { FormGroup, Form, FormGroupDirective } from '@angular/forms';
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
+import { FormGroup, FormGroupDirective } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatExpansionPanel } from '@angular/material';
 import { SportTypesLeaguesPairs } from '../../models/sport-types-leagues-pairs.model';
 

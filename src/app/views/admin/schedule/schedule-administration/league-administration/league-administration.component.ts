@@ -4,7 +4,6 @@ import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/sch
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { MatSelectionListChange } from '@angular/material';
-import { LeagueState } from 'src/app/store/state/league.state';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
@@ -29,7 +28,7 @@ export class LeagueAdministrationComponent implements OnInit {
   //#region ng LifeCycle hooks
 
   ngOnInit() {
-    this.leagues$ = this.scheduleAdminFacade.store.select(LeagueState.getAllLeaguesForSportTypeID).pipe(
+    this.leagues$ = this.scheduleAdminFacade.getAllForSportTypeID$.pipe(
       map(filterFn => filterFn(this.sportType.id)),
       tap(leagues => {
         this.initForms(leagues);
@@ -85,6 +84,16 @@ export class LeagueAdministrationComponent implements OnInit {
   }
 
   onDeleteSportType() {
+    // In case the sport type was created and the leagues property has
+    // not been initialized. This property should be initialized inside
+    // the store already. This is just in case
+    if ('leagues' in this.sportType) {
+      if (this.sportType.leagues.length > 0) {
+        console.warn('Cannot delete sport type that has leagues assigned to it');
+        console.error('UPDATE TO DISPLAY TOAST MESSAGE');
+        return;
+      }
+    }
     this.deletedSport.emit(this.sportType.id);
   }
 
@@ -105,7 +114,7 @@ export class LeagueAdministrationComponent implements OnInit {
    * @param  {League[]} leagues
    * Fired whenever user updates league names in the edit-leagues-list component
    */
-  onUpdatedLeagues(updatedLeagueNames: FormGroup, leagues: League[]) {
+  onUpdatedLeagues(updatedLeagueNames: FormGroup) {
     const leaguesToUpdate: League[] = [];
     const leaguesFormArray = updatedLeagueNames.get('leagues') as FormArray;
     for (let index = 0; index < leaguesFormArray.length; index++) {

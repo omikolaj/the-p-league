@@ -1,12 +1,16 @@
-import { Team } from './../../views/schedule/models/interfaces/team.model';
+import { Team } from '../../views/schedule/models/interfaces/team.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 
-export namespace Schedule {
-  //#region SportTypes
+export namespace Sports {
   export class AddSportType {
     static readonly type = '[Schedule API] AddSportType';
     constructor(public newSportType: SportType) {}
+  }
+
+  export class AddSportTypeLeagueID {
+    static readonly type = '[Schedule] AddSportTypeLeagueID';
+    constructor(public sportTypeID: string, public leagueID: string) {}
   }
 
   export class AddSportTypeSuccess {
@@ -57,6 +61,11 @@ export namespace Schedule {
   export class DeleteSportTypeFailed {
     static readonly type = '[Schedule API] DeleteSportTypeFailed';
     constructor(public error: any) {}
+  }
+
+  export class DeleteSportTypeLeagueIDs {
+    static readonly type = '[Schedule API] DeleteSportTypeLeagueIDs';
+    constructor(public sportTypeID: string, public deleteIDs: string[]) {}
   }
 
   export class UpdateSelectedLeaguesForSportType {

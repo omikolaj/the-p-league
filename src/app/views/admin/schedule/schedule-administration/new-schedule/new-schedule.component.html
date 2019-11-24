@@ -1,16 +1,14 @@
-<ng-container *ngIf="leagues$ | async as leagues">
-  <ng-container *ngFor="let league of leagues">
-    <ng-container *ngIf="getTeamsForLeagueID(league?.id) | async as teams">
-      <app-edit-teams-list
-        (onUpdateTeams)="onUpdateTeamsHandler($event, league?.id)"
-        (onDeleteTeams)="onDeleteTeamsHandler(league?.id)"
-        (onUnassignTeams)="onUnassignTeamsHandler(league?.id)"
-        (onSelectionChange)="onTeamsSelectionChangeHandler($event, league?.id)"
-        [teamsForm]="teamsForm"
-        [teams]="teams"
-        [league]="league"
-      ></app-edit-teams-list>
-    </ng-container>
+<ng-container *ngIf="leagues$ | async as leagueData">
+  <ng-container *ngFor="let data of leagueData">
+    <app-edit-teams-list
+      (onUpdateTeams)="onUpdateTeamsHandler($event, data.league?.id)"
+      (onDeleteTeams)="onDeleteTeamsHandler(data.league?.id)"
+      (onUnassignTeams)="onUnassignTeamsHandler(data.league?.id)"
+      (onSelectionChange)="onTeamsSelectionChangeHandler($event, data.league?.id)"
+      [teamsForm]="data.form"
+      [teams]="data.teams"
+      [league]="data.league"
+    ></app-edit-teams-list>
 
     <app-new-session-schedule></app-new-session-schedule>
 

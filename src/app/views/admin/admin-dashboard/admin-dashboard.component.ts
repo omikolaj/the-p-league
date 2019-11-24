@@ -1,9 +1,7 @@
-import { ScheduleAdministrationResolver } from './../../../core/services/resolvers/schedule/schedule-administration-resolver.resolver';
-import { Component, OnInit, Type } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 
 import { AdminControlType } from '../models/admin-control-type.enum';
-import { Router, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AdminControlComponent } from './admin-control/admin-control.component';
 import { GenericListItem } from 'src/app/shared/models/interfaces/generic-list-item.model';
 import { AdminControl } from '../models/interfaces/admin-control.model';

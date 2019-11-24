@@ -1,13 +1,6 @@
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { League } from '../../views/schedule/models/interfaces/league.model';
-import { SportTypeStateModel } from '../state/sport-type.state';
-import { NormalizedSchema } from 'normalizr';
 
 export namespace Leagues {
-  // export class AddLeagues {
-  //   static readonly type = '[Schedule] AddLeagues';
-  //   constructor(public leagues: League[]) {}
-  // }
   export class InitializeLeagues {
     static readonly type = '[Schedule] InitializeLeagues';
     constructor(public leagues: { [key: string]: League }) {}
@@ -15,6 +8,10 @@ export namespace Leagues {
   export class AddLeague {
     static readonly type = '[Schedule API] AddLeague';
     constructor(public newLeague: League) {}
+  }
+  export class AddLeagueTeamID {
+    static readonly type = '[Schedule] AddLeagueTeamID';
+    constructor(public leagueID: string, public addID: string) {}
   }
   export class AddLeagueSuccess {
     static readonly type = '[Schedule API] AddLeagueSuccess';
@@ -34,6 +31,10 @@ export namespace Leagues {
     static readonly type = '[Schedule API] UpdateLeaguesFailed';
     constructor(public error: any) {}
   }
+  export class UpdateSelectedLeagues {
+    static readonly type = '[Schedule] UpdateSelectedLeagues';
+    constructor(public selected: string[], public effected: string[]) {}
+  }
   export class DeleteLeagues {
     static readonly type = '[Schedule] DeleteLeagues';
     constructor(public deleteIDs: string[]) {}
@@ -42,8 +43,8 @@ export namespace Leagues {
     static readonly type = '[Schedule] DeleteSelectedLeagues';
     constructor(public deleteIDs: string[]) {}
   }
-  export class UpdateSelectedLeagues {
-    static readonly type = '[Schedule] UpdateSelectedLeagues';
-    constructor(public selected: string[], public sportTypeID: string) {}
+  export class DeleteLeagueTeamIDs {
+    static readonly type = '[Schedule] DeleteLeagueTeamIDs';
+    constructor(public leagueID: string, public deleteIDs: string[]) {}
   }
 }

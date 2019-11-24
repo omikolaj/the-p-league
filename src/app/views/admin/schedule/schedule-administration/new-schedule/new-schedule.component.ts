@@ -1,17 +1,14 @@
-import { TeamState } from 'src/app/store/state/team.state';
-import { TeamStateModel } from './../../../../../store/state/team.state';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-
 import { TabTitles } from '../../models/tab-titles.model';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, forkJoin, zip } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { map, tap, filter, switchMap } from 'rxjs/operators';
+import { map, tap, filter, flatMap, concatMap, mergeMap, switchMap } from 'rxjs/operators';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { MatSelectionListChange } from '@angular/material';
 import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
+import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 
 @Component({
   selector: 'app-new-schedule',
@@ -22,19 +19,18 @@ import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-a
 export class NewScheduleComponent implements OnInit {
   tab: TabTitles = 'New Schedule';
   assignTeamsForm: FormGroup;
-  teamsForm: FormGroup;
 
-  leagues$: Observable<League[]> = this.scheduleAdminFacade.selectedLeagues$.pipe(
-    tap(leagues => {
-      leagues.forEach(l => {
-        const teamsForLeague = this.scheduleAdminFacade.store.selectSnapshot(TeamState.getTeamsForLeagueID(l.id));
-        console.log('what is l.id', l.id);
-        console.log('what is teamsForLeague', teamsForLeague);
-        // if teams is undefined return empty array
-        this.initEditTeamsForm(teamsForLeague || []);
+  leagues$: Observable<{ league: League; teams: Team[] }[]> = combineLatest([
+    this.scheduleAdminFacade.selectedLeagues$,
+    this.scheduleAdminFacade.getAllForLeagueID$
+  ]).pipe(
+    map(([selectedLeagues, filterFn]) => {
+      return selectedLeagues.map(l => {
+        return { league: l, teams: filterFn(l.id), form: this.initEditTeamsForm(filterFn(l.id)) };
       });
     })
   );
+
   unassignedTeamsData$ = combineLatest(this.scheduleAdminFacade.unassignedTeams$, this.scheduleAdminFacade.sportTypesLeaguesPairs$).pipe(
     map(([unassignedTeams, pairs]) => {
       return {
@@ -49,16 +45,6 @@ export class NewScheduleComponent implements OnInit {
       this.initAssignTeamsForm(data.unassignedTeams);
     })
   );
-
-  /**
-   * @param  {string} leagueID
-   * @returns Observable
-   * Exposes a stream of teams for the given league ID
-   */
-  getTeamsForLeagueID(leagueID: string): Observable<Team[]> {
-    // the store only gets quiried once, and then whenever value has changed
-    return this.scheduleAdminFacade.getTeamsForLeagueID(leagueID);
-  }
 
   constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService, private fb: FormBuilder) {}
 
@@ -83,7 +69,16 @@ export class NewScheduleComponent implements OnInit {
     });
   }
 
-  initEditTeamsForm(teams: Team[]) {
+  /**
+   * @param  {Team[]} teams
+   * @returns FormGroup
+   * Since we need to compose a separate edit team form for each
+   * league, we have to return a form group here and wrap it
+   * inside an observable (the wrapping of the observable occurs in the leagues$ pipe),
+   * it is then unwrapped and passed down
+   * to the edit-teams-list component in the template
+   */
+  initEditTeamsForm(teams: Team[]): FormGroup {
     const teamNameControls = teams.map(t =>
       this.fb.group({
         id: this.fb.control(t.id),
@@ -91,7 +86,7 @@ export class NewScheduleComponent implements OnInit {
       })
     );
 
-    this.teamsForm = this.fb.group({
+    return this.fb.group({
       teams: this.fb.array(teamNameControls)
     });
   }
@@ -100,6 +95,12 @@ export class NewScheduleComponent implements OnInit {
 
   //#region Event Handlers
 
+  /**
+   * @param  {FormGroup} assignedTeamsForm
+   * Fired whenever user assigns teams to a league.
+   * Creating shell team object to carry the team ID and the league the team should be assigned to
+   * instead of creating a separate object to carry this information
+   */
   onAssignTeams(assignedTeamsForm: FormGroup) {
     const formControls = [...assignedTeamsForm.get('unassignedTeams')['controls']];
     const teamsToAssign: Team[] = [];
@@ -134,6 +135,9 @@ export class NewScheduleComponent implements OnInit {
 
   onTeamsSelectionChangeHandler(selectedTeamsEvent: MatSelectionListChange, leagueID: string) {
     const ids: string[] = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
+    console.log('what are ids', ids);
+    console.log('what is league ID', leagueID);
+
     this.scheduleAdminFacade.updateTeamSelection(ids, leagueID);
   }
 

@@ -7,7 +7,7 @@ import { SportType } from './sport-type.model';
 export interface League {
   id?: string;
   type?: string;
-  teams?: Team[];
+  teams?: any[];
   sessions?: Session[];
   name: string;
   selected?: boolean;

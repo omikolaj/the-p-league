@@ -1,5 +1,4 @@
 import { MatSelectionListChange, MatSelectionList } from '@angular/material';
-import { SportType } from '../../../../../schedule/models/interfaces/sport-type.model';
 import { FormGroup } from '@angular/forms';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
@@ -34,7 +33,10 @@ export class EditTeamsListComponent implements OnInit {
 
   //#region ng LifeCycle Hooks
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('incoming form', this.teamsForm);
+    console.log('league is', this.league);
+  }
 
   //#endregion
 
@@ -56,6 +58,7 @@ export class EditTeamsListComponent implements OnInit {
   }
 
   onSaveHandler() {
+    console.log('updatedteamsForm', this.teamsForm);
     this.disableListSelection = !this.disableListSelection;
     this.onUpdateTeams.emit(this.teamsForm);
   }

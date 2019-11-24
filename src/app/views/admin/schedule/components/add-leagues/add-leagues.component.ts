@@ -1,10 +1,7 @@
 import { cloneDeep } from 'lodash';
-import { FormGroup, FormBuilder, Validators, FormGroupDirective, FormControl, FormControlName } from '@angular/forms';
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { LeagueService } from 'src/app/core/services/schedule/schedule-administration/league/league.service';
-import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
-import { MatAccordion, MatExpansionPanelState, MatExpansionPanel, MatAutocomplete, MatOption, MatAutocompleteSelectedEvent } from '@angular/material';
+import { FormGroup, FormGroupDirective } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatExpansionPanel, MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, tap } from 'rxjs/operators';
 import { SportTypesLeaguesPairs } from '../../models/sport-types-leagues-pairs.model';

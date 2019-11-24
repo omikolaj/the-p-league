@@ -1,10 +1,9 @@
-import { Leagues } from 'src/app/store/actions/league.actions';
+import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { Leagues } from 'src/app/store/actions/leagues.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { SportTypeState } from './sport-type.state';
-import { State, Selector, Action, StateContext, Store, createSelector } from '@ngxs/store';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { patch, append } from '@ngxs/store/operators';
+import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { updateEntity } from './state-helpers';
+import produce from 'immer';
 
 export interface LeagueStateModel {
   entities: {
@@ -35,166 +34,96 @@ export class LeagueState {
 
   @Selector()
   static getSelected(state: LeagueStateModel) {
-    const selectedLeagues: League[] = [];
-    Object.values(state.entities).map(l => {
-      if (l.selected) {
-        selectedLeagues.push(l);
-      }
-    });
-    return selectedLeagues;
+    return Object.values(state.entities).filter(l => l.selected);
   }
 
   @Selector()
-  static getAllLeaguesForSportTypeID(state: LeagueStateModel) {
-    return (id: string) => {
-      const leaguesMatch: League[] = [];
-      Object.values(state.entities).map(l => {
-        if (l.sportTypeID === id) {
-          leaguesMatch.push(l);
-        }
-      });
-      return leaguesMatch;
-    };
+  static getAllForSportTypeID(state: LeagueStateModel) {
+    return (id: string) => Object.values(state.entities).filter(l => l.sportTypeID === id);
   }
-
-  static getSelectedLeagueIDsForSportTypeID(id: string) {
-    return createSelector([LeagueState], (state: LeagueStateModel) => {
-      const selectedLeagueIDs: string[] = [];
-      Object.values(state.entities).forEach(l => {
-        if (l.sportTypeID === id) {
-          if (l.selected) {
-            selectedLeagueIDs.push(l.id);
-          }
-        }
-      });
-      return selectedLeagueIDs;
-    });
-  }
-
-  static getLeaguesForSportTypeID(id: string) {
-    return createSelector([LeagueState], (state: LeagueStateModel) => {
-      const leagues: League[] = [];
-      Object.values(state.entities).forEach(l => {
-        if (l.sportTypeID === id) {
-          leagues.push(l);
-        }
-      });
-      return leagues;
-    });
-  }
-
-  // @Action(Leagues.AddLeagues)
-  // addLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeagues) {
-  //   action.leagues.forEach(l => {
-  //     ctx.setState(
-  //       patch<LeagueStateModel>({
-  //         entities: patch({ [l.id]: l }),
-  //         IDs: append([l.id])
-  //       })
-  //     );
-  //   });
-  // }
 
   @Action(Leagues.InitializeLeagues)
   initializeLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.InitializeLeagues) {
     console.warn('UPDATE LEAGUE MODEL TO ONLY INCLUDE ARRAY OF TEAM IDS TO MATCH NORMALIZED STATE');
     ctx.setState(
-      patch<LeagueStateModel>({
-        entities: action.leagues,
-        IDs: Object.keys(action.leagues).map(id => id)
+      produce((draft: LeagueStateModel) => {
+        draft.entities = action.leagues;
+        draft.IDs = Object.keys(action.leagues).map(id => id);
       })
     );
-    // action.leagues.forEach(l => {
-    //   ctx.setState(
-    //     patch<LeagueStateModel>({
-    //       entities: patch({ [l.id]: l }),
-    //       IDs: append([l.id])
-    //     })
-    //   );
-    // });
   }
 
   @Action(Leagues.AddLeague)
   add(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeague) {
     ctx.setState(
-      patch<LeagueStateModel>({
-        entities: patch({ [action.newLeague.id]: action.newLeague }),
-        IDs: append([action.newLeague.id])
+      produce((draft: LeagueStateModel) => {
+        draft.entities[action.newLeague.id] = action.newLeague;
+        draft.IDs.push(action.newLeague.id);
+      })
+    );
+  }
+
+  @Action(Leagues.AddLeagueTeamID)
+  addTeamID(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeagueTeamID) {
+    ctx.setState(
+      produce((draft: LeagueStateModel) => {
+        if (action.addID !== UNASSIGNED) {
+          // in case we have not initialized the teams array, initialize it than add the team id
+          draft.entities[action.leagueID].teams = (draft.entities[action.leagueID].teams || []).concat([action.addID]);
+        }
       })
     );
   }
 
   @Action(Leagues.UpdateLeagues)
   update(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateLeagues) {
-    const state = { ...ctx.getState(), entities: { ...ctx.getState().entities } };
-    action.updatedLeagues.forEach(updatedLeague => {
-      const existingLeague: League = { ...state.entities[updatedLeague.id] };
-      delete state.entities[updatedLeague.id];
-      const updated = updateEntity(updatedLeague, existingLeague);
-      state.entities[updated.id] = updated;
-    });
     ctx.setState(
-      patch({
-        ...state,
-        entities: state.entities
+      produce((draft: LeagueStateModel) => {
+        action.updatedLeagues.forEach(updatedLeague => {
+          draft.entities[updatedLeague.id] = updateEntity(updatedLeague, draft.entities[updatedLeague.id]);
+        });
       })
     );
   }
 
   @Action(Leagues.UpdateSelectedLeagues)
   updatedSelected(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateSelectedLeagues) {
-    const state = {
-      ...ctx.getState(),
-      entities: { ...ctx.getState().entities }
-    };
-
-    for (let index = 0; index < Object.values(state.entities).length; index++) {
-      const league: League = { ...Object.values(state.entities)[index] };
-      // if the current league sport type ID matches the incoming
-      if (league.sportTypeID === action.sportTypeID) {
-        // if the list of selected leagues has any id matching current league id
-        if (action.selected.some(selectedID => selectedID === league.id)) {
-          league.selected = true;
-        } else {
-          league.selected = false;
-        }
-        state.entities[league.id] = league;
-      }
-    }
-
     ctx.setState(
-      patch<LeagueStateModel>({
-        entities: state.entities
+      produce((draft: LeagueStateModel) => {
+        action.effected.forEach(effectedID => {
+          if (action.selected.some(selectedID => selectedID === effectedID)) {
+            draft.entities[effectedID].selected = true;
+          } else {
+            draft.entities[effectedID].selected = false;
+          }
+        });
       })
     );
-    console.log('updated selected leagues', ctx.getState().entities);
   }
 
   @Action(Leagues.DeleteLeagues)
-  /**
-   * @param  {StateContext<LeagueStateModel>} ctx
-   * @param  {Leagues.DeleteLeagues} action
-   * This is another approach to deleting items. The second approach
-   * to deleting items is inside the teams state and it appears to be more
-   * efficient. Keeping this for reference in case something goes wrong
-   * with either one
-   */
   delete(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteLeagues) {
-    const state = ctx.getState();
-    const updatedLeagueEntities = {};
-    const updatedIDs = [];
-    for (let index = 0; index < Object.keys(state.entities).length; index++) {
-      const keepID = Object.keys(state.entities)[index];
-      // if the delete ids list does NOT contain the currently iterating id, keep it
-      if (!action.deleteIDs.includes(keepID)) {
-        updatedLeagueEntities[keepID] = { ...state.entities[keepID] };
-        updatedIDs.push(keepID);
-      }
-    }
-    ctx.patchState({
-      ...state,
-      entities: updatedLeagueEntities,
-      IDs: updatedIDs
-    });
+    ctx.setState(
+      produce((draft: LeagueStateModel) => {
+        action.deleteIDs.forEach(deleteID => {
+          delete draft.entities[deleteID];
+          draft.IDs = draft.IDs.filter(id => id !== deleteID);
+        });
+      })
+    );
+  }
+
+  @Action(Leagues.DeleteLeagueTeamIDs)
+  deleteTeamID(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteLeagueTeamIDs) {
+    ctx.setState(
+      produce((draft: LeagueStateModel) => {
+        action.deleteIDs.forEach(deleteID => {
+          const index = draft.entities[action.leagueID].teams.indexOf(deleteID);
+          if (index !== 1) {
+            draft.entities[action.leagueID].teams.splice(index, 1);
+          }
+        });
+      })
+    );
   }
 }

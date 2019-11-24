@@ -2,7 +2,7 @@ import { TeamStateModel } from './team.state';
 import { State, Selector, Action, StateContext, createSelector } from '@ngxs/store';
 import { patch, append, removeItem } from '@ngxs/store/operators';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { Teams } from '../actions/team.actions';
+import { Teams } from '../actions/teams.actions';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { updateEntity } from './state-helpers';
 import { produce } from 'immer';
@@ -27,73 +27,31 @@ export interface TeamStateModel {
 export class TeamState {
   constructor() {}
 
+  // Currently not in use
   @Selector()
   static getTeams(state: TeamStateModel) {
-    const teams: Team[] = [];
-    Object.values(state.entities).forEach(t => {
-      teams.push(t);
-    });
-    return teams;
+    return Object.values(state.entities).map(t => t);
   }
 
   @Selector()
   static getUnassigned(state: TeamStateModel) {
-    const unassignedTeams: Team[] = [];
-    Object.values(state.entities).forEach(t => {
-      if (t.leagueID === UNASSIGNED) {
-        unassignedTeams.push(t);
-      }
-    });
-    return unassignedTeams;
+    return Object.values(state.entities).filter(t => t.leagueID === UNASSIGNED);
   }
 
   @Selector()
-  static getAllTeamsForLeagueID(state: TeamStateModel) {
+  static getAllForLeagueID(state: TeamStateModel) {
     return (id: string) => {
       console.log('returning teams begin');
-      const teamsMatch: Team[] = [];
-      Object.values(state.entities).forEach(t => {
-        if (t.leagueID === id) {
-          teamsMatch.push(t);
-        }
-      });
-      console.log(`returning teams for id ${id}`, teamsMatch);
-      return teamsMatch;
+      return Object.values(state.entities).filter(t => t.leagueID === id);
     };
-  }
-
-  static getTeamsForLeagueID(id: string) {
-    return createSelector([TeamState], (state: TeamStateModel) => {
-      const teams: Team[] = [];
-      Object.values(state.entities).forEach(t => {
-        if (t.leagueID === id) {
-          teams.push(t);
-        }
-      });
-      return teams;
-    });
-  }
-
-  static getSelectedTeamIDsForLeagueID(id: string) {
-    return createSelector([TeamState], (state: TeamStateModel) => {
-      const selectedTeamIDs: string[] = [];
-      Object.values(state.entities).forEach(t => {
-        if (t.leagueID === id) {
-          if (t.selected) {
-            selectedTeamIDs.push(t.id);
-          }
-        }
-      });
-      return selectedTeamIDs;
-    });
   }
 
   @Action(Teams.InitializeTeams)
   initializeTeams(ctx: StateContext<TeamStateModel>, action: Teams.InitializeTeams) {
     ctx.setState(
-      patch<TeamStateModel>({
-        entities: action.teams,
-        IDs: Object.keys(action.teams).map(id => id)
+      produce((draft: TeamStateModel) => {
+        draft.entities = action.teams;
+        draft.IDs = Object.keys(action.teams).map(id => id);
       })
     );
   }
@@ -101,150 +59,72 @@ export class TeamState {
   @Action(Teams.AddTeam)
   add(ctx: StateContext<TeamStateModel>, action: Teams.AddTeam) {
     ctx.setState(
-      patch<TeamStateModel>({
-        entities: patch({ [action.newTeam.id]: action.newTeam }),
-        IDs: append([action.newTeam.id])
+      produce((draft: TeamStateModel) => {
+        draft.entities[action.newTeam.id] = action.newTeam;
+        draft.IDs.push(action.newTeam.id);
       })
     );
   }
 
   @Action(Teams.UpdateTeams)
   update(ctx: StateContext<TeamStateModel>, action: Teams.UpdateTeams) {
-    // it is expermintation state perferebly we will use immer directly
-    //www.ngxs.io/recipes/immutability-helpers#immer
-    // produce(ctx, (draft: TeamStateModel) => {
-    //   action.updatedTeams.forEach(updatedTeam => {
-    //     const entityUpdated = updateEntity(updatedTeam, draft.entities[updatedTeam.id]);
-    //     draft.entities[entityUpdated.id] = entityUpdated;
-    //   });
-    //   return draft;
-    // });
-    // pure immer
-    const state = produce(ctx.getState(), draft => {
-      action.updatedTeams.forEach(updatedTeam => {
-        const entityUpdated = updateEntity(updatedTeam, draft.entities[updatedTeam.id]);
-        draft.entities[entityUpdated.id] = entityUpdated;
-      });
-      return draft;
-    }) as TeamStateModel;
-
-    ctx.setState(state);
-    console.log('logging updated teams state', ctx.getState().entities);
-    // copy over the state
-    // const state = { ...ctx.getState(), entities: { ...ctx.getState().entities } };
-    // action.updatedTeams.forEach(updatedTeam => {
-    //   // copy over specific entity object
-    //   const existingTeam: Team = { ...state.entities[updatedTeam.id] };
-    //   // delete the entity object from the current entities list, because
-    //   // we will be inserting an updated one in its place
-    //   delete state.entities[updatedTeam.id];
-    //   // get updated team
-    //   const updated = updateEntity(updatedTeam, existingTeam);
-    //   // insert the updated team
-    //   state.entities[updated.id] = updated;
-    // });
-    // // perform a single store update reducing number of change detection cycles
-    // ctx.setState(
-    //   patch({
-    //     ...state,
-    //     entities: state.entities
-    //   })
-    // );
+    ctx.setState(
+      produce((draft: TeamStateModel) => {
+        action.updatedTeams.forEach(updatedTeam => {
+          const entityUpdated = updateEntity(updatedTeam, draft.entities[updatedTeam.id]);
+          draft.entities[entityUpdated.id] = entityUpdated;
+        });
+      })
+    );
   }
 
   @Action(Teams.UnassignTeams)
   unassign(ctx: StateContext<TeamStateModel>, action: Teams.UnassignTeams) {
-    const state = ctx.getState();
-    for (let index = 0; index < action.unassignIDs.length; index++) {
-      const unassignID = action.unassignIDs[index];
-      const unassignTeam: Team = { ...Object.values(state.entities).find(t => t.id === unassignID) };
-      if (unassignTeam) {
-        unassignTeam.leagueID = UNASSIGNED;
-        unassignTeam.selected = false;
-        //TODO updating state one by one will cause new value to be emitted
-        // it would be better to do it in bulk
-        ctx.setState(
-          patch<TeamStateModel>({
-            entities: patch({
-              [unassignTeam.id]: unassignTeam
-            })
-          })
-        );
-      }
-    }
+    ctx.setState(
+      produce((draft: TeamStateModel) => {
+        action.unassignIDs.forEach(unassignID => {
+          draft.entities[unassignID].leagueID = UNASSIGNED;
+          draft.entities[unassignID].selected = false;
+        });
+      })
+    );
   }
 
   @Action(Teams.AssignTeams)
   assign(ctx: StateContext<TeamStateModel>, action: Teams.AssignTeams) {
-    const state = ctx.getState();
-    for (let index = 0; index < action.assignTeams.length; index++) {
-      const team = action.assignTeams[index];
-      const changeAssignmentTeam: Team = { ...Object.values(state.entities).find(t => t.id === team.id) };
-      if (changeAssignmentTeam) {
-        changeAssignmentTeam.leagueID = team.leagueID;
-        changeAssignmentTeam.selected = false;
-        //TODO updating state one by one will cause new value to be emitted
-        // it would be better to do it in bulk
-        ctx.setState(
-          patch<TeamStateModel>({
-            entities: patch({
-              [changeAssignmentTeam.id]: changeAssignmentTeam
-            })
-          })
-        );
-      }
-    }
+    ctx.setState(
+      produce((draft: TeamStateModel) => {
+        action.assignTeams.forEach(team => {
+          draft.entities[team.id].leagueID = team.leagueID;
+          draft.entities[team.id].selected = false;
+        });
+      })
+    );
   }
 
   @Action(Teams.DeleteTeams)
-  /**
-   * @param  {StateContext<TeamStateModel>} ctx
-   * @param  {Teams.DeleteTeams} action
-   * This approach seems more efficient of deleting things
-   * It has more code because we have to copy frozen objects
-   */
   delete(ctx: StateContext<TeamStateModel>, action: Teams.DeleteTeams) {
-    const state = {
-      ...ctx.getState()
-    };
-    for (let index = 0; index < action.deleteIDs.length; index++) {
-      const deleteID = action.deleteIDs[index];
-      const deleteTeam: Team = Object.values(state.entities).find(t => t.id === deleteID);
-      if (deleteTeam) {
-        state.entities = { ...state.entities };
-        state.entities[deleteID] = { ...state.entities[deleteID] };
-        delete state.entities[deleteID];
-        ctx.setState(
-          patch<TeamStateModel>({
-            entities: state.entities,
-            IDs: removeItem(id => id === deleteID)
-          })
-        );
-      }
-    }
+    ctx.setState(
+      produce((draft: TeamStateModel) => {
+        action.deleteIDs.forEach(deleteID => {
+          delete draft.entities[deleteID];
+          draft.IDs = draft.IDs.filter(id => id !== deleteID);
+        });
+      })
+    );
   }
 
   @Action(Teams.UpdateSelectedTeams)
   updateSelected(ctx: StateContext<TeamStateModel>, action: Teams.UpdateSelectedTeams) {
-    const state = {
-      ...ctx.getState(),
-      entities: { ...ctx.getState().entities }
-    };
-    for (let index = 0; index < Object.values(state.entities).length; index++) {
-      const team: Team = { ...Object.values(state.entities)[index] };
-      if (team.leagueID === action.leagueID) {
-        if (action.selected.some(selectedID => selectedID === team.id)) {
-          team.selected = true;
-        } else {
-          team.selected = false;
-        }
-        state.entities[team.id] = team;
-      }
-    }
-
     ctx.setState(
-      patch<TeamStateModel>({
-        entities: state.entities
+      produce((draft: TeamStateModel) => {
+        action.effected.forEach(effectedID => {
+          if (action.selected.some(selectedID => selectedID === effectedID)) {
+            draft.entities[effectedID].selected = true;
+          } else {
+            draft.entities[effectedID].selected = false;
+          }
+        });
       })
     );
   }
