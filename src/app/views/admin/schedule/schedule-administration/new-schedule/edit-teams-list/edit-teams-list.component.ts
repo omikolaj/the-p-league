@@ -33,10 +33,7 @@ export class EditTeamsListComponent implements OnInit {
 
   //#region ng LifeCycle Hooks
 
-  ngOnInit() {
-    console.log('incoming form', this.teamsForm);
-    console.log('league is', this.league);
-  }
+  ngOnInit() {}
 
   //#endregion
 

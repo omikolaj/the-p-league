@@ -18,6 +18,7 @@
 
 <ng-container *ngIf="unassignedTeamsData$ | async as data">
   <app-unassigned
+    *ngIf="data.unassignedTeams?.length > 0"
     [sportLeaguePairs]="data.pairs"
     [assignTeamsForm]="assignTeamsForm"
     (onAssignTeamsToLeagues)="onAssignTeams($event)"

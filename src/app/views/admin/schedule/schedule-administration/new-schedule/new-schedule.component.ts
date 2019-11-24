@@ -32,27 +32,22 @@ export class NewScheduleComponent implements OnInit {
   );
 
   unassignedTeamsData$ = combineLatest(this.scheduleAdminFacade.unassignedTeams$, this.scheduleAdminFacade.sportTypesLeaguesPairs$).pipe(
+    tap(([unassignedTeams]) => this.initAssignTeamsForm(unassignedTeams)),
     map(([unassignedTeams, pairs]) => {
-      return {
-        unassignedTeams: unassignedTeams,
-        // pairs are required for unassigned-teams component to display
-        // all available sports and leagues to which you can assign a team to
-        pairs: pairs
-      };
-    }),
-    filter(data => data.unassignedTeams === []),
-    tap(data => {
-      this.initAssignTeamsForm(data.unassignedTeams);
+      return { pairs, unassignedTeams };
     })
   );
 
   constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService, private fb: FormBuilder) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.unassignedTeamsData$.subscribe(v => console.log('unassignedTeams data', v));
+  }
 
   //#region Init Forms
 
   initAssignTeamsForm(unassignedTeams: Team[]) {
+    console.log('initializing assignTeamsForm', unassignedTeams);
     const assignTeamControls = [];
     unassignedTeams.forEach(t => {
       assignTeamControls.push(
@@ -135,9 +130,6 @@ export class NewScheduleComponent implements OnInit {
 
   onTeamsSelectionChangeHandler(selectedTeamsEvent: MatSelectionListChange, leagueID: string) {
     const ids: string[] = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
-    console.log('what are ids', ids);
-    console.log('what is league ID', leagueID);
-
     this.scheduleAdminFacade.updateTeamSelection(ids, leagueID);
   }
 
