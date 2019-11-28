@@ -8,15 +8,26 @@
       <ng-container formArrayName="unassignedTeams">
         <ng-container [formGroupName]="i">
           <mat-form-field>
-            <input formControlName="teamName" [value]="team.teamName" matInput [readonly]="true" />
+            <input
+              formControlName="teamName"
+              [value]="team.teamName"
+              matInput
+              [readonly]="true"
+            />
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>League</mat-label>
             <mat-select formControlName="leagueID">
               <mat-option>-- None --</mat-option>
-              <mat-optgroup *ngFor="let pair of sportLeaguePairs" [label]="pair.sportName">
-                <mat-option *ngFor="let league of pair.leagueNames" [value]="league.id">
+              <mat-optgroup
+                *ngFor="let pair of sportLeaguePairs"
+                [label]="pair.name"
+              >
+                <mat-option
+                  *ngFor="let league of pair.leagues"
+                  [value]="league.id"
+                >
                   {{ league.name }}
                 </mat-option>
               </mat-optgroup>

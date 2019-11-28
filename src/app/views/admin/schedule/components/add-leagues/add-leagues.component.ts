@@ -1,24 +1,37 @@
-import { cloneDeep } from 'lodash';
-import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { MatExpansionPanel, MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material';
-import { Subject } from 'rxjs';
-import { takeUntil, filter, tap } from 'rxjs/operators';
-import { SportTypesLeaguesPairs } from '../../models/sport-types-leagues-pairs.model';
+import { cloneDeep } from "lodash";
+import { FormGroup, FormGroupDirective } from "@angular/forms";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild
+} from "@angular/core";
+import {
+  MatExpansionPanel,
+  MatAutocomplete,
+  MatAutocompleteSelectedEvent
+} from "@angular/material";
+import { Subject } from "rxjs";
+import { takeUntil, filter, tap } from "rxjs/operators";
+import { SportTypesLeaguesPairs } from "../../models/sport-types-leagues-pairs.model";
 
 @Component({
-  selector: 'app-add-leagues',
-  templateUrl: './add-leagues.component.html',
-  styleUrls: ['./add-leagues.component.scss']
+  selector: "app-add-leagues",
+  templateUrl: "./add-leagues.component.html",
+  styleUrls: ["./add-leagues.component.scss"]
 })
 export class AddLeaguesComponent {
-  title: string = 'Add';
-  description: string = 'Sport/League';
+  title: string = "Add";
+  description: string = "Sport/League";
   @Input() newSportLeagueForm: FormGroup;
   @Input() sportLeaguePairs: SportTypesLeaguesPairs[];
-  @Output() onNewSportLeague: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
-  @ViewChild(MatExpansionPanel, { static: false }) matExpansionPanel: MatExpansionPanel;
-  @ViewChild('auto', { static: false }) autoComplete: MatAutocomplete;
+  @Output() onNewSportLeague: EventEmitter<FormGroup> = new EventEmitter<
+    FormGroup
+  >();
+  @ViewChild(MatExpansionPanel, { static: false })
+  matExpansionPanel: MatExpansionPanel;
+  @ViewChild("auto", { static: false }) autoComplete: MatAutocomplete;
   private unsubscribe$ = new Subject<void>();
   private selectedSport: MatAutocompleteSelectedEvent;
 
@@ -28,7 +41,9 @@ export class AddLeaguesComponent {
     this.autoComplete.optionSelected
       .pipe(
         takeUntil(this.unsubscribe$),
-        filter((selected: MatAutocompleteSelectedEvent) => selected !== undefined),
+        filter(
+          (selected: MatAutocompleteSelectedEvent) => selected !== undefined
+        ),
         tap(selected => (this.selectedSport = selected))
       )
       .subscribe();
@@ -53,13 +68,14 @@ export class AddLeaguesComponent {
   }
 
   displayFn(pair?: SportTypesLeaguesPairs) {
-    return pair ? pair.sportName : undefined;
+    return pair ? pair.name : undefined;
   }
 
   private addSportTypeIDIfExists() {
     if (this.selectedSport) {
-      const pair: SportTypesLeaguesPairs = this.selectedSport.option.value as SportTypesLeaguesPairs;
-      this.newSportLeagueForm.get('sportTypeID').setValue(pair.sportID);
+      const pair: SportTypesLeaguesPairs = this.selectedSport.option
+        .value as SportTypesLeaguesPairs;
+      this.newSportLeagueForm.get("sportTypeID").setValue(pair.id);
     }
   }
 }

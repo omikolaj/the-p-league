@@ -2,7 +2,9 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
+        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon"
+          >add</mat-icon
+        >
         {{ title }}
       </mat-panel-title>
       <mat-panel-description>
@@ -12,7 +14,12 @@
 
     <!-- START -- contents -->
 
-    <form [formGroup]="newTeamForm" (ngSubmit)="onSubmit(formDirective)" #formDirective="ngForm" novalidate>
+    <form
+      [formGroup]="newTeamForm"
+      (ngSubmit)="onSubmit(formDirective)"
+      #formDirective="ngForm"
+      novalidate
+    >
       <mat-form-field>
         <input formControlName="name" matInput placeholder="Team Name" />
         <mat-error>Team name is required</mat-error>
@@ -22,8 +29,11 @@
         <mat-label>League</mat-label>
         <mat-select formControlName="leagueID">
           <!-- <mat-option>-- None --</mat-option> -->
-          <mat-optgroup *ngFor="let pair of sportLeaguePairs" [label]="pair.sportName">
-            <mat-option *ngFor="let league of pair.leagueNames" [value]="league.id">
+          <mat-optgroup
+            *ngFor="let pair of sportLeaguePairs"
+            [label]="pair.name"
+          >
+            <mat-option *ngFor="let league of pair.leagues" [value]="league.id">
               {{ league.name }}
             </mat-option>
           </mat-optgroup>

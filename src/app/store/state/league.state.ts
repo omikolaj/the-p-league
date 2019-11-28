@@ -55,6 +55,7 @@ export class LeagueState {
         draft.IDs.push(action.newLeague.id);
       })
     );
+    console.log('what is state', ctx.getState().entities);
   }
 
   @Action(Leagues.AddTeamIDsToLeague)

@@ -1,17 +1,24 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
-import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { MatSelectionListChange } from '@angular/material';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy
+} from "@angular/core";
+import { FormGroup, Validators, FormBuilder, FormArray } from "@angular/forms";
+import { ScheduleAdministrationFacade } from "src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service";
+import { SportType } from "src/app/views/schedule/models/interfaces/sport-type.model";
+import { League } from "src/app/views/schedule/models/interfaces/League.model";
+import { MatSelectionListChange } from "@angular/material";
+import { Observable } from "rxjs";
+import { map, tap } from "rxjs/operators";
+import { ScheduleHelperService } from "src/app/core/services/schedule/schedule-administration/schedule-helper.service";
 
 @Component({
-  selector: 'app-league-administration',
-  templateUrl: './league-administration.component.html',
-  styleUrls: ['./league-administration.component.scss'],
+  selector: "app-league-administration",
+  templateUrl: "./league-administration.component.html",
+  styleUrls: ["./league-administration.component.scss"],
   providers: [ScheduleHelperService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -19,12 +26,19 @@ export class LeagueAdministrationComponent implements OnInit {
   leagues$: Observable<League[]>;
   @Input() sportType: SportType;
   @Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
-  @Output() updatedSportName: EventEmitter<{ id: string; name: string }> = new EventEmitter<{ id: string; name: string }>();
+  @Output() updatedSportName: EventEmitter<{
+    id: string;
+    name: string;
+  }> = new EventEmitter<{ id: string; name: string }>();
   editForm: FormGroup;
   sportTypeForm: FormGroup;
   readonlySportName: boolean = true;
 
-  constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService) {}
+  constructor(
+    private fb: FormBuilder,
+    private scheduleAdminFacade: ScheduleAdministrationFacade,
+    private scheduleHelper: ScheduleHelperService
+  ) {}
 
   //#region ng LifeCycle hooks
 
@@ -38,7 +52,7 @@ export class LeagueAdministrationComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    console.log('destroying league admin');
+    console.log("destroying league admin");
   }
 
   //#endregion
@@ -79,7 +93,7 @@ export class LeagueAdministrationComponent implements OnInit {
     this.readonlySportName = !this.readonlySportName;
     const updatedSport = {
       id: this.sportType.id,
-      name: this.sportTypeForm.get('name').value
+      name: this.sportTypeForm.get("name").value
     };
     this.updatedSportName.emit(updatedSport);
   }
@@ -88,10 +102,12 @@ export class LeagueAdministrationComponent implements OnInit {
     // In case the sport type was created and the leagues property has
     // not been initialized. This property should be initialized inside
     // the store already. This is just in case
-    if ('leagues' in this.sportType) {
+    if ("leagues" in this.sportType) {
       if (this.sportType.leagues.length > 0) {
-        console.warn('Cannot delete sport type that has leagues assigned to it');
-        console.error('UPDATE TO DISPLAY TOAST MESSAGE');
+        console.warn(
+          "Cannot delete sport type that has leagues assigned to it"
+        );
+        console.error("UPDATE TO DISPLAY TOAST MESSAGE");
         return;
       }
     }
@@ -106,7 +122,9 @@ export class LeagueAdministrationComponent implements OnInit {
    * It only updates the selected property on each selected leagues    *
    */
   onLeagueSelectionChange(selectedLeaguesEvent: MatSelectionListChange) {
-    const ids: string[] = this.scheduleHelper.onSelectionChange(selectedLeaguesEvent);
+    const ids: string[] = this.scheduleHelper.onSelectionChange(
+      selectedLeaguesEvent
+    );
 
     this.scheduleAdminFacade.updateSelectedLeagues(ids, this.sportType.id);
   }
@@ -119,7 +137,7 @@ export class LeagueAdministrationComponent implements OnInit {
    */
   onUpdatedLeagues(updatedLeagueNames: FormGroup) {
     const leaguesToUpdate: League[] = [];
-    const leaguesFormArray = updatedLeagueNames.get('leagues') as FormArray;
+    const leaguesFormArray = updatedLeagueNames.get("leagues") as FormArray;
     for (let index = 0; index < leaguesFormArray.length; index++) {
       const currentLeague = leaguesFormArray.at(index);
       leaguesToUpdate.push({

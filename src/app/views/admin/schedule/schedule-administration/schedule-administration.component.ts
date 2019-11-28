@@ -1,36 +1,41 @@
-import { Login } from './../../../../core/models/auth/login.model';
-import { Type } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { MatTabChangeEvent } from '@angular/material';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
-import { TabTitles } from '../models/tab-titles.model';
-import { NewScheduleComponent } from './new-schedule/new-schedule.component';
-import { ModifyScheduleComponent } from './modify/modify-schedule.component';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { SportTypesLeaguesPairs } from '../models/sport-types-leagues-pairs.model';
+import { SportTypesLeaguesPairs } from "src/app/views/admin/schedule/models/sport-types-leagues-pairs.model";
+import { Login } from "./../../../../core/models/auth/login.model";
+import { Type } from "@angular/core";
+import { Observable, Subject } from "rxjs";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { League } from "src/app/views/schedule/models/interfaces/league.model";
+import { MatTabChangeEvent } from "@angular/material";
+import { SportType } from "src/app/views/schedule/models/interfaces/sport-type.model";
+import { ScheduleAdministrationFacade } from "src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service";
+import { TabTitles } from "../models/tab-titles.model";
+import { NewScheduleComponent } from "./new-schedule/new-schedule.component";
+import { ModifyScheduleComponent } from "./modify/modify-schedule.component";
+import { Team } from "src/app/views/schedule/models/interfaces/team.model";
 
 @Component({
-  selector: 'app-schedule-administration',
-  templateUrl: './schedule-administration.component.html',
-  styleUrls: ['./schedule-administration.component.scss']
+  selector: "app-schedule-administration",
+  templateUrl: "./schedule-administration.component.html",
+  styleUrls: ["./schedule-administration.component.scss"]
 })
 export class ScheduleAdministrationComponent implements OnInit {
   sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
-  unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
-  sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
-  @ViewChild('matGroup', { static: false }) matTabGroup;
+  unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade
+    .unassignedTeams$;
+  sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this
+    .scheduleAdminFacade.sportTypesLeaguesPairs$;
+  @ViewChild("matGroup", { static: false }) matTabGroup;
   private _unsubscribe$ = new Subject<void>();
-  tabTitle: TabTitles = 'Schedule';
+  tabTitle: TabTitles = "Schedule";
   nextTab: 0 | 1 | 2 | number;
   newSportLeagueForm: FormGroup;
   newTeamForm: FormGroup;
   adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 
-  constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
+  constructor(
+    private fb: FormBuilder,
+    private scheduleAdminFacade: ScheduleAdministrationFacade
+  ) {}
 
   //#region LifeCycle Hooks
 
@@ -89,11 +94,11 @@ export class ScheduleAdministrationComponent implements OnInit {
 
   onNewSportLeague(newSportLeague: FormGroup) {
     const newSportType: SportType = {
-      name: newSportLeague.get('sportType').value
+      name: newSportLeague.get("sportType").value
     };
     const newLeague: League = {
-      name: newSportLeague.get('leagueName').value,
-      sportTypeID: newSportLeague.get('sportTypeID').value,
+      name: newSportLeague.get("leagueName").value,
+      sportTypeID: newSportLeague.get("sportTypeID").value,
       type: newSportType.name
     };
 
@@ -115,18 +120,18 @@ export class ScheduleAdministrationComponent implements OnInit {
     }
 
     // reset the form
-    this.newSportLeagueForm.get('sportType').reset();
-    this.newSportLeagueForm.get('leagueName').reset();
-    this.newSportLeagueForm.get('sportTypeID').reset();
+    this.newSportLeagueForm.get("sportType").reset();
+    this.newSportLeagueForm.get("leagueName").reset();
+    this.newSportLeagueForm.get("sportTypeID").reset();
   }
 
   onNewTeam(newTeamForm: FormGroup) {
-    this.newTeamForm.get('name').reset();
-    this.newTeamForm.get('leagueID').reset();
+    this.newTeamForm.get("name").reset();
+    this.newTeamForm.get("leagueID").reset();
 
     const newTeam: Team = {
-      name: newTeamForm.get('name').value,
-      leagueID: newTeamForm.get('leagueID').value,
+      name: newTeamForm.get("name").value,
+      leagueID: newTeamForm.get("leagueID").value,
       selected: true
     };
 
@@ -135,18 +140,18 @@ export class ScheduleAdministrationComponent implements OnInit {
 
   onNewSchedule() {
     // Update tab to 'New Schedule' and navigate to it
-    this.tabTitle = 'New Schedule';
+    this.tabTitle = "New Schedule";
     this.nextTab = 1;
     this.adminComponent = NewScheduleComponent;
   }
 
   onPlayOffsSchedule() {
-    this.tabTitle = 'Playoffs';
+    this.tabTitle = "Playoffs";
     this.nextTab = 1;
   }
 
   onModifySchedule() {
-    this.tabTitle = 'Modify';
+    this.tabTitle = "Modify";
     this.nextTab = 1;
     this.adminComponent = ModifyScheduleComponent;
   }
