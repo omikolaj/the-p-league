@@ -1,5 +1,5 @@
 <mat-expansion-panel expanded="true">
-  <mat-expansion-panel-header> {{ league.name }} - {{ league.type }} </mat-expansion-panel-header>
+  <mat-expansion-panel-header> {{ league?.name }} - {{ sport?.name }} </mat-expansion-panel-header>
 
   <form [formGroup]="teamsForm" (ngSubmit)="onSubmit()" novalidate>
     <mat-selection-list #teamsList formArrayName="teams" [disabled]="disableListSelection" (selectionChange)="onTeamSelectionChange($event)">

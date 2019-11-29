@@ -25,11 +25,12 @@ export class NewScheduleComponent implements OnInit {
 
 	leagues$: Observable<{ league: League; teams: Team[] }[]> = combineLatest([
 		this.scheduleAdminFacade.selectedLeagues$,
-		this.scheduleAdminFacade.getAllForLeagueID$
+		this.scheduleAdminFacade.getAllForLeagueID$,
+		this.scheduleAdminFacade.getSportByID$
 	]).pipe(
-		map(([selectedLeagues, filterFn]) => {
+		map(([selectedLeagues, filterFn, filterSportsFn]) => {
 			return selectedLeagues.map((l) => {
-				return { league: l, teams: filterFn(l.id), form: this.initEditTeamsForm(filterFn(l.id)) };
+				return { league: l, teams: filterFn(l.id), form: this.initEditTeamsForm(filterFn(l.id)), sport: filterSportsFn(l.sportTypeID) };
 			});
 		})
 	);
@@ -129,6 +130,7 @@ export class NewScheduleComponent implements OnInit {
 				name: currentTeam.value.name
 			});
 		}
+
 		this.scheduleAdminFacade.updateTeams(teamsToUpdate);
 	}
 

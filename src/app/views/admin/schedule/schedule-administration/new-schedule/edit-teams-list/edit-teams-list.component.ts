@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { Sport } from 'src/app/views/schedule/models/sport.enum';
 
 @Component({
 	selector: 'app-edit-teams-list',
@@ -15,6 +16,7 @@ export class EditTeamsListComponent implements OnInit {
 	@Input() teamsForm: FormGroup;
 	@Input() teams: Team[];
 	@Input() league: League;
+	@Input() sport: Sport;
 	@Output() onUnassignTeams: EventEmitter<void> = new EventEmitter<void>();
 	@Output() onUpdateTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
 	@Output() onDeleteTeams: EventEmitter<void> = new EventEmitter<void>();

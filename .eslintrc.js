@@ -8,23 +8,23 @@ module.exports = {
 		'plugin:@typescript-eslint/eslint-recommended',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:@typescript-eslint/recommended-requiring-type-checking',
-		'prettier',
-		'prettier/@typescript-eslint'
+		'prettier/@typescript-eslint',
+		'plugin:prettier/recommended'
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		project: 'tsconfig.json',
 		sourceType: 'module'
 	},
-	plugins: ['@typescript-eslint', '@typescript-eslint/tslint', 'import', 'prettier'],
-	rules: {		
+	plugins: ['@typescript-eslint', '@typescript-eslint/tslint', 'prettier'],
+	rules: {
+		'prettier/prettier': 'error',
 		'@typescript-eslint/tslint/config': [
 			'off',
 			{
 				lintFile: './tslint.json'
 			}
 		],
-		'prettier/prettier': 'error',
 		'@typescript-eslint/unbound-method': ['error', { ignoreStatic: true }],
 		'object-curly-spacing': ['error', 'always'],
 		'spaced-comment': ['error', 'always'],
@@ -39,9 +39,10 @@ module.exports = {
 		],
 		'lines-around-comment': ['error', { beforeBlockComment: true }],
 		'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
-		'eqeqeq': ['error', 'always'],
-		'@typescript-eslint/no-empty-function': ['error', { 'allow': ['constructors', 'methods'] }],
+		eqeqeq: ['error', 'always'],
+		'@typescript-eslint/no-empty-function': ['error', { allow: ['constructors', 'methods'] }],
 		'@typescript-eslint/no-explicit-any': ['off'],
-		'@typescript-eslint/no-unused-vars': ['off', { 'vars': 'local' }]
+		'@typescript-eslint/no-unused-vars': ['error', { vars: 'all' }],
+		'lines-around-comment': ["error", { beforeBlockComment: true }],
 	}
 };

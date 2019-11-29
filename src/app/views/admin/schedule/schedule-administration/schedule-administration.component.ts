@@ -88,12 +88,12 @@ export class ScheduleAdministrationComponent implements OnInit {
 		const newSportType: SportType = {
 			name: newSportLeague.get('sportType').value
 		};
+
 		const newLeague: League = {
 			name: newSportLeague.get('leagueName').value,
 			sportTypeID: newSportLeague.get('sportTypeID').value,
 			type: newSportType.name
 		};
-
 		// if we have sportTypeID were adding to existing sport type
 		if (newLeague.sportTypeID) {
 			if (newLeague.name) {

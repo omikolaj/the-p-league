@@ -1,9 +1,9 @@
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import produce from 'immer';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { Leagues } from 'src/app/store/actions/leagues.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { updateEntity } from './state-helpers';
-import produce from 'immer';
 
 export interface LeagueStateModel {
 	entities: {
@@ -49,15 +49,12 @@ export class LeagueState {
 
 	@Action(Leagues.AddLeague)
 	add(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeague) {
-		console.log('state before adding', ctx.getState().entities);
-		console.log('what is action ', action);
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				draft.entities[action.newLeague.id] = action.newLeague;
 				draft.IDs.push(action.newLeague.id);
 			})
 		);
-		console.log('state after adding', ctx.getState());
 	}
 
 	@Action(Leagues.AddTeamIDsToLeague)

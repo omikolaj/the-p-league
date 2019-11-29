@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -18,10 +18,11 @@ import { ScheduleAdministrationHelperService } from './schedule-administration-h
 @Injectable({
 	providedIn: 'root'
 })
-export class ScheduleAdministrationFacade implements OnInit {
+export class ScheduleAdministrationFacade {
 	// #region Streams
 
 	@Select(SportTypeState.getSportTypes) sports$: Observable<SportType[]>;
+	@Select(SportTypeState.getSportTypeByID) getSportByID$: Observable<(id: string) => SportType>;
 	@Select(SportTypeState.getSportTypesLeaguesPairs) sportTypesLeaguesPairs$: Observable<SportTypesLeaguesPairs[]>;
 
 	@Select(LeagueState.getAllForSportTypeID) getAllForSportTypeID$: Observable<(id: string) => League[]>;
@@ -41,8 +42,6 @@ export class ScheduleAdministrationFacade implements OnInit {
 		private store: Store,
 		private scheduleAdminHelper: ScheduleAdministrationHelperService
 	) {}
-
-	ngOnInit() {}
 
 	// #region SportTypes
 
@@ -64,7 +63,7 @@ export class ScheduleAdministrationFacade implements OnInit {
 
 	updateSportType(updatedSportType: SportType): void {
 		this.scheduleAdminAsync
-			.updateSportTypes(updatedSportType)
+			.updateSportType(updatedSportType)
 			.subscribe((updatedSportType) => this.store.dispatch(new Sports.UpdateSportType(updatedSportType)));
 	}
 
@@ -77,13 +76,15 @@ export class ScheduleAdministrationFacade implements OnInit {
 	// #region Leagues
 
 	addLeague(newLeague: League): void {
-		const addLeageIDsToSportType: {
-			sportTypeID: string;
-			ids: string[];
-		}[] = this.scheduleAdminHelper.generateLeagueIDsForSportType([newLeague]);
+		// const addLeageIDsToSportType: { sportTypeID: string; ids: string[] }[] = this.scheduleAdminHelper.generateLeagueIDsForSportType([newLeague]);
 		this.scheduleAdminAsync
 			.addLeague(newLeague)
-			.subscribe(() => this.store.dispatch([new Sports.AddLeagueIDsToSportType(addLeageIDsToSportType), new Leagues.AddLeague(newLeague)]));
+			.subscribe((addedLeague) =>
+				this.store.dispatch([
+					new Sports.AddLeagueIDsToSportType([{ sportTypeID: addedLeague.sportTypeID, ids: [addedLeague.id] }]),
+					new Leagues.AddLeague(newLeague)
+				])
+			);
 	}
 
 	updateLeagues(updatedLeagues: League[]): void {
@@ -176,10 +177,7 @@ export class ScheduleAdministrationFacade implements OnInit {
 	 * to update each league entity's teams property with assigned teams
 	 */
 	assignTeams(teams: Team[]): void {
-		const addTeamIDsToLeague: {
-			leagueID: string;
-			ids: string[];
-		}[] = this.scheduleAdminHelper.generateTeamIDsForLeague(teams);
+		const addTeamIDsToLeague: { leagueID: string; ids: string[] }[] = this.scheduleAdminHelper.generateTeamIDsForLeague(teams);
 		this.scheduleAdminAsync
 			.assignTeams(teams)
 			.subscribe((teams) => this.store.dispatch([new Leagues.AddTeamIDsToLeague(addTeamIDsToLeague), new Teams.AssignTeams(teams)]));

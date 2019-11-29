@@ -1,11 +1,10 @@
-import { TeamStateModel } from './team.state';
-import { State, Selector, Action, StateContext, createSelector } from '@ngxs/store';
-import { patch, append, removeItem } from '@ngxs/store/operators';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { produce } from 'immer';
+import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { Teams } from '../actions/teams.actions';
-import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { updateEntity } from './state-helpers';
-import { produce } from 'immer';
+import { TeamStateModel } from './team.state';
 
 export interface TeamStateModel {
 	entities: {

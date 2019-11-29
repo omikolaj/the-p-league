@@ -42,6 +42,8 @@ export class AddLeaguesComponent {
 
 	onSubmit(formGroupDirective: FormGroupDirective): void {
 		this.addSportTypeIDIfExists();
+		this.updateSportTypeIfExists();
+
 		const newSportLeague = cloneDeep(this.newSportLeagueForm);
 		// Necessary to reset validations
 		formGroupDirective.resetForm();
@@ -57,10 +59,31 @@ export class AddLeaguesComponent {
 		return pair ? pair.name : undefined;
 	}
 
+	/**
+	 * @description When user selects a sport that already exists
+	 * we already know its id, so we want to update the form to reflect
+	 * this id.
+	 */
 	private addSportTypeIDIfExists(): void {
 		if (this.selectedSport) {
 			const pair: SportTypesLeaguesPairs = this.selectedSport.option.value as SportTypesLeaguesPairs;
 			this.newSportLeagueForm.get('sportTypeID').setValue(pair.id);
+		}
+	}
+
+	/**
+	 * @description When user selects a sport from the list that
+	 * already exists, the template will use the 'pair' object as
+	 * the selected value instead of just the sport name.
+	 * This method checks to see if we have selected sport
+	 * and then updates the value to be the sport name instead
+	 * of leaving it as pair object. Makes it easier in the parent
+	 * component to extract the sport name from the form
+	 */
+	private updateSportTypeIfExists(): void {
+		if (this.selectedSport) {
+			const pair: SportTypesLeaguesPairs = this.selectedSport.option.value as SportTypesLeaguesPairs;
+			this.newSportLeagueForm.get('sportType').setValue(pair.name);
 		}
 	}
 }

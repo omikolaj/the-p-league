@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 
 @Injectable({
@@ -49,19 +48,19 @@ export class ScheduleAdministrationHelperService {
 	 * @description Generates league ids for sport type
 	 * @returns league ids for sport type
 	 */
-	generateLeagueIDsForSportType(leagues: League[]): { sportTypeID: string; ids: string[] }[] {
-		// TODO when adding new league idPairs has ids array = []
-		console.log('what is incoming leagues', leagues);
-		const idPairs: { sportTypeID: string; ids: string[] }[] = [];
-		leagues.forEach((l: League) => {
-			const pair = idPairs.find((pair) => pair.sportTypeID === l.sportTypeID);
-			if (pair) {
-				pair.ids.push(l.id);
-			} else {
-				idPairs.push({ sportTypeID: l.sportTypeID, ids: [l.id] });
-			}
-		});
-		console.log('logging pairs', idPairs);
-		return idPairs;
-	}
+	// generateLeagueIDsForSportType(leagues: League[]): { sportTypeID: string; ids: string[] }[] {
+	// 	// TODO when adding new league idPairs has ids array = []
+	// 	console.log('what is incoming leagues', leagues);
+	// 	const idPairs: { sportTypeID: string; ids: string[] }[] = [];
+	// 	leagues.forEach((l: League) => {
+	// 		const pair = idPairs.find((pair) => pair.sportTypeID === l.sportTypeID);
+	// 		if (pair) {
+	// 			pair.ids.push(l.id);
+	// 		} else {
+	// 			idPairs.push({ sportTypeID: l.sportTypeID, ids: [l.id] });
+	// 		}
+	// 	});
+	// 	console.log('logging pairs', idPairs);
+	// 	return idPairs;
+	// }
 }

@@ -2,9 +2,7 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon"
-          >add</mat-icon
-        >
+        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
         {{ title }}
       </mat-panel-title>
       <mat-panel-description>
@@ -29,7 +27,7 @@
             aria-label="sports"
             matInput
             [matAutocomplete]="auto"
-          />
+          >          
           <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
             <mat-option *ngFor="let pair of sportLeaguePairs" [value]="pair">
               {{ pair.name }}

@@ -20,10 +20,12 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
 
 	addSport(newSportType: SportType): Observable<SportType> {
 		newSportType.id = cuid();
+		console.log('added new sport to backend', newSportType);
 		return of(newSportType).pipe(delay(1000));
 	}
 
-	updateSportTypes(updatedSportType: SportType): Observable<SportType> {
+	updateSportType(updatedSportType: SportType): Observable<SportType> {
+		console.log('updated sport type through the backend', updatedSportType);
 		return of(updatedSportType).pipe(delay(100));
 	}
 
@@ -37,6 +39,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
 
 	addLeague(newLeague: League): Observable<League> {
 		newLeague.id = cuid();
+		console.log('added new league to the backend', newLeague);
 		return of(newLeague).pipe(delay(100));
 	}
 

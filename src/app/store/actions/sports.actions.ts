@@ -1,6 +1,5 @@
-import { Team } from '../../views/schedule/models/interfaces/team.model';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 
 export namespace Sports {
 	export class FetchAllSportTypes {

@@ -1,19 +1,18 @@
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
+import produce from 'immer';
+import { normalize } from 'normalizr';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
+import { Leagues } from 'src/app/store/actions/leagues.actions';
 import { Teams } from 'src/app/store/actions/teams.actions';
 import { SportTypeStateModel } from 'src/app/store/state/sport-type.state';
-import { Leagues } from 'src/app/store/actions/leagues.actions';
-import { tap, catchError, switchMap, map } from 'rxjs/operators';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { State, Selector, StateContext, Action, createSelector } from '@ngxs/store';
-import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
-import { patch, append } from '@ngxs/store/operators';
-import { LeagueState, LeagueStateModel } from './league.state';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
-import { sportListSchema } from './schema';
-import { normalize } from 'normalizr';
-import produce, { original } from 'immer';
-import { updateEntity } from './state-helpers';
+import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Sports } from '../actions/sports.actions';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { LeagueState, LeagueStateModel } from './league.state';
+import { sportListSchema } from './schema';
+import { updateEntity } from './state-helpers';
 
 export interface SportTypeStateModel {
 	entities: {
@@ -37,12 +36,14 @@ export class SportTypeState {
 		return Object.values(state.entities);
 	}
 
+	@Selector()
+	static getSportTypeByID(state: SportTypeStateModel): (id: string) => SportType {
+		return (id: string): SportType => Object.values(state.entities).find((s) => s.id === id);
+	}
+
 	@Selector([SportTypeState, LeagueState])
 	static getSportTypesLeaguesPairs(state: SportTypeStateModel, leagueState: LeagueStateModel) {
 		const pairs: SportTypesLeaguesPairs[] = [];
-		// type sportPairs = Pick<SportType, "id" | "name"> & {
-		//   leagues: Pick<League, "id" | "name">[];
-		// };
 
 		Object.values(state.entities).forEach((s) => {
 			pairs.push({
@@ -122,16 +123,14 @@ export class SportTypeState {
 
 	@Action(Sports.AddLeagueIDsToSportType)
 	addLeagueIDs(ctx: StateContext<SportTypeStateModel>, action: Sports.AddLeagueIDsToSportType) {
-		console.log('addLeagueIDs fired', action);
 		ctx.setState(
 			produce((draft: SportTypeStateModel) => {
 				action.payload.forEach((pair) => {
 					// in case we have not initialized the leagues array, initialize it than add the league id
-					draft.entities[pair.sportTypeID].leagues = (draft.entities[pair.sportTypeID].leagues || []).concat([pair.ids]);
+					draft.entities[pair.sportTypeID].leagues = (draft.entities[pair.sportTypeID].leagues || []).concat(pair.ids);
 				});
 			})
 		);
-		console.log('state after adding leagueids', ctx.getState().entities);
 	}
 
 	// #endregion
