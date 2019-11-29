@@ -16,46 +16,46 @@ import { NgxsModule } from '@ngxs/store';
 import { SportTypeState } from './store/state/sport-type.state';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [
-    // angular
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
+	declarations: [AppComponent],
+	imports: [
+		// angular
+		BrowserModule,
+		BrowserAnimationsModule,
+		HttpClientModule,
 
-    // core & shared
-    SharedModule,
-    CoreModule,
+		// core & shared
+		SharedModule,
+		CoreModule,
 
-    // features
-    NavigationModule,
+		// features
+		NavigationModule,
 
-    // app
-    AppRoutingModule,
-    DeviceDetectorModule.forRoot(),
+		// app
+		AppRoutingModule,
+		DeviceDetectorModule.forRoot(),
 
-    //NGXS Store
-    NgxsModule.forRoot([], {
-      developmentMode: true,
-      selectorOptions: {
-        suppressErrors: false,
-        injectContainerState: false
-      }
-    })
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ApiRequestPrefixInterceptor,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: RefreshAccessTokenInterceptor,
-      multi: true
-    },
-    { provide: 'BASE_API_URL', useValue: environment.backend.baseURL }
-  ],
-  bootstrap: [AppComponent]
+		// NGXS Store
+		NgxsModule.forRoot([], {
+			developmentMode: true,
+			selectorOptions: {
+				suppressErrors: false,
+				injectContainerState: false
+			}
+		})
+	],
+	providers: [
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: ApiRequestPrefixInterceptor,
+			multi: true
+		},
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: RefreshAccessTokenInterceptor,
+			multi: true
+		},
+		{ provide: 'BASE_API_URL', useValue: environment.backend.baseURL }
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule {}

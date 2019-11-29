@@ -7,8 +7,8 @@ import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [ToolbarComponent, SidenavListComponent],
-  imports: [CommonModule, LayoutModule, SharedModule, RouterModule],
-  exports: [ToolbarComponent, SidenavListComponent, SharedModule]
+	declarations: [ToolbarComponent, SidenavListComponent],
+	imports: [CommonModule, LayoutModule, SharedModule, RouterModule],
+	exports: [ToolbarComponent, SidenavListComponent, SharedModule]
 })
 export class NavigationModule {}

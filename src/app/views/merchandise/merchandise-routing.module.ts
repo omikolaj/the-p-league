@@ -6,31 +6,31 @@ import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resol
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: MerchandiseListComponent,
-    data: { animation: 'MerchandiseListPage' },
-    resolve: { roles: RolesResolver, merchandiseItems: MerchandiseService }
-  },
-  {
-    path: ':id/edit',
-    outlet: 'modal',
-    component: MerchandiseDialogContainerComponent
-  },
-  {
-    path: ':id/pre-order',
-    outlet: 'modal',
-    component: MerchandiseDialogContainerComponent
-  },
-  {
-    path: 'new',
-    outlet: 'modal',
-    component: MerchandiseDialogContainerComponent
-  }
+	{
+		path: '',
+		component: MerchandiseListComponent,
+		data: { animation: 'MerchandiseListPage' },
+		resolve: { roles: RolesResolver, merchandiseItems: MerchandiseService }
+	},
+	{
+		path: ':id/edit',
+		outlet: 'modal',
+		component: MerchandiseDialogContainerComponent
+	},
+	{
+		path: ':id/pre-order',
+		outlet: 'modal',
+		component: MerchandiseDialogContainerComponent
+	},
+	{
+		path: 'new',
+		outlet: 'modal',
+		component: MerchandiseDialogContainerComponent
+	}
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule]
 })
 export class MerchandiseRoutingModule {}

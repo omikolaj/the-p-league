@@ -8,36 +8,36 @@ import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resol
 import { ScheduleAdministrationResolver } from 'src/app/core/services/resolvers/schedule/schedule-administration-resolver.resolver';
 
 const routes: Routes = [
-  {
-    path: '',
-    resolve: { roles: RolesResolver },
-    children: [
-      {
-        path: 'login',
-        component: AdminLoginComponent
-      },
-      {
-        path: 'dashboard',
-        component: AdminDashboardComponent,
-        canActivate: [AdminAuthGuard]
-      },
-      {
-        path: 'schedule',
-        component: ScheduleAdministrationComponent,
-        canActivate: [AdminAuthGuard],
-        resolve: [ScheduleAdministrationResolver]
-      },
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      }
-    ]
-  }
+	{
+		path: '',
+		resolve: { roles: RolesResolver },
+		children: [
+			{
+				path: 'login',
+				component: AdminLoginComponent
+			},
+			{
+				path: 'dashboard',
+				component: AdminDashboardComponent,
+				canActivate: [AdminAuthGuard]
+			},
+			{
+				path: 'schedule',
+				component: ScheduleAdministrationComponent,
+				canActivate: [AdminAuthGuard],
+				resolve: [ScheduleAdministrationResolver]
+			},
+			{
+				path: '',
+				redirectTo: 'dashboard',
+				pathMatch: 'full'
+			}
+		]
+	}
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule]
 })
 export class AdminRoutingModule {}

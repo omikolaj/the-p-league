@@ -5,12 +5,12 @@ export const team = new schema.Entity('teams');
 
 // schema that represents a league where league can have many teams
 export const league = new schema.Entity('leagues', {
-  teams: [team]
+	teams: [team]
 });
 
 // schema that represents a sport where sport can have many leagues
 export const sport = new schema.Entity('sports', {
-  leagues: [league]
+	leagues: [league]
 });
 
 // This is used as a temporary schema to transform incoming JSON file which is a nested object: sports: leagues: [{ teams: [] }]

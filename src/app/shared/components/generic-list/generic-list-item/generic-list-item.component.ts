@@ -10,7 +10,7 @@ import { GenericListItem } from 'src/app/shared/models/interfaces/generic-list-i
 // export class GenericListItemComponent<T extends GenericListItem> implements OnInit {
 //   @Input('generic-item') item: T;
 
-//   @ViewChild(ListItemComponentDirective, { static: true }) listComponentHost: ListItemComponentDirective;  
+//   @ViewChild(ListItemComponentDirective, { static: true }) listComponentHost: ListItemComponentDirective;
 
 //   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
@@ -18,43 +18,42 @@ import { GenericListItem } from 'src/app/shared/models/interfaces/generic-list-i
 //     this.loadComponent();
 //   }
 
-//   loadComponent(){    
+//   loadComponent(){
 //     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.item.component);
 
-//     const viewContainerRef = this.listComponentHost.viewContainerRef;    
+//     const viewContainerRef = this.listComponentHost.viewContainerRef;
 //     viewContainerRef.clear();
 
 //     const componentRef = viewContainerRef.createComponent(componentFactory);
-    
-//     (<GenericListItem>componentRef.instance).name = this.item.name;    
+
+//     (<GenericListItem>componentRef.instance).name = this.item.name;
 //   }
 
 // }
 
 @Component({
-  selector: 'app-generic-list-item',
-  templateUrl: './generic-list-item.component.html',
-  styleUrls: ['./generic-list-item.component.scss']
+	selector: 'app-generic-list-item',
+	templateUrl: './generic-list-item.component.html',
+	styleUrls: ['./generic-list-item.component.scss']
 })
 export class GenericListItemComponent implements OnInit {
-  @Input('generic-item') item: GenericListItem;
-  @ViewChild(ListItemComponentDirective, { static: true }) listComponentHost: ListItemComponentDirective;  
+	@Input('generic-item') item: GenericListItem;
+	@ViewChild(ListItemComponentDirective, { static: true }) listComponentHost: ListItemComponentDirective;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
+	constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
-  ngOnInit() {
-    this.loadComponent();
-  }
+	ngOnInit() {
+		this.loadComponent();
+	}
 
-  loadComponent(){    
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.item.component);
+	loadComponent() {
+		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.item.component);
 
-    const viewContainerRef = this.listComponentHost.viewContainerRef;    
-    viewContainerRef.clear();
+		const viewContainerRef = this.listComponentHost.viewContainerRef;
+		viewContainerRef.clear();
 
-    const componentRef = viewContainerRef.createComponent(componentFactory);
-    
-    (<GenericListItem>componentRef.instance).name = this.item.name;    
-  }
+		const componentRef = viewContainerRef.createComponent(componentFactory);
 
+		(<GenericListItem>componentRef.instance).name = this.item.name;
+	}
 }

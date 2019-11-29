@@ -1,4 +1,4 @@
-export enum AddFor{
-  Team,
-  League
+export enum AddFor {
+	Team,
+	League
 }

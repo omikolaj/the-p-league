@@ -9,13 +9,7 @@ import { TeamSignupComponent } from './components/team-signup/team-signup/team-s
 import { TeamSignupModule } from './components/team-signup/team-signup.module';
 
 @NgModule({
-  declarations: [AboutComponent],
-  imports: [
-    CommonModule,
-    AboutRoutingModule,
-    TeamSignupModule,
-    CoreModule,
-    SharedModule
-  ]
+	declarations: [AboutComponent],
+	imports: [CommonModule, AboutRoutingModule, TeamSignupModule, CoreModule, SharedModule]
 })
 export class AboutModule {}

@@ -5,32 +5,32 @@ import { FormGroup } from '@angular/forms';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class TeamSignupService {
-  teamInfoSubject: Subject<TeamInfo> = new Subject<TeamInfo>();
-  teamInfo$: Observable<TeamInfo> = this.teamInfoSubject.asObservable();
-  teamInfo;
+	teamInfoSubject: Subject<TeamInfo> = new Subject<TeamInfo>();
+	teamInfo$: Observable<TeamInfo> = this.teamInfoSubject.asObservable();
+	teamInfo;
 
-  constructor() { }
+	constructor() {}
 
-  newTeamRequest(teamInfoForm: FormGroup): Observable<TeamInfo> {
-    const teamInfo: TeamInfo = this.mapFormToTeamInfo(teamInfoForm);
-    return this.teamInfo$.pipe(
-      map(v => {
-        return (this.teamInfo = v);
-      })
-    );
-  }
+	newTeamRequest(teamInfoForm: FormGroup): Observable<TeamInfo> {
+		const teamInfo: TeamInfo = this.mapFormToTeamInfo(teamInfoForm);
+		return this.teamInfo$.pipe(
+			map((v) => {
+				return (this.teamInfo = v);
+			})
+		);
+	}
 
-  mapFormToTeamInfo(teamInfoForm: FormGroup): TeamInfo {
-    const teamInfo: TeamInfo = {
-      name: teamInfoForm.value.teamName,
-      firstName: teamInfoForm.value.firstName,
-      lastName: teamInfoForm.value.lastName,
-      cell: teamInfoForm.value.phoneNumber,
-      email: teamInfoForm.value.email
-    };
-    return teamInfo;
-  }
+	mapFormToTeamInfo(teamInfoForm: FormGroup): TeamInfo {
+		const teamInfo: TeamInfo = {
+			name: teamInfoForm.value.teamName,
+			firstName: teamInfoForm.value.firstName,
+			lastName: teamInfoForm.value.lastName,
+			cell: teamInfoForm.value.phoneNumber,
+			email: teamInfoForm.value.email
+		};
+		return teamInfo;
+	}
 }

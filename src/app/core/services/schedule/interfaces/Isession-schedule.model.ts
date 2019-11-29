@@ -5,12 +5,12 @@ import { TimesOfDay } from 'src/app/views/schedule/models/interfaces/times-of-da
 import Match from 'src/app/views/schedule/models/classes/match.model';
 import { League } from '../../../../views/schedule/models/interfaces/League.model';
 
-export interface ISessionSchedule{    
-    league: League;
-    startDate: moment.Moment;    
-    endDate: moment.Moment;  
-    teams: Team[];
-    desiredDays: MatchDay[];
-    timesOfDays: TimesOfDay[];
-    sessionMatches: Match[];
+export interface ISessionSchedule {
+	league: League;
+	startDate: moment.Moment;
+	endDate: moment.Moment;
+	teams: Team[];
+	desiredDays: MatchDay[];
+	timesOfDays: TimesOfDay[];
+	sessionMatches: Match[];
 }

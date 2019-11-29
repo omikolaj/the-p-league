@@ -1,1 +1,1 @@
- export type TabTitles = 'New Schedule' | 'Modify' | 'Playoffs' | 'Schedule' | 'Preview';
+export type TabTitles = 'New Schedule' | 'Modify' | 'Playoffs' | 'Schedule' | 'Preview';

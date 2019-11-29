@@ -1,47 +1,48 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { AddFor } from '../../models/add-for.enum';
 
 @Component({
-  selector: 'app-admin-add',
-  templateUrl: './admin-add.component.html',
-  styleUrls: ['./admin-add.component.scss']
+	selector: 'app-admin-add',
+	templateUrl: './admin-add.component.html',
+	styleUrls: ['./admin-add.component.scss']
 })
 export class AdminAddComponent implements OnInit {
-  @Output() itemAdded = new EventEmitter<FormGroup>();
+	@Output() itemAdded = new EventEmitter<FormGroup>();
 
-  description: string;
-  title: string = 'Add';
-  addItemForm: FormGroup;
+	description: string;
 
-  private _data: SportType;
-  get data(): SportType {
-    return this._data;
-  }
-  @Input()
-  set data(value: SportType) {
-    if (value) {
-      this._data = value;
-    } else {
-      throw Error('You must pass in SportType');
-    }
-  }
+	title = 'Add';
+	addItemForm: FormGroup;
 
-  private _for: AddFor;
-  get for(): AddFor {
-    return this._for;
-  }
-  @Input()
-  set for(value) {
-    this._for = value;
-  }
+	private _data: SportType;
+	get data(): SportType {
+		return this._data;
+	}
+	@Input()
+	set data(value: SportType) {
+		if (value) {
+			this._data = value;
+		} else {
+			throw Error('You must pass in SportType');
+		}
+	}
 
-  constructor() {}
+	private _for: AddFor;
+	get for(): AddFor {
+		return this._for;
+	}
+	@Input()
+	set for(value) {
+		this._for = value;
+	}
 
-  ngOnInit() {}
+	constructor() {}
 
-  onAddItem() {
-    this.itemAdded.emit(this.addItemForm);
-  }
+	ngOnInit(): void {}
+
+	onAddItem(): void {
+		this.itemAdded.emit(this.addItemForm);
+	}
 }

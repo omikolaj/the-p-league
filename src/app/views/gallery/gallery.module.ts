@@ -11,14 +11,7 @@ import { CoreModule } from 'src/app/core/core.module';
 import { SnackBarComponent } from 'src/app/shared/components/snack-bar/snack-bar.component';
 
 @NgModule({
-  declarations: [GalleryGridListComponent, AdminControlComponent],
-  imports: [
-    CommonModule,
-    GalleryRoutingModule,
-    SharedModule,
-    CoreModule,
-    FormsModule,
-    DragDropModule
-  ]
+	declarations: [GalleryGridListComponent, AdminControlComponent],
+	imports: [CommonModule, GalleryRoutingModule, SharedModule, CoreModule, FormsModule, DragDropModule]
 })
 export class GalleryModule {}

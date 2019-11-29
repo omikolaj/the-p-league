@@ -3,13 +3,13 @@ import { TeamSignUpImage } from 'src/app/views/about/components/team-signup/team
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
 
 @Component({
-  selector: 'app-carousel',
-  templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.scss']
+	selector: 'app-carousel',
+	templateUrl: './carousel.component.html',
+	styleUrls: ['./carousel.component.scss']
 })
 export class CarouselComponent implements OnInit {
-  @Input() images: TeamSignUpImage[] = [];
-  constructor() {}
+	@Input() images: TeamSignUpImage[] = [];
+	constructor() {}
 
-  ngOnInit() {}
+	ngOnInit() {}
 }

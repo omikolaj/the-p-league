@@ -8,8 +8,8 @@ import { EnumToArrayPipe } from './pipes/enumToArray/enum-to-array.pipe';
 import { AllowSpacesDirective } from './directives/allow-space/allow-spaces.directive';
 
 @NgModule({
-  declarations: [SizeEnumToSizePipe, ClearElementValueDirective, EnumToArrayPipe, AllowSpacesDirective],
-  imports: [CommonModule, SharedModule],
-  exports: [SizeEnumToSizePipe, ClearElementValueDirective, EnumToArrayPipe, AllowSpacesDirective]
+	declarations: [SizeEnumToSizePipe, ClearElementValueDirective, EnumToArrayPipe, AllowSpacesDirective],
+	imports: [CommonModule, SharedModule],
+	exports: [SizeEnumToSizePipe, ClearElementValueDirective, EnumToArrayPipe, AllowSpacesDirective]
 })
 export class CoreModule {}

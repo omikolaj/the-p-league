@@ -1,4 +1,7 @@
 {
   "appService.showBuildDuringDeployPrompt": false,
-  "terminal.integrated.shellArgs.osx": []
+  "terminal.integrated.shellArgs.osx": [],
+  "prettier.printWidth": 151,
+  "prettier.singleQuote": true,
+  "prettier.useTabs": true
 }

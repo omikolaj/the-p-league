@@ -5,16 +5,16 @@ import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resol
 import { GalleryService } from 'src/app/core/services/gallery/gallery.service';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: GalleryGridListComponent,
-    // data: { animation: "GalleryGridListPage" },
-    resolve: { roles: RolesResolver, leaguePictures: GalleryService }
-  }
+	{
+		path: '',
+		component: GalleryGridListComponent,
+		// data: { animation: "GalleryGridListPage" },
+		resolve: { roles: RolesResolver, leaguePictures: GalleryService }
+	}
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule]
 })
 export class GalleryRoutingModule {}

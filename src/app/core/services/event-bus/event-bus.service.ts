@@ -4,49 +4,46 @@ import { filter, map, pairwise } from 'rxjs/operators';
 import { EmitEvent } from './EmitEvent';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class EventBusService {
-  private subject$ = new Subject();
+	private subject$ = new Subject();
 
-  constructor() { }
+	constructor() {}
 
-  emit(event: EmitEvent) {
-    this.subject$.next(event);
-  }
+	emit(event: EmitEvent) {
+		this.subject$.next(event);
+	}
 
-  on(event: Events, action: any): Subscription {
-    return this.subject$
-      .pipe(
-        filter((e: EmitEvent) => e.name === event),
-        map((e: EmitEvent) => e.value)
-      )
-      .subscribe(action);
-  }
+	on(event: Events, action: any): Subscription {
+		return this.subject$
+			.pipe(
+				filter((e: EmitEvent) => e.name === event),
+				map((e: EmitEvent) => e.value)
+			)
+			.subscribe(action);
+	}
 
-  onHideToolBar(event: Events, action: any): Subscription {
-    return this.subject$
-      .pipe(
-        filter((e: EmitEvent) => e.name === event),
-        map((e: EmitEvent) => e.value),
-        pairwise(),
-        filter(headerState => {
-          return !(
-            (headerState[0] === false && headerState[1] === false) ||
-            (headerState[0] === true && headerState[1] === true)
-          );
-        }),
-        map(headerState => headerState[1])
-      )
-      .subscribe(action);
-  }
+	onHideToolBar(event: Events, action: any): Subscription {
+		return this.subject$
+			.pipe(
+				filter((e: EmitEvent) => e.name === event),
+				map((e: EmitEvent) => e.value),
+				pairwise(),
+				filter((headerState) => {
+					return !((headerState[0] === false && headerState[1] === false) || (headerState[0] === true && headerState[1] === true));
+				}),
+				map((headerState) => headerState[1])
+			)
+			.subscribe(action);
+	}
 }
 
 export enum Events {
-  None,
-  StickyHeader,
-  HideScrollbar,
-  HideToolbar,
-  CloseOpen,
-  Loading
+	None,
+	StickyHeader,
+	HideScrollbar,
+	HideToolbar,
+	CloseOpen,
+	Loading
 }

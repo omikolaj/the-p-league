@@ -7,11 +7,7 @@ import { TeamSignupComponent } from './team-signup/team-signup.component';
 import { InformationComponent } from './information/information.component';
 
 @NgModule({
-  declarations: [
-    TeamSignupComponent,
-    TeamSignupFormComponent,
-    InformationComponent
-  ],
-  imports: [CommonModule, TeamSignupRoutingModule, SharedModule]
+	declarations: [TeamSignupComponent, TeamSignupFormComponent, InformationComponent],
+	imports: [CommonModule, TeamSignupRoutingModule, SharedModule]
 })
 export class TeamSignupModule {}

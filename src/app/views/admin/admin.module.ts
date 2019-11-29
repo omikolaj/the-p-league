@@ -26,32 +26,32 @@ import { LeagueState } from 'src/app/store/state/league.state';
 import { TeamState } from 'src/app/store/state/team.state';
 
 @NgModule({
-  declarations: [
-    AdminLoginComponent,
-    AdminDashboardComponent,
-    ScheduleAdministrationComponent,
-    AdminControlComponent,
-    LeagueAdministrationComponent,
-    AdminAddComponent,
-    EditLeaguesListComponent,
-    NewScheduleComponent,
-    NewSessionScheduleComponent,
-    EditTeamsListComponent,
-    UnassignedComponent,
-    AddTeamsComponent,
-    AddLeaguesComponent,
-    ModifyScheduleComponent,
-    ModifyMatchUpComponent
-  ],
-  entryComponents: [AdminControlComponent, NewScheduleComponent, ModifyScheduleComponent],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    SharedModule,
-    CoreModule,
-    AdminRoutingModule,
-    NgxsModule.forFeature([SportTypeState, LeagueState, TeamState])
-  ],
-  providers: [AdminAuthGuard]
+	declarations: [
+		AdminLoginComponent,
+		AdminDashboardComponent,
+		ScheduleAdministrationComponent,
+		AdminControlComponent,
+		LeagueAdministrationComponent,
+		AdminAddComponent,
+		EditLeaguesListComponent,
+		NewScheduleComponent,
+		NewSessionScheduleComponent,
+		EditTeamsListComponent,
+		UnassignedComponent,
+		AddTeamsComponent,
+		AddLeaguesComponent,
+		ModifyScheduleComponent,
+		ModifyMatchUpComponent
+	],
+	entryComponents: [AdminControlComponent, NewScheduleComponent, ModifyScheduleComponent],
+	imports: [
+		CommonModule,
+		ReactiveFormsModule,
+		SharedModule,
+		CoreModule,
+		AdminRoutingModule,
+		NgxsModule.forFeature([SportTypeState, LeagueState, TeamState])
+	],
+	providers: [AdminAuthGuard]
 })
 export class AdminModule {}

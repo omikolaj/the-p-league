@@ -4,12 +4,12 @@ import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { LeagueService } from '../league/league.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class TeamAdministrationService {
-  constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private leagueAdminService: LeagueService) {}
+	constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private leagueAdminService: LeagueService) {}
 
-  updateTeams(teams: Team[]) {
-    this.leagueAdminService.updateTeams(teams);
-  }
+	updateTeams(teams: Team[]) {
+		this.leagueAdminService.updateTeams(teams);
+	}
 }

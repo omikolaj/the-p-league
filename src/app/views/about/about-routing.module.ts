@@ -3,15 +3,15 @@ import { Routes, RouterModule } from '@angular/router';
 import { AboutComponent } from './about.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    data: { animation: 'AboutPage' },
-    component: AboutComponent
-  }
+	{
+		path: '',
+		data: { animation: 'AboutPage' },
+		component: AboutComponent
+	}
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule]
 })
 export class AboutRoutingModule {}

@@ -8,11 +8,7 @@ import { LeagueComponent } from './leagues/league/league.component';
 import { LeagueScheduleComponent } from './leagues/league/league-schedule/league-schedule.component';
 
 @NgModule({
-  declarations: [ScheduleContainerComponent, LeaguesListComponent, LeagueComponent, LeagueScheduleComponent],
-  imports: [
-    CommonModule,
-    ScheduleRoutingModule,
-    SharedModule     
-  ]
+	declarations: [ScheduleContainerComponent, LeaguesListComponent, LeagueComponent, LeagueScheduleComponent],
+	imports: [CommonModule, ScheduleRoutingModule, SharedModule]
 })
-export class ScheduleModule { }
+export class ScheduleModule {}

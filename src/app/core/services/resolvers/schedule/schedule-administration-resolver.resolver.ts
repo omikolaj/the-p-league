@@ -8,28 +8,28 @@ import { ofAction } from '@ngxs/store';
 import { Sports } from '../../../../store/actions/sports.actions';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class ScheduleAdministrationResolver implements Resolve<Sports.FetchAllSportTypesSuccess | Sports.FetchAllSportTypesFailed> {
-  constructor(private store: Store, private actions$: Actions, private router: Router) {}
+	constructor(private store: Store, private actions$: Actions, private router: Router) {}
 
-  resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
-    | Sports.FetchAllSportTypesSuccess
-    | Sports.FetchAllSportTypesFailed
-    | Observable<Sports.FetchAllSportTypesSuccess | Sports.FetchAllSportTypesFailed>
-    | Promise<Sports.FetchAllSportTypesSuccess | Sports.FetchAllSportTypesFailed> {
-    this.store.dispatch(new Sports.FetchAllSportTypes());
+	resolve(
+		route: ActivatedRouteSnapshot,
+		state: RouterStateSnapshot
+	):
+		| Sports.FetchAllSportTypesSuccess
+		| Sports.FetchAllSportTypesFailed
+		| Observable<Sports.FetchAllSportTypesSuccess | Sports.FetchAllSportTypesFailed>
+		| Promise<Sports.FetchAllSportTypesSuccess | Sports.FetchAllSportTypesFailed> {
+		this.store.dispatch(new Sports.FetchAllSportTypes());
 
-    const responseOK: Observable<Sports.FetchAllSportTypesSuccess> = this.actions$.pipe(ofAction(Sports.FetchAllSportTypesSuccess));
+		const responseOK: Observable<Sports.FetchAllSportTypesSuccess> = this.actions$.pipe(ofAction(Sports.FetchAllSportTypesSuccess));
 
-    const responseError = this.actions$.pipe(
-      ofAction(Sports.FetchAllSportTypesFailed),
-      tap(() => this.router.navigate(['']))
-    );
+		const responseError = this.actions$.pipe(
+			ofAction(Sports.FetchAllSportTypesFailed),
+			tap(() => this.router.navigate(['']))
+		);
 
-    return race(responseOK, responseError).pipe(first());
-  }
+		return race(responseOK, responseError).pipe(first());
+	}
 }

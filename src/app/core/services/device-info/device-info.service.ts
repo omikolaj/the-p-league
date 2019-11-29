@@ -2,25 +2,25 @@ import { Injectable } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class DeviceInfoService {
-  private _mobile: boolean = undefined;
+	private _mobile: boolean = undefined;
 
-  get mobile() {
-    if (this._mobile === undefined) {
-      return this.mobileFunction();
-    }
-    return this._mobile;
-  }
-  set mobile(value: boolean) {
-    this._mobile = value;
-  }
-  constructor(private deviceInfo: DeviceDetectorService) { }
+	get mobile() {
+		if (this._mobile === undefined) {
+			return this.mobileFunction();
+		}
+		return this._mobile;
+	}
+	set mobile(value: boolean) {
+		this._mobile = value;
+	}
+	constructor(private deviceInfo: DeviceDetectorService) {}
 
-  mobileFunction(): boolean {
-    this.mobile = this.deviceInfo.isMobile() || this.deviceInfo.isTablet();
+	mobileFunction(): boolean {
+		this.mobile = this.deviceInfo.isMobile() || this.deviceInfo.isTablet();
 
-    return this.mobile;
-  }
+		return this.mobile;
+	}
 }

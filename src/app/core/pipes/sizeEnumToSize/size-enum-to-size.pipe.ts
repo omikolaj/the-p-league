@@ -6,31 +6,31 @@ const NONE = 'NONE';
 const SIZENONE = 'Coming Soon';
 
 @Pipe({
-  name: 'sizeEnumToSize'
+	name: 'sizeEnumToSize'
 })
 export class SizeEnumToSizePipe implements PipeTransform {
-  transform(sizeData: GearSize[]): any {
-    const sizeArray = [];
+	transform(sizeData: GearSize[]): any {
+		const sizeArray = [];
 
-    if (sizeData.length > 1) {
-      for (let index = 0; index < sizeData.length; index++) {
-        sizeArray.push(Size[sizeData[index].size]);
-      }
-    } else {
-      const size = Size[sizeData[0].size];
-      if (size === ALL) {
-        for (const size in Size) {
-          if (isNaN(Number(size)) && (size !== NONE && size !== ALL)) {
-            sizeArray.push(size);
-          }
-        }
-      }
-      if (size === NONE) {
-        sizeArray.push(SIZENONE);
-      } else if (size !== ALL) {
-        sizeArray.push(size);
-      }
-    }
-    return sizeArray;
-  }
+		if (sizeData.length > 1) {
+			for (let index = 0; index < sizeData.length; index++) {
+				sizeArray.push(Size[sizeData[index].size]);
+			}
+		} else {
+			const size = Size[sizeData[0].size];
+			if (size === ALL) {
+				for (const size in Size) {
+					if (isNaN(Number(size)) && size !== NONE && size !== ALL) {
+						sizeArray.push(size);
+					}
+				}
+			}
+			if (size === NONE) {
+				sizeArray.push(SIZENONE);
+			} else if (size !== ALL) {
+				sizeArray.push(size);
+			}
+		}
+		return sizeArray;
+	}
 }
