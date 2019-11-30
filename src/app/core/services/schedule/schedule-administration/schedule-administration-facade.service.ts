@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
 import { Leagues } from 'src/app/store/actions/leagues.actions';
-import { Sports } from 'src/app/store/actions/sports.actions';
+import * as Sports from 'src/app/store/actions/sports.actions';
 import { Teams } from 'src/app/store/actions/teams.actions';
 import { LeagueState } from 'src/app/store/state/league.state';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
@@ -106,7 +106,6 @@ export class ScheduleAdministrationFacade {
 
 	updateSelectedLeagues(selectedIDs: string[], sportTypeID: string): void {
 		const effectedLeagueIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.types.entities[sportTypeID].leagues);
-		console.log('logging effected league ids', effectedLeagueIDs);
 		this.store.dispatch(new Leagues.UpdateSelectedLeagues(selectedIDs, effectedLeagueIDs));
 	}
 

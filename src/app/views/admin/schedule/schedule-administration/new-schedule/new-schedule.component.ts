@@ -21,6 +21,7 @@ import { TabTitles } from '../../models/tab-titles.model';
 export class NewScheduleComponent implements OnInit {
 	tab: TabTitles = 'New Schedule';
 	assignTeamsForm: FormGroup;
+	newSessionForm: FormGroup;
 	selectedTeamIDs: string[] = [];
 
 	leagues$: Observable<{ league: League; teams: Team[] }[]> = combineLatest([
@@ -44,7 +45,9 @@ export class NewScheduleComponent implements OnInit {
 
 	constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService, private fb: FormBuilder) {}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+		this.initNewSessionForm();
+	}
 
 	// #region Init Forms
 
@@ -91,9 +94,67 @@ export class NewScheduleComponent implements OnInit {
 		});
 	}
 
+	// #region New Session Form
+
+	initNewSessionForm(): void {
+		this.newSessionForm = this.fb.group({
+			// sessionName: this.fb.control(null),
+			sessionStart: this.fb.control(new Date().toISOString(), Validators.required),
+			sessionEnd: this.fb.control(new Date().toISOString(), Validators.required),
+			numberOfWeeks: this.fb.control(null, Validators.required),
+			gamesDays: this.fb.array([this.initGameDayAndTimes()]),
+			byeWeeks: this.fb.control(false, Validators.required)
+		});
+	}
+
+	initGameDayAndTimes(): FormGroup {
+		return this.fb.group({
+			// gamesDate represents a date for 'nth' number of games
+			gamesDay: this.fb.control(null, Validators.required),
+			// gamesTimes represents a list of times that games will be
+			// played for the given gamesDate
+			gamesTimes: this.fb.array([this.initGameTime()])
+		});
+	}
+
+	initGameTime(defaultValue?: string): FormGroup {
+		return this.fb.group({
+			gamesTime: this.fb.control(defaultValue ? defaultValue : null, Validators.required)
+		});
+	}
+
+	// #endregion
+
+	// #endregion
+
+	// #region Private Methods
+
 	// #endregion
 
 	// #region Event Handlers
+
+	/**
+	 * @description Triggered when user wants to add additional
+	 * control field for another date
+	 */
+	onGamesDayAdded(): void {
+		const control: FormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
+		control.push(this.initGameDayAndTimes());
+	}
+
+	onGamesTimeAdded(event: { gamesDayIndex: number; time: string }): void {
+		const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
+		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes') as FormArray;
+		if (event.time) {
+			control.push(this.initGameTime(event.time.trim()));
+		}
+	}
+
+	onGamesTimeRemoved(event: { gamesDayIndex: number; gamesTimeIndex: number }): void {
+		const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
+		const gamesTimesFormArray = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes') as FormArray;
+		gamesTimesFormArray.removeAt(event.gamesTimeIndex);
+	}
 
 	/**
 	 * @param  {FormGroup} assignedTeamsForm

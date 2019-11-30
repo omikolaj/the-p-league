@@ -1,37 +1,77 @@
-<div>
-  <form [formGroup]="newSession">
-    <mat-form-field>
-      <input matInput placeholder="Session Name" value="Session 1" />
-    </mat-form-field>
+<div class="wrapper">
+	<div class="container">
+		<form [formGroup]="sessionForm" (ngSubmit)="onSubmit()" novalidate>
+			<mat-form-field>
+				<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="# of weeks" />
+			</mat-form-field>
 
-    <mat-form-field>
-      <input matInput [matDatepicker]="picker" placeholder="Start Date" />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+			<mat-form-field>
+				<input matInput formControlName="sessionStart" [matDatepicker]="sessionStart" placeholder="Session Start Date" />
+				<mat-datepicker-toggle matSuffix [for]="sessionStart"></mat-datepicker-toggle>
+				<mat-datepicker #sessionStart></mat-datepicker>
+			</mat-form-field>
 
-    <mat-form-field>
-      <input #weeks matInput type="number" maxlength="2" placeholder="# of weeks" />
-      <mat-hint align="end">{{ weeks.value.length }} / 2</mat-hint>
-    </mat-form-field>
+			<mat-form-field>
+				<input matInput formControlName="sessionEnd" [matDatepicker]="sessionEnd" placeholder="Session End Date" />
+				<mat-datepicker-toggle matSuffix [for]="sessionEnd"></mat-datepicker-toggle>
+				<mat-datepicker #sessionEnd></mat-datepicker>
+			</mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Match Days</mat-label>
-      <mat-select multiple>
-        <mat-option *ngFor="let day of matchDays | enumToArray" [value]="day">
-          {{ day }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+			<div class="gameDayTimes">
+				<ng-container formArrayName="gamesDays">
+					<ng-container *ngFor="let gamesDay of sessionForm['controls'].gamesDays['controls']; let indexGamesDay = index">
+						<ng-container [formGroupName]="indexGamesDay">
+							<mat-form-field>
+								<mat-label>Game Day</mat-label>
+								<mat-select formControlName="gamesDay">
+									<mat-option *ngFor="let day of matchDays | enumToArray" [value]="day">
+										{{ day }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
 
-    <mat-form-field>
-      <input matInput placeholder="Game Times" />
-    </mat-form-field>
+							<ng-container formArrayName="gamesTimes">
+								<mat-form-field class="game-times-chips" floatLabel="always">
+									<mat-chip-list #chipList aria-label="Game Times">
+										<ng-container *ngFor="let gamesTime of gamesDay['controls'].gamesTimes['controls']; let indexGamesTime = index">
+											<ng-container [formGroupName]="indexGamesTime">
+												<mat-chip
+													*ngIf="gamesTime.value.gamesTime"
+													selectable="true"
+													removable="true"
+													(removed)="removeGameTime(indexGamesDay, indexGamesTime)"
+												>
 
-    <mat-slide-toggle>BYE weeks</mat-slide-toggle>
+													{{ gamesTime.value?.gamesTime }}
+													<mat-icon matChipRemove>cancel</mat-icon>
+												</mat-chip>
+											</ng-container>
+										</ng-container>
 
-    <div>
-      <button mat-stroked-button color="accent">Generate</button>
-    </div>
-  </form>
+										<input
+											placeholder="Game Times..."
+											[ngxTimepicker]="timePick"
+											[matChipInputFor]="chipList"
+											matChipInputAddOnBlur="true"
+											[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+											(matChipInputTokenEnd)="addGameTime($event, indexGamesDay)"
+										/>
+										<ngx-material-timepicker #timePick></ngx-material-timepicker>
+										
+									</mat-chip-list>
+								</mat-form-field>
+
+							</ng-container>
+						</ng-container>
+					</ng-container>
+				</ng-container>
+			</div>
+			<button type="button" mat-raised-button (click)="addGamesDay()" color="primary">Add Day</button>
+			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
+
+			<div>
+				<button mat-stroked-button color="accent">Generate</button>
+			</div>
+		</form>
+	</div>
 </div>

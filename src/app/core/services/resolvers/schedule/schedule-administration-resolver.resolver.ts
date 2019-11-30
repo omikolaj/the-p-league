@@ -1,11 +1,9 @@
-import { tap, first } from 'rxjs/operators';
-import { race } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Store, Actions } from '@ngxs/store';
-import { ofAction } from '@ngxs/store';
-import { Sports } from '../../../../store/actions/sports.actions';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { Actions, ofAction, Store } from '@ngxs/store';
+import { Observable, race } from 'rxjs';
+import { first, tap } from 'rxjs/operators';
+import * as Sports from '../../../../store/actions/sports.actions';
 
 @Injectable({
 	providedIn: 'root'

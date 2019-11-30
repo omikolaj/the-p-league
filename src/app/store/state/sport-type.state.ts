@@ -9,7 +9,7 @@ import { Teams } from 'src/app/store/actions/teams.actions';
 import { SportTypeStateModel } from 'src/app/store/state/sport-type.state';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { Sports } from '../actions/sports.actions';
+import * as Sports from '../actions/sports.actions';
 import { LeagueState, LeagueStateModel } from './league.state';
 import { sportListSchema } from './schema';
 import { updateEntity } from './state-helpers';

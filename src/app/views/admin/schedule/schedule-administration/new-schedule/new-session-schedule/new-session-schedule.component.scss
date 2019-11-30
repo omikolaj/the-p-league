@@ -1,0 +1,17 @@
+.wrapper {
+	margin: 0 auto;
+	.container {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+		flex-flow: row nowrap;
+
+		.gameDayTimes {
+			border: 2px solid white;
+
+			.game-times-chips {
+				width: 100%;
+			}
+		}
+	}
+}
