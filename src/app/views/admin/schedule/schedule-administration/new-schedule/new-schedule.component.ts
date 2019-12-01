@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatSelectionListChange } from '@angular/material';
 import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -113,14 +113,24 @@ export class NewScheduleComponent implements OnInit {
 			gamesDay: this.fb.control(null, Validators.required),
 			// gamesTimes represents a list of times that games will be
 			// played for the given gamesDate
-			gamesTimes: this.fb.array([this.initGameTime()])
+			gamesTimes: this.fb.array([this.initGameTime()], this.requireTime())
 		});
 	}
 
 	initGameTime(defaultValue?: string): FormGroup {
 		return this.fb.group({
-			gamesTime: this.fb.control(defaultValue ? defaultValue : null, Validators.required)
+			gamesTime: this.fb.control(defaultValue ? defaultValue : null)
 		});
+	}
+
+	requireTime(): ValidatorFn {
+		return (control: AbstractControl): { [key: string]: any } | null => {
+			const gamesTimesFiltered = control.value.filter((formGroup) => formGroup.gamesTime !== null);
+			if (gamesTimesFiltered.length) {
+				return null;
+			}
+			return { timeRequired: { value: 'Please specify a time' } };
+		};
 	}
 
 	// #endregion
@@ -142,6 +152,11 @@ export class NewScheduleComponent implements OnInit {
 		control.push(this.initGameDayAndTimes());
 	}
 
+	onGamesDayRemoved(gamesDayIndex: number): void {
+		const control = this.newSessionForm.controls['gamesDays'] as FormArray;
+		control.removeAt(gamesDayIndex);
+	}
+
 	onGamesTimeAdded(event: { gamesDayIndex: number; time: string }): void {
 		const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
 		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes') as FormArray;
@@ -154,6 +169,10 @@ export class NewScheduleComponent implements OnInit {
 		const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
 		const gamesTimesFormArray = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes') as FormArray;
 		gamesTimesFormArray.removeAt(event.gamesTimeIndex);
+	}
+
+	onGenerateNewSession(sessionForm: FormGroup): void {
+		console.log('logging sessionForm', sessionForm);
 	}
 
 	/**

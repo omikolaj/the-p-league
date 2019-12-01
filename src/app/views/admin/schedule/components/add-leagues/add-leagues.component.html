@@ -1,58 +1,41 @@
 <mat-accordion hideToggle="true">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
-        {{ title }}
-      </mat-panel-title>
-      <mat-panel-description>
-        {{ description }}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+	<mat-expansion-panel>
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				<mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
+				{{ title }}
+			</mat-panel-title>
+			<mat-panel-description>
+				{{ description }}
+			</mat-panel-description>
+		</mat-expansion-panel-header>
 
-    <!-- START -- contents -->
+		<!-- START -- contents -->
 
-    <form
-      [formGroup]="newSportLeagueForm"
-      (ngSubmit)="onSubmit(formDirective)"
-      #formDirective="ngForm"
-      novalidate
-    >
-      <div>
-        <mat-form-field>
-          <input
-            formControlName="sportType"
-            type="text"
-            placeholder="Sport"
-            aria-label="sports"
-            matInput
-            [matAutocomplete]="auto"
-          >          
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-            <mat-option *ngFor="let pair of sportLeaguePairs" [value]="pair">
-              {{ pair.name }}
-            </mat-option>
-          </mat-autocomplete>
-          <mat-hint>Volleyball, Basketball etc</mat-hint>
-          <mat-error>Sport name is required</mat-error>
-        </mat-form-field>
+		<form [formGroup]="newSportLeagueForm" (ngSubmit)="onSubmit(formDirective)" #formDirective="ngForm" novalidate>
+			<div>
+				<mat-form-field>
+					<input formControlName="sportType" type="text" placeholder="Sport" aria-label="sports" matInput [matAutocomplete]="auto" />
+					<mat-hint>Volleyball, Basketball etc</mat-hint>
+					<mat-error>Sport name is required</mat-error>
+				</mat-form-field>
 
-        <mat-form-field>
-          <input
-            formControlName="leagueName"
-            matInput
-            placeholder="League Name"
-          />
-        </mat-form-field>
-      </div>
-      <button
-        mat-raised-button
-        color="accent"
-        [disabled]="!newSportLeagueForm.valid"
-      >
-        Add
-      </button>
-    </form>
-    <!-- END -- contents -->
-  </mat-expansion-panel>
+				<mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSportSelectionChange($event)">
+					<ng-container>
+						<mat-option *ngFor="let pair of sportLeaguePairs" [value]="pair.name" [id]="pair.id">
+							{{ pair.name }}
+						</mat-option>
+					</ng-container>
+				</mat-autocomplete>
+
+				<mat-form-field>
+					<input formControlName="leagueName" matInput placeholder="League Name" />
+				</mat-form-field>
+			</div>
+			<button mat-raised-button color="accent" [disabled]="!newSportLeagueForm.valid">
+				Add
+			</button>
+		</form>
+		<!-- END -- contents -->
+	</mat-expansion-panel>
 </mat-accordion>

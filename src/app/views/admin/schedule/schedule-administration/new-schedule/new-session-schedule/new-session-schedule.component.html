@@ -3,6 +3,9 @@
 		<form [formGroup]="sessionForm" (ngSubmit)="onSubmit()" novalidate>
 			<mat-form-field>
 				<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="# of weeks" />
+				<mat-error>
+					Please specify number of weeks
+				</mat-error>
 			</mat-form-field>
 
 			<mat-form-field>
@@ -16,19 +19,20 @@
 				<mat-datepicker-toggle matSuffix [for]="sessionEnd"></mat-datepicker-toggle>
 				<mat-datepicker #sessionEnd></mat-datepicker>
 			</mat-form-field>
-
 			<div class="gameDayTimes">
 				<ng-container formArrayName="gamesDays">
-					<ng-container *ngFor="let gamesDay of sessionForm['controls'].gamesDays['controls']; let indexGamesDay = index">
+					<ng-container *ngFor="let gamesDay of sessionForm['controls'].gamesDays['controls']; let indexGamesDay = index; let firstIndex = first">
 						<ng-container [formGroupName]="indexGamesDay">
 							<mat-form-field>
 								<mat-label>Game Day</mat-label>
 								<mat-select formControlName="gamesDay">
-									<mat-option *ngFor="let day of matchDays | enumToArray" [value]="day">
-										{{ day }}
-									</mat-option>
+									<mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option>
 								</mat-select>
+								<mat-error>
+									Please select game day
+								</mat-error>
 							</mat-form-field>
+							<mat-icon *ngIf="!firstIndex" (click)="removeGamesDay(indexGamesDay)" aria-hidden="false" aria-label="Remove Game Day">remove</mat-icon>
 
 							<ng-container formArrayName="gamesTimes">
 								<mat-form-field class="game-times-chips" floatLabel="always">
@@ -41,7 +45,6 @@
 													removable="true"
 													(removed)="removeGameTime(indexGamesDay, indexGamesTime)"
 												>
-
 													{{ gamesTime.value?.gamesTime }}
 													<mat-icon matChipRemove>cancel</mat-icon>
 												</mat-chip>
@@ -57,10 +60,8 @@
 											(matChipInputTokenEnd)="addGameTime($event, indexGamesDay)"
 										/>
 										<ngx-material-timepicker #timePick></ngx-material-timepicker>
-										
 									</mat-chip-list>
 								</mat-form-field>
-
 							</ng-container>
 						</ng-container>
 					</ng-container>
@@ -70,7 +71,7 @@
 			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
 
 			<div>
-				<button mat-stroked-button color="accent">Generate</button>
+				<button mat-raised-button color="accent" [disabled]="!sessionForm.valid">Generate</button>
 			</div>
 		</form>
 	</div>

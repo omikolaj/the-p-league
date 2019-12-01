@@ -1,50 +1,33 @@
 <mat-expansion-panel expanded="true">
-  <mat-expansion-panel-header> {{ league?.name }} - {{ sport?.name }} </mat-expansion-panel-header>
+	<mat-expansion-panel-header> {{ league?.name }} - {{ sport?.name }} </mat-expansion-panel-header>
 
-  <form [formGroup]="teamsForm" (ngSubmit)="onSubmit()" novalidate>
-    <mat-selection-list #teamsList formArrayName="teams" [disabled]="disableListSelection" (selectionChange)="onTeamSelectionChange($event)">
-      <mat-list-option *ngFor="let team of teams; let i = index" [value]="team?.id">
-        <mat-icon matListIcon>sports_basketball</mat-icon>
-        <ng-container *ngIf="!disableListSelection; else editTeams">
-          <h4 matLine>{{ team.name }}</h4>
-        </ng-container>
+	<form [formGroup]="teamsForm" (ngSubmit)="onSubmit()" novalidate>
+		<mat-selection-list #teamsList formArrayName="teams" [disabled]="disableListSelection" (selectionChange)="onTeamSelectionChange($event)">
+			<mat-list-option *ngFor="let team of teams; let i = index" [value]="team?.id">
+				<mat-icon matListIcon>sports_basketball</mat-icon>
+				<ng-container *ngIf="!disableListSelection; else editTeams">
+					<h4 matLine>{{ team.name }}</h4>
+				</ng-container>
 
-        <ng-template #editTeams>
-          <ng-container [formGroupName]="i">
-            <mat-form-field appAllowSpaces>
-              <input formControlName="name" matInput type="text" [value]="team?.name" />
-              <!-- <mat-hint>Placeholder</mat-hint> -->
-            </mat-form-field>
-          </ng-container>
-        </ng-template>
-      </mat-list-option>
-    </mat-selection-list>
+				<ng-template #editTeams>
+					<ng-container [formGroupName]="i">
+						<mat-form-field appAllowSpaces>
+							<input formControlName="name" matInput type="text" [value]="team?.name" />
+							<!-- <mat-hint>Placeholder</mat-hint> -->
+						</mat-form-field>
+					</ng-container>
+				</ng-template>
+			</mat-list-option>
+		</mat-selection-list>
 
-    <p>Number of teams selected: {{ teamsList.selectedOptions.selected.length }}</p>
+		<p>Number of teams selected: {{ teamsList.selectedOptions.selected.length }}</p>
 
-    <mat-action-row>
-      <button mat-stroked-button color="accent">
-        {{ disableListSelection ? 'Save' : 'Edit' }}
-      </button>
-      <button mat-stroked-button color="accent" [disabled]="disableEdit" type="button" (click)="onUnassignHandler()">Unassign</button>
-      <button mat-stroked-button color="warn" [disabled]="disableDelete" type="button" (click)="onDeleteHandler()">Delete</button>
-    </mat-action-row>
-  </form>
+		<mat-action-row>
+			<button mat-stroked-button color="accent">
+				{{ disableListSelection ? 'Save' : 'Edit' }}
+			</button>
+			<button mat-stroked-button color="accent" [disabled]="disableEdit" type="button" (click)="onUnassignHandler()">Unassign</button>
+			<button mat-stroked-button color="warn" [disabled]="disableDelete" type="button" (click)="onDeleteHandler()">Delete</button>
+		</mat-action-row>
+	</form>
 </mat-expansion-panel>
-
-<!-- <mat-selection-list #teamsList>
-  <h3 matSubheader>
-    {{ league.type.name }} - {{ league.name }}
-  </h3>
-  <mat-list-option *ngFor="let team of teams">
-    <mat-icon matListIcon>sports_basketball</mat-icon>
-    <h4 matLine>{{team.name}}</h4>
-    <p matLine> Placeholder </p>
-  </mat-list-option>
-  <p>Number of teams selected: {{ teamsList.selectedOptions.selected.length }}</p>
-</mat-selection-list>
-<div class="edit-actions-buttons">
-  <button mat-stroked-button color="accent">Unassign</button>
-  <button mat-stroked-button color="accent">Edit</button>
-  <button mat-stroked-button color="warn">Delete</button>
-</div> -->

@@ -14,8 +14,10 @@
 		<app-new-session-schedule
 			[sessionForm]="newSessionForm"
 			(gamesDayAdded)="onGamesDayAdded()"
+			(gamesDayRemved)="onGamesDayRemoved($event)"
 			(gamesTimeAdded)="onGamesTimeAdded($event)"
 			(gamesTimeRemoved)="onGamesTimeRemoved($event)"
+			(newSessionGenerated)="onGenerateNewSession($event)"
 		>
 		</app-new-session-schedule>
 
