@@ -9,6 +9,7 @@ import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { TabTitles } from '../../models/tab-titles.model';
+import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
 
 @Component({
 	selector: 'app-new-schedule',
@@ -22,6 +23,7 @@ export class NewScheduleComponent implements OnInit {
 	tab: TabTitles = 'New Schedule';
 	assignTeamsForm: FormGroup;
 	newSessionForm: FormGroup;
+	requireTimeErrorStateMatcher = new RequireTimeErrorStateMatcher();
 	selectedTeamIDs: string[] = [];
 
 	leagues$: Observable<{ league: League; teams: Team[] }[]> = combineLatest([
@@ -113,7 +115,7 @@ export class NewScheduleComponent implements OnInit {
 			gamesDay: this.fb.control(null, Validators.required),
 			// gamesTimes represents a list of times that games will be
 			// played for the given gamesDate
-			gamesTimes: this.fb.array([this.initGameTime()], this.requireTime())
+			gamesTimes: this.fb.control([this.initGameTime()], this.requireTime())
 		});
 	}
 
@@ -125,7 +127,7 @@ export class NewScheduleComponent implements OnInit {
 
 	requireTime(): ValidatorFn {
 		return (control: AbstractControl): { [key: string]: any } | null => {
-			const gamesTimesFiltered = control.value.filter((formGroup) => formGroup.gamesTime !== null);
+			const gamesTimesFiltered = control.value.filter((formGroup) => formGroup.value.gamesTime !== null);
 			if (gamesTimesFiltered.length) {
 				return null;
 			}
@@ -159,16 +161,22 @@ export class NewScheduleComponent implements OnInit {
 
 	onGamesTimeAdded(event: { gamesDayIndex: number; time: string }): void {
 		const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
-		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes') as FormArray;
+
+		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
+
 		if (event.time) {
-			control.push(this.initGameTime(event.time.trim()));
+			control.value.push(this.initGameTime(event.time.trim()));
 		}
+		// control.updateValueAndValidity();
 	}
 
 	onGamesTimeRemoved(event: { gamesDayIndex: number; gamesTimeIndex: number }): void {
 		const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
-		const gamesTimesFormArray = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes') as FormArray;
-		gamesTimesFormArray.removeAt(event.gamesTimeIndex);
+		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
+		if (event.gamesTimeIndex) {
+			control.value.splice(event.gamesTimeIndex, 1);
+		}
+		// control.updateValueAndValidity();
 	}
 
 	onGenerateNewSession(sessionForm: FormGroup): void {

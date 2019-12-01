@@ -1,7 +1,7 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatChipInputEvent } from '@angular/material';
+import { ErrorStateMatcher, MatChipInputEvent } from '@angular/material';
 import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 
 @Component({
@@ -11,6 +11,7 @@ import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 })
 export class NewSessionScheduleComponent implements OnInit {
 	@Input() sessionForm: FormGroup;
+	@Input() requireTime: ErrorStateMatcher;
 	@Output() gamesDayAdded: EventEmitter<void> = new EventEmitter<void>();
 	@Output() gamesDayRemved: EventEmitter<number> = new EventEmitter<number>();
 	@Output() gamesTimeAdded: EventEmitter<{ gamesDayIndex: number; time: string }> = new EventEmitter<{ gamesDayIndex: number; time: string }>();
@@ -19,23 +20,13 @@ export class NewSessionScheduleComponent implements OnInit {
 		gamesTimeIndex: number;
 	}>();
 	@Output() newSessionGenerated: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+	@ViewChild('chipList', { static: false }) chipList;
 	matchDays = MatchDay;
 	readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
 	constructor() {}
 
-	ngOnInit(): void {
-		for (let index = 0; index < this.sessionForm['controls'].gamesDays['controls'].length; index++) {
-			const gamesDay = this.sessionForm['controls'].gamesDays['controls'][index];
-			console.log('gamesDay', gamesDay);
-			const gamesTimes = gamesDay['controls'].gamesTimes.value;
-			console.log('gamesTimes', gamesTimes);
-			for (let index = 0; index < gamesTimes.length; index++) {
-				const element = gamesTimes[index];
-				console.log('gamesTime', element);
-			}
-		}
-	}
+	ngOnInit(): void {}
 
 	onSubmit(): void {
 		this.newSessionGenerated.emit(this.sessionForm);
@@ -59,6 +50,7 @@ export class NewSessionScheduleComponent implements OnInit {
 		if (input) {
 			input.value = '';
 		}
+		console.log('chipList', this.chipList);
 	}
 
 	removeGameTime(gamesDayIndex: number, gamesTimeIndex: number): void {
