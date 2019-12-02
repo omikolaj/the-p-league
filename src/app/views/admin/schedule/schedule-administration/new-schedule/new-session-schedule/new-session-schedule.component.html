@@ -2,16 +2,16 @@
 	<div class="container">
 		<form [formGroup]="sessionForm" (ngSubmit)="onSubmit()" novalidate>
 			<mat-form-field>
-				<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="# of weeks" />
-				<mat-error>
-					Please specify number of weeks
-				</mat-error>
-			</mat-form-field>
-
-			<mat-form-field>
 				<input matInput formControlName="sessionStart" [matDatepicker]="sessionStart" placeholder="Session Start Date" />
 				<mat-datepicker-toggle matSuffix [for]="sessionStart"></mat-datepicker-toggle>
 				<mat-datepicker #sessionStart></mat-datepicker>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="# of weeks" required />
+				<mat-error>
+					Please specify number of weeks
+				</mat-error>
 			</mat-form-field>
 
 			<mat-form-field>
@@ -26,7 +26,7 @@
 						<ng-container [formGroupName]="indexGamesDay">
 							<mat-form-field>
 								<mat-label>Game Day</mat-label>
-								<mat-select formControlName="gamesDay">
+								<mat-select formControlName="gamesDay" required>
 									<mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option>
 								</mat-select>
 								<mat-error>
@@ -35,8 +35,8 @@
 							</mat-form-field>
 							<mat-icon *ngIf="!firstIndex" (click)="removeGamesDay(indexGamesDay)" aria-hidden="false" aria-label="Remove Game Day">clear</mat-icon>
 
-							<mat-form-field class="game-times-chips" floatLabel="always">
-								<mat-chip-list formControlName="gamesTimes" #chipList aria-label="Game Times" [errorStateMatcher]="requireTime">
+							<mat-form-field class="game-times-chips">
+								<mat-chip-list formControlName="gamesTimes" #chipList aria-label="Game Times" [errorStateMatcher]="requireTime" required>
 									<ng-container *ngFor="let gamesTime of gamesDay['controls'].gamesTimes.value; let indexGamesTime = index">
 										<mat-chip
 											*ngIf="gamesTime.value.gamesTime"

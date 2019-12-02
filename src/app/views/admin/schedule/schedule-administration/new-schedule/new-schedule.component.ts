@@ -161,13 +161,10 @@ export class NewScheduleComponent implements OnInit {
 
 	onGamesTimeAdded(event: { gamesDayIndex: number; time: string }): void {
 		const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
-
 		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
-
 		if (event.time) {
 			control.value.push(this.initGameTime(event.time.trim()));
 		}
-		// control.updateValueAndValidity();
 	}
 
 	onGamesTimeRemoved(event: { gamesDayIndex: number; gamesTimeIndex: number }): void {
@@ -176,7 +173,6 @@ export class NewScheduleComponent implements OnInit {
 		if (event.gamesTimeIndex) {
 			control.value.splice(event.gamesTimeIndex, 1);
 		}
-		// control.updateValueAndValidity();
 	}
 
 	onGenerateNewSession(sessionForm: FormGroup): void {
