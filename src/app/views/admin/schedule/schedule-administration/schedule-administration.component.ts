@@ -26,7 +26,6 @@ export class ScheduleAdministrationComponent implements OnInit {
 	newSportLeagueForm: FormGroup;
 	newTeamForm: FormGroup;
 	adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
-	private _unsubscribe$ = new Subject<void>();
 
 	constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
 
@@ -35,10 +34,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.initForms();
 	}
 
-	ngOnDestroy(): void {
-		this._unsubscribe$.next();
-		this._unsubscribe$.complete();
-	}
+	ngOnDestroy(): void {}
 
 	// #endregion
 

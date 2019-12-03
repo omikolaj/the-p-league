@@ -17,10 +17,10 @@ export class EditTeamsListComponent implements OnInit {
 	@Input() teams: Team[];
 	@Input() league: League;
 	@Input() sport: Sport;
-	@Output() onUnassignTeams: EventEmitter<void> = new EventEmitter<void>();
-	@Output() onUpdateTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
-	@Output() onDeleteTeams: EventEmitter<void> = new EventEmitter<void>();
-	@Output() onSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
+	@Output() unassignedTeamsChange: EventEmitter<void> = new EventEmitter<void>();
+	@Output() updatedTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+	@Output() deletedTeams: EventEmitter<void> = new EventEmitter<void>();
+	@Output() teamsSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
 	disableListSelection = false;
 	// assumes we have at least one team selected when initialized
 	private numberOfSelectedTeams = 1;
@@ -41,17 +41,17 @@ export class EditTeamsListComponent implements OnInit {
 
 	// #endregion
 
-	onTeamSelectionChange(event: MatSelectionListChange): void {
+	teamsSelectionChangeHandler(event: MatSelectionListChange): void {
 		this.numberOfSelectedTeams = event.source.selectedOptions.selected.length;
-		this.onSelectionChange.emit(event);
+		this.teamsSelectionChange.emit(event);
 	}
 
 	onSubmit(): void {
 		this.disableListSelection ? this.onSaveHandler() : this.onEditHandler();
 	}
 
-	onUnassignHandler(): void {
-		this.onUnassignTeams.emit();
+	unassignedTeamsChangeHandler(): void {
+		this.unassignedTeamsChange.emit();
 	}
 
 	onEditHandler(): void {
@@ -61,11 +61,11 @@ export class EditTeamsListComponent implements OnInit {
 	onSaveHandler(): void {
 		console.log('updatedteamsForm', this.teamsForm);
 		this.disableListSelection = !this.disableListSelection;
-		this.onUpdateTeams.emit(this.teamsForm);
+		this.updatedTeams.emit(this.teamsForm);
 	}
 
-	onDeleteHandler(): void {
+	deletedTeamsHandler(): void {
 		this.numberOfSelectedTeams = 0;
-		this.onDeleteTeams.emit();
+		this.deletedTeams.emit();
 	}
 }

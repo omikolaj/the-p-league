@@ -1,10 +1,10 @@
 <ng-container *ngIf="leagues$ | async as leagueData">
 	<ng-container *ngFor="let data of leagueData">
 		<app-edit-teams-list
-			(onUpdateTeams)="onUpdateTeamsHandler($event, data.league?.id)"
-			(onDeleteTeams)="onDeleteTeamsHandler(data.league?.id)"
-			(onUnassignTeams)="onUnassignTeamsHandler(data.league?.id)"
-			(onSelectionChange)="onTeamsSelectionChangeHandler($event)"
+			(updatedTeams)="onUpdatedTeams($event, data.league?.id)"
+			(deletedTeams)="onDeletedTeams(data.league?.id)"
+			(unassignedTeamsChange)="onUnassignedTeamsChange(data.league?.id)"
+			(teamsSelectionChange)="onTeamsSelectionChange($event)"
 			[teamsForm]="data.form"
 			[teams]="data.teams"
 			[sport]="data.sport"
@@ -18,7 +18,7 @@
 			(gamesDayRemved)="onGamesDayRemoved($event)"
 			(gamesTimeAdded)="onGamesTimeAdded($event)"
 			(gamesTimeRemoved)="onGamesTimeRemoved($event)"
-			(newSessionGenerated)="onGenerateNewSession($event)"
+			(newSessionGenerated)="onNewSessionGenerated($event)"
 		>
 		</app-new-session-schedule>
 

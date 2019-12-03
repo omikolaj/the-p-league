@@ -175,7 +175,7 @@ export class NewScheduleComponent implements OnInit {
 		}
 	}
 
-	onGenerateNewSession(sessionForm: FormGroup): void {
+	onNewSessionGenerated(sessionForm: FormGroup): void {
 		console.log('logging sessionForm', sessionForm);
 	}
 
@@ -204,7 +204,7 @@ export class NewScheduleComponent implements OnInit {
 	 * @param  {FormGroup} updatedTeams
 	 * Fired whenever user updates team names in the edit-teams-list component
 	 */
-	onUpdateTeamsHandler(updatedTeamNames: FormGroup): void {
+	onUpdatedTeams(updatedTeamNames: FormGroup): void {
 		const teamsToUpdate: Team[] = [];
 		const teamsFormArray = updatedTeamNames.get('teams') as FormArray;
 		for (let index = 0; index < teamsFormArray.length; index++) {
@@ -218,15 +218,15 @@ export class NewScheduleComponent implements OnInit {
 		this.scheduleAdminFacade.updateTeams(teamsToUpdate);
 	}
 
-	onTeamsSelectionChangeHandler(selectedTeamsEvent: MatSelectionListChange): void {
+	onTeamsSelectionChange(selectedTeamsEvent: MatSelectionListChange): void {
 		this.selectedTeamIDs = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
 	}
 
-	onUnassignTeamsHandler(leagueID: string): void {
+	onUnassignedTeamsChange(leagueID: string): void {
 		this.scheduleAdminFacade.unassignTeams(leagueID, this.selectedTeamIDs);
 	}
 
-	onDeleteTeamsHandler(leagueID: string): void {
+	onDeletedTeams(leagueID: string): void {
 		this.scheduleAdminFacade.deleteTeams(leagueID, this.selectedTeamIDs);
 	}
 
