@@ -1,6 +1,5 @@
 <div class="wrapper">
 	<div class="container">
-		<!-- <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()" novalidate> -->
 		<ng-container [formGroup]="sessionForm">
 			<ng-container formGroupName="sessionDateInfo">
 				<mat-form-field>
@@ -24,23 +23,49 @@
 			</ng-container>
 
 			<div class="gameDayTimes">
+				<!----------------------------------------------------
+			formArrayName="gamesDays"
+
+			Description:
+			the passed in formGroup to this component contains an formArray of gamesDays. gamesDays formArray contains a list of { gameDay, gameTimes[] } properties 
+			----------------------------------------------------->
 				<ng-container formArrayName="gamesDays">
 					<ng-container *ngFor="let gamesDay of sessionForm['controls'].gamesDays['controls']; let indexGamesDay = index; let firstIndex = first">
+						<!----------------------------------------------------
+						[formGroupName]="indexGamesDay"
+
+						Description:
+						When iterating over the gamesDays formControls, indexGamesDay variable is set to the currently iterable index. In order to perform actions on a specified gamesDay formControl we have to keep track of all of the
+						gamesDay formControls by binding [formGroupName]="indexGamesDay". When user chooses to remove one of the gamesDay formControls we can pass down the index, and parent component will know exactly what formControl to remove from the gamesDays array
+						----------------------------------------------------->
 						<ng-container [formGroupName]="indexGamesDay">
 							<mat-form-field>
 								<mat-label>Game Day</mat-label>
 								<mat-select formControlName="gamesDay" required>
+									<!-----------------------------------------------------------
+										matchDays are just days of the week (Monday, Tuesday etc.)
+									------------------------------------------------------------>
 									<mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option>
 								</mat-select>
 								<mat-error>
 									Please select game day
 								</mat-error>
 							</mat-form-field>
+							<!-----------------------------------------------------------------------------------------
+								only allow user to remove added gamesDay formControl to any formControl BUT the first one 
+							------------------------------------------------------------------------------------------>
 							<mat-icon *ngIf="!firstIndex" (click)="removeGamesDay(indexGamesDay)" aria-hidden="false" aria-label="Remove Game Day">clear</mat-icon>
 
 							<mat-form-field class="game-times-chips">
 								<mat-chip-list formControlName="gamesTimes" #chipList aria-label="Game Times" [errorStateMatcher]="requireTime" required>
 									<ng-container *ngFor="let gamesTime of gamesDay['controls'].gamesTimes.value; let indexGamesTime = index">
+										<!------------------------------------------------------------------------------------
+											let gamesTime of gamesDay['controls'].gamesTimes.value; let indexGamesTime = index"
+
+											Description:
+											iterate over the current iteration of gamesDay formControl, which has a gamesTimes formGroup property and retireve gamesTimes value, which is an array of formControls
+											and then for display mat-chip for each gamesTime instance in the formControls array 
+										-------------------------------------------------------------------------------------->
 										<mat-chip
 											*ngIf="gamesTime.value.gamesTime"
 											selectable="true"
@@ -51,7 +76,12 @@
 											<mat-icon matChipRemove>cancel</mat-icon>
 										</mat-chip>
 									</ng-container>
+									<!----------------------------------------------------------
+									(matChipInputTokenEnd)="addGameTime($event, indexGamesDay)"
 
+									Description:
+									The (matChipInputTokenEnd) event is triggered whenever user finishes entering a new gamesTime by selecting enter, comma or on blur, which means whenever the input control loses focus 
+									----------------------------------------------------------->
 									<input
 										placeholder="Game Times..."
 										[ngxTimepicker]="timePick"
@@ -74,10 +104,7 @@
 			<button type="button" mat-raised-button (click)="addGamesDay()" color="primary">Add Day</button>
 			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
 
-			<div>
-				<!-- <button mat-raised-button color="accent" [disabled]="!sessionForm.valid">Generate</button> -->
-			</div>
+			<div></div>
 		</ng-container>
-		<!-- </form> -->
 	</div>
 </div>

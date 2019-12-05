@@ -23,7 +23,7 @@ import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher
 export class NewScheduleComponent implements OnInit, OnDestroy {
 	tab: TabTitles = 'New Schedule';
 	assignTeamsForm: FormGroup;
-	// newSessionForm: FormGroup;
+	newSessionsForm: FormGroup;
 	requireTimeErrorStateMatcher = new RequireTimeErrorStateMatcher();
 	selectedTeamIDs: string[] = [];
 	private unsubscribe$ = new Subject<void>();
@@ -35,7 +35,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	]).pipe(
 		map(([selectedLeagues, filterFn, filterSportsFn]) => {
 			return selectedLeagues.map((l) => {
-				this.initNewSessionForm(l.id);
+				this.initNewSessionsForm();
 				return { league: l, teams: filterFn(l.id), form: this.initEditTeamsForm(filterFn(l.id)), sport: filterSportsFn(l.sportTypeID) };
 			});
 		})
@@ -88,8 +88,8 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * Since we need to compose a separate edit team form for each
 	 * league, we have to return a form group here and wrap it
 	 * inside an observable (the wrapping of the observable occurs in the leagues$ pipe),
-	 * it is then unwrapped and passed down
-	 * to the edit-teams-list component in the template
+	 * it is then unwrapped in the template and passed down
+	 * to the edit-teams-list component
 	 */
 	initEditTeamsForm(teams: Team[]): FormGroup {
 		const teamNameControls = teams.map((t) =>
@@ -105,24 +105,36 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	}
 
 	// #region New Session Form
-	newSessionsForm: FormGroup;
-	initNewSessionForm(leagueID: string): void {
+
+	/**
+	 * @description Initializes the newSessionsForm if it has not been initialized
+	 * if it has been initialized, it adds a new formGroup entry
+	 * onto the sessions formArray. Inside the template each formGroup is then retrieved
+	 * by index and is passed down to the app-new-session-schedule component
+	 *
+	 */
+	initNewSessionsForm(): void {
+		const sessionForm = this.initSessionForm();
 		if (this.newSessionsForm && this.newSessionsForm['controls']) {
 			const formArray = this.newSessionsForm['controls'].sessions as FormArray;
-
-			formArray.controls.push(this.initSessionForm());
+			formArray.controls.push(sessionForm);
+			const formIndex = formArray.controls.indexOf(sessionForm);
+			this.syncronizeDates(formIndex);
 		} else {
 			this.newSessionsForm = this.fb.group({
-				sessions: this.fb.array([this.initSessionForm()])
+				sessions: this.fb.array([sessionForm])
 			});
-			// this.syncronizeDates(0);
+			// Since this block of code only gets executed when the newSessionsForm
+			// is undefined, we can be sure that the created sessionForm is the first one
+			this.syncronizeDates(0);
 		}
-		// ensures that when user modifies number of weeks
-		// or start date when number of weeks has been set
-		// the end date gets updated
-		// this.syncronizeDates();
 	}
 
+	/**
+	 * @description Initializes formGroup instances that represents new session
+	 * information for a league
+	 * @returns FormGroup representing new session information for the given league
+	 */
 	initSessionForm(): FormGroup {
 		return this.fb.group({
 			// sessionName: this.fb.control(null),
@@ -136,6 +148,11 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	/**
+	 * @description Initializes a formGroup instance that represents
+	 * a single game day (day week Monday, Tuesday etc.) and an array of game time controls ([{gameTime: 9:00am}, {gameTime: 6:00pm}])
+	 * @returns returns formGroup instance for gameDay and gameTimes
+	 */
 	initGameDayAndTimes(): FormGroup {
 		return this.fb.group({
 			// gamesDate represents a date for 'nth' number of games
@@ -146,12 +163,24 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	/**
+	 * @description Initializes game time formGroup that represents a single
+	 * game time instance (9:00am, 11:00pm etc)
+	 * @param [defaultValue] used when adding a new game time to the parent formArray
+	 * (see initGameDayAndTimes() => gameTimes property). This sets the default input value
+	 * to whatever user has selected in the UI. When new game time (mat-chip) is added, new game time is pushed to the formArray with user entered value, the defaultValue.
+	 * @returns game time
+	 */
 	initGameTime(defaultValue?: string): FormGroup {
 		return this.fb.group({
 			gamesTime: this.fb.control(defaultValue ? defaultValue : null)
 		});
 	}
 
+	/**
+	 * @description Custom validator used by initGameDayAndTimes() => gamesTimes property. Checks to see if user has entered any game times. At least one game time is required.
+	 * @returns whether the validator function returned an error or null if everything was ok
+	 */
 	requireTime(): ValidatorFn {
 		return (control: AbstractControl): { [key: string]: any } | null => {
 			const gamesTimesFiltered = control.value.filter((formGroup) => formGroup.value.gamesTime !== null);
@@ -169,12 +198,11 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	// #region Private Methods
 
 	/**
-	 * @description Syncronizes the end date based on number of weeks specified
-	 * It will also adjust the end date based on specified start date and number of weeks
+	 * @description Syncronizes the end date based on number of weeks specified by the user in the UI.
+	 * It will also adjust the end date based on specified start date only if number of weeks has been already specified.
 	 * @returns subscription for the consuming code to properly dispose of it
 	 */
-	private syncronizeDates(sessionFormGroupIndex?: number): void {
-		console.log('logging from synchronizeDates', sessionFormGroupIndex);
+	private syncronizeDates(sessionFormGroupIndex: number): void {
 		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
 		// const sessionDateInfoFormGroup = this.newSessionForm['controls'].sessionDateInfo;
 		const sessionDateInfoFormGroup = sessions.at(sessionFormGroupIndex).get('sessionDateInfo');
@@ -199,13 +227,16 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 
 	// #region Event Handlers
 
+	/**
+	 * @description Triggered whenever user submits the new sessions form
+	 */
 	onSubmit() {
 		console.log('submitted', this.newSessionsForm);
 	}
 
 	/**
 	 * @description Triggered when user wants to add additional
-	 * control field for another date
+	 * control field for additional game day during the week
 	 */
 	onGamesDayAdded(sessionFormGroupIndex: number): void {
 		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
@@ -213,18 +244,24 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		control.push(this.initGameDayAndTimes());
 	}
 
+	/**
+	 * @description Removes user added game day field. This can only ever be triggered
+	 * if user has already added an additional game day field
+	 * @param gamesDayIndex since user can add multiple additional game days for any given league, we need to know which game day they want to remove
+	 * @param sessionFormGroupIndex since there are multiple session forms, we need to know which session form we need to perform this action on
+	 */
 	onGamesDayRemoved(gamesDayIndex: number, sessionFormGroupIndex: number): void {
 		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
 		const control = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
 		control.removeAt(gamesDayIndex);
 	}
 
+	/**
+	 * @description For any given game day, user can specify multiple game times. This is triggered whenever user adds a new game time to the list
+	 * @param event { gamesDayIndex: number; time: string } event.gamesDayIndex represents the given game day (Monday, Tuesday etc.) user wants to add a new game time to. event.time reprsents the actual string value of the time user is adding (9:00am, 10:30pm etc.)
+	 * @param sessionFormGroupIndex since there are multiple session forms, we need to know which session form we need to perform this action on
+	 */
 	onGamesTimeAdded(event: { gamesDayIndex: number; time: string }, sessionFormGroupIndex: number): void {
-		// const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
-		// const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
-		// if (event.time) {
-		// 	control.value.push(this.initGameTime(event.time.trim()));
-		// }
 		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
 		const gamesDaysFormArray = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
 		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
@@ -233,12 +270,12 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * @description Triggered when user removes any game times that they already added to the list
+	 * @param event { gamesDayIndex: number; time: string } event.gamesDayIndex represents the given game day (Monday, Tuesday etc.) user wants to add a new game time to. event.time reprsents the actual string value of the time user is adding (9:00am, 10:30pm etc.)
+	 * @param sessionFormGroupIndex since there are multiple session forms, we need to know which session form we need to perform this action on
+	 */
 	onGamesTimeRemoved(event: { gamesDayIndex: number; gamesTimeIndex: number }, sessionFormGroupIndex): void {
-		// const gamesDaysFormArray = this.newSessionForm.controls['gamesDays'] as FormArray;
-		// const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
-		// if (event.gamesTimeIndex) {
-		// 	control.value.splice(event.gamesTimeIndex, 1);
-		// }
 		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
 		const gamesDaysFormArray = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
 		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');

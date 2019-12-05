@@ -19,7 +19,6 @@ export class NewSessionScheduleComponent implements OnInit {
 		gamesDayIndex: number;
 		gamesTimeIndex: number;
 	}>();
-	@Output() newSessionGenerated: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
 	matchDays = MatchDay;
 	readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -27,10 +26,6 @@ export class NewSessionScheduleComponent implements OnInit {
 
 	ngOnInit(): void {
 		console.log('passed in form is', this.sessionForm);
-	}
-
-	onSubmit(): void {
-		this.newSessionGenerated.emit(this.sessionForm);
 	}
 
 	addGamesDay(): void {
