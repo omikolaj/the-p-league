@@ -1,24 +1,27 @@
 <div class="wrapper">
 	<div class="container">
-		<form [formGroup]="sessionForm" (ngSubmit)="onSubmit()" novalidate>
-			<mat-form-field>
-				<input matInput formControlName="sessionStart" [matDatepicker]="sessionStart" placeholder="Session Start Date" />
-				<mat-datepicker-toggle matSuffix [for]="sessionStart"></mat-datepicker-toggle>
-				<mat-datepicker #sessionStart></mat-datepicker>
-			</mat-form-field>
+		<!-- <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()" novalidate> -->
+		<ng-container [formGroup]="sessionForm">
+			<ng-container formGroupName="sessionDateInfo">
+				<mat-form-field>
+					<input matInput formControlName="sessionStart" [matDatepicker]="sessionStart" placeholder="Session Start Date" />
+					<mat-datepicker-toggle matSuffix [for]="sessionStart"></mat-datepicker-toggle>
+					<mat-datepicker #sessionStart></mat-datepicker>
+				</mat-form-field>
 
-			<mat-form-field>
-				<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="# of weeks" required />
-				<mat-error>
-					Please specify number of weeks
-				</mat-error>
-			</mat-form-field>
+				<mat-form-field>
+					<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="# of weeks" required />
+					<mat-error>
+						Please specify number of weeks
+					</mat-error>
+				</mat-form-field>
 
-			<mat-form-field>
-				<input matInput formControlName="sessionEnd" [matDatepicker]="sessionEnd" placeholder="Session End Date" />
-				<mat-datepicker-toggle matSuffix [for]="sessionEnd"></mat-datepicker-toggle>
-				<mat-datepicker #sessionEnd></mat-datepicker>
-			</mat-form-field>
+				<mat-form-field>
+					<input matInput formControlName="sessionEnd" [matDatepicker]="sessionEnd" placeholder="Session End Date" />
+					<mat-datepicker-toggle matSuffix [for]="sessionEnd"></mat-datepicker-toggle>
+					<mat-datepicker #sessionEnd></mat-datepicker>
+				</mat-form-field>
+			</ng-container>
 
 			<div class="gameDayTimes">
 				<ng-container formArrayName="gamesDays">
@@ -72,8 +75,9 @@
 			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
 
 			<div>
-				<button mat-raised-button color="accent" [disabled]="!sessionForm.valid">Generate</button>
+				<!-- <button mat-raised-button color="accent" [disabled]="!sessionForm.valid">Generate</button> -->
 			</div>
-		</form>
+		</ng-container>
+		<!-- </form> -->
 	</div>
 </div>

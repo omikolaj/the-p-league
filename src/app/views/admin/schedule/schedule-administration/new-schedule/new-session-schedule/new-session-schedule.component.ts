@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ErrorStateMatcher, MatChipInputEvent } from '@angular/material';
 import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
@@ -20,13 +20,14 @@ export class NewSessionScheduleComponent implements OnInit {
 		gamesTimeIndex: number;
 	}>();
 	@Output() newSessionGenerated: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
-	@ViewChild('chipList', { static: false }) chipList;
 	matchDays = MatchDay;
 	readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
 	constructor() {}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+		console.log('passed in form is', this.sessionForm);
+	}
 
 	onSubmit(): void {
 		this.newSessionGenerated.emit(this.sessionForm);
@@ -50,7 +51,6 @@ export class NewSessionScheduleComponent implements OnInit {
 		if (input) {
 			input.value = '';
 		}
-		console.log('chipList', this.chipList);
 	}
 
 	removeGameTime(gamesDayIndex: number, gamesTimeIndex: number): void {

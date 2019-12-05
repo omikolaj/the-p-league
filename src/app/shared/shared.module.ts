@@ -21,7 +21,6 @@ import {
 	MatInputModule,
 	MatListModule,
 	MatMenuModule,
-	MatNativeDateModule,
 	MatPaginatorModule,
 	MatProgressBarModule,
 	MatProgressSpinnerModule,
@@ -42,6 +41,7 @@ import {
 	MAT_RIPPLE_GLOBAL_OPTIONS,
 	RippleGlobalOptions
 } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGithub, faInstagram, faMediumM, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
@@ -91,7 +91,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		MatInputModule,
 		MatListModule,
 		MatMenuModule,
-		MatNativeDateModule,
+		MatMomentDateModule,
 		MatPaginatorModule,
 		MatProgressBarModule,
 		MatProgressSpinnerModule,
@@ -138,7 +138,6 @@ const globalRippleConfig: RippleGlobalOptions = {
 		MatInputModule,
 		MatListModule,
 		MatMenuModule,
-		MatNativeDateModule,
 		MatPaginatorModule,
 		MatProgressBarModule,
 		MatProgressSpinnerModule,
@@ -156,6 +155,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		MatToolbarModule,
 		MatTooltipModule,
 		MatTreeModule,
+		MatMomentDateModule,
 
 		FontAwesomeModule,
 

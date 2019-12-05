@@ -62,7 +62,7 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.galleryService.updateLeaguePicturesOrder(this.galleryImages);
 	}
 
-	onChange(event: MatCheckboxChange, index: number) {
+	onChange(event: MatCheckboxChange, index: number): void {
 		const galleryImagesUpdated = [...this.galleryImages];
 		const leaguePicture: LeaguePicture = galleryImagesUpdated[index];
 

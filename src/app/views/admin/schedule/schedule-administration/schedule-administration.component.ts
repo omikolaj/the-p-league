@@ -1,7 +1,7 @@
 import { Component, OnInit, Type, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
