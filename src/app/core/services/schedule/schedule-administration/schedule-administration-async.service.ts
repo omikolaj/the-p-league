@@ -3,20 +3,31 @@ import { Injectable } from '@angular/core';
 import * as cuid from 'cuid';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/internal/operators/delay';
+import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { Match } from 'src/app/views/schedule/models/interfaces/match.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { ScheduleAsyncService } from '../schedule-async.service';
+import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
+export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService {
 	constructor(protected http: HttpClient) {
 		super(http);
 	}
 
-	// #region
+	// #region Session
+
+	generateSessions(newSessions: NewSessionSchedule[]): Observable<Match[]> {
+		console.log('Generating new session', newSessions);
+		return of([]);
+	}
+
+	// #endregion
+
+	// #region SportType
 
 	addSport(newSportType: SportType): Observable<SportType> {
 		newSportType.id = cuid();
@@ -35,7 +46,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleAsyncService {
 
 	// #endregion
 
-	// #region
+	// #region League
 
 	addLeague(newLeague: League): Observable<League> {
 		newLeague.id = cuid();

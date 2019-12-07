@@ -9,10 +9,13 @@ import { Teams } from 'src/app/store/actions/teams.actions';
 import { LeagueState } from 'src/app/store/state/league.state';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
 import { TeamState } from 'src/app/store/state/team.state';
+import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
+import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { NewLeagueSessionScheduleService } from '../session-schedule/league-session-schedule.service';
 import { ScheduleAdministrationHelperService } from './schedule-administration-helper.service';
 
 @Injectable({
@@ -40,8 +43,20 @@ export class ScheduleAdministrationFacade {
 	constructor(
 		private scheduleAdminAsync: ScheduleAdministrationAsyncService,
 		private store: Store,
-		private scheduleAdminHelper: ScheduleAdministrationHelperService
+		private scheduleAdminHelper: ScheduleAdministrationHelperService,
+		private NewLeagueSessionSchedule: NewLeagueSessionScheduleService
 	) {}
+
+	// #region NewLeagueSession
+
+	generateNewSchedules(newNewLeagueSessions: NewSessionSchedule[]): void {
+		const teamEntities = this.store.selectSnapshot<Team[]>((state) => state.teams.entities);
+		newNewLeagueSessions = this.scheduleAdminHelper.getTeamsForLeagues(newNewLeagueSessions, teamEntities);
+		const leagueSessionSchedules: LeagueSessionSchedule[] = this.NewLeagueSessionSchedule.generateSchedules(newNewLeagueSessions);
+		console.log('logging league sessions chedules', leagueSessionSchedules);
+	}
+
+	// #endregion
 
 	// #region SportTypes
 

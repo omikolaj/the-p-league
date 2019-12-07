@@ -9,7 +9,7 @@ import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 	templateUrl: './new-session-schedule.component.html',
 	styleUrls: ['./new-session-schedule.component.scss']
 })
-export class NewSessionScheduleComponent implements OnInit {
+export class NewLeagueSessionScheduleComponent implements OnInit {
 	@Input() sessionForm: FormGroup;
 	@Input() requireTime: ErrorStateMatcher;
 	@Output() gamesDayAdded: EventEmitter<void> = new EventEmitter<void>();
@@ -24,9 +24,7 @@ export class NewSessionScheduleComponent implements OnInit {
 
 	constructor() {}
 
-	ngOnInit(): void {
-		console.log('passed in form is', this.sessionForm);
-	}
+	ngOnInit(): void {}
 
 	addGamesDay(): void {
 		this.gamesDayAdded.emit();

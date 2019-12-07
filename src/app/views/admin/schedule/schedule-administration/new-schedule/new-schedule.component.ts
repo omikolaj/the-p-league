@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatSelectionListChange } from '@angular/material';
 import * as moment from 'moment';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
-import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
+import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { GameDay } from '../../models/session/game-day.model';
+import NewSessionSchedule from '../../models/session/new-session-schedule.model';
 import { TabTitles } from '../../models/tab-titles.model';
 import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
 
@@ -16,17 +18,18 @@ import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher
 	selector: 'app-new-schedule',
 	templateUrl: './new-schedule.component.html',
 	styleUrls: ['./new-schedule.component.scss'],
-	providers: [ScheduleHelperService],
+	providers: [ScheduleComponentHelperService],
 	// TODO test this to ensure its not causing unexpected behavior
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewScheduleComponent implements OnInit, OnDestroy {
 	tab: TabTitles = 'New Schedule';
 	assignTeamsForm: FormGroup;
-	newSessionsForm: FormGroup;
+	newLeagueSessionsForm: FormGroup;
 	requireTimeErrorStateMatcher = new RequireTimeErrorStateMatcher();
 	selectedTeamIDs: string[] = [];
 	private unsubscribe$ = new Subject<void>();
+	@Output() generateSchedules = new EventEmitter<NewSessionSchedule[]>();
 
 	leagues$: Observable<{ league: League; teams: Team[] }[]> = combineLatest([
 		this.scheduleAdminFacade.selectedLeagues$,
@@ -35,7 +38,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	]).pipe(
 		map(([selectedLeagues, filterFn, filterSportsFn]) => {
 			return selectedLeagues.map((l) => {
-				this.initNewSessionsForm();
+				this.initNewLeagueSessionsForm(l.id);
 				return { league: l, teams: filterFn(l.id), form: this.initEditTeamsForm(filterFn(l.id)), sport: filterSportsFn(l.sportTypeID) };
 			});
 		})
@@ -48,11 +51,13 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		})
 	);
 
-	constructor(private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService, private fb: FormBuilder) {}
+	constructor(
+		private scheduleAdminFacade: ScheduleAdministrationFacade,
+		private scheduleHelper: ScheduleComponentHelperService,
+		private fb: FormBuilder
+	) {}
 
-	ngOnInit(): void {
-		// this.initNewSessionForm();
-	}
+	ngOnInit(): void {}
 
 	ngOnDestroy(): void {
 		this.unsubscribe$.next();
@@ -107,24 +112,24 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	// #region New Session Form
 
 	/**
-	 * @description Initializes the newSessionsForm if it has not been initialized
+	 * @description Initializes the NewLeagueSessionsForm if it has not been initialized
 	 * if it has been initialized, it adds a new formGroup entry
 	 * onto the sessions formArray. Inside the template each formGroup is then retrieved
 	 * by index and is passed down to the app-new-session-schedule component
 	 *
 	 */
-	initNewSessionsForm(): void {
-		const sessionForm = this.initSessionForm();
-		if (this.newSessionsForm && this.newSessionsForm['controls']) {
-			const formArray = this.newSessionsForm['controls'].sessions as FormArray;
+	initNewLeagueSessionsForm(leagueID: string): void {
+		const sessionForm = this.initSessionForm(leagueID);
+		if (this.newLeagueSessionsForm && this.newLeagueSessionsForm['controls']) {
+			const formArray = this.newLeagueSessionsForm['controls'].sessions as FormArray;
 			formArray.controls.push(sessionForm);
 			const formIndex = formArray.controls.indexOf(sessionForm);
 			this.syncronizeDates(formIndex);
 		} else {
-			this.newSessionsForm = this.fb.group({
+			this.newLeagueSessionsForm = this.fb.group({
 				sessions: this.fb.array([sessionForm])
 			});
-			// Since this block of code only gets executed when the newSessionsForm
+			// Since this block of code only gets executed when the NewLeagueSessionsForm
 			// is undefined, we can be sure that the created sessionForm is the first one
 			this.syncronizeDates(0);
 		}
@@ -135,12 +140,13 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * information for a league
 	 * @returns FormGroup representing new session information for the given league
 	 */
-	initSessionForm(): FormGroup {
+	initSessionForm(leagueID: string): FormGroup {
 		return this.fb.group({
 			// sessionName: this.fb.control(null),
+			leagueID: this.fb.control(leagueID),
 			sessionDateInfo: this.fb.group({
-				sessionStart: this.fb.control(new Date().toISOString(), Validators.required),
-				sessionEnd: this.fb.control(new Date().toISOString(), Validators.required),
+				sessionStart: this.fb.control(moment(new Date().toISOString()), Validators.required),
+				sessionEnd: this.fb.control(moment(new Date().toISOString()), Validators.required),
 				numberOfWeeks: this.fb.control(null, Validators.required)
 			}),
 			gamesDays: this.fb.array([this.initGameDayAndTimes()]),
@@ -203,8 +209,8 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * @returns subscription for the consuming code to properly dispose of it
 	 */
 	private syncronizeDates(sessionFormGroupIndex: number): void {
-		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
-		// const sessionDateInfoFormGroup = this.newSessionForm['controls'].sessionDateInfo;
+		const sessions = this.newLeagueSessionsForm.controls['sessions'] as FormArray;
+		// const sessionDateInfoFormGroup = this.NewLeagueSessionForm['controls'].sessionDateInfo;
 		const sessionDateInfoFormGroup = sessions.at(sessionFormGroupIndex).get('sessionDateInfo');
 		const sessionStartControl = sessionDateInfoFormGroup['controls'].sessionStart as AbstractControl;
 		const sessionEndControl = sessionDateInfoFormGroup['controls'].sessionEnd as AbstractControl;
@@ -230,16 +236,16 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	/**
 	 * @description Triggered whenever user submits the new sessions form
 	 */
-	onSubmit() {
-		console.log('submitted', this.newSessionsForm);
-	}
+	// onSubmit() {
+	// 	console.log('submitted', this.NewLeagueSessionsForm);
+	// }
 
 	/**
 	 * @description Triggered when user wants to add additional
 	 * control field for additional game day during the week
 	 */
 	onGamesDayAdded(sessionFormGroupIndex: number): void {
-		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
+		const sessions = this.newLeagueSessionsForm.controls['sessions'] as FormArray;
 		const control: FormArray = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
 		control.push(this.initGameDayAndTimes());
 	}
@@ -251,7 +257,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * @param sessionFormGroupIndex since there are multiple session forms, we need to know which session form we need to perform this action on
 	 */
 	onGamesDayRemoved(gamesDayIndex: number, sessionFormGroupIndex: number): void {
-		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
+		const sessions = this.newLeagueSessionsForm.controls['sessions'] as FormArray;
 		const control = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
 		control.removeAt(gamesDayIndex);
 	}
@@ -262,7 +268,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * @param sessionFormGroupIndex since there are multiple session forms, we need to know which session form we need to perform this action on
 	 */
 	onGamesTimeAdded(event: { gamesDayIndex: number; time: string }, sessionFormGroupIndex: number): void {
-		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
+		const sessions = this.newLeagueSessionsForm.controls['sessions'] as FormArray;
 		const gamesDaysFormArray = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
 		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
 		if (event.time) {
@@ -276,7 +282,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * @param sessionFormGroupIndex since there are multiple session forms, we need to know which session form we need to perform this action on
 	 */
 	onGamesTimeRemoved(event: { gamesDayIndex: number; gamesTimeIndex: number }, sessionFormGroupIndex): void {
-		const sessions = this.newSessionsForm.controls['sessions'] as FormArray;
+		const sessions = this.newLeagueSessionsForm.controls['sessions'] as FormArray;
 		const gamesDaysFormArray = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
 		const control = gamesDaysFormArray.at(event.gamesDayIndex).get('gamesTimes');
 		if (event.gamesTimeIndex) {
@@ -284,17 +290,68 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onNewSessionGenerated(sessionForm: FormGroup): void {
-		console.log('logging sessionForm', sessionForm);
+	/**
+	 * @description Triggered when user selects the 'Generate' button to create
+	 * schedules for the selected teams
+	 */
+	onSubmit(): void {
+		console.log('logging sessionForm', this.newLeagueSessionsForm);
+		const newLeagueSessions: NewSessionSchedule[] = [];
+		const sessions = this.newLeagueSessionsForm.value['sessions'] as [];
+		// iterate over all new sessions that were submitted
+		sessions.forEach((s: any) => {
+			// create new object with the NewLeagueSession shape
+			const session: NewSessionSchedule = {
+				leagueID: s.leagueID,
+				byeWeeks: s.byeWeeks,
+				numberOfWeeks: s.sessionDateInfo.numberOfWeeks,
+				sessionStart: s.sessionDateInfo.sessionStart,
+				sessionEnd: s.sessionDateInfo.sessionEnd,
+				// initialize the gamesDays array so we can push objects to it
+				gamesDays: []
+			};
+
+			// iterate over each session gamesDays. gD stands for gamesDay
+			s.gamesDays.forEach((gD) => {
+				// create an object that has GameDay shape
+				const gamesDayValue: GameDay = {
+					// set the gamesDay property to a day of the week
+					gamesDay: gD.gamesDay,
+					// initialize the gamesTimes array so we can push objects to it
+					gamesTimes: []
+				};
+
+				// iterate over each gamesDay gamesTimes array. gT stands for gamesTime
+				gD.gamesTimes.forEach((gT: FormGroup) => {
+					// filter out any gamesTime values that are null/undefined
+					if (gT.value.gamesTime) {
+						// add the gamesTime value to the gamesDayValue gamesTime array
+						gamesDayValue.gamesTimes.push({
+							gamesTime: gT.value.gamesTime
+						});
+					}
+				});
+
+				// push the extracted gamesDay to the session gamesDays array
+				session.gamesDays.push(gamesDayValue);
+			});
+			// push the entire session object to the new sessions array
+			newLeagueSessions.push(session);
+		});
+		console.log('logging new sessions', newLeagueSessions);
+		// send the new sessions array to the facade for further handling
+		// this.scheduleAdminFacade.generateNewSchedules(newLeagueSessions);
+		this.generateSchedules.emit(newLeagueSessions);
 	}
 
+	// TODO see if you can just use formGroup.value to retireve all the necessary info
 	/**
-	 * TODO extract this logic into service this is not view related logic
 	 * @param  {FormGroup} assignedTeamsForm
 	 * Fired whenever user assigns teams to a league.
 	 * Creating shell team object to carry the team ID and the league the team should be assigned to
 	 * instead of creating a separate object to carry this information
 	 */
+
 	onAssignTeams(assignedTeamsForm: FormGroup): void {
 		const formControls = [...assignedTeamsForm.get('unassignedTeams')['controls']];
 		const teamsToAssign: Team[] = [];
@@ -310,6 +367,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		this.scheduleAdminFacade.assignTeams(teamsToAssign);
 	}
 
+	// TODO see if you can use formGroup.value to retireve all necessary info
 	/**
 	 * @param  {FormGroup} updatedTeams
 	 * Fired whenever user updates team names in the edit-teams-list component

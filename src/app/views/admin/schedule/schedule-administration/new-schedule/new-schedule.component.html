@@ -1,10 +1,10 @@
 <ng-container *ngIf="leagues$ | async as leagueData">
-	<form [formGroup]="newSessionsForm" (ngSubmit)="onSubmit()">
+	<form [formGroup]="newLeagueSessionsForm" (ngSubmit)="onSubmit()">
 		<!--------------------------------------------------------------------------------- 
     formArrayName="sessions"
 
     Description:
-    sessions is a FormArray on newSessionForms containing list of newSessionForms for the selected leagues 
+    sessions is a FormArray on NewLeagueSessionForms containing list of NewLeagueSessionForms for the selected leagues 
     ----------------------------------------------------------------------------------->
 		<ng-container formArrayName="sessions">
 			<ng-container *ngFor="let data of leagueData; let i = index">
@@ -20,10 +20,10 @@
 						[league]="data?.league"
 					></app-edit-teams-list>
 					<!----------------------------------------------------------------------------
-            [sessionForm]="newSessionForms['controls'].sessions['controls'][i]"
+            [sessionForm]="NewLeagueSessionForms['controls'].sessions['controls'][i]"
             
             Description:
-             newSessionForms is a collection of multiple forms for every selected league,the newSessionForms[controls].sessions[controls][i] allows us to retireve a form for the corresponding index. The forms in this collection should always be in the same order as the leagues$ Observable array 
+             NewLeagueSessionForms is a collection of multiple forms for every selected league,the NewLeagueSessionForms[controls].sessions[controls][i] allows us to retireve a form for the corresponding index. The forms in this collection should always be in the same order as the leagues$ Observable array 
 
             (gamesDayAdded)="onGamesDayAdded(i)"
 						(gamesDayRemved)="onGamesDayRemoved($event, i)"
@@ -31,10 +31,10 @@
 						(gamesTimeRemoved)="onGamesTimeRemoved($event, i)"
 
             Description:
-             Each one of the above referenced event handlers, needs to have i passed into it, in order to know which newSessionForm we are attempting to perform actions on.
+             Each one of the above referenced event handlers, needs to have i passed into it, in order to know which NewLeagueSessionForm we are attempting to perform actions on.
             --------------------------------------------------------------------------->
 					<app-new-session-schedule
-						[sessionForm]="newSessionsForm['controls'].sessions['controls'][i]"
+						[sessionForm]="newLeagueSessionsForm['controls'].sessions['controls'][i]"
 						[requireTime]="requireTimeErrorStateMatcher"
 						(gamesDayAdded)="onGamesDayAdded(i)"
 						(gamesDayRemved)="onGamesDayRemoved($event, i)"
@@ -47,7 +47,7 @@
 				<mat-divider></mat-divider>
 			</ng-container>
 		</ng-container>
-		<button mat-raised-button [disabled]="!newSessionsForm.valid">Generate</button>
+		<button mat-raised-button [disabled]="!newLeagueSessionsForm.valid">Generate</button>
 	</form>
 </ng-container>
 

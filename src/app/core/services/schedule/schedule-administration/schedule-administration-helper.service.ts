@@ -1,11 +1,27 @@
 import { Injectable } from '@angular/core';
+import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 
+// TODO make this service be provided in admin module instead of root
+// since it is only used by the schedule administration
+// providedIn: AdminModule
 @Injectable({
 	providedIn: 'root'
 })
 export class ScheduleAdministrationHelperService {
 	constructor() {}
+
+	getTeamsForLeagues(newSessions: NewSessionSchedule[], teamsEntities): NewSessionSchedule[] {
+		const updatedSessions: NewSessionSchedule[] = [];
+		newSessions.forEach((session) => {
+			const teams: Team[] = Object.values(teamsEntities).filter((t: Team) => t.leagueID === session.leagueID && t.selected === true);
+			session.teams = (session.teams || []).concat(teams); // [...session.teams, ...teams];
+			console.log('session.teams is', session.teams);
+			updatedSessions.push(session);
+		});
+		console.log('updated sessions are', updatedSessions);
+		return updatedSessions;
+	}
 
 	/**
 	 * @description Iterates over searchIDs and returns filtered entity string array of IDs that have the selected property set to true

@@ -23,7 +23,8 @@ import { ModifyMatchUpComponent } from './schedule/schedule-administration/modif
 import { ModifyScheduleComponent } from './schedule/schedule-administration/modify/modify-schedule.component';
 import { EditTeamsListComponent } from './schedule/schedule-administration/new-schedule/edit-teams-list/edit-teams-list.component';
 import { NewScheduleComponent } from './schedule/schedule-administration/new-schedule/new-schedule.component';
-import { NewSessionScheduleComponent } from './schedule/schedule-administration/new-schedule/new-session-schedule/new-session-schedule.component';
+import { NewLeagueSessionScheduleComponent } from './schedule/schedule-administration/new-schedule/new-session-schedule/new-session-schedule.component';
+import { PreviewScheduleComponent } from './schedule/schedule-administration/new-schedule/preview-schedule/preview-schedule.component';
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
 
 @NgModule({
@@ -36,15 +37,18 @@ import { ScheduleAdministrationComponent } from './schedule/schedule-administrat
 		AdminAddComponent,
 		EditLeaguesListComponent,
 		NewScheduleComponent,
-		NewSessionScheduleComponent,
+		NewLeagueSessionScheduleComponent,
 		EditTeamsListComponent,
 		UnassignedComponent,
 		AddTeamsComponent,
 		AddLeaguesComponent,
 		ModifyScheduleComponent,
-		ModifyMatchUpComponent
+		ModifyMatchUpComponent,
+		PreviewScheduleComponent,
+		NewScheduleComponent,
+		ModifyScheduleComponent
 	],
-	entryComponents: [AdminControlComponent, NewScheduleComponent, ModifyScheduleComponent],
+	entryComponents: [AdminControlComponent],
 	imports: [
 		NgxMaterialTimepickerModule,
 		CommonModule,

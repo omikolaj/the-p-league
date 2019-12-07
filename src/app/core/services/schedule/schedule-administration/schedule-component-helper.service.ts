@@ -1,8 +1,8 @@
-import { MatSelectionListChange } from '@angular/material';
 import { Injectable } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material';
 
 @Injectable()
-export class ScheduleHelperService {
+export class ScheduleComponentHelperService {
 	constructor() {}
 
 	onSelectionChange(selectedEvent: MatSelectionListChange): string[] {

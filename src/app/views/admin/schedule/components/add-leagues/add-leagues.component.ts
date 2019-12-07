@@ -4,6 +4,10 @@ import { MatAutocompleteSelectedEvent, MatExpansionPanel } from '@angular/materi
 import { cloneDeep } from 'lodash';
 import { SportTypesLeaguesPairs } from '../../models/sport-types-leagues-pairs.model';
 
+/**
+ * @description AddLeagueComponent is responsible for adding new sport OR league.
+ * It is displayed by the schedule-administration.component
+ */
 @Component({
 	selector: 'app-add-leagues',
 	templateUrl: './add-leagues.component.html',

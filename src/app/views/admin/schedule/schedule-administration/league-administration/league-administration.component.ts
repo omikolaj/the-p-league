@@ -4,7 +4,7 @@ import { MatSelectionListChange } from '@angular/material';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
-import { ScheduleHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-helper.service';
+import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 
@@ -12,7 +12,7 @@ import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.m
 	selector: 'app-league-administration',
 	templateUrl: './league-administration.component.html',
 	styleUrls: ['./league-administration.component.scss'],
-	providers: [ScheduleHelperService],
+	providers: [ScheduleComponentHelperService],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LeagueAdministrationComponent implements OnInit {
@@ -27,7 +27,7 @@ export class LeagueAdministrationComponent implements OnInit {
 	sportTypeForm: FormGroup;
 	readonlySportName = true;
 
-	constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleHelperService) {}
+	constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleComponentHelperService) {}
 
 	// #region ng LifeCycle hooks
 

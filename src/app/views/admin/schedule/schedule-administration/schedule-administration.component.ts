@@ -1,4 +1,4 @@
-import { Component, OnInit, Type, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material';
 import { Observable } from 'rxjs';
@@ -7,9 +7,8 @@ import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/spor
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import NewSessionSchedule from '../models/session/new-session-schedule.model';
 import { TabTitles } from '../models/tab-titles.model';
-import { ModifyScheduleComponent } from './modify/modify-schedule.component';
-import { NewScheduleComponent } from './new-schedule/new-schedule.component';
 
 @Component({
 	selector: 'app-schedule-administration',
@@ -20,12 +19,12 @@ export class ScheduleAdministrationComponent implements OnInit {
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
 	unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
 	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
-	@ViewChild('matGroup', { static: false }) matTabGroup;
 	tabTitle: TabTitles = 'Schedule';
 	nextTab: 0 | 1 | 2 | number;
 	newSportLeagueForm: FormGroup;
 	newTeamForm: FormGroup;
-	adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
+	// adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
+	adminComponent: 'new' | 'modify' | 'playoffs' | 'preview';
 
 	constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
 
@@ -67,6 +66,12 @@ export class ScheduleAdministrationComponent implements OnInit {
 	// #endregion
 
 	// #region Event Handlers
+
+	onGenerateSchedules(newSessions: NewSessionSchedule[]): void {
+		this.scheduleAdminFacade.generateNewSchedules(newSessions);
+		// TODO this needs to be fixed to change to preview only on successfull validtion
+		this.onPreviewSchedule();
+	}
 
 	onUpdateSport(updatedSport: { id: string; name: string }): void {
 		const updatedSportType: SportType = {
@@ -130,7 +135,8 @@ export class ScheduleAdministrationComponent implements OnInit {
 		// Update tab to 'New Schedule' and navigate to it
 		this.tabTitle = 'New Schedule';
 		this.nextTab = 1;
-		this.adminComponent = NewScheduleComponent;
+		// this.adminComponent = NewScheduleComponent;
+		this.adminComponent = 'new';
 	}
 
 	onPlayOffsSchedule(): void {
@@ -141,7 +147,15 @@ export class ScheduleAdministrationComponent implements OnInit {
 	onModifySchedule(): void {
 		this.tabTitle = 'Modify';
 		this.nextTab = 1;
-		this.adminComponent = ModifyScheduleComponent;
+		// this.adminComponent = ModifyScheduleComponent;
+		this.adminComponent = 'modify';
+	}
+
+	onPreviewSchedule(): void {
+		this.tabTitle = 'Preview';
+		this.nextTab = 2;
+		// this.adminComponent = PreviewScheduleComponent;
+		this.adminComponent = 'preview';
 	}
 
 	// #endregion

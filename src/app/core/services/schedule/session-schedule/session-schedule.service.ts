@@ -1,15 +1,12 @@
-import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
+import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import ScheduleService from '../interfaces/session-schedule-service.model';
-import { Injectable, SkipSelf, Self } from '@angular/core';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import Match from 'src/app/views/schedule/models/classes/match.model';
-import { MatchTime } from 'src/app/views/schedule/models/interfaces/match-time.model';
-import { TimesOfDay } from 'src/app/views/schedule/models/interfaces/times-of-day.model';
 import TeamSessionSchedule from 'src/app/views/schedule/models/classes/team-session-schedule.model';
-import { League } from '../../../../views/schedule/models/interfaces/League.model';
+import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
+import { ISessionSchedule } from '../models/interfaces/Isession-schedule.model';
+import ScheduleService from '../models/session-schedule-service.model';
 import SessionSchedule from '../models/session-schedule.model';
-import { ISessionSchedule } from '../interfaces/Isession-schedule.model';
 
 @Injectable()
 export class SessionScheduleService extends ScheduleService {
@@ -61,7 +58,7 @@ export class SessionScheduleService extends ScheduleService {
 					// in the first round add the first team with the last team
 					const homeTeam: Team = this.sessionSchedule.teams[index];
 					const awayTeam: Team = this.sessionSchedule.teams[this.sessionSchedule.teams.length - 1 - index];
-					const match: Match = new Match(this, homeTeam, awayTeam);
+					const match: Match = new Match(homeTeam, awayTeam);
 					matches.push(match);
 				}
 			}

@@ -1,12 +1,11 @@
 import * as moment from 'moment';
-import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { TimesOfDay } from 'src/app/views/schedule/models/interfaces/times-of-day.model';
 import Match from 'src/app/views/schedule/models/classes/match.model';
 import { DateTimeRanges } from 'src/app/views/schedule/models/interfaces/match-time-ranges.model';
+import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { TimesOfDay } from 'src/app/views/schedule/models/interfaces/times-of-day.model';
+import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import { League } from '../../../../views/schedule/models/interfaces/League.model';
-import { Injectable } from '@angular/core';
-import { ISessionSchedule } from '../interfaces/Isession-schedule.model';
+import { ISessionSchedule } from './interfaces/Isession-schedule.model';
 
 export default class SessionSchedule implements ISessionSchedule {
 	league: League;

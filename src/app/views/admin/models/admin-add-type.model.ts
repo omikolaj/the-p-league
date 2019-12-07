@@ -1,6 +1,3 @@
-import { Sport } from '../../schedule/models/sport.enum';
-import { League } from '../../schedule/models/interfaces/League.model';
-import { Team } from '../../schedule/models/interfaces/team.model';
 import { SportType } from '../../schedule/models/interfaces/sport-type.model';
 
 interface AddItemInfo {

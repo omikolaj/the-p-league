@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import { MomentSetObject } from 'moment';
-import { SessionScheduleService } from 'src/app/core/services/schedule/session-schedule/session-schedule.service';
 import { AwayTeam, HomeTeam } from '../interfaces/team.model';
 
 const TBA = 'TBA';
@@ -10,8 +9,9 @@ export default class Match implements Match {
 	dateTime?: moment.Moment;
 	homeTeam: HomeTeam;
 	awayTeam: AwayTeam;
+	sessionID: string;
 
-	constructor(private sessionSchedule: SessionScheduleService, home: HomeTeam, away: AwayTeam) {
+	constructor(home: HomeTeam, away: AwayTeam) {
 		this.homeTeam = home;
 		this.awayTeam = away;
 	}

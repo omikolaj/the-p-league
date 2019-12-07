@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, ActivatedRoute, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { map, shareReplay } from 'rxjs/operators';
-import { Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {

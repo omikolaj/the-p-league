@@ -1,14 +1,14 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team, TEAMS } from 'src/app/views/schedule/models/interfaces/team.model';
-import { HttpClient } from '@angular/common/http';
-import { delay, map, tap } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class ScheduleAsyncService {
+export class ScheduleBaseAsyncService {
 	teams: Team[] = TEAMS;
 	constructor(protected http: HttpClient) {}
 

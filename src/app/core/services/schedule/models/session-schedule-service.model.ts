@@ -1,9 +1,9 @@
-import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import * as moment from 'moment';
 import Match from 'src/app/views/schedule/models/classes/match.model';
 import { MatchTime } from 'src/app/views/schedule/models/interfaces/match-time.model';
-import { ISessionSchedule } from './Isession-schedule.model';
 import { TimesOfDay } from 'src/app/views/schedule/models/interfaces/times-of-day.model';
+import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
+import { ISessionSchedule } from './interfaces/Isession-schedule.model';
 
 export default abstract class ScheduleService {
 	protected abstract nextDay: MatchDay;
@@ -91,6 +91,6 @@ export default abstract class ScheduleService {
 	returnTimesForGivenDay(currentDayNum: number): MatchTime[] {
 		const timesForCurrentDay: TimesOfDay = this.sessionSchedule.timesOfDays.find((timesOfDay) => timesOfDay[MatchDay[currentDayNum]] !== undefined);
 
-		return timesForCurrentDay[MatchDay[currentDayNum]].sort((a, b) => a.hour - b.hour);
+		return [];//timesForCurrentDay[MatchDay[currentDayNum]].sort((a, b) => a.hour - b.hour);
 	}
 }
