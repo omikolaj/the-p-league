@@ -18,11 +18,12 @@ import { TabTitles } from '../models/tab-titles.model';
 export class ScheduleAdministrationComponent implements OnInit {
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
 	unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
-	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
+	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;	
 	tabTitle: TabTitles = 'Schedule';
 	nextTab: 0 | 1 | 2 | number;
 	newSportLeagueForm: FormGroup;
 	newTeamForm: FormGroup;
+	newSessions: NewSessionSchedule[] = [];
 	// adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 	adminComponent: 'new' | 'modify' | 'playoffs' | 'preview';
 
@@ -67,9 +68,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 
 	// #region Event Handlers
 
-	onGenerateSchedules(newSessions: NewSessionSchedule[]): void {
-		this.scheduleAdminFacade.generateNewSchedules(newSessions);
-		// TODO this needs to be fixed to change to preview only on successfull validtion
+	onGeneratedSchedules(): void {				
 		this.onPreviewSchedule();
 	}
 
@@ -151,11 +150,10 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.adminComponent = 'modify';
 	}
 
-	onPreviewSchedule(): void {
-		this.tabTitle = 'Preview';
+	onPreviewSchedule(): void {		
 		this.nextTab = 2;
 		// this.adminComponent = PreviewScheduleComponent;
-		this.adminComponent = 'preview';
+		// this.adminComponent = 'preview';
 	}
 
 	// #endregion

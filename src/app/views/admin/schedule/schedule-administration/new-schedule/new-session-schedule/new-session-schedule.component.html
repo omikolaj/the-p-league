@@ -45,7 +45,8 @@
 									<!-----------------------------------------------------------
 										matchDays are just days of the week (Monday, Tuesday etc.)
 									------------------------------------------------------------>
-									<mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option>
+									<!-- <mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option> -->
+									<mat-option *ngFor="let day of gamesDay.value.availableGamesDays" [value]="day">{{ day }}</mat-option>
 								</mat-select>
 								<mat-error>
 									Please select game day

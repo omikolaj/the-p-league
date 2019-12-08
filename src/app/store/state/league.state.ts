@@ -1,9 +1,9 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import produce from 'immer';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
-import { Leagues } from 'src/app/store/actions/leagues.actions';
+import * as Leagues from 'src/app/store/actions/leagues.actions';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { updateEntity } from './state-helpers';
+import { updateEntity } from '../helpers/state-helpers';
 
 export interface LeagueStateModel {
 	entities: {

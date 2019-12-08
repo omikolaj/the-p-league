@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { FormGroup } from '@angular/forms';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { Sport } from 'src/app/views/schedule/models/sport.enum';
 
 @Component({
 	selector: 'app-edit-teams-list',
@@ -16,7 +16,7 @@ export class EditTeamsListComponent implements OnInit {
 	@Input() teamsForm: FormGroup;
 	@Input() teams: Team[];
 	@Input() league: League;
-	@Input() sport: Sport;
+	@Input() sport: SportType;
 	@Output() unassignedTeamsChange: EventEmitter<void> = new EventEmitter<void>();
 	@Output() updatedTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
 	@Output() deletedTeams: EventEmitter<void> = new EventEmitter<void>();
@@ -37,11 +37,12 @@ export class EditTeamsListComponent implements OnInit {
 
 	// #region ng LifeCycle Hooks
 
-	ngOnInit(): void {}
+	ngOnInit(): void {		
+	}
 
 	// #endregion
 
-	teamsSelectionChangeHandler(event: MatSelectionListChange): void {
+	onTeamsSelectionChange(event: MatSelectionListChange): void {
 		this.numberOfSelectedTeams = event.source.selectedOptions.selected.length;
 		this.teamsSelectionChange.emit(event);
 	}

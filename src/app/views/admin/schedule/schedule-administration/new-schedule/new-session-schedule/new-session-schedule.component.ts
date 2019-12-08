@@ -26,7 +26,7 @@ export class NewLeagueSessionScheduleComponent implements OnInit {
 
 	ngOnInit(): void {}
 
-	addGamesDay(): void {
+	addGamesDay(): void {		
 		this.gamesDayAdded.emit();
 	}
 

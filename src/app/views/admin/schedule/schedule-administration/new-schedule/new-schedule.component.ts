@@ -7,8 +7,11 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { enumKeysToArray } from 'src/app/shared/helpers/enum-keys-to-array';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import { GameDay } from '../../models/session/game-day.model';
 import NewSessionSchedule from '../../models/session/new-session-schedule.model';
 import { TabTitles } from '../../models/tab-titles.model';
@@ -29,16 +32,34 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	requireTimeErrorStateMatcher = new RequireTimeErrorStateMatcher();
 	selectedTeamIDs: string[] = [];
 	private unsubscribe$ = new Subject<void>();
-	@Output() generateSchedules = new EventEmitter<NewSessionSchedule[]>();
+	@Output() generateSchedules = new EventEmitter<void>();
 
-	leagues$: Observable<{ league: League; teams: Team[] }[]> = combineLatest([
-		this.scheduleAdminFacade.selectedLeagues$,
+	/**
+	 * @description this stream is necessary to ensure we are invoking
+	 * this.initNewLeagueSessionsForm only once, when user navigates to
+	 * new-schedule component. Otherwise, if the this.scheduleAdminFacade.selectedLeagues$
+	 * stream was included in the leagues$ = combineLatest([this.scheduleAdminFacade.selectedLeagues$, ..., ...])
+	 * and we were to invoke this.initNewLeagueSessionForm() inside that stream, then each time
+	 * user would select/de-select a team from the list in the edit-teams-list component
+	 * combineLatest would invoke this.initNewLeagueSessionsForm, because it would notice that
+	 * this.scheduleAdminFacad.getAllForLeagueID$ observable emited new value, and this observable stream
+	 * is part of the teams state.
+	 */
+	private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
+		tap((selectedLeagues) => {
+			selectedLeagues.forEach((selectedLeague) => {
+				this.initNewLeagueSessionsForm(selectedLeague.id);
+			});
+		})
+	);
+
+	leagues$: Observable<{ league: League; teams: Team[]; form: FormGroup; sport: SportType }[]> = combineLatest([
+		this.selectedLeagues$,
 		this.scheduleAdminFacade.getAllForLeagueID$,
 		this.scheduleAdminFacade.getSportByID$
 	]).pipe(
 		map(([selectedLeagues, filterFn, filterSportsFn]) => {
 			return selectedLeagues.map((l) => {
-				this.initNewLeagueSessionsForm(l.id);
 				return { league: l, teams: filterFn(l.id), form: this.initEditTeamsForm(filterFn(l.id)), sport: filterSportsFn(l.sportTypeID) };
 			});
 		})
@@ -142,7 +163,6 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 */
 	initSessionForm(leagueID: string): FormGroup {
 		return this.fb.group({
-			// sessionName: this.fb.control(null),
 			leagueID: this.fb.control(leagueID),
 			sessionDateInfo: this.fb.group({
 				sessionStart: this.fb.control(moment(new Date().toISOString()), Validators.required),
@@ -159,8 +179,10 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * a single game day (day week Monday, Tuesday etc.) and an array of game time controls ([{gameTime: 9:00am}, {gameTime: 6:00pm}])
 	 * @returns returns formGroup instance for gameDay and gameTimes
 	 */
-	initGameDayAndTimes(): FormGroup {
+	initGameDayAndTimes(availableDays?: string[]): FormGroup {
 		return this.fb.group({
+			// if availableDays are not specified return all 7 days string[]
+			availableGamesDays: this.fb.control(availableDays || enumKeysToArray(MatchDay)),
 			// gamesDate represents a date for 'nth' number of games
 			gamesDay: this.fb.control(null, Validators.required),
 			// gamesTimes represents a list of times that games will be
@@ -229,16 +251,24 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	private removeSelectedDays(gamesDaysControl: FormArray): string[] {
+		const availableDays = enumKeysToArray(MatchDay);
+		// get all selected days
+		for (let index = 0; index < gamesDaysControl.length; index++) {
+			const gamesDayControl: AbstractControl = gamesDaysControl.at(index);
+			const selectedDayIndex = availableDays.indexOf(gamesDayControl.value.gamesDay);
+			console.log('selectedDayIndex', selectedDayIndex);
+			if (~selectedDayIndex) {
+				availableDays.splice(selectedDayIndex, 1);
+			}
+		}
+
+		return availableDays;
+	}
+
 	// #endregion
 
 	// #region Event Handlers
-
-	/**
-	 * @description Triggered whenever user submits the new sessions form
-	 */
-	// onSubmit() {
-	// 	console.log('submitted', this.NewLeagueSessionsForm);
-	// }
 
 	/**
 	 * @description Triggered when user wants to add additional
@@ -247,7 +277,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	onGamesDayAdded(sessionFormGroupIndex: number): void {
 		const sessions = this.newLeagueSessionsForm.controls['sessions'] as FormArray;
 		const control: FormArray = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
-		control.push(this.initGameDayAndTimes());
+		control.push(this.initGameDayAndTimes(this.removeSelectedDays(control)));
 	}
 
 	/**
@@ -294,8 +324,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * @description Triggered when user selects the 'Generate' button to create
 	 * schedules for the selected teams
 	 */
-	onSubmit(): void {
-		console.log('logging sessionForm', this.newLeagueSessionsForm);
+	onGenerate(): void {
 		const newLeagueSessions: NewSessionSchedule[] = [];
 		const sessions = this.newLeagueSessionsForm.value['sessions'] as [];
 		// iterate over all new sessions that were submitted
@@ -338,10 +367,9 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 			// push the entire session object to the new sessions array
 			newLeagueSessions.push(session);
 		});
-		console.log('logging new sessions', newLeagueSessions);
 		// send the new sessions array to the facade for further handling
-		// this.scheduleAdminFacade.generateNewSchedules(newLeagueSessions);
-		this.generateSchedules.emit(newLeagueSessions);
+		this.scheduleAdminFacade.generateNewSchedules(newLeagueSessions);
+		this.generateSchedules.emit();
 	}
 
 	// TODO see if you can just use formGroup.value to retireve all the necessary info
@@ -386,8 +414,9 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		this.scheduleAdminFacade.updateTeams(teamsToUpdate);
 	}
 
-	onTeamsSelectionChange(selectedTeamsEvent: MatSelectionListChange): void {
+	onTeamsSelectionChange(selectedTeamsEvent: MatSelectionListChange, leagueID: string): void {
 		this.selectedTeamIDs = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
+		this.scheduleAdminFacade.updateTeamSelection(this.selectedTeamIDs, leagueID);
 	}
 
 	onUnassignedTeamsChange(leagueID: string): void {

@@ -35,14 +35,20 @@
 					<app-add-teams [sportLeaguePairs]="pairs" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
 
 					<ng-container [ngSwitch]="adminComponent">
-						<app-new-schedule *ngSwitchCase="'new'" (generateSchedules)="onGenerateSchedules($event)"></app-new-schedule>
+						<app-new-schedule *ngSwitchCase="'new'" (generateSchedules)="onGeneratedSchedules()"></app-new-schedule>
 					</ng-container>
 
 					<!-- <ng-container *ngComponentOutlet="adminComponent"></ng-container> -->
 				</ng-template>
 			</mat-tab>
 
-			<mat-tab label="Preview" [disabled]="checkSelection()"> Next tab value: {{ nextTab }} </mat-tab>
+			<mat-tab label="Preview" [disabled]="checkSelection()">
+				<!-- <ng-container *ngIf="schedules$ | async as previewSchedules"> -->
+				<ng-template matTabContent>
+					<app-preview-schedule></app-preview-schedule>
+				</ng-template>
+				<!-- </ng-container> -->
+			</mat-tab>
 		</mat-tab-group>
 	</ng-container>
 </div>

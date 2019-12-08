@@ -27,7 +27,11 @@ export class LeagueAdministrationComponent implements OnInit {
 	sportTypeForm: FormGroup;
 	readonlySportName = true;
 
-	constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade, private scheduleHelper: ScheduleComponentHelperService) {}
+	constructor(
+		private fb: FormBuilder,
+		private scheduleAdminFacade: ScheduleAdministrationFacade,
+		private scheduleHelper: ScheduleComponentHelperService
+	) {}
 
 	// #region ng LifeCycle hooks
 

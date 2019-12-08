@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { GameDay } from 'src/app/views/admin/schedule/models/session/game-day.model';
 import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
-import { default as NewLeagueSession, default as NewSessionSchedule } from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
+import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
 import Match from 'src/app/views/schedule/models/classes/match.model';
 import { MatchTime } from 'src/app/views/schedule/models/interfaces/match-time.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
@@ -11,13 +11,13 @@ import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 @Injectable({
 	providedIn: 'root'
 })
-export class NewLeagueSessionScheduleService {
+export class NewSessionScheduleService {
 	private readonly DUMMY: Team = { name: 'BYE' };
 	private matchDays = MatchDay;
 	private nextDay;
 	constructor() {}
 
-	generateSchedules(newSessions: NewLeagueSession[]): LeagueSessionSchedule[] {
+	generateSchedules(newSessions: NewSessionSchedule[]): LeagueSessionSchedule[] {
 		// should return LeagueSessionSchedule array
 		const generatedSessionSchedules: LeagueSessionSchedule[] = [];
 
@@ -64,7 +64,7 @@ export class NewLeagueSessionScheduleService {
 		return generatedSessionSchedules;
 	}
 
-	generateMatchUpTimes(matches: Match[], newSession: NewSessionSchedule): Match[] {
+	private generateMatchUpTimes(matches: Match[], newSession: NewSessionSchedule): Match[] {
 		// create a copy of the matches array
 		matches = matches.slice();
 		const startDate = newSession.sessionStart;
@@ -97,7 +97,7 @@ export class NewLeagueSessionScheduleService {
 		return matches;
 	}
 
-	computeNumberOfDaysNeeded(currentDayNum: MatchDay, desiredDays: MatchDay[]): number {
+	private computeNumberOfDaysNeeded(currentDayNum: MatchDay, desiredDays: MatchDay[]): number {
 		let nextDayNum: MatchDay = this.getNextAvailableDay(desiredDays);
 
 		if (currentDayNum < nextDayNum) {
@@ -117,13 +117,13 @@ export class NewLeagueSessionScheduleService {
 
 	// Returns next available time when the times array is sorted from earliest games to latest
 	// It will modify the array, but moving first item, in the last place
-	getNextAvailableTime(times: MatchTime[]): MatchTime {
+	private getNextAvailableTime(times: MatchTime[]): MatchTime {
 		const time: MatchTime = times[0];
 		times.splice(times.length - 1, 1, times.shift());
 		return time;
 	}
 
-	getNextAvailableDay(desiredDays: MatchDay[]): MatchDay {
+	private getNextAvailableDay(desiredDays: MatchDay[]): MatchDay {
 		if (this.nextDay === MatchDay.None || this.nextDay === desiredDays[0]) {
 			return (this.nextDay = desiredDays.reduce((previousDay, currentDay) => Math.min(previousDay, currentDay)));
 		} else {
@@ -131,7 +131,7 @@ export class NewLeagueSessionScheduleService {
 		}
 	}
 
-	findNextLargestNumber(desiredDays: MatchDay[]): MatchDay {
+	private findNextLargestNumber(desiredDays: MatchDay[]): MatchDay {
 		let next = 0,
 			i = 0;
 		for (; i < desiredDays.length; i++) {
@@ -142,13 +142,10 @@ export class NewLeagueSessionScheduleService {
 		return next;
 	}
 
-	returnTimesForGivenDay(currentDayNum: number, gamesDays: GameDay[]): MatchTime[] {
-		const gameDay: GameDay = gamesDays.find((gameDay) => {
-			console.log('MatchDay[gameDay.gamesDay]', MatchDay[gameDay.gamesDay]);
-			console.log('MatchDay[currentDayNum]', MatchDay[currentDayNum]);
+	private returnTimesForGivenDay(currentDayNum: number, gamesDays: GameDay[]): MatchTime[] {
+		const gameDay: GameDay = gamesDays.find((gameDay) => {			
 			return MatchDay[gameDay.gamesDay] === MatchDay[MatchDay[currentDayNum]];
-		});
-		console.log('what are current times for the given day', gameDay);
+		});		
 		const times: MatchTime[] = gameDay.gamesTimes.map((gT) => {
 			// retrieve just the time without pm. so '3:30'
 			const time = gT.gamesTime.substring(0, gT.gamesTime.length - 3);

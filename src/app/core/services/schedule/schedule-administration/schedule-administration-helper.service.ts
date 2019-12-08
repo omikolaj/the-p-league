@@ -11,15 +11,14 @@ import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 export class ScheduleAdministrationHelperService {
 	constructor() {}
 
+	// TODO change the name of this method. The name does not reflect what it actually does
 	getTeamsForLeagues(newSessions: NewSessionSchedule[], teamsEntities): NewSessionSchedule[] {
 		const updatedSessions: NewSessionSchedule[] = [];
 		newSessions.forEach((session) => {
-			const teams: Team[] = Object.values(teamsEntities).filter((t: Team) => t.leagueID === session.leagueID && t.selected === true);
-			session.teams = (session.teams || []).concat(teams); // [...session.teams, ...teams];
-			console.log('session.teams is', session.teams);
+			const teams: Team[] = Object.values(teamsEntities).filter((t: Team) => t.leagueID === session.leagueID && t.selected === true);			
+			session.teams = (session.teams || []).concat(teams); // [...session.teams, ...teams];			
 			updatedSessions.push(session);
-		});
-		console.log('updated sessions are', updatedSessions);
+		});				
 		return updatedSessions;
 	}
 

@@ -3,9 +3,10 @@ import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
-import { Leagues } from 'src/app/store/actions/leagues.actions';
+import * as Leagues from 'src/app/store/actions/leagues.actions';
+import * as Schedules from 'src/app/store/actions/schedule.actions';
 import * as Sports from 'src/app/store/actions/sports.actions';
-import { Teams } from 'src/app/store/actions/teams.actions';
+import * as Teams from 'src/app/store/actions/teams.actions';
 import { LeagueState } from 'src/app/store/state/league.state';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
 import { TeamState } from 'src/app/store/state/team.state';
@@ -15,7 +16,7 @@ import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/spor
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { NewLeagueSessionScheduleService } from '../session-schedule/league-session-schedule.service';
+import { NewSessionScheduleService } from '../session-schedule/new-session-schedule.service';
 import { ScheduleAdministrationHelperService } from './schedule-administration-helper.service';
 
 @Injectable({
@@ -44,7 +45,7 @@ export class ScheduleAdministrationFacade {
 		private scheduleAdminAsync: ScheduleAdministrationAsyncService,
 		private store: Store,
 		private scheduleAdminHelper: ScheduleAdministrationHelperService,
-		private NewLeagueSessionSchedule: NewLeagueSessionScheduleService
+		private newSessionService: NewSessionScheduleService
 	) {}
 
 	// #region NewLeagueSession
@@ -52,8 +53,9 @@ export class ScheduleAdministrationFacade {
 	generateNewSchedules(newNewLeagueSessions: NewSessionSchedule[]): void {
 		const teamEntities = this.store.selectSnapshot<Team[]>((state) => state.teams.entities);
 		newNewLeagueSessions = this.scheduleAdminHelper.getTeamsForLeagues(newNewLeagueSessions, teamEntities);
-		const leagueSessionSchedules: LeagueSessionSchedule[] = this.NewLeagueSessionSchedule.generateSchedules(newNewLeagueSessions);
-		console.log('logging league sessions chedules', leagueSessionSchedules);
+		const newSessions: LeagueSessionSchedule[] = this.newSessionService.generateSchedules(newNewLeagueSessions);
+		console.log('newSessions', newSessions);
+		this.store.dispatch(new Schedules.CreateSchedules(newSessions));
 	}
 
 	// #endregion
@@ -227,10 +229,26 @@ export class ScheduleAdministrationFacade {
 	 * teams.
 	 * Currently NOT being used
 	 */
+	// updateTeamSelection(selectedIDs: string[], leagueID: string): void {
+	// 	const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
+	// 	this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs)).pipe(debounceTime(1000));
+	// }
+
 	updateTeamSelection(selectedIDs: string[], leagueID: string): void {
+		console.log('called updateTeamSelection');
 		const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
+		// this.getAllForLeagueID$.pipe(
+		// 	map((filterFn: (id: string) => Team[]) => filterFn(leagueID)),
+		// 	debounceTime(1000),
+		// 	map((teams: Team[]) => teams.map((t: Team) => t.id)),
+		// 	tap((effectedTeamIDs: string[]) => {
+		// 		console.log('inside tap')
+		// 		this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs));
+		// 	})
+		// ).subscribe()
 		this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs));
 	}
+
 	// #endregion
 
 	checkExistingSchedule() {

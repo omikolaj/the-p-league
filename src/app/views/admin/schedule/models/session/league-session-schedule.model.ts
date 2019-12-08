@@ -1,4 +1,4 @@
-import { Match } from 'src/app/views/schedule/models/interfaces/match.model';
+import Match from 'src/app/views/schedule/models/classes/match.model';
 import NewSessionSchedule from './new-session-schedule.model';
 import SessionScheduleBase from './session-schedule-base.model';
 

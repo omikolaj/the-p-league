@@ -2,8 +2,8 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { produce } from 'immer';
 import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { Teams } from '../actions/teams.actions';
-import { updateEntity } from './state-helpers';
+import * as Teams from '../actions/teams.actions';
+import { updateEntity } from '../helpers/state-helpers';
 import { TeamStateModel } from './team.state';
 
 export interface TeamStateModel {
@@ -22,12 +22,6 @@ export interface TeamStateModel {
 })
 export class TeamState {
 	constructor() {}
-
-	// Currently not in use
-	@Selector()
-	static getTeams(state: TeamStateModel) {
-		return Object.values(state.entities).map((t) => t);
-	}
 
 	@Selector()
 	static getUnassigned(state: TeamStateModel) {
@@ -48,7 +42,7 @@ export class TeamState {
 				draft.entities = action.teams;
 				draft.IDs = Object.keys(action.teams).map((id) => id);
 			})
-		);
+		);		
 	}
 
 	@Action(Teams.AddTeam)
@@ -74,7 +68,7 @@ export class TeamState {
 	}
 
 	@Action(Teams.UpdateSelectedTeams)
-	updateSelected(ctx: StateContext<TeamStateModel>, action: Teams.UpdateSelectedTeams) {
+	updateSelected(ctx: StateContext<TeamStateModel>, action: Teams.UpdateSelectedTeams) {		
 		ctx.setState(
 			produce((draft: TeamStateModel) => {
 				action.effected.forEach((effectedID) => {
@@ -85,7 +79,7 @@ export class TeamState {
 					}
 				});
 			})
-		);
+		);		
 	}
 
 	@Action(Teams.AssignTeams)

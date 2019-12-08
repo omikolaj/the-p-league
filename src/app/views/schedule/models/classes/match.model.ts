@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { MomentSetObject } from 'moment';
+import { League } from '../interfaces/League.model';
 import { AwayTeam, HomeTeam } from '../interfaces/team.model';
 
 const TBA = 'TBA';
@@ -10,6 +11,7 @@ export default class Match implements Match {
 	homeTeam: HomeTeam;
 	awayTeam: AwayTeam;
 	sessionID: string;
+	league: League;
 
 	constructor(home: HomeTeam, away: AwayTeam) {
 		this.homeTeam = home;
