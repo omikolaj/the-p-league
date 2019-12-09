@@ -41,12 +41,16 @@
 						<ng-container [formGroupName]="indexGamesDay">
 							<mat-form-field>
 								<mat-label>Game Day</mat-label>
-								<mat-select formControlName="gamesDay" required>
+								<mat-select #matSelect formControlName="gamesDay" required>
 									<!-----------------------------------------------------------
 										matchDays are just days of the week (Monday, Tuesday etc.)
 									------------------------------------------------------------>
 									<!-- <mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option> -->
-									<mat-option *ngFor="let day of gamesDay.value.availableGamesDays" [value]="day">{{ day }}</mat-option>
+
+									<!-- activeIndex = indexGamesDay is a work around for getting access to the indexGamesDay variable outside of *ngFor loop scope -->
+									<mat-option (click)="activeIndex = indexGamesDay" *ngFor="let day of gamesDay.value.availableGamesDays | orderEnum" [value]="day">{{
+										day
+									}}</mat-option>
 								</mat-select>
 								<mat-error>
 									Please select game day
@@ -102,7 +106,7 @@
 				</ng-container>
 			</div>
 
-			<button type="button" mat-raised-button (click)="addGamesDay()" color="primary">Add Day</button>
+			<button type="button" mat-raised-button [disabled]="!isGameDaySelected(activeIndex)" (click)="addGamesDay()" color="primary">Add Day</button>
 			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
 
 			<div></div>

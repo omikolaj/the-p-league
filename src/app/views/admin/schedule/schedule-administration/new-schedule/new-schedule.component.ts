@@ -252,18 +252,39 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	}
 
 	private removeSelectedDays(gamesDaysControl: FormArray): string[] {
-		const availableDays = enumKeysToArray(MatchDay);
+		let availableDays = enumKeysToArray(MatchDay);
 		// get all selected days
 		for (let index = 0; index < gamesDaysControl.length; index++) {
 			const gamesDayControl: AbstractControl = gamesDaysControl.at(index);
-			const selectedDayIndex = availableDays.indexOf(gamesDayControl.value.gamesDay);
-			console.log('selectedDayIndex', selectedDayIndex);
-			if (~selectedDayIndex) {
-				availableDays.splice(selectedDayIndex, 1);
-			}
+			availableDays = availableDays.filter((d) => d !== gamesDayControl.value.gamesDay);
 		}
 
 		return availableDays;
+	}
+
+	/**
+	 * @description Updates the available days in the drop down list. When user goes to remove a day
+	 * they added, we want to add this day to the drop down list of all available days. When user selects
+	 * a to add a day such as Tuesday, we filter the available days drop down list to omit displaying
+	 * Tuesday for two different days
+	 * @param gamesDaysControl
+	 * @param gamesDayIndex
+	 */
+	private updateAvailableDays(gamesDaysControl: FormArray, gamesDayIndex: number): void {
+		// get the gamesDay availableDays value before we delete it;
+		const dayToAdd: string = gamesDaysControl.at(gamesDayIndex).value.gamesDay;
+		for (let index = 0; index < gamesDaysControl.length; index++) {
+			// if the current index does not equal gamesDayIndex add it to the available list
+			if (index !== gamesDayIndex) {
+				const gamesDayControl: AbstractControl = gamesDaysControl.at(index);
+				if (!gamesDayControl.value.availableGamesDays.includes(dayToAdd)) {
+					gamesDayControl.patchValue({
+						availableGamesDays: [...gamesDayControl.value.availableGamesDays, dayToAdd]
+					});
+					gamesDayControl.updateValueAndValidity();
+				}
+			}
+		}
 	}
 
 	// #endregion
@@ -289,6 +310,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	onGamesDayRemoved(gamesDayIndex: number, sessionFormGroupIndex: number): void {
 		const sessions = this.newLeagueSessionsForm.controls['sessions'] as FormArray;
 		const control = sessions.at(sessionFormGroupIndex).get('gamesDays') as FormArray;
+		this.updateAvailableDays(control, gamesDayIndex);
 		control.removeAt(gamesDayIndex);
 	}
 
