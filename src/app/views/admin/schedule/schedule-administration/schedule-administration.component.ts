@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatTabChangeEvent } from '@angular/material';
+import { MatTabChangeEvent, MatTableDataSource } from '@angular/material';
 import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
+import Match from 'src/app/views/schedule/models/classes/match.model';
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { TabTitles } from '../models/tab-titles.model';
+import { ScheduleAdministrationHelperService } from './../../../../core/services/schedule/schedule-administration/schedule-administration-helper.service';
 
 @Component({
 	selector: 'app-schedule-administration',
@@ -17,15 +20,25 @@ import { TabTitles } from '../models/tab-titles.model';
 export class ScheduleAdministrationComponent implements OnInit {
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
 	unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
-	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;	
+	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
+	filteredPairs$ = this.sportLeaguePairs$.pipe(
+		filter((_) => this.scheduleAdminFacade.sessionsLeagueIDsSnapshot.length !== 0),
+		map((pairs) => this.scheduleAdminHelper.filterPairsForGeneratedSessions(pairs, this.scheduleAdminFacade.sessionsLeagueIDsSnapshot))
+	);
+	displayLeagueID = '';
 	tabTitle: TabTitles = 'Schedule';
 	nextTab: 0 | 1 | 2 | number;
 	newSportLeagueForm: FormGroup;
-	newTeamForm: FormGroup;	
+	newTeamForm: FormGroup;
+	previewDataSource: MatTableDataSource<Match>;
 	// adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 	adminComponent: 'new' | 'modify' | 'playoffs' | 'preview';
 
-	constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
+	constructor(
+		private fb: FormBuilder,
+		private scheduleAdminFacade: ScheduleAdministrationFacade,
+		private scheduleAdminHelper: ScheduleAdministrationHelperService
+	) {}
 
 	// #region LifeCycle Hooks
 	ngOnInit(): void {
@@ -66,7 +79,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 
 	// #region Event Handlers
 
-	onGeneratedSchedules(): void {				
+	onGeneratedSchedules(): void {
 		this.onPreviewSchedule();
 	}
 
@@ -148,11 +161,26 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.adminComponent = 'modify';
 	}
 
-	onPreviewSchedule(): void {		
+	onPreviewSchedule(): void {
+		const firstMatches = this.scheduleAdminHelper.loadFirstSessionMatches(
+			this.scheduleAdminFacade.matchesSnapshot,
+			this.scheduleAdminFacade.sessionsLeagueIDsSnapshot
+		);
+		// grab the first match league ID
+		this.displayLeagueID = firstMatches[0].leagueID;
+		this.previewDataSource = new MatTableDataSource(firstMatches);
 		this.nextTab = 2;
 		// this.adminComponent = PreviewScheduleComponent;
 		// this.adminComponent = 'preview';
 	}
+
+	onLeagueChanged(leagueID: string): void {
+		this.previewDataSource.data = this.scheduleAdminFacade.matchesSnapshot.filter((m) => m.leagueID === leagueID);
+	}
+
+	// #endregion
+
+	// #region Private Methods
 
 	// #endregion
 

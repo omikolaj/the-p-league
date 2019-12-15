@@ -219,7 +219,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * @description Custom validator used by initGameDayAndTimes() => gamesTimes property. Checks to see if user has entered any game times. At least one game time is required.
 	 * @returns whether the validator function returned an error or null if everything was ok
 	 */
-	requireTime(): ValidatorFn {
+	private requireTime(): ValidatorFn {
 		return (control: AbstractControl): { [key: string]: any } | null => {
 			const gamesTimesFiltered = control.value.filter((formGroup) => formGroup.value.gamesTime !== null);
 			if (gamesTimesFiltered.length) {

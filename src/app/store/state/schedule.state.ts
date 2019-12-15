@@ -20,8 +20,7 @@ export interface ScheduleStateModel {
 })
 export class ScheduleState {
 	@Selector()
-	static getSchedules(state: ScheduleStateModel): LeagueSessionSchedule[] {
-		console.log('returning schedules', state.entities);
+	static getSessions(state: ScheduleStateModel): LeagueSessionSchedule[] {
 		return Object.values(state.entities);
 	}
 
@@ -31,8 +30,12 @@ export class ScheduleState {
 		Object.values(state.entities).forEach((entity) => {
 			matches = [...matches, ...entity.matches];
 		});
-		console.log('returning matches for data source', matches);
 		return matches;
+	}
+
+	@Selector()
+	static getSessionsLeagueIDs(state: ScheduleStateModel): string[] {
+		return Object.values(state.entities).map((entity) => entity.leagueID);
 	}
 
 	/**
@@ -43,7 +46,6 @@ export class ScheduleState {
 	 */
 	@Action(Schedule.CreateSchedules)
 	createSessions(ctx: StateContext<ScheduleStateModel>, action: Schedule.CreateSchedules): void {
-		console.log('createSessions', action);
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
 				action.newSessions.forEach((session) => {
@@ -51,6 +53,5 @@ export class ScheduleState {
 				});
 			})
 		);
-		console.log('state after adding sessions', ctx.getState());
 	}
 }

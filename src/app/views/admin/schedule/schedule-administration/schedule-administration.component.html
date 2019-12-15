@@ -45,7 +45,14 @@
 			<mat-tab label="Preview" [disabled]="checkSelection()">
 				<!-- <ng-container *ngIf="schedules$ | async as previewSchedules"> -->
 				<ng-template matTabContent>
-					<app-preview-schedule></app-preview-schedule>
+					<ng-container *ngIf="filteredPairs$ | async as filteredPairs">
+						<app-preview-schedule
+							[matchesDataSource]="previewDataSource"
+							[pairs]="filteredPairs"
+							[displayLeagueID]="displayLeagueID"
+							(leagueChanged)="onLeagueChanged($event)"
+						></app-preview-schedule>
+					</ng-container>
 				</ng-template>
 				<!-- </ng-container> -->
 			</mat-tab>

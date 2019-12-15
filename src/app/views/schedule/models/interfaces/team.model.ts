@@ -28,6 +28,7 @@ export const TEAMS: Team[] = [
 	{ id: cuid(), selected: true, name: 'CD Leganes', leagueID: '2' },
 	{ id: cuid(), selected: true, name: 'Real Sociedad', leagueID: '2' },
 	{ id: cuid(), selected: true, name: 'Valencia CF', leagueID: '2' },
+	{ id: cuid(), selected: true, name: 'LKS', leagueID: '2' },
 
 	{ id: cuid(), selected: true, name: 'Sevilla FC', leagueID: '3' },
 	{ id: cuid(), selected: true, name: 'Atletico Bilbao', leagueID: '3' },

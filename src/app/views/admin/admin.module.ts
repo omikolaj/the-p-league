@@ -25,7 +25,7 @@ import { ModifyScheduleComponent } from './schedule/schedule-administration/modi
 import { EditTeamsListComponent } from './schedule/schedule-administration/new-schedule/edit-teams-list/edit-teams-list.component';
 import { NewScheduleComponent } from './schedule/schedule-administration/new-schedule/new-schedule.component';
 import { NewLeagueSessionScheduleComponent } from './schedule/schedule-administration/new-schedule/new-session-schedule/new-session-schedule.component';
-import { PreviewScheduleComponent } from './schedule/schedule-administration/new-schedule/preview-schedule/preview-schedule.component';
+import { PreviewScheduleComponent } from './schedule/schedule-administration/preview-schedule/preview-schedule.component';
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
 
 @NgModule({

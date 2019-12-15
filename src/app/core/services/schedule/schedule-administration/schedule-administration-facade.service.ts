@@ -8,10 +8,12 @@ import * as Schedules from 'src/app/store/actions/schedules.actions';
 import * as Sports from 'src/app/store/actions/sports.actions';
 import * as Teams from 'src/app/store/actions/teams.actions';
 import { LeagueState } from 'src/app/store/state/league.state';
+import { ScheduleState } from 'src/app/store/state/schedule.state';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
 import { TeamState } from 'src/app/store/state/team.state';
 import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
+import Match from 'src/app/views/schedule/models/classes/match.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
@@ -33,6 +35,15 @@ export class ScheduleAdministrationFacade {
 
 	@Select(TeamState.getUnassigned) unassignedTeams$: Observable<Team[]>;
 	@Select(TeamState.getAllForLeagueID) getAllForLeagueID$: Observable<(id: string) => Team[]>;
+
+	get matchesSnapshot(): Match[] {
+		return this.store.selectSnapshot(ScheduleState.getMatches);
+	}
+
+	get sessionsLeagueIDsSnapshot(): string[] {
+		return this.store.selectSnapshot(ScheduleState.getSessionsLeagueIDs);
+	}
+	// sessionsLeagueIDsSnapshot = this.store.selectSnapshot(ScheduleState.getSessionsLeagueIDs);
 
 	// #endregion
 
@@ -228,23 +239,8 @@ export class ScheduleAdministrationFacade {
 	 * teams.
 	 * Currently NOT being used
 	 */
-	// updateTeamSelection(selectedIDs: string[], leagueID: string): void {
-	// 	const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
-	// 	this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs)).pipe(debounceTime(1000));
-	// }
-
 	updateTeamSelection(selectedIDs: string[], leagueID: string): void {
-		console.log('called updateTeamSelection');
 		const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
-		// this.getAllForLeagueID$.pipe(
-		// 	map((filterFn: (id: string) => Team[]) => filterFn(leagueID)),
-		// 	debounceTime(1000),
-		// 	map((teams: Team[]) => teams.map((t: Team) => t.id)),
-		// 	tap((effectedTeamIDs: string[]) => {
-		// 		console.log('inside tap')
-		// 		this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs));
-		// 	})
-		// ).subscribe()
 		this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs));
 	}
 

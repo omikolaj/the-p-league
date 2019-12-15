@@ -82,9 +82,13 @@ export class NewSessionScheduleService {
 				// if include BYE weeks is true, add all matches including bye weeks
 				if (includeByeWeeks) {
 					const match: Match = new Match(homeTeam, awayTeam);
+					// TODO temp
+					match.leagueID = homeTeam.leagueID;
 					matches.push(match);
 				} else if (homeTeam.name !== this.DUMMY.name && awayTeam.name !== this.DUMMY.name) {
 					const match: Match = new Match(homeTeam, awayTeam);
+					// TODO temp
+					match.leagueID = homeTeam.leagueID;
 					matches.push(match);
 				}
 			}

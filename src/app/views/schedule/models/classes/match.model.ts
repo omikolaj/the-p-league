@@ -7,7 +7,7 @@ export default class Match {
 	homeTeam: HomeTeam;
 	awayTeam: AwayTeam;
 	sessionID: string;
-	// league: League;
+	leagueID?: string;
 
 	constructor(home: HomeTeam, away: AwayTeam) {
 		this.homeTeam = home;
