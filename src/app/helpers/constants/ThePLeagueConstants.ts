@@ -38,3 +38,6 @@ export const ErrorCodes: string[] = [
 
 // Used to indicate that a team is unassigned
 export const UNASSIGNED = '-1';
+
+// Used as a replacement text for the Date field in the schedule if BYE WEEKS were chosen
+export const BYE_WEEK_DATE_TEXT = 'NO GAME';

@@ -7,7 +7,6 @@ import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/spor
 import { League } from 'src/app/views/schedule/models/interfaces/league.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import NewSessionSchedule from '../models/session/new-session-schedule.model';
 import { TabTitles } from '../models/tab-titles.model';
 
 @Component({
@@ -22,8 +21,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	tabTitle: TabTitles = 'Schedule';
 	nextTab: 0 | 1 | 2 | number;
 	newSportLeagueForm: FormGroup;
-	newTeamForm: FormGroup;
-	newSessions: NewSessionSchedule[] = [];
+	newTeamForm: FormGroup;	
 	// adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 	adminComponent: 'new' | 'modify' | 'playoffs' | 'preview';
 

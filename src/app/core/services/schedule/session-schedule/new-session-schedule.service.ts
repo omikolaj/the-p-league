@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
+import { BYE_WEEK_DATE_TEXT } from 'src/app/helpers/Constants/ThePLeagueConstants';
 import { GameDay } from 'src/app/views/admin/schedule/models/session/game-day.model';
 import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
-import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
 import Match from 'src/app/views/schedule/models/classes/match.model';
 import { MatchTime } from 'src/app/views/schedule/models/interfaces/match-time.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
@@ -79,7 +79,7 @@ export class NewSessionScheduleService {
 				// include that in the schedule, else if user did NOT select bye weeks
 				// then if team A plays BYE, ensure we skip that match
 
-				// if include BYE weeks is true, add everything
+				// if include BYE weeks is true, add all matches including bye weeks
 				if (includeByeWeeks) {
 					const match: Match = new Match(homeTeam, awayTeam);
 					matches.push(match);
@@ -101,7 +101,7 @@ export class NewSessionScheduleService {
 	 * @description Generates match up times for the given matches
 	 * @returns match ups with times
 	 */
-	private generateMatchUpTimes(matches: Match[], newSession: NewSessionSchedule): Match[] {
+	private generateMatchUpTimes(matches: Match[], newSession: LeagueSessionSchedule): Match[] {
 		// returns an array of match days selected by user. [Monday, Tuesday] etc.
 		const desiredDays: MatchDay[] = newSession.gamesDays.map((gD) => this.matchDays[gD.gamesDay]);
 		// make current variable equal to start date and clone the date since we will mutate it
@@ -132,10 +132,23 @@ export class NewSessionScheduleService {
 					// returns next available time from the list of times user has specified games should be played at
 					const time: moment.MomentSetObject = this.getNextAvailableTime(listOfMatchTimes) as moment.MomentSetObject;
 
-					// now we are ready to schedule the match. Given current date, and next available time, schedule
+					// first check to see if the current match home team or away team's names equal 'BYE', if they do
+					// we do not want to schedule a time for them so increase the index and check again to see if the next match
+					// home team or away team's name equal 'BYE'
+					while (matches[index].homeTeam.name === this.DUMMY.name || matches[index].awayTeam.name === this.DUMMY.name) {
+						// custom text for date field if the game is bye
+						matches[index].dateTime = BYE_WEEK_DATE_TEXT;
+						index++;
+					}
+
+					// if the current match home team and away team's name do not equal 'BYE'
+					// we are ready to schedule the match. This should never be false since the while
+					// loop checks for this already. Given current date, and next available time, schedule
 					// a time for next available match. matches[index] represents that next match
-					this.scheduleMatch(current, time, matches[index]);
-					index++;
+					if (matches[index].homeTeam.name !== this.DUMMY.name && matches[index].awayTeam.name !== this.DUMMY.name) {
+						this.scheduleMatch(current, time, matches[index]);
+						index++;
+					}
 				}
 			}
 			// figure out how days we have to add to current day to get next user defined day
@@ -251,8 +264,8 @@ export class NewSessionScheduleService {
 	}
 
 	/**
- 	* @description Schedules the match based on the given date and time 	
- 	*/
+	 * @description Schedules the match based on the given date and time
+	 */
 	private scheduleMatch(date: moment.Moment, time: moment.MomentSetObject, match: Match): void {
 		match.dateTime = moment(date).set(time);
 	}

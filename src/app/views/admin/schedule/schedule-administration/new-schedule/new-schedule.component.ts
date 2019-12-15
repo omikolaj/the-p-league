@@ -14,7 +14,6 @@ import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import { GameDay } from '../../models/session/game-day.model';
 import LeagueSessionSchedule from '../../models/session/league-session-schedule.model';
-import NewSessionSchedule from '../../models/session/new-session-schedule.model';
 import { TabTitles } from '../../models/tab-titles.model';
 import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import Match from 'src/app/views/schedule/models/classes/match.model';
-import TeamSessionSchedule from 'src/app/views/schedule/models/classes/team-session-schedule.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import { ISessionSchedule } from '../models/interfaces/Isession-schedule.model';
@@ -10,7 +9,7 @@ import SessionSchedule from '../models/session-schedule.model';
 
 @Injectable()
 export class SessionScheduleService extends ScheduleService {
-	private readonly DUMMY: Team = { name: 'BYE', sessionSchedule: new TeamSessionSchedule() };
+	private readonly DUMMY: Team = { name: 'BYE' };
 
 	protected nextDay: MatchDay = MatchDay.None;
 

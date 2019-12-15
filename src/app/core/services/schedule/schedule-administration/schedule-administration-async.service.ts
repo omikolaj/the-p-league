@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import * as cuid from 'cuid';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/internal/operators/delay';
-import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { Match } from 'src/app/views/schedule/models/interfaces/match.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
