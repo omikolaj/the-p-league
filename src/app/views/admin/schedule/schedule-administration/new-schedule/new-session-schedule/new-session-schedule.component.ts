@@ -40,8 +40,7 @@ export class NewLeagueSessionScheduleComponent implements OnInit {
 			} else {
 				isGameDaySelected = false;
 			}
-		}
-
+		}		
 		return isGameDaySelected;
 	}
 

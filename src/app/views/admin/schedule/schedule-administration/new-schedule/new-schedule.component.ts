@@ -33,6 +33,12 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	private unsubscribe$ = new Subject<void>();
 	@Output() generateSchedules = new EventEmitter<void>();
 
+	// sessionForm.valueChanges.subscribe((t) => {
+	// 	console.log('test', this.newLeagueSessionsForm);
+	// 	// formArray.updateValueAndValidity();
+	// 	this.newLeagueSessionsForm.updateValueAndValidity();
+	// });
+
 	/**
 	 * @description this stream is necessary to ensure we are invoking
 	 * this.initNewLeagueSessionsForm only once, when user navigates to
@@ -145,6 +151,10 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 			formArray.controls.push(sessionForm);
 			const formIndex = formArray.controls.indexOf(sessionForm);
 			this.syncronizeDates(formIndex);
+			// for some reason the sessionsForm was invalid if updateValueAndValidity was not executed
+			sessionForm.valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((_) => {
+				formArray.updateValueAndValidity();
+			});
 		} else {
 			this.newLeagueSessionsForm = this.fb.group({
 				sessions: this.fb.array([sessionForm])
@@ -347,7 +357,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * schedules for the selected teams
 	 */
 	onGenerate(): void {
-		const newLeagueSessions: NewSessionSchedule[] = [];
+		const newLeagueSessions: LeagueSessionSchedule[] = [];
 		const sessions = this.newLeagueSessionsForm.value['sessions'] as [];
 		// iterate over all new sessions that were submitted
 		sessions.forEach((s: any) => {
@@ -401,7 +411,6 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * Creating shell team object to carry the team ID and the league the team should be assigned to
 	 * instead of creating a separate object to carry this information
 	 */
-
 	onAssignTeams(assignedTeamsForm: FormGroup): void {
 		const formControls = [...assignedTeamsForm.get('unassignedTeams')['controls']];
 		const teamsToAssign: Team[] = [];

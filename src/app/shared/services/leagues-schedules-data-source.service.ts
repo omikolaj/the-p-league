@@ -18,7 +18,7 @@ export class LeaguesSchedulesDataSourceService implements DataSource<Match> {
 		return this.matches$;
 	}
 	disconnect(collectionViewer: CollectionViewer): void {
-		// not sure if this is necessary
+		// not sure if this is necessary since we are getting our matches from the store
 		console.log('running data source disconnect');
 	}
 }

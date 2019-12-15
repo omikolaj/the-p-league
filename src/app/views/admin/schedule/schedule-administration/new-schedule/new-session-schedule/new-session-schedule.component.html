@@ -106,10 +106,8 @@
 				</ng-container>
 			</div>
 
-			<button type="button" mat-raised-button [disabled]="!isGameDaySelected(activeIndex)" (click)="addGamesDay()" color="primary">Add Day</button>
+			<button type="button" mat-raised-button [disabled]="!isGameDaySelected()" (click)="addGamesDay()" color="primary">Add Day</button>
 			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
-
-			<div></div>
 		</ng-container>
 	</div>
 </div>
