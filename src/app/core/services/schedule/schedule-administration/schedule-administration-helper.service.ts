@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
+import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 
 // TODO make this service be provided in admin module instead of root
@@ -12,13 +12,13 @@ export class ScheduleAdministrationHelperService {
 	constructor() {}
 
 	// TODO change the name of this method. The name does not reflect what it actually does
-	getTeamsForLeagues(newSessions: NewSessionSchedule[], teamsEntities): NewSessionSchedule[] {
-		const updatedSessions: NewSessionSchedule[] = [];
+	getTeamsForLeagues(newSessions: LeagueSessionSchedule[], teamsEntities): LeagueSessionSchedule[] {
+		const updatedSessions: LeagueSessionSchedule[] = [];
 		newSessions.forEach((session) => {
-			const teams: Team[] = Object.values(teamsEntities).filter((t: Team) => t.leagueID === session.leagueID && t.selected === true);			
-			session.teams = (session.teams || []).concat(teams); // [...session.teams, ...teams];			
+			const teams: Team[] = Object.values(teamsEntities).filter((t: Team) => t.leagueID === session.leagueID && t.selected === true);
+			session.teams = (session.teams || []).concat(teams); // [...session.teams, ...teams];
 			updatedSessions.push(session);
-		});				
+		});
 		return updatedSessions;
 	}
 

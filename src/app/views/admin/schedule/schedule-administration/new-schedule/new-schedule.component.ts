@@ -13,6 +13,7 @@ import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.m
 import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
 import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 import { GameDay } from '../../models/session/game-day.model';
+import LeagueSessionSchedule from '../../models/session/league-session-schedule.model';
 import NewSessionSchedule from '../../models/session/new-session-schedule.model';
 import { TabTitles } from '../../models/tab-titles.model';
 import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
@@ -22,7 +23,6 @@ import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher
 	templateUrl: './new-schedule.component.html',
 	styleUrls: ['./new-schedule.component.scss'],
 	providers: [ScheduleComponentHelperService],
-	// TODO test this to ensure its not causing unexpected behavior
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewScheduleComponent implements OnInit, OnDestroy {
@@ -159,6 +159,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	/**
 	 * @description Initializes formGroup instances that represents new session
 	 * information for a league
+	 *
 	 * @returns FormGroup representing new session information for the given league
 	 */
 	initSessionForm(leagueID: string): FormGroup {
@@ -352,7 +353,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		// iterate over all new sessions that were submitted
 		sessions.forEach((s: any) => {
 			// create new object with the NewLeagueSession shape
-			const session: NewSessionSchedule = {
+			const session: LeagueSessionSchedule = {
 				leagueID: s.leagueID,
 				byeWeeks: s.byeWeeks,
 				numberOfWeeks: s.sessionDateInfo.numberOfWeeks,

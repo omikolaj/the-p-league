@@ -6,7 +6,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { CoreModule } from 'src/app/core/core.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { LeagueState } from 'src/app/store/state/league.state';
-import { ScheduleState } from 'src/app/store/state/schedules.state';
+import { ScheduleState } from 'src/app/store/state/schedule.state';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
 import { TeamState } from 'src/app/store/state/team.state';
 import { AdminControlComponent } from './admin-dashboard/admin-control/admin-control.component';

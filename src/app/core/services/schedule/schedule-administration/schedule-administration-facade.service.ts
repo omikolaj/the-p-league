@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
 import * as Leagues from 'src/app/store/actions/leagues.actions';
-import * as Schedules from 'src/app/store/actions/schedule.actions';
+import * as Schedules from 'src/app/store/actions/schedules.actions';
 import * as Sports from 'src/app/store/actions/sports.actions';
 import * as Teams from 'src/app/store/actions/teams.actions';
 import { LeagueState } from 'src/app/store/state/league.state';
 import { SportTypeState } from 'src/app/store/state/sport-type.state';
 import { TeamState } from 'src/app/store/state/team.state';
 import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
-import NewSessionSchedule from 'src/app/views/admin/schedule/models/session/new-session-schedule.model';
 import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
 import { League } from 'src/app/views/schedule/models/interfaces/League.model';
 import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
@@ -50,7 +49,7 @@ export class ScheduleAdministrationFacade {
 
 	// #region NewLeagueSession
 
-	generateNewSchedules(newNewLeagueSessions: NewSessionSchedule[]): void {
+	generateNewSchedules(newNewLeagueSessions: LeagueSessionSchedule[]): void {
 		const teamEntities = this.store.selectSnapshot<Team[]>((state) => state.teams.entities);
 		newNewLeagueSessions = this.scheduleAdminHelper.getTeamsForLeagues(newNewLeagueSessions, teamEntities);
 		const newSessions: LeagueSessionSchedule[] = this.newSessionService.generateSchedules(newNewLeagueSessions);

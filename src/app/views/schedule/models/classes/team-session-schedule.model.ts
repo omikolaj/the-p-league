@@ -10,6 +10,7 @@ export default class TeamSessionSchedule extends SessionSchedule {
 
 	protected _lastScheduledGame: moment.Moment = null;
 	get lastScheduledGame(): moment.Moment {
+		console.log('last scheduled game called');
 		return this._lastScheduledGame || moment(new Date(this.defaultDate));
 	}
 
@@ -19,6 +20,7 @@ export default class TeamSessionSchedule extends SessionSchedule {
 
 	protected _lastPlayedGame: moment.Moment = null;
 	get lastPlayedGame(): moment.Moment {
+		console.log('last played game called');
 		return this._lastPlayedGame || moment(new Date(this.defaultDate));
 	}
 

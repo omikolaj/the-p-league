@@ -2,7 +2,7 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { produce } from 'immer';
 import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
 import Match from 'src/app/views/schedule/models/classes/match.model';
-import * as Schedule from '../actions/schedule.actions';
+import * as Schedule from '../actions/schedules.actions';
 
 export interface ScheduleStateModel {
 	entities: {
@@ -21,7 +21,7 @@ export interface ScheduleStateModel {
 export class ScheduleState {
 	@Selector()
 	static getSchedules(state: ScheduleStateModel): LeagueSessionSchedule[] {
-		console.log('returning schedules', state.entities)
+		console.log('returning schedules', state.entities);
 		return Object.values(state.entities);
 	}
 
@@ -29,19 +29,25 @@ export class ScheduleState {
 	static getMatches(state: ScheduleStateModel): Match[] {
 		let matches: Match[] = [];
 		Object.values(state.entities).forEach((entity) => {
-			matches = [...matches, ...entity.matches]
-		})
-		console.log('returning matches for data source', matches)
+			matches = [...matches, ...entity.matches];
+		});
+		console.log('returning matches for data source', matches);
 		return matches;
 	}
 
+	/**
+	 * @description Creates sessions for the selected leagues. This can only create a new
+	 * session per selected league.
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Schedule.CreateSchedules)
 	createSessions(ctx: StateContext<ScheduleStateModel>, action: Schedule.CreateSchedules): void {
 		console.log('createSessions', action);
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
 				action.newSessions.forEach((session) => {
-					draft.entities[session.leagueID] = new LeagueSessionSchedule(session);
+					draft.entities[session.leagueID] = session;
 				});
 			})
 		);

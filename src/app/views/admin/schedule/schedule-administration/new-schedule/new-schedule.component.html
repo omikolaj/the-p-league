@@ -2,7 +2,6 @@
 	<form [formGroup]="newLeagueSessionsForm" (ngSubmit)="onGenerate()">
 		<!--------------------------------------------------------------------------------- 
     formArrayName="sessions"
-
     Description:
     sessions is a FormArray on NewLeagueSessionForms containing list of NewLeagueSessionForms for the selected leagues 
     ----------------------------------------------------------------------------------->
@@ -24,12 +23,10 @@
             
             Description:
              NewLeagueSessionForms is a collection of multiple forms for every selected league,the NewLeagueSessionForms[controls].sessions[controls][i] allows us to retireve a form for the corresponding index. The forms in this collection should always be in the same order as the leagues$ Observable array 
-
             (gamesDayAdded)="onGamesDayAdded(i)"
 						(gamesDayRemved)="onGamesDayRemoved($event, i)"
 						(gamesTimeAdded)="onGamesTimeAdded($event, i)"
 						(gamesTimeRemoved)="onGamesTimeRemoved($event, i)"
-
             Description:
              Each one of the above referenced event handlers, needs to have i passed into it, in order to know which NewLeagueSessionForm we are attempting to perform actions on.
             --------------------------------------------------------------------------->

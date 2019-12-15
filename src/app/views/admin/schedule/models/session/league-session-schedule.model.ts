@@ -1,16 +1,14 @@
 import Match from 'src/app/views/schedule/models/classes/match.model';
-import NewSessionSchedule from './new-session-schedule.model';
 import SessionScheduleBase from './session-schedule-base.model';
 
 /**
- * @description Represents an existing session schedule for a given league
+ * @description Represents a session schedule for a given league
  */
 export default class LeagueSessionSchedule extends SessionScheduleBase {
-	matches: Match[] = [];
-	active: boolean;
+	matches?: Match[] = [];
+	active?: boolean;
 
-	constructor(sessionInfo?: Partial<NewSessionSchedule>) {
+	constructor() {
 		super();
-		Object.assign(this, sessionInfo);
 	}
 }

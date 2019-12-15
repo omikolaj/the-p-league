@@ -14,16 +14,24 @@ import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
 export class NewSessionScheduleService {
 	private readonly DUMMY: Team = { name: 'BYE' };
 	private matchDays = MatchDay;
-	private nextDay;
+	private nextDay = MatchDay.None;
 	constructor() {}
 
-	generateSchedules(newSessions: NewSessionSchedule[]): LeagueSessionSchedule[] {
-		// should return LeagueSessionSchedule array
+	/**
+	 * @description Generates match ups and times (Team A vs Team B 12/14/19 8:00pm)
+	 * between teams provided by the LeagueSessionSchedule objects then adds the match ups
+	 * to the LeagueSessionSchedule object, marks LeagueSessionSchedule object as active
+	 * and returns it back to the caller
+	 * @param newSessions
+	 * @returns schedules
+	 */
+	generateSchedules(newSessions: LeagueSessionSchedule[]): LeagueSessionSchedule[] {
 		const generatedSessionSchedules: LeagueSessionSchedule[] = [];
 
-		for (let index = 0; index < newSessions.length; index++) {
-			const session = newSessions[index];
-			const teams: Team[] = session.teams;
+		for (let i = 0; i < newSessions.length; i++) {
+			const session = newSessions[i];
+			// make a copy of the teams array
+			const teams: Team[] = session.teams.slice();
 
 			// if we have odd number of teams
 			if (teams.length % 2 === 1) {
@@ -32,71 +40,166 @@ export class NewSessionScheduleService {
 				teams.push(this.DUMMY);
 			}
 
-			const matches: Match[] = [];
+			// generate match ups for this session's teams
+			const matches = this.generateMatchUps(teams, session.byeWeeks);
 
-			// loop through all possible opponents (8 this.sessionSchedule.teams, means 7 possible opponents)
-			// that is why we are subtracting 1
-			for (let jindex = 0; jindex < teams.length - 1; jindex++) {
-				// split the total number of teams in half. This will allow us to match each team with each other
-				// from the two halves.
-				for (let index = 0; index < teams.length / 2; index++) {
-					const byeWeeks: boolean = session.byeWeeks
-						? session.byeWeeks
-						: teams[index].name !== this.DUMMY.name && teams[teams.length - 1 - index].name !== this.DUMMY.name;
+			// generate match times with the selected times
+			session.matches = this.generateMatchUpTimes(matches, session);
+			// mark session as active
+			session.active = true;
 
-					if (byeWeeks) {
-						// in the first round add the first team with the last team
-						const homeTeam: Team = teams[index];
-						const awayTeam: Team = teams[teams.length - 1 - index];
-						const match: Match = new Match(homeTeam, awayTeam);
-						matches.push(match);
-					}
-				}
-				teams.splice(1, 0, teams.pop());
-			}
-			// generate matches with the selected times
-			const matchesWithTimes: Match[] = this.generateMatchUpTimes(matches, session);
-			const schedule: LeagueSessionSchedule = new LeagueSessionSchedule(session);
-			schedule.matches = matchesWithTimes;
-			schedule.active = false;
-			generatedSessionSchedules.push(schedule);
+			generatedSessionSchedules.push(session);
 		}
+
 		return generatedSessionSchedules;
 	}
 
-	private generateMatchUpTimes(matches: Match[], newSession: NewSessionSchedule): Match[] {
-		// create a copy of the matches array
-		matches = matches.slice();
-		const startDate = newSession.sessionStart;
-		const endDate = newSession.sessionEnd;
-		const desiredDays: MatchDay[] = newSession.gamesDays.map((gD) => this.matchDays[gD.gamesDay]);
+	/**
+	 * @description Generates match ups between the given list of teams. If includeByeWeeks
+	 * is true, then it will generate a match (Team A vs BYE) if there are odd number of teams
+	 * if its false, than it will omit this match up from getting scheduled
+	 * @returns match ups without times and dates
+	 */
+	private generateMatchUps(teams: Team[], includeByeWeeks: boolean): Match[] {
+		const matches: Match[] = [];
+		// loop through all possible opponents. For example if a session started off with 7 (odd) selected teams
+		// this.generateSchedules() method adds a DUMMY team to make the team list even. Given any number of teams
+		// we always subtract 1 because a team cannot face it self. So 8 teams total minus one, which avoids
+		// scheduling a team to play against itself that is why we are subtracting 1
+		for (let jindex = 0; jindex < teams.length - 1; jindex++) {
+			// split the total list of teams in half. This will allow us to match each team with each other
+			// starting first with last, second with second last and so on.
+			// After we finish looping through the half, we change the order of the list
+			// so we repeat the process of looping through half nth number of teams minus one. Each time we finish
+			// we mutate the team list
+			for (let index = 0; index < teams.length / 2; index++) {
+				const homeTeam: Team = teams[index];
+				const awayTeam: Team = teams[teams.length - 1 - index];
+				// if user selected bye weeks, this means if team A plays BYE
+				// include that in the schedule, else if user did NOT select bye weeks
+				// then if team A plays BYE, ensure we skip that match
 
-		const current = startDate.clone();
-		let index = 0;
-
-		while (current.isSame(endDate) || current.isBefore(endDate)) {
-			const currentDayNum: number = current.isoWeekday();
-			// the current date includes one of the days we want to schedule a game on
-			// dtRanges.days is Tuesday, Friday, Sunday
-			if (desiredDays.includes(currentDayNum)) {
-				// get next available time
-				const listOfMatchTimes = this.returnTimesForGivenDay(currentDayNum, newSession.gamesDays);
-
-				for (let j = 0; j < listOfMatchTimes.length; j++) {
-					if (index >= matches.length) break;
-
-					const time: moment.MomentSetObject = this.getNextAvailableTime(listOfMatchTimes) as moment.MomentSetObject;
-					const nextMatch: Match = matches[index];
-					nextMatch.schedule(current, time, nextMatch);
-					index++;
+				// if include BYE weeks is true, add everything
+				if (includeByeWeeks) {
+					const match: Match = new Match(homeTeam, awayTeam);
+					matches.push(match);
+				} else if (homeTeam.name !== this.DUMMY.name && awayTeam.name !== this.DUMMY.name) {
+					const match: Match = new Match(homeTeam, awayTeam);
+					matches.push(match);
 				}
 			}
-			const requiredDays = this.computeNumberOfDaysNeeded(currentDayNum, desiredDays);
-			current.add(requiredDays, 'days');
+			// change the order of the teams and keep creating schedules
+			// take the second item in the teams list, remove it, and insert
+			// the last item from the teams list in its place
+			teams.splice(1, 0, teams.pop());
 		}
+
 		return matches;
 	}
 
+	/**
+	 * @description Generates match up times for the given matches
+	 * @returns match ups with times
+	 */
+	private generateMatchUpTimes(matches: Match[], newSession: NewSessionSchedule): Match[] {
+		// returns an array of match days selected by user. [Monday, Tuesday] etc.
+		const desiredDays: MatchDay[] = newSession.gamesDays.map((gD) => this.matchDays[gD.gamesDay]);
+		// make current variable equal to start date and clone the date since we will mutate it
+		const current = newSession.sessionStart.clone();
+
+		let index = 0;
+
+		// while the current variable is on the same day as the end of session OR it is before
+		// the end of session keep looping. Current variable is increased inside the loop
+		while (current.isSame(newSession.sessionEnd) || current.isBefore(newSession.sessionEnd)) {
+			// currentDayNum represents the number day of week 1 = Monday, 2 = Tuesday etc.
+			const currentDayNum: number = current.isoWeekday();
+			// if the currentDayNum is 1 and desiredDays array contains Monday in it
+			// this will evaluate to true and enter the if statement, because Monday = 1
+			if (desiredDays.includes(currentDayNum)) {
+				// return all of the times user selected that games should be scheduled for the current day.
+				// If currentDayNum is 1, then we want to retrieve all of the times user selected games should
+				// be scheduled for on Mondays
+				const listOfMatchTimes = this.returnTimesForGivenDay(currentDayNum, newSession.gamesDays);
+
+				// loop through all of the times
+				for (let j = 0; j < listOfMatchTimes.length; j++) {
+					// if the index is greater than or equal to the number
+					// of matches that should be scheduled, than break. We do not
+					// want to keep scheduling matches if we have already scheduled them all
+					if (index >= matches.length) break;
+
+					// returns next available time from the list of times user has specified games should be played at
+					const time: moment.MomentSetObject = this.getNextAvailableTime(listOfMatchTimes) as moment.MomentSetObject;
+
+					// now we are ready to schedule the match. Given current date, and next available time, schedule
+					// a time for next available match. matches[index] represents that next match
+					this.scheduleMatch(current, time, matches[index]);
+					index++;
+				}
+			}
+			// figure out how days we have to add to current day to get next user defined day
+			// on which games should be scheduled
+			const requiredDays = this.computeNumberOfDaysNeeded(currentDayNum, desiredDays);
+			// add this number to current date
+			current.add(requiredDays, 'days');
+		}
+		// return matches
+		return matches;
+	}
+
+	/**
+	 * @description Returns a list of times selected by the user for the given day
+	 * @returns times for given day
+	 */
+	private returnTimesForGivenDay(currentDayNum: number, gamesDays: GameDay[]): MatchTime[] {
+		const gameDay: GameDay = gamesDays.find((gameDay) => {
+			return MatchDay[gameDay.gamesDay] === MatchDay[MatchDay[currentDayNum]];
+		});
+		const times: MatchTime[] = gameDay.gamesTimes.map((gT) => {
+			// retrieve just the time without pm. so '3:30'
+			const time = gT.gamesTime.substring(0, gT.gamesTime.length - 3);
+			// split the time on the colon. First object in the array will be hours
+			// second will be minutes.
+			const hourAndMins = time.split(':');
+			const matchTime: MatchTime = {
+				period: gT.gamesTime.endsWith('am') ? 'am' : 'pm',
+				hour: hourAndMins[0],
+				minute: hourAndMins[1]
+			};
+			return matchTime;
+		});
+
+		// TODO consider returning times array as an ordered list
+		// return times.sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
+		// return timesForCurrentDay[MatchDay[currentDayNum]].sort((a, b) => a.hour - b.hour);
+		return times;
+	}
+
+	/**
+	 * @description Returns next available time when the times array is sorted from earliest games to latest
+	 * It will modify the array, by moving first item to the last place. So first time we enter this
+	 * method, we take the times array and get the first item from it. We then take the first time,
+	 * and move it to the last place
+	 * @param times
+	 * @returns next available time
+	 */
+	private getNextAvailableTime(times: MatchTime[]): MatchTime {
+		const time: MatchTime = times[0];
+		times.splice(times.length - 1, 1, times.shift());
+		return time;
+	}
+
+	/**
+	 * @description Computes the number of days needed to next game day.
+	 * Given currentDayNum being 1 which is Monday, and the desiredDays array list
+	 * being [Monday, Friday], this method will figure out how many more days we need to
+	 * to add to Monday to get to Friday, so we can increase currentDayNum by this many days.
+	 * So to go from Monday = 1 to Friday = 5 we have to add 4 days.
+	 * @param currentDayNum
+	 * @param desiredDays
+	 * @returns number of days needed
+	 */
 	private computeNumberOfDaysNeeded(currentDayNum: MatchDay, desiredDays: MatchDay[]): number {
 		let nextDayNum: MatchDay = this.getNextAvailableDay(desiredDays);
 
@@ -115,14 +218,12 @@ export class NewSessionScheduleService {
 		return nextDayNum;
 	}
 
-	// Returns next available time when the times array is sorted from earliest games to latest
-	// It will modify the array, but moving first item, in the last place
-	private getNextAvailableTime(times: MatchTime[]): MatchTime {
-		const time: MatchTime = times[0];
-		times.splice(times.length - 1, 1, times.shift());
-		return time;
-	}
-
+	/**
+	 * @description Returns next available day based on the list of desired days passed into it
+	 * It stores previously selected day in this.nextDay property
+	 * @param desiredDays
+	 * @returns next available day
+	 */
 	private getNextAvailableDay(desiredDays: MatchDay[]): MatchDay {
 		if (this.nextDay === MatchDay.None || this.nextDay === desiredDays[0]) {
 			return (this.nextDay = desiredDays.reduce((previousDay, currentDay) => Math.min(previousDay, currentDay)));
@@ -131,6 +232,13 @@ export class NewSessionScheduleService {
 		}
 	}
 
+	/**
+	 * @description Finds next largest number in the list of days of the week.
+	 * Given list of days [Monday, Thursday, Sunday], it will return Sunday
+	 * because Sunday = 7, and is thus the largest number
+	 * @param desiredDays
+	 * @returns next largest number
+	 */
 	private findNextLargestNumber(desiredDays: MatchDay[]): MatchDay {
 		let next = 0,
 			i = 0;
@@ -142,26 +250,10 @@ export class NewSessionScheduleService {
 		return next;
 	}
 
-	private returnTimesForGivenDay(currentDayNum: number, gamesDays: GameDay[]): MatchTime[] {
-		const gameDay: GameDay = gamesDays.find((gameDay) => {			
-			return MatchDay[gameDay.gamesDay] === MatchDay[MatchDay[currentDayNum]];
-		});		
-		const times: MatchTime[] = gameDay.gamesTimes.map((gT) => {
-			// retrieve just the time without pm. so '3:30'
-			const time = gT.gamesTime.substring(0, gT.gamesTime.length - 3);
-			// split the time on the colon. First object in the array will be hours
-			// second will be minutes.
-			const hourAndMins = time.split(':');
-			const matchTime: MatchTime = {
-				period: gT.gamesTime.endsWith('am') ? 'am' : 'pm',
-				hour: hourAndMins[0],
-				minute: hourAndMins[1]
-			};
-			return matchTime;
-		});
-
-		return times;
-		// return times.sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
-		// return timesForCurrentDay[MatchDay[currentDayNum]].sort((a, b) => a.hour - b.hour);
+	/**
+ 	* @description Schedules the match based on the given date and time 	
+ 	*/
+	private scheduleMatch(date: moment.Moment, time: moment.MomentSetObject, match: Match): void {
+		match.dateTime = moment(date).set(time);
 	}
 }
