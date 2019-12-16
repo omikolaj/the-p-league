@@ -3,19 +3,20 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent, MatTableDataSource } from '@angular/material';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
+import Match from 'src/app/core/models/schedule/classes/match.model';
+import { League } from 'src/app/core/models/schedule/league.model';
+import { SportType } from 'src/app/core/models/schedule/sport-type.model';
+import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
-import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
-import Match from 'src/app/views/schedule/models/classes/match.model';
-import { League } from 'src/app/views/schedule/models/interfaces/league.model';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { TabTitles } from '../models/tab-titles.model';
-import { ScheduleAdministrationHelperService } from './../../../../core/services/schedule/schedule-administration/schedule-administration-helper.service';
+import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 
 @Component({
 	selector: 'app-schedule-administration',
 	templateUrl: './schedule-administration.component.html',
-	styleUrls: ['./schedule-administration.component.scss']
+	styleUrls: ['./schedule-administration.component.scss'],
+	providers: [ScheduleComponentHelperService]
 })
 export class ScheduleAdministrationComponent implements OnInit {
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
@@ -23,7 +24,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
 	filteredPairs$ = this.sportLeaguePairs$.pipe(
 		filter((_) => this.scheduleAdminFacade.sessionsLeagueIDsSnapshot.length !== 0),
-		map((pairs) => this.scheduleAdminHelper.filterPairsForGeneratedSessions(pairs, this.scheduleAdminFacade.sessionsLeagueIDsSnapshot))
+		map((pairs) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, this.scheduleAdminFacade.sessionsLeagueIDsSnapshot))
 	);
 	displayLeagueID = '';
 	tabTitle: TabTitles = 'Schedule';
@@ -37,7 +38,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private scheduleAdminFacade: ScheduleAdministrationFacade,
-		private scheduleAdminHelper: ScheduleAdministrationHelperService
+		private scheduleComponentHelper: ScheduleComponentHelperService
 	) {}
 
 	// #region LifeCycle Hooks
@@ -162,7 +163,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	}
 
 	onPreviewSchedule(): void {
-		const firstMatches = this.scheduleAdminHelper.loadFirstSessionMatches(
+		const firstMatches = this.scheduleComponentHelper.loadFirstSessionMatches(
 			this.scheduleAdminFacade.matchesSnapshot,
 			this.scheduleAdminFacade.sessionsLeagueIDsSnapshot
 		);

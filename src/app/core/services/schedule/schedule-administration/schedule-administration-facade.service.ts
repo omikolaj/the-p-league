@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import Match from 'src/app/core/models/schedule/classes/match.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import { League } from 'src/app/core/models/schedule/league.model';
+import { SportType } from 'src/app/core/models/schedule/sport-type.model';
+import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
-import * as Leagues from 'src/app/store/actions/leagues.actions';
-import * as Schedules from 'src/app/store/actions/schedules.actions';
-import * as Sports from 'src/app/store/actions/sports.actions';
-import * as Teams from 'src/app/store/actions/teams.actions';
-import { LeagueState } from 'src/app/store/state/league.state';
-import { ScheduleState } from 'src/app/store/state/schedule.state';
-import { SportTypeState } from 'src/app/store/state/sport-type.state';
-import { TeamState } from 'src/app/store/state/team.state';
-import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
-import { SportTypesLeaguesPairs } from 'src/app/views/admin/schedule/models/sport-types-leagues-pairs.model';
-import Match from 'src/app/views/schedule/models/classes/match.model';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import * as Leagues from 'src/app/shared/store/actions/leagues.actions';
+import * as Schedules from 'src/app/shared/store/actions/schedules.actions';
+import * as Sports from 'src/app/shared/store/actions/sports.actions';
+import * as Teams from 'src/app/shared/store/actions/teams.actions';
+import { LeagueState } from 'src/app/shared/store/state/league.state';
+import { ScheduleState } from 'src/app/shared/store/state/schedule.state';
+import { SportTypeState } from 'src/app/shared/store/state/sport-type.state';
+import { TeamState } from 'src/app/shared/store/state/team.state';
 import { NewSessionScheduleService } from '../session-schedule/new-session-schedule.service';
 import { ScheduleAdministrationHelperService } from './schedule-administration-helper.service';
 
@@ -60,11 +60,10 @@ export class ScheduleAdministrationFacade {
 
 	// #region NewLeagueSession
 
-	generateNewSchedules(newNewLeagueSessions: LeagueSessionSchedule[]): void {
+	generateNewSchedules(newLeagueSessions: LeagueSessionSchedule[]): void {
 		const teamEntities = this.store.selectSnapshot<Team[]>((state) => state.teams.entities);
-		newNewLeagueSessions = this.scheduleAdminHelper.getTeamsForLeagues(newNewLeagueSessions, teamEntities);
-		const newSessions: LeagueSessionSchedule[] = this.newSessionService.generateSchedules(newNewLeagueSessions);
-		console.log('newSessions', newSessions);
+		newLeagueSessions = this.scheduleAdminHelper.matchTeamsWithLeagues(newLeagueSessions, teamEntities);
+		const newSessions: LeagueSessionSchedule[] = this.newSessionService.generateSchedules(newLeagueSessions);
 		this.store.dispatch(new Schedules.CreateSchedules(newSessions));
 	}
 

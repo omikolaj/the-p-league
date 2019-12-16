@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { LeaguePicture } from '../../models/league-picture.model';
-import { map, shareReplay, tap, switchMap, catchError, scan, mergeMap } from 'rxjs/operators';
-import { v4 as uuid } from 'uuid';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { SnackBarService, SnackBarEvent } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
-import { EventBusService, Events } from '../event-bus/event-bus.service';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { catchError, map, mergeMap, scan, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { SnackBarEvent, SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { LeagueImageUpload } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { LeaguePicture } from '../../models/league-picture.model';
 import { EmitEvent } from '../event-bus/EmitEvent';
-import { LeagueImageUpload } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { EventBusService, Events } from '../event-bus/event-bus.service';
 
 @Injectable({
 	providedIn: 'root'

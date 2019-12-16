@@ -2,7 +2,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ErrorStateMatcher, MatChipInputEvent } from '@angular/material';
-import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
+import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
+
 
 @Component({
 	selector: 'app-new-session-schedule',

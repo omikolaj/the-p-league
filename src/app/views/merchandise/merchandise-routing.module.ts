@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { MerchandiseListComponent } from './merchandise-list/merchandise-list.component';
-import { MerchandiseDialogContainerComponent } from './merchandise-dialog-container/merchandise-dialog-container.component';
-import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
+import { RouterModule, Routes } from '@angular/router';
+import { RolesResolver } from 'src/app/core/resolvers/roles/roles-resolver.resolver';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
+import { MerchandiseDialogContainerComponent } from './merchandise-dialog-container/merchandise-dialog-container.component';
+import { MerchandiseListComponent } from './merchandise-list/merchandise-list.component';
 
 const routes: Routes = [
 	{

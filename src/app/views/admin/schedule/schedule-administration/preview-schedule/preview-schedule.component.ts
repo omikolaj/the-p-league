@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
-import { BYE_WEEK_DATE_TEXT } from 'src/app/helpers/Constants/ThePLeagueConstants';
-import Match from 'src/app/views/schedule/models/classes/match.model';
-import { SportTypesLeaguesPairs } from './../../models/sport-types-leagues-pairs.model';
+import Match from 'src/app/core/models/schedule/classes/match.model';
+import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { BYE_WEEK_DATE_TEXT } from 'src/app/shared/helpers/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-preview-schedule',

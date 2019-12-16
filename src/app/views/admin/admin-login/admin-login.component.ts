@@ -5,8 +5,8 @@ import { Subscription } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Login } from 'src/app/core/models/auth/login.model';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { handleError } from 'src/app/helpers/handleError';
 import { SnackBarEvent, SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { handleError } from 'src/app/shared/helpers/handleError';
 
 @Component({
 	selector: 'app-admin-login',

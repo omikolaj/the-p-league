@@ -1,14 +1,14 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Login } from '../../models/auth/login.model';
-import { Observable, of, BehaviorSubject, Subject, throwError } from 'rxjs';
-import { tap, map, shareReplay, switchMap, catchError } from 'rxjs/operators';
-import * as moment from 'moment';
 import * as jwt_decode from 'jwt-decode';
-import { JwtPayload } from '../../models/auth/token/JwtPayload.model';
-import { LOCAL_STORAGE_ITEM, Role } from 'src/app/helpers/Constants/ThePLeagueConstants';
-import { LocalStorageItem } from '../../models/storage/local-storage.model';
+import * as moment from 'moment';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { LOCAL_STORAGE_ITEM } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { Login } from '../../models/auth/login.model';
 import { ApplicationToken } from '../../models/auth/token/ApplicationToken.model';
+import { JwtPayload } from '../../models/auth/token/JwtPayload.model';
+import { LocalStorageItem } from '../../models/storage/local-storage.model';
 
 @Injectable({
 	providedIn: 'root'

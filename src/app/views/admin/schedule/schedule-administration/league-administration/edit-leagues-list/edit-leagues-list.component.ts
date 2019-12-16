@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSelectionListChange } from '@angular/material';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
+import { League } from 'src/app/core/models/schedule/league.model';
+
 
 @Component({
 	selector: 'app-edit-leagues-list',

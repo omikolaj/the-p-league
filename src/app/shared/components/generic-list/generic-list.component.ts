@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { GenericListItem } from '../../models/interfaces/generic-list-item.model';
+import { GenericListItem } from 'src/app/core/models/admin/dashboard/generic-list-item.model';
 
 @Component({
 	selector: 'app-generic-list',

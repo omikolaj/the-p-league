@@ -4,20 +4,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgxsModule } from '@ngxs/store';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { CoreModule } from 'src/app/core/core.module';
+import { AdminAuthGuard } from 'src/app/core/guards/admin/admin-auth.guard';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { LeagueState } from 'src/app/store/state/league.state';
-import { ScheduleState } from 'src/app/store/state/schedule.state';
-import { SportTypeState } from 'src/app/store/state/sport-type.state';
-import { TeamState } from 'src/app/store/state/team.state';
+import { LeagueState } from 'src/app/shared/store/state/league.state';
+import { ScheduleState } from 'src/app/shared/store/state/schedule.state';
+import { SportTypeState } from 'src/app/shared/store/state/sport-type.state';
+import { TeamState } from 'src/app/shared/store/state/team.state';
 import { AdminControlComponent } from './admin-dashboard/admin-control/admin-control.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { AdminRoutingModule } from './admin-routing.module';
-import { AdminAuthGuard } from './guards/admin-auth.guard';
-import { AddLeaguesComponent } from './schedule/components/add-leagues/add-leagues.component';
-import { AddTeamsComponent } from './schedule/components/add-teams/add-teams.component';
-import { AdminAddComponent } from './schedule/components/admin-add/admin-add.component';
-import { UnassignedComponent } from './schedule/components/unassigned/unassigned.component';
+import { AddLeaguesComponent } from './components/add-sports-leagues/add-sports-leagues.component';
+import { AddTeamsComponent } from './components/add-teams/add-teams.component';
+import { UnassignedComponent } from './components/unassigned/unassigned.component';
 import { EditLeaguesListComponent } from './schedule/schedule-administration/league-administration/edit-leagues-list/edit-leagues-list.component';
 import { LeagueAdministrationComponent } from './schedule/schedule-administration/league-administration/league-administration.component';
 import { ModifyMatchUpComponent } from './schedule/schedule-administration/modify/modify-match-up/modify-match-up.component';
@@ -34,8 +33,7 @@ import { ScheduleAdministrationComponent } from './schedule/schedule-administrat
 		AdminDashboardComponent,
 		ScheduleAdministrationComponent,
 		AdminControlComponent,
-		LeagueAdministrationComponent,
-		AdminAddComponent,
+		LeagueAdministrationComponent,		
 		EditLeaguesListComponent,
 		NewScheduleComponent,
 		NewLeagueSessionScheduleComponent,

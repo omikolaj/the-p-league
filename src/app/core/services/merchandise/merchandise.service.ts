@@ -1,16 +1,12 @@
-import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
-import { GearItem } from '../../models/merchandise/gear-item.model';
-import { flatMap, map, tap, shareReplay, switchMap, catchError } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
-import { Size } from '../../models/merchandise/gear-size.model';
 import { HttpClient } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { SnackBarService, SnackBarEvent } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
-import { PreOrderForm } from '../../models/merchandise/pre-order-form.model';
-import { EventBusService, Events } from '../event-bus/event-bus.service';
-import { handleError } from 'src/app/helpers/handleError';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { catchError, flatMap, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { SnackBarEvent, SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { GearItem } from '../../models/merchandise/gear-item.model';
 import { EmitEvent } from '../event-bus/EmitEvent';
+import { EventBusService, Events } from '../event-bus/event-bus.service';
 
 @Injectable({
 	providedIn: 'root'

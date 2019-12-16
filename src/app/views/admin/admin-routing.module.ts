@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AdminLoginComponent } from './admin-login/admin-login.component';
+import { RouterModule, Routes } from '@angular/router';
+import { AdminAuthGuard } from 'src/app/core/guards/admin/admin-auth.guard';
+import { RolesResolver } from 'src/app/core/resolvers/roles/roles-resolver.resolver';
+import { ScheduleAdministrationResolver } from 'src/app/core/resolvers/schedule/schedule-administration-resolver.resolver';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
-import { AdminAuthGuard } from './guards/admin-auth.guard';
-import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
-import { ScheduleAdministrationResolver } from 'src/app/core/services/resolvers/schedule/schedule-administration-resolver.resolver';
 
 const routes: Routes = [
 	{

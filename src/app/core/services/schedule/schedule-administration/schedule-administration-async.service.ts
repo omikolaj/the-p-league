@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import * as cuid from 'cuid';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/internal/operators/delay';
-import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { Match } from 'src/app/views/schedule/models/interfaces/match.model';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
+import Match from 'src/app/core/models/schedule/classes/match.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import { League } from 'src/app/core/models/schedule/league.model';
+import { SportType } from 'src/app/core/models/schedule/sport-type.model';
+import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 
 @Injectable({

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GenericListItem } from 'src/app/shared/models/interfaces/generic-list-item.model';
-import { AdminControlType } from '../models/admin-control-type.enum';
-import { AdminControl } from '../models/interfaces/admin-control.model';
+import { AdminControlType } from 'src/app/core/models/admin/dashboard/admin-control-type.enum';
+import { AdminControl } from 'src/app/core/models/admin/dashboard/admin-control.model';
+import { GenericListItem } from 'src/app/core/models/admin/dashboard/generic-list-item.model';
 import { AdminControlComponent } from './admin-control/admin-control.component';
 
 @Component({

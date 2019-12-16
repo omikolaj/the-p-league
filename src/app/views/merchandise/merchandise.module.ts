@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { HasRoleDirective } from 'src/app/core/directives/has-role/has-role.directive';
-import { IosVHDirective } from 'src/app/core/directives/iosVH/ios-vh.directive';
-import { FilteredGearSizesPipe } from 'src/app/core/pipes/filteredGearSizes/filtered-gear-sizes.pipe';
-import { GearImageViewPipe } from 'src/app/core/pipes/gear-image-view/gear-image-view.pipe';
-import { RolesResolver } from 'src/app/core/services/resolvers/roles/roles-resolver.resolver';
+import { RolesResolver } from 'src/app/core/resolvers/roles/roles-resolver.resolver';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MerchandiseDialogContainerComponent } from './merchandise-dialog-container/merchandise-dialog-container.component';
 import { MerchandiseDialogService } from './merchandise-dialog-container/merchandise-dialog.service';
@@ -22,10 +18,6 @@ import { MerchandiseRoutingModule } from './merchandise-routing.module';
 		MerchandiseItemComponent,
 		MerchandiseDialogContainerComponent,
 		MerchandiseDialogComponent,
-		GearImageViewPipe,
-		FilteredGearSizesPipe,
-		IosVHDirective,
-		HasRoleDirective,
 		MerchandisePreOrderDialogComponent
 	],
 	entryComponents: [MerchandiseDialogComponent, MerchandisePreOrderDialogComponent],

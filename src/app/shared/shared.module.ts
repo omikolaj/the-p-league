@@ -3,44 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-	MatAutocompleteModule,
-	MatBadgeModule,
-	MatBottomSheetModule,
-	MatButtonModule,
-	MatButtonToggleModule,
-	MatCardModule,
-	MatCheckboxModule,
-	MatChipsModule,
-	MatDatepickerModule,
-	MatDialogModule,
-	MatDividerModule,
-	MatExpansionModule,
-	MatGridListModule,
-	MatIconModule,
-	MatInputModule,
-	MatListModule,
-	MatMenuModule,
-	MatPaginatorModule,
-	MatProgressBarModule,
-	MatProgressSpinnerModule,
-	MatRadioModule,
-	MatRippleModule,
-	MatSelectModule,
-	MatSidenavModule,
-	MatSliderModule,
-	MatSlideToggleModule,
-	MatSnackBarModule,
-	MatSortModule,
-	MatStepperModule,
-	MatTableModule,
-	MatTabsModule,
-	MatToolbarModule,
-	MatTooltipModule,
-	MatTreeModule,
-	MAT_RIPPLE_GLOBAL_OPTIONS,
-	RippleGlobalOptions
-} from '@angular/material';
+import { MatAutocompleteModule, MatBadgeModule, MatBottomSheetModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule, MatTreeModule, MAT_RIPPLE_GLOBAL_OPTIONS, RippleGlobalOptions } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -53,7 +16,16 @@ import { GalleryViewerComponent } from './components/gallery-viewer/gallery-view
 import { GenericListItemComponent } from './components/generic-list/generic-list-item/generic-list-item.component';
 import { GenericListComponent } from './components/generic-list/generic-list.component';
 import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
+import { AllowSpacesDirective } from './directives/allow-space/allow-spaces.directive';
+import { ClearElementValueDirective } from './directives/clear-element-value/clear-element-value.directive';
+import { HasRoleDirective } from './directives/has-role/has-role.directive';
+import { IosVHDirective } from './directives/iosVH/ios-vh.directive';
 import { ListItemComponentDirective } from './directives/list-item-component.directive';
+import { EnumToArrayPipe } from './pipes/enumToArray/enum-to-array.pipe';
+import { FilteredGearSizesPipe } from './pipes/filteredGearSizes/filtered-gear-sizes.pipe';
+import { GearImageViewPipe } from './pipes/gear-image-view/gear-image-view.pipe';
+import { LogPipe } from './pipes/log/log.pipe';
+import { OrderEnumPipe } from './pipes/order-enum.pipe';
 
 library.add(faGithub, faMediumM, faTwitter, faInstagram, faYoutube, faPlayCircle, faRocket, faBasketballBall, faUndo);
 
@@ -70,8 +42,21 @@ const globalRippleConfig: RippleGlobalOptions = {
 		SnackBarComponent,
 		CarouselComponent,
 		GenericListComponent,
+		GenericListItemComponent,
+
+		// Directives
+		AllowSpacesDirective,
+		ClearElementValueDirective,
+		HasRoleDirective,
+		IosVHDirective,
 		ListItemComponentDirective,
-		GenericListItemComponent
+
+		// Pipes
+		OrderEnumPipe,
+		LogPipe,
+		GearImageViewPipe,
+		FilteredGearSizesPipe,
+		EnumToArrayPipe
 	],
 	imports: [
 		MatAutocompleteModule,
@@ -166,8 +151,21 @@ const globalRippleConfig: RippleGlobalOptions = {
 		CarouselModule,
 		CarouselComponent,
 		GenericListComponent,
+		PortalModule,
+
+		// Directives
+		AllowSpacesDirective,
+		ClearElementValueDirective,
+		HasRoleDirective,
+		IosVHDirective,
 		ListItemComponentDirective,
-		PortalModule
+
+		// Pipes
+		OrderEnumPipe,
+		LogPipe,
+		GearImageViewPipe,
+		FilteredGearSizesPipe,
+		EnumToArrayPipe
 	],
 	entryComponents: [SnackBarComponent]
 })

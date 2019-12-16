@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { Team, TEAMS } from 'src/app/views/schedule/models/interfaces/team.model';
+import { SportType } from 'src/app/core/models/schedule/sport-type.model';
+import { Team, TEAMS } from 'src/app/core/models/schedule/team.model';
 
 @Injectable({
 	providedIn: 'root'

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { BYE_WEEK_DATE_TEXT } from 'src/app/helpers/Constants/ThePLeagueConstants';
-import { GameDay } from 'src/app/views/admin/schedule/models/session/game-day.model';
-import LeagueSessionSchedule from 'src/app/views/admin/schedule/models/session/league-session-schedule.model';
-import Match from 'src/app/views/schedule/models/classes/match.model';
-import { MatchTime } from 'src/app/views/schedule/models/interfaces/match-time.model';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
+import Match from 'src/app/core/models/schedule/classes/match.model';
+import { GameDay } from 'src/app/core/models/schedule/game-day.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
+import { MatchTime } from 'src/app/core/models/schedule/match-time.model';
+import { Team } from 'src/app/core/models/schedule/team.model';
+import { BYE_WEEK_DATE_TEXT } from 'src/app/shared/helpers/constants/the-p-league-constants';
 
 @Injectable({
 	providedIn: 'root'

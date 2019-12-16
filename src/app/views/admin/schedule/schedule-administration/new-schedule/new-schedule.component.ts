@@ -4,17 +4,17 @@ import { MatSelectionListChange } from '@angular/material';
 import * as moment from 'moment';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
+import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
+import { GameDay } from 'src/app/core/models/schedule/game-day.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import { League } from 'src/app/core/models/schedule/league.model';
+import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
+import { SportType } from 'src/app/core/models/schedule/sport-type.model';
+import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
-import { UNASSIGNED } from 'src/app/helpers/Constants/ThePLeagueConstants';
+import { UNASSIGNED } from 'src/app/shared/helpers/constants/the-p-league-constants';
 import { enumKeysToArray } from 'src/app/shared/helpers/enum-keys-to-array';
-import { League } from 'src/app/views/schedule/models/interfaces/League.model';
-import { SportType } from 'src/app/views/schedule/models/interfaces/sport-type.model';
-import { Team } from 'src/app/views/schedule/models/interfaces/team.model';
-import { MatchDay } from 'src/app/views/schedule/models/match-days.enum';
-import { GameDay } from '../../models/session/game-day.model';
-import LeagueSessionSchedule from '../../models/session/league-session-schedule.model';
-import { TabTitles } from '../../models/tab-titles.model';
 import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
 
 @Component({
@@ -32,12 +32,6 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	selectedTeamIDs: string[] = [];
 	private unsubscribe$ = new Subject<void>();
 	@Output() generateSchedules = new EventEmitter<void>();
-
-	// sessionForm.valueChanges.subscribe((t) => {
-	// 	console.log('test', this.newLeagueSessionsForm);
-	// 	// formArray.updateValueAndValidity();
-	// 	this.newLeagueSessionsForm.updateValueAndValidity();
-	// });
 
 	/**
 	 * @description this stream is necessary to ensure we are invoking
