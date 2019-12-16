@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminControlType } from 'src/app/core/models/admin/dashboard/admin-control-type.enum';
 import { AdminControl } from 'src/app/core/models/admin/dashboard/admin-control.model';
 import { GenericListItem } from 'src/app/core/models/admin/dashboard/generic-list-item.model';
-import { AdminControlComponent } from './admin-control/admin-control.component';
+import { AdminControlComponent } from '../components/admin-control/admin-control.component';
 
 @Component({
 	selector: 'app-admin-dashboard',
