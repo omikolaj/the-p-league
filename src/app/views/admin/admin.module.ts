@@ -17,15 +17,15 @@ import { AddLeaguesComponent } from './components/add-sports-leagues/add-sports-
 import { AddTeamsComponent } from './components/add-teams/add-teams.component';
 import { AdminControlComponent } from './components/admin-control/admin-control.component';
 import { UnassignedComponent } from './components/unassigned/unassigned.component';
-import { EditLeaguesListComponent } from './schedule/schedule-administration/league-administration/edit-leagues-list/edit-leagues-list.component';
-import { LeagueAdministrationComponent } from './schedule/schedule-administration/league-administration/league-administration.component';
-import { ModifyMatchUpComponent } from './schedule/schedule-administration/modify/modify-match-up/modify-match-up.component';
-import { ModifyScheduleComponent } from './schedule/schedule-administration/modify/modify-schedule.component';
-import { EditTeamsListComponent } from './schedule/schedule-administration/new-schedule/edit-teams-list/edit-teams-list.component';
-import { NewScheduleComponent } from './schedule/schedule-administration/new-schedule/new-schedule.component';
-import { NewLeagueSessionScheduleComponent } from './schedule/schedule-administration/new-schedule/new-session-schedule/new-session-schedule.component';
-import { PreviewScheduleComponent } from './schedule/schedule-administration/preview-schedule/preview-schedule.component';
-import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
+import { EditLeaguesListComponent } from './schedule-administration/league-administration/edit-leagues-list/edit-leagues-list.component';
+import { LeagueAdministrationComponent } from './schedule-administration/league-administration/league-administration.component';
+import { ModifyMatchUpComponent } from './schedule-administration/modify/modify-match-up/modify-match-up.component';
+import { ModifyScheduleComponent } from './schedule-administration/modify/modify-schedule.component';
+import { EditTeamsListComponent } from './schedule-administration/new-schedule/edit-teams-list/edit-teams-list.component';
+import { NewScheduleComponent } from './schedule-administration/new-schedule/new-schedule.component';
+import { NewLeagueSessionScheduleComponent } from './schedule-administration/new-schedule/new-session-schedule/new-session-schedule.component';
+import { PreviewScheduleComponent } from './schedule-administration/preview-schedule/preview-schedule.component';
+import { ScheduleAdministrationComponent } from './schedule-administration/schedule-administration.component';
 
 @NgModule({
 	declarations: [
@@ -33,7 +33,7 @@ import { ScheduleAdministrationComponent } from './schedule/schedule-administrat
 		AdminDashboardComponent,
 		ScheduleAdministrationComponent,
 		AdminControlComponent,
-		LeagueAdministrationComponent,		
+		LeagueAdministrationComponent,
 		EditLeaguesListComponent,
 		NewScheduleComponent,
 		NewLeagueSessionScheduleComponent,

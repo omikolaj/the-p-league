@@ -20,7 +20,7 @@ import { AllowSpacesDirective } from './directives/allow-space/allow-spaces.dire
 import { ClearElementValueDirective } from './directives/clear-element-value/clear-element-value.directive';
 import { HasRoleDirective } from './directives/has-role/has-role.directive';
 import { IosVHDirective } from './directives/iosVH/ios-vh.directive';
-import { ListItemComponentDirective } from './directives/list-item-component.directive';
+import { ListItemComponentDirective } from './directives/list-item-component/list-item-component.directive';
 import { EnumToArrayPipe } from './pipes/enumToArray/enum-to-array.pipe';
 import { FilteredGearSizesPipe } from './pipes/filteredGearSizes/filtered-gear-sizes.pipe';
 import { GearImageViewPipe } from './pipes/gear-image-view/gear-image-view.pipe';

@@ -5,7 +5,7 @@ import { RolesResolver } from 'src/app/core/resolvers/roles/roles-resolver.resol
 import { ScheduleAdministrationResolver } from 'src/app/core/resolvers/schedule/schedule-administration-resolver.resolver';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
-import { ScheduleAdministrationComponent } from './schedule/schedule-administration/schedule-administration.component';
+import { ScheduleAdministrationComponent } from './schedule-administration/schedule-administration.component';
 
 const routes: Routes = [
 	{

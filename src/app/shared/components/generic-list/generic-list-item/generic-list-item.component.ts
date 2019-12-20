@@ -1,6 +1,6 @@
 import { Component, ComponentFactoryResolver, Input, OnInit, ViewChild } from '@angular/core';
 import { GenericListItem } from 'src/app/core/models/admin/dashboard/generic-list-item.model';
-import { ListItemComponentDirective } from 'src/app/shared/directives/list-item-component.directive';
+import { ListItemComponentDirective } from 'src/app/shared/directives/list-item-component/list-item-component.directive';
 
 @Component({
 	selector: 'app-generic-list-item',
