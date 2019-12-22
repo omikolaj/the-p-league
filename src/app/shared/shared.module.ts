@@ -21,6 +21,7 @@ import { ClearElementValueDirective } from './directives/clear-element-value/cle
 import { HasRoleDirective } from './directives/has-role/has-role.directive';
 import { IosVHDirective } from './directives/iosVH/ios-vh.directive';
 import { ListItemComponentDirective } from './directives/list-item-component/list-item-component.directive';
+import { TeamSwapDirective } from './directives/team-swap/team-swap.directive';
 import { EnumToArrayPipe } from './pipes/enumToArray/enum-to-array.pipe';
 import { FilteredGearSizesPipe } from './pipes/filteredGearSizes/filtered-gear-sizes.pipe';
 import { GearImageViewPipe } from './pipes/gear-image-view/gear-image-view.pipe';
@@ -56,7 +57,8 @@ const globalRippleConfig: RippleGlobalOptions = {
 		LogPipe,
 		GearImageViewPipe,
 		FilteredGearSizesPipe,
-		EnumToArrayPipe
+		EnumToArrayPipe,
+		TeamSwapDirective
 	],
 	imports: [
 		MatAutocompleteModule,
@@ -87,9 +89,9 @@ const globalRippleConfig: RippleGlobalOptions = {
 		MatSliderModule,
 		MatSlideToggleModule,
 		MatSnackBarModule,
-		MatSortModule,
 		MatStepperModule,
 		MatTableModule,
+		MatSortModule,
 		MatTabsModule,
 		MatToolbarModule,
 		MatTooltipModule,
@@ -159,6 +161,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		HasRoleDirective,
 		IosVHDirective,
 		ListItemComponentDirective,
+		TeamSwapDirective,
 
 		// Pipes
 		OrderEnumPipe,

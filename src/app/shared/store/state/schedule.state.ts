@@ -44,6 +44,7 @@ export class ScheduleState {
 	 * @param ctx
 	 * @param action
 	 */
+	// TODO add IDs to the IDs property on schedule state
 	@Action(Schedule.CreateSchedules)
 	createSessions(ctx: StateContext<ScheduleStateModel>, action: Schedule.CreateSchedules): void {
 		ctx.setState(
@@ -53,5 +54,23 @@ export class ScheduleState {
 				});
 			})
 		);
+	}
+
+	// TODO consider removing this. currently only used by preview component to perform testing
+	@Action(Schedule.DeleteMatch)
+	deleteMatch(ctx: StateContext<ScheduleStateModel>, action: Schedule.DeleteMatch): void {
+		console.log('delete match from store', action.match);
+		console.log('what are entities', ctx.getState().entities);
+		ctx.setState(
+			produce((draft: ScheduleStateModel) => {
+				draft.entities['1'].matches = draft.entities['1'].matches.filter((m) => {
+					const index = draft.entities['1'].matches.indexOf(m);
+					if (index !== 0) {
+						return true;
+					}
+				});
+			})
+		);
+		console.log('state after the match has been removed', ctx.getState().entities);
 	}
 }

@@ -1,5 +1,6 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { MatSortModule, MatTableModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsModule } from '@ngxs/store';
@@ -27,6 +28,8 @@ import { SharedModule } from './shared/shared.module';
 
 		// features
 		NavigationModule,
+		MatTableModule,
+		MatSortModule,
 
 		// app
 		AppRoutingModule,

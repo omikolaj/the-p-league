@@ -1,34 +1,46 @@
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
-import { Injectable } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { OnDestroy } from '@angular/core';
+import { Select } from '@ngxs/store';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { ScheduleState } from 'src/app/shared/store/state/schedule.state';
 
-@Injectable({
-	providedIn: 'root'
-})
-export class LeaguesSchedulesDataSourceService implements DataSource<Match> {
-	// private matchesSubject = new BehaviorSubject<Match[]>([]);
+export class LeaguesSchedulesDataSourceService implements DataSource<Match>, OnDestroy {
+	private matchesSubject$ = new BehaviorSubject<Match[]>([]);
+	private unsubscribe$ = new Subject();
 	@Select(ScheduleState.getMatches) matches$: Observable<Match[]>;
 
-	constructor(private store: Store) {}
+	constructor() {
+		// sync up this subject with the observable stream of matches inside the store
+		this.matches$.pipe(takeUntil(this.unsubscribe$)).subscribe(this.matchesSubject$);
+	}
 
 	/**
 	 * @description Connect is called once when the table is bootstrap to receive its initial set of values
 	 * @param [collectionViewer]
 	 * @returns connect
 	 */
-	connect(collectionViewer?: CollectionViewer): Observable<Match[] | readonly Match[]> {
-		// return this.store.select(ScheduleState.getMatches);
-		return this.matches$;
+	connect(collectionViewer: CollectionViewer): Observable<Match[] | readonly Match[]> {
+		return this.matchesSubject$.asObservable();
 	}
-	disconnect(collectionViewer?: CollectionViewer): void {
-		// this.matchesSubject.complete();
+	disconnect(collectionViewer: CollectionViewer): void {
+		this.matchesSubject$.complete();
 	}
 
-	loadMatches(): void {
-		const matches = this.store.select(ScheduleState.getMatches);
+	/**
+	 * @description on destroy is the only life cycle hook called inside services.
+	 * Using it to clean up logic
+	 */
+	ngOnDestroy(): void {
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
+	}
+
+	filterOnLeagueID(leagueID: string): void {
+		let matches = this.matchesSubject$.getValue();
+		matches = matches.filter((match) => match.leagueID === leagueID);
+		this.matchesSubject$.next(matches);
 	}
 }

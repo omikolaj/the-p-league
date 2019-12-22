@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as cuid from 'cuid';
 import * as moment from 'moment';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { GameDay } from 'src/app/core/models/schedule/game-day.model';
@@ -83,11 +84,13 @@ export class NewSessionScheduleService {
 				if (includeByeWeeks) {
 					const match: Match = new Match(homeTeam, awayTeam);
 					// TODO temp
+					match.id = cuid();
 					match.leagueID = homeTeam.leagueID;
 					matches.push(match);
 				} else if (homeTeam.name !== this.DUMMY.name && awayTeam.name !== this.DUMMY.name) {
 					const match: Match = new Match(homeTeam, awayTeam);
 					// TODO temp
+					match.id = cuid();
 					match.leagueID = homeTeam.leagueID;
 					matches.push(match);
 				}

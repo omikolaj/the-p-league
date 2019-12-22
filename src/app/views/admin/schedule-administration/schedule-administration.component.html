@@ -35,7 +35,7 @@
 					<app-add-teams [sportLeaguePairs]="pairs" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
 
 					<ng-container [ngSwitch]="adminComponent">
-						<app-new-schedule *ngSwitchCase="'new'" (generateSchedules)="onGeneratedSchedules()"></app-new-schedule>
+						<app-new-schedule *ngSwitchCase="'new'" (generateSchedules)="onGeneratedSchedules($event)"></app-new-schedule>
 					</ng-container>
 
 					<!-- <ng-container *ngComponentOutlet="adminComponent"></ng-container> -->

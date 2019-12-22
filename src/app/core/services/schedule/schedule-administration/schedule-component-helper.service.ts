@@ -50,7 +50,8 @@ export class ScheduleComponentHelperService {
 	 * @description Loads initial set of matches for the first generated session
 	 * @returns first session matches
 	 */
-	loadFirstSessionMatches(matchesSnapshot: Match[], leagueIDs: string[]): Match[] {
+	// TODO remove. Currently NOT in use
+	loadMatchesForFirstSession(matchesSnapshot: Match[], leagueIDs: string[]): Match[] {
 		let matches: Match[] = [];
 		// if we have at least one leagueID display the first one as the default one
 		if (leagueIDs.length > 0) {

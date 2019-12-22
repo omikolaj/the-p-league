@@ -40,9 +40,6 @@ export class ScheduleAdministrationFacade {
 		return this.store.selectSnapshot(ScheduleState.getMatches);
 	}
 
-	get sessionsLeagueIDsSnapshot(): string[] {
-		return this.store.selectSnapshot(ScheduleState.getSessionsLeagueIDs);
-	}
 	// sessionsLeagueIDsSnapshot = this.store.selectSnapshot(ScheduleState.getSessionsLeagueIDs);
 
 	// #endregion

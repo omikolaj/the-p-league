@@ -11,6 +11,7 @@ import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
+import { VIEW_ALL } from 'src/app/shared/helpers/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-schedule-administration',
@@ -22,16 +23,21 @@ export class ScheduleAdministrationComponent implements OnInit {
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
 	unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
 	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
-	filteredPairs$ = this.sportLeaguePairs$.pipe(
-		filter((_) => this.scheduleAdminFacade.sessionsLeagueIDsSnapshot.length !== 0),
-		map((pairs) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, this.scheduleAdminFacade.sessionsLeagueIDsSnapshot))
-	);
-	displayLeagueID = '';
+
+	/**
+	 * @description the preview-schedule component consumes this property in the view
+	 * in order to display the mat-select drop down list of the selected leagues
+	 * and their corresponding sport types. This list gets initialized inside the
+	 * onGeneratedSchedules event handler.
+	 */
+	filteredPairs$: Observable<SportTypesLeaguesPairs[]>;
+	displayLeagueID = VIEW_ALL;
 	tabTitle: TabTitles = 'Schedule';
 	nextTab: 0 | 1 | 2 | number;
 	newSportLeagueForm: FormGroup;
 	newTeamForm: FormGroup;
-	previewDataSource: MatTableDataSource<Match>;
+	previewDataSource: MatTableDataSource<Match> = new MatTableDataSource();
+	// previewDataSource: LeaguesSchedulesDataSourceService;
 	// adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 	adminComponent: 'new' | 'modify' | 'playoffs' | 'preview';
 
@@ -80,7 +86,13 @@ export class ScheduleAdministrationComponent implements OnInit {
 
 	// #region Event Handlers
 
-	onGeneratedSchedules(): void {
+	onGeneratedSchedules(leagueIDs: string[]): void {
+		// filter the sport league pairs based on the passed in league IDs.
+		// the filteredPairs$ observable stream gets consumed by the preview
+		this.filteredPairs$ = this.sportLeaguePairs$.pipe(
+			filter((_) => leagueIDs.length !== 0),
+			map((pairs) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagueIDs))
+		);
 		this.onPreviewSchedule();
 	}
 
@@ -163,20 +175,13 @@ export class ScheduleAdministrationComponent implements OnInit {
 	}
 
 	onPreviewSchedule(): void {
-		const firstMatches = this.scheduleComponentHelper.loadFirstSessionMatches(
-			this.scheduleAdminFacade.matchesSnapshot,
-			this.scheduleAdminFacade.sessionsLeagueIDsSnapshot
-		);
-		// grab the first match league ID
-		this.displayLeagueID = firstMatches[0].leagueID;
-		this.previewDataSource = new MatTableDataSource(firstMatches);
+		this.previewDataSource.data = this.scheduleAdminFacade.matchesSnapshot;
 		this.nextTab = 2;
-		// this.adminComponent = PreviewScheduleComponent;
-		// this.adminComponent = 'preview';
 	}
 
 	onLeagueChanged(leagueID: string): void {
-		this.previewDataSource.data = this.scheduleAdminFacade.matchesSnapshot.filter((m) => m.leagueID === leagueID);
+		this.displayLeagueID = leagueID;
+		this.previewDataSource.filter = leagueID;
 	}
 
 	// #endregion

@@ -1,7 +1,11 @@
 <div class="schedule-table">
-	<mat-form-field *ngIf="pairs.length > 0">
+	<!-- sessions selection form field -->
+	<mat-form-field *ngIf="showForMultipleLeagues">
 		<mat-label>Sessions</mat-label>
 		<mat-select [formControl]="selectedLeague" (selectionChange)="onSelectionChange()">
+			<mat-option [value]="viewAll">
+				All
+			</mat-option>
 			<mat-optgroup *ngFor="let sport of pairs" [label]="sport.name">
 				<mat-option *ngFor="let league of sport.leagues" [value]="league.id">
 					{{ league.name }}
@@ -10,31 +14,37 @@
 		</mat-select>
 	</mat-form-field>
 
-	<table mat-table [dataSource]="matchesDataSource" class="mat-elevation-z8" style="margin: 0 auto;">
+	<!-- filter value form field -->
+	<mat-form-field>
+		<input matInput [formControl]="filterValue" (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
+	</mat-form-field>
+
+	<mat-table matSort [dataSource]="matchesDataSource" class="mat-elevation-z8" style="margin: 0 auto;">
 		<!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
 		<!-- Date Column -->
 		<ng-container matColumnDef="date">
-			<th mat-header-cell *matHeaderCellDef>Date</th>
-			<td mat-cell *matCellDef="let match">
-				{{ match.dateTime === byeWeekOptionalDateText ? byeWeekOptionalDateText : (match.dateTime | date: 'EEEE MMM d, y, h:mm a') }}
-			</td>
+			<mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+			<mat-cell *matCellDef="let match">
+				{{ match?.dateTime === byeWeekOptionalDateText ? byeWeekOptionalDateText : (match?.dateTime | date: 'EEEE MMM d, y, h:mm a') }}
+			</mat-cell>
 		</ng-container>
 
 		<!-- Home Column -->
 		<ng-container matColumnDef="home">
-			<th mat-header-cell *matHeaderCellDef>Home</th>
-			<td mat-cell *matCellDef="let match">{{ match.homeTeam.name }}</td>
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Home</mat-header-cell>
+			<mat-cell *matCellDef="let match">{{ match?.homeTeam?.name }}</mat-cell>
 		</ng-container>
 
 		<!-- Away Column -->
 		<ng-container matColumnDef="away">
-			<th mat-header-cell *matHeaderCellDef>Away</th>
-			<td mat-cell *matCellDef="let match">{{ match.awayTeam.name }}</td>
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Away</mat-header-cell>
+			<mat-cell *matCellDef="let match">{{ match?.awayTeam?.name }}</mat-cell>
 		</ng-container>
 
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-		<tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></tr>
-	</table>
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row [appTeamSwap]="row" *matRowDef="let row; columns: displayedColumns"></mat-row>
+	</mat-table>
+	<mat-paginator [pageSizeOptions]="[8, 16, 32, 100]"></mat-paginator>
 </div>

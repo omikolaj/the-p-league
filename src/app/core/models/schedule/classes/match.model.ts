@@ -3,6 +3,7 @@ import { AwayTeam, HomeTeam } from '../team.model';
 
 // Represents two teams facing each other
 export default class Match {
+	id?: string;
 	dateTime?: moment.Moment | string;
 	homeTeam: HomeTeam;
 	awayTeam: AwayTeam;

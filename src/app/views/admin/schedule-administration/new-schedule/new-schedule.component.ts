@@ -31,7 +31,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	requireTimeErrorStateMatcher = new RequireTimeErrorStateMatcher();
 	selectedTeamIDs: string[] = [];
 	private unsubscribe$ = new Subject<void>();
-	@Output() generateSchedules = new EventEmitter<void>();
+	@Output() generateSchedules = new EventEmitter<string[]>();
 
 	/**
 	 * @description this stream is necessary to ensure we are invoking
@@ -350,7 +350,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * @description Triggered when user selects the 'Generate' button to create
 	 * schedules for the selected teams
 	 */
-	onGenerate(): void {
+	onGenerate(leaguesData: { league: League; teams: Team[]; form: FormGroup; sport: SportType }[]): void {
 		const newLeagueSessions: LeagueSessionSchedule[] = [];
 		const sessions = this.newLeagueSessionsForm.value['sessions'] as [];
 		// iterate over all new sessions that were submitted
@@ -395,7 +395,8 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		});
 		// send the new sessions array to the facade for further handling
 		this.scheduleAdminFacade.generateNewSchedules(newLeagueSessions);
-		this.generateSchedules.emit();
+		// iterate over the selected leaguesData list, and emit all selected league IDs
+		this.generateSchedules.emit(leaguesData.map((leagueData) => leagueData.league.id));
 	}
 
 	// TODO see if you can just use formGroup.value to retireve all the necessary info

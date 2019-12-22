@@ -41,3 +41,6 @@ export const UNASSIGNED = '-1';
 
 // Used as a replacement text for the Date field in the schedule if BYE WEEKS were chosen
 export const BYE_WEEK_DATE_TEXT = 'NO GAME';
+
+// Used to represent that user selected to view ALL schedules and not a specific one
+export const VIEW_ALL = '0';
