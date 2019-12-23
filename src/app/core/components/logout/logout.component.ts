@@ -5,7 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
 import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
-import { SnackBarEvent, SnackBarService } from '../../shared/components/snack-bar/snack-bar-service.service';
+import { SnackBarEvent, SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
 
 @Component({
 	selector: 'app-logout',

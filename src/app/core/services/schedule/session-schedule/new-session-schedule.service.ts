@@ -42,7 +42,7 @@ export class NewSessionScheduleService {
 			}
 
 			// generate match ups for this session's teams
-			const matches = this.generateMatchUps(teams, session.byeWeeks);
+			const matches = this.generateMatchUps(teams, session.byeWeeks, session.leagueID);
 
 			// generate match times with the selected times
 			session.matches = this.generateMatchUpTimes(matches, session);
@@ -61,7 +61,7 @@ export class NewSessionScheduleService {
 	 * if its false, than it will omit this match up from getting scheduled
 	 * @returns match ups without times and dates
 	 */
-	private generateMatchUps(teams: Team[], includeByeWeeks: boolean): Match[] {
+	private generateMatchUps(teams: Team[], includeByeWeeks: boolean, leagueID: string): Match[] {
 		const matches: Match[] = [];
 		// loop through all possible opponents. For example if a session started off with 7 (odd) selected teams
 		// this.generateSchedules() method adds a DUMMY team to make the team list even. Given any number of teams
@@ -85,13 +85,13 @@ export class NewSessionScheduleService {
 					const match: Match = new Match(homeTeam, awayTeam);
 					// TODO temp
 					match.id = cuid();
-					match.leagueID = homeTeam.leagueID;
+					match.leagueID = leagueID;
 					matches.push(match);
 				} else if (homeTeam.name !== this.DUMMY.name && awayTeam.name !== this.DUMMY.name) {
 					const match: Match = new Match(homeTeam, awayTeam);
 					// TODO temp
 					match.id = cuid();
-					match.leagueID = homeTeam.leagueID;
+					match.leagueID = leagueID;
 					matches.push(match);
 				}
 			}
@@ -148,7 +148,7 @@ export class NewSessionScheduleService {
 						index++;
 					}
 
-					// if the current match home team and away team's name do not equal 'BYE'
+					// if the current match home team or away team's name do not equal 'BYE'
 					// we are ready to schedule the match. This should never be false since the while
 					// loop checks for this already. Given current date, and next available time, schedule
 					// a time for next available match. matches[index] represents that next match
@@ -245,10 +245,21 @@ export class NewSessionScheduleService {
 	 * @returns next available day
 	 */
 	private getNextAvailableDay(desiredDays: MatchDay[]): MatchDay {
-		if (this.nextDay === MatchDay.None || this.nextDay === desiredDays[0]) {
-			return (this.nextDay = desiredDays.reduce((previousDay, currentDay) => Math.min(previousDay, currentDay)));
+		// TODO this function keeps returning the same day. Even if desiredDays list has two days 1 - 4 it will keep returning 1.
+		// if (this.nextDay === MatchDay.None || this.nextDay === desiredDays[0]) {
+		// 	// find next available day from the desiredDays list
+		// 	return (this.nextDay = desiredDays.reduce((previousDay, currentDay) => Math.min(previousDay, currentDay)));
+		// } else {
+		// 	return (this.nextDay = this.findNextLargestNumber(desiredDays));
+		// }
+		// TODO this seems to be working, needs to be tested
+		
+		const nextDay = this.findNextLargestNumber(desiredDays);
+		if (nextDay === 0) {
+			// find first day in the list
+			return (this.nextDay = desiredDays[0]);
 		} else {
-			return (this.nextDay = this.findNextLargestNumber(desiredDays));
+			return (this.nextDay = nextDay);
 		}
 	}
 
@@ -265,6 +276,11 @@ export class NewSessionScheduleService {
 		for (; i < desiredDays.length; i++) {
 			if (desiredDays[i] > this.nextDay) {
 				next = desiredDays[i];
+				// if we dont break, we will keep looping if there are more than 2 items in the list
+				// and lets say the value of next is 2 and this.nextDay is 1, and there is another value
+				// to loop over and that value is 3, then next will end up being 3 and not 2 even though,
+				// 2 was the next largest number...
+				break;
 			}
 		}
 		return next;

@@ -5,7 +5,6 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { CoreModule } from 'src/app/core/core.module';
 import { AdminAuthGuard } from 'src/app/core/guards/admin/admin-auth.guard';
-import { TeamSwapService } from 'src/app/shared/directives/team-swap/team-swap.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { LeagueState } from 'src/app/shared/store/state/league.state';
 import { ScheduleState } from 'src/app/shared/store/state/schedule.state';
@@ -58,6 +57,6 @@ import { ScheduleAdministrationComponent } from './schedule-administration/sched
 		AdminRoutingModule,
 		NgxsModule.forFeature([SportTypeState, LeagueState, TeamState, ScheduleState])
 	],
-	providers: [AdminAuthGuard, TeamSwapService]
+	providers: [AdminAuthGuard]
 })
 export class AdminModule {}

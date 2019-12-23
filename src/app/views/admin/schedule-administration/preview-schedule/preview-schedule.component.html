@@ -1,6 +1,6 @@
 <div class="schedule-table">
 	<!-- sessions selection form field -->
-	<mat-form-field *ngIf="showForMultipleLeagues">
+	<mat-form-field *ngIf="showLeagueSelection()">
 		<mat-label>Sessions</mat-label>
 		<mat-select [formControl]="selectedLeague" (selectionChange)="onSelectionChange()">
 			<mat-option [value]="viewAll">
@@ -18,6 +18,8 @@
 	<mat-form-field>
 		<input matInput [formControl]="filterValue" (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
 	</mat-form-field>
+
+	<h1>{{ getCurrentTitle() }}</h1>
 
 	<mat-table matSort [dataSource]="matchesDataSource" class="mat-elevation-z8" style="margin: 0 auto;">
 		<!--- Note that these columns can be defined in any order.
@@ -47,4 +49,6 @@
 		<mat-row [appTeamSwap]="row" *matRowDef="let row; columns: displayedColumns"></mat-row>
 	</mat-table>
 	<mat-paginator [pageSizeOptions]="[8, 16, 32, 100]"></mat-paginator>
+
+	<button mat-raised-button color="accent" (click)="onPublishedSchedules()">Publish</button>
 </div>

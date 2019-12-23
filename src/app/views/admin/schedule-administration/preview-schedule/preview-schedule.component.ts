@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material/table';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from 'src/app/shared/helpers/constants/the-p-league-constants';
 import { filterOnInputValue, filterOnLeagueID } from './filter-predicate.function';
 import { previewMatchSortingFn } from './sorting-data-accessor.function';
@@ -11,9 +12,10 @@ import { previewMatchSortingFn } from './sorting-data-accessor.function';
 @Component({
 	selector: 'app-preview-schedule',
 	templateUrl: './preview-schedule.component.html',
-	styleUrls: ['./preview-schedule.component.scss']
+	styleUrls: ['./preview-schedule.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PreviewScheduleComponent implements OnInit, AfterViewInit {
+export class PreviewScheduleComponent implements AfterViewInit {
 	byeWeekOptionalDateText = BYE_WEEK_DATE_TEXT;
 	viewAll = VIEW_ALL;
 
@@ -31,30 +33,81 @@ export class PreviewScheduleComponent implements OnInit, AfterViewInit {
 	@Input() matchesDataSource: MatTableDataSource<Match>;
 	@Input() pairs: SportTypesLeaguesPairs[] = [];
 	@Input() set displayLeagueID(value: string) {
-		console.log('incoming value', value);
 		this.selectedLeague.setValue(value);
 	}
-	showForMultipleLeagues = false;
 	@Output() leagueChanged = new EventEmitter<string>();
+	@Output() schedulesPublished = new EventEmitter<void>();
 
-	constructor(private fb: FormBuilder) {}
+	constructor(private fb: FormBuilder, private scheduleHelper: ScheduleComponentHelperService) {}
 
-	ngOnInit(): void {
-		// determines whether we should display the league selection drop down to the user
-		// or not.
-		if (this.pairs.length > 0 && this.pairs.length === 1) {
-			if (this.pairs[0].leagues.length > 1) {
-				this.showForMultipleLeagues = true;
-			}
-		} else {
-			this.showForMultipleLeagues = true;
-		}
-	}
+	// #region Life Cycle methods
 
 	ngAfterViewInit(): void {
 		this.matchesDataSource.sort = this.sort;
 		this.matchesDataSource.paginator = this.paginator;
 		this.matchesDataSource.sortingDataAccessor = previewMatchSortingFn;
+	}
+
+	// #endregion
+
+	// #region View methods
+
+	/**
+	 * @description Gets current display title based on the currently selected league id.
+	 * If the leagueID is set to 0, it will return 'All'
+	 * otherwise it will return the Sport - League combo for whatever
+	 * the league id is.
+	 * @returns current title
+	 */
+	getCurrentTitle(): string {
+		// find title for the currently selected league id
+		const leagueID: string = this.selectedLeague.value;
+		const pairs = this.scheduleHelper.filterPairsForGeneratedSessions(this.pairs, [leagueID]);
+		let title = '';
+		if (pairs) {
+			if (pairs.length > 0) {
+				const pair = pairs[0];
+				title = `${pair.name} - `;
+				if (pair.leagues) {
+					if (pair.leagues.length > 0) {
+						title += `${pair.leagues[0].name}`;
+					}
+				}
+			}
+		}
+		return title === '' ? 'All' : title;
+	}
+
+	/**
+	 * @description Used in the view to determine if the select drop down list
+	 * for leagues should be visible or not. If its just a single league we
+	 * do not care to show it
+	 * @returns true if league selection
+	 */
+	showLeagueSelection(): boolean {
+		if (this.pairs.length > 0 && this.pairs.length === 1) {
+			if (this.pairs[0].leagues.length > 1) {
+				return true;
+			}
+		} else {
+			return true;
+		}
+	}
+
+	applyFilter(filterValue: string): void {
+		this.matchesDataSource.filterPredicate = filterOnInputValue;
+		this.matchesDataSource.filter = filterValue.trim().toLowerCase();
+		if (this.matchesDataSource.paginator) {
+			this.matchesDataSource.paginator.firstPage();
+		}
+	}
+
+	// #endregion
+
+	// #endregion Event Handlers
+
+	onPublishedSchedules(): void {
+		this.schedulesPublished.emit();
 	}
 
 	onRowClicked(row: Match): void {
@@ -68,11 +121,5 @@ export class PreviewScheduleComponent implements OnInit, AfterViewInit {
 		this.leagueChanged.emit(this.selectedLeague.value);
 	}
 
-	applyFilter(filterValue: string): void {
-		this.matchesDataSource.filterPredicate = filterOnInputValue;
-		this.matchesDataSource.filter = filterValue.trim().toLowerCase();
-		if (this.matchesDataSource.paginator) {
-			this.matchesDataSource.paginator.firstPage();
-		}
-	}
+	// #endregion
 }

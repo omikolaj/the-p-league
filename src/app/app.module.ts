@@ -8,7 +8,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavigationModule } from './components/navigation/navigation.module';
+import { NavigationModule } from './core/components/navigation/navigation.module';
 import { CoreModule } from './core/core.module';
 import { ApiRequestPrefixInterceptor } from './core/interceptors/api-request-prefix/api-request-prefix.service';
 import { RefreshAccessTokenInterceptor } from './core/interceptors/refresh-access-token/refresh-access-token.service';

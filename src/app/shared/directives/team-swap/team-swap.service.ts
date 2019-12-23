@@ -21,7 +21,7 @@ export class TeamSwapService {
 
 	constructor(private scheduleAdminFacade: ScheduleAdministrationFacade) {}
 
-	swapTeams(originalTeam: string, newTeam: string, match: Match): void {}
+	// swapTeams(originalTeam: string, newTeam: string, match: Match): void {}
 
 	removeStyle(el: any, renderer: Renderer2): void {
 		this.colorPairNumber--;

@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from './toolbar/toolbar.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { SharedModule } from '../../shared/shared.module';
-import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
+import { ToolbarComponent } from './toolbar/toolbar.component';
 
 @NgModule({
 	declarations: [ToolbarComponent, SidenavListComponent],

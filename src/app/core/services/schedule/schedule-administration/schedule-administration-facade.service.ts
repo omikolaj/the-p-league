@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -52,7 +53,8 @@ export class ScheduleAdministrationFacade {
 		private scheduleAdminAsync: ScheduleAdministrationAsyncService,
 		private store: Store,
 		private scheduleAdminHelper: ScheduleAdministrationHelperService,
-		private newSessionService: NewSessionScheduleService
+		private newSessionService: NewSessionScheduleService,
+		private router: Router
 	) {}
 
 	// #region NewLeagueSession
@@ -62,6 +64,13 @@ export class ScheduleAdministrationFacade {
 		newLeagueSessions = this.scheduleAdminHelper.matchTeamsWithLeagues(newLeagueSessions, teamEntities);
 		const newSessions: LeagueSessionSchedule[] = this.newSessionService.generateSchedules(newLeagueSessions);
 		this.store.dispatch(new Schedules.CreateSchedules(newSessions));
+	}
+
+	publishSessionSchedules(): void {
+		const sessions = this.store.selectSnapshot(ScheduleState.getSessions);
+		this.scheduleAdminAsync.publishSessions(sessions).subscribe((v) => {
+			this.router.navigate(['admin']);
+		});
 	}
 
 	// #endregion

@@ -87,6 +87,11 @@ export class ScheduleAdministrationComponent implements OnInit {
 	// #region Event Handlers
 
 	onGeneratedSchedules(leagueIDs: string[]): void {
+		// if the leagueIDs list is equal to one, set the displayLeagueID
+		// to its value, otherwise, use ViewAll, which is default
+		if (leagueIDs.length === 1) {
+			this.displayLeagueID = leagueIDs[0];
+		}
 		// filter the sport league pairs based on the passed in league IDs.
 		// the filteredPairs$ observable stream gets consumed by the preview
 		this.filteredPairs$ = this.sportLeaguePairs$.pipe(
@@ -94,6 +99,10 @@ export class ScheduleAdministrationComponent implements OnInit {
 			map((pairs) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagueIDs))
 		);
 		this.onPreviewSchedule();
+	}
+
+	onSchedulesPublished(): void {
+		this.scheduleAdminFacade.publishSessionSchedules();
 	}
 
 	onUpdateSport(updatedSport: { id: string; name: string }): void {

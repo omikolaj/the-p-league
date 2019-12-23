@@ -31,7 +31,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'logout',
-				loadChildren: () => import('./components/logout/logout.module').then((m) => m.LogoutModule)
+				loadChildren: () => import('./core/components/logout/logout.module').then((m) => m.LogoutModule)
 			},
 			{
 				path: '',
