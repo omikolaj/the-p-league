@@ -199,6 +199,10 @@ export class ScheduleAdministrationComponent implements OnInit {
 
 	// #endregion
 
+	/**
+	 * @description Checks to see if the 'Modify' action button should be enabled or disabled
+	 * @returns true if schedule already exists for the selected league
+	 */
 	checkExistingSchedule(): boolean {
 		const isDisabled = this.checkSelection();
 		if (!isDisabled) {
