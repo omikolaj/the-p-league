@@ -1,20 +1,20 @@
 <form [formGroup]="editLeaguesForm" (ngSubmit)="onSubmit()">
-  <mat-selection-list formArrayName="leagues" (selectionChange)="onSelectionChange($event)" [disabled]="disableListSelection">
-    <mat-list-option *ngFor="let league of leagues; let i = index; trackBy: trackByFn" [value]="league.id" [selected]="league.selected">
-      <ng-container [formGroupName]="i">
-        <mat-form-field [appearance]="!disableListSelection ? 'none' : 'legacy'" appAllowSpaces>
-          <input formControlName="name" matInput [value]="league?.name" />
-        </mat-form-field>
-      </ng-container>
-    </mat-list-option>
-  </mat-selection-list>
+	<mat-selection-list formArrayName="leagues" (selectionChange)="onSelectionChange($event)" [disabled]="disableListSelection">
+		<mat-list-option *ngFor="let league of leagues; let i = index; trackBy: trackByFn" [value]="league.id" [selected]="league.selected">
+			<ng-container [formGroupName]="i">
+				<mat-form-field [appearance]="!disableListSelection ? 'none' : 'legacy'" appAllowSpaces>
+					<input formControlName="name" matInput [value]="league?.name" />
+				</mat-form-field>
+			</ng-container>
+		</mat-list-option>
+	</mat-selection-list>
 
-  <div class="edit-actions-buttons">
-    <button mat-stroked-button color="accent" [disabled]="disableEdit">
-      {{ disableListSelection ? 'Save' : 'Edit' }}
-    </button>
-    <button mat-stroked-button color="warn" [disabled]="disableDelete" type="button" (click)="onDelete()">
-      Delete
-    </button>
-  </div>
+	<div class="edit-actions-buttons">
+		<button mat-stroked-button color="accent">
+			{{ disableListSelection ? 'Save' : 'Edit' }}
+		</button>
+		<button mat-stroked-button color="warn" [disabled]="disableDelete" type="button" (click)="onDelete()">
+			Delete
+		</button>
+	</div>
 </form>

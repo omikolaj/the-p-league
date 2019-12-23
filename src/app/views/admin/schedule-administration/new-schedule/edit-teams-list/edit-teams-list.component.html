@@ -26,8 +26,10 @@
 			<button mat-stroked-button color="accent">
 				{{ disableListSelection ? 'Save' : 'Edit' }}
 			</button>
-			<button mat-stroked-button color="accent" [disabled]="disableEdit" type="button" (click)="unassignedTeamsChangeHandler()">Unassign</button>
-			<button mat-stroked-button color="warn" [disabled]="disableDelete" type="button" (click)="deletedTeamsHandler()">Delete</button>
+			<button mat-stroked-button color="accent" [disabled]="disableActions" type="button" (click)="unassignedTeamsChangeHandler()">
+				Unassign
+			</button>
+			<button mat-stroked-button color="warn" [disabled]="disableActions" type="button" (click)="deletedTeamsHandler()">Delete</button>
 		</mat-action-row>
 	</form>
 </mat-expansion-panel>

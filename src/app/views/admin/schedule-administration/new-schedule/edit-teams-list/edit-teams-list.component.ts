@@ -5,7 +5,6 @@ import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 
-
 @Component({
 	selector: 'app-edit-teams-list',
 	templateUrl: './edit-teams-list.component.html',
@@ -14,6 +13,7 @@ import { Team } from 'src/app/core/models/schedule/team.model';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditTeamsListComponent implements OnInit {
+	@ViewChild(MatSelectionList, { static: false }) teamList: MatSelectionList;
 	@Input() teamsForm: FormGroup;
 	@Input() teams: Team[];
 	@Input() league: League;
@@ -23,28 +23,28 @@ export class EditTeamsListComponent implements OnInit {
 	@Output() deletedTeams: EventEmitter<void> = new EventEmitter<void>();
 	@Output() teamsSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
 	disableListSelection = false;
-	// assumes we have at least one team selected when initialized
-	private numberOfSelectedTeams = 1;
-	get disableEdit(): boolean {
-		return this.numberOfSelectedTeams > 0 ? false : true;
+
+	get disableActions(): boolean {
+		// if there aren't any selected leagues then check if disableListSelection is true or false
+		return !this.anySelectedLeagues || this.disableListSelection;
 	}
-	get disableDelete(): boolean {
-		const disable = this.numberOfSelectedTeams > 0 ? false : true;
-		return disable || this.disableListSelection;
+
+	private get anySelectedLeagues(): boolean {
+		if (this.teamList) {
+			return this.teamList.selectedOptions.selected.length === 0 ? false : true;
+		}
+		return false;
 	}
-	@ViewChild(MatSelectionList, { static: false }) teamList: MatSelectionList;
 
 	constructor() {}
 
 	// #region ng LifeCycle Hooks
 
-	ngOnInit(): void {		
-	}
+	ngOnInit(): void {}
 
 	// #endregion
 
 	onTeamsSelectionChange(event: MatSelectionListChange): void {
-		this.numberOfSelectedTeams = event.source.selectedOptions.selected.length;
 		this.teamsSelectionChange.emit(event);
 	}
 
@@ -61,13 +61,11 @@ export class EditTeamsListComponent implements OnInit {
 	}
 
 	onSaveHandler(): void {
-		console.log('updatedteamsForm', this.teamsForm);
 		this.disableListSelection = !this.disableListSelection;
 		this.updatedTeams.emit(this.teamsForm);
 	}
 
 	deletedTeamsHandler(): void {
-		this.numberOfSelectedTeams = 0;
 		this.deletedTeams.emit();
 	}
 }
