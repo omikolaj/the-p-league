@@ -42,6 +42,7 @@ export class TeamState {
 				draft.IDs = Object.keys(action.teams).map((id) => id);
 			})
 		);
+		console.log('teams state', ctx.getState().entities);
 	}
 
 	@Action(Teams.AddTeam)

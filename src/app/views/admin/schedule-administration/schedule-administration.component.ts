@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatTabChangeEvent, MatTableDataSource } from '@angular/material';
+import { MatSelectionListChange, MatTabChangeEvent, MatTableDataSource } from '@angular/material';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
@@ -57,7 +57,8 @@ export class ScheduleAdministrationComponent implements OnInit {
 	// #endregion
 
 	checkSelection(): boolean {
-		return this.scheduleAdminFacade.checkLeagueSelection();
+		// TODO implmenet
+		return false;
 	}
 
 	// #region Forms
@@ -103,6 +104,28 @@ export class ScheduleAdministrationComponent implements OnInit {
 
 	onSchedulesPublished(): void {
 		this.scheduleAdminFacade.publishSessionSchedules();
+	}
+
+	// leagueSelection: { sportTypeIDs: { sportTypeID: string; leagueIDs: string[] }[] } = { sportTypeIDs: [] };
+	onLeagueSelectionChanged(leagueSelectionChangeEvent: { matSelectionListChange: MatSelectionListChange; sportTypeID: string }): void {
+		const ids: string[] = this.scheduleComponentHelper.onSelectionChange(leagueSelectionChangeEvent.matSelectionListChange);
+		this.scheduleAdminFacade.updateSelectedLeagues(ids, leagueSelectionChangeEvent.sportTypeID);
+		// if the leagueSelection sportTypeIDs list does not contain selection.sportTypeID
+		// if (this.leagueSelection.sportTypeIDs.length > 0) {
+		// 	if (this.leagueSelection.sportTypeIDs.some((sport) => sport.sportTypeID !== selection.sportTypeID)) {
+		// 		this.leagueSelection.sportTypeIDs.push({
+		// 			sportTypeID: selection.sportTypeID,
+		// 			leagueIDs: selection.ids
+		// 		});
+		// 	}
+		// } else {
+		// 	this.leagueSelection.sportTypeIDs.push({
+		// 		sportTypeID: selection.sportTypeID,
+		// 		leagueIDs: selection.ids
+		// 	});
+		// }
+
+		// console.log('this.leagueSelection', this.leagueSelection);
 	}
 
 	onUpdateSport(updatedSport: { id: string; name: string }): void {
@@ -203,13 +226,13 @@ export class ScheduleAdministrationComponent implements OnInit {
 	 * @description Checks to see if the 'Modify' action button should be enabled or disabled
 	 * @returns true if schedule already exists for the selected league
 	 */
-	checkExistingSchedule(): boolean {
-		const isDisabled = this.checkSelection();
-		if (!isDisabled) {
-			return this.scheduleAdminFacade.checkExistingSchedule();
-		}
-		return isDisabled;
-	}
+	// checkExistingSchedule(): boolean {
+	// 	const isDisabled = this.checkSelection();
+	// 	if (!isDisabled) {
+	// 		return this.scheduleAdminFacade.checkExistingSchedule();
+	// 	}
+	// 	return isDisabled;
+	// }
 
 	reset(event: MatTabChangeEvent): void {
 		this.nextTab = event.index;

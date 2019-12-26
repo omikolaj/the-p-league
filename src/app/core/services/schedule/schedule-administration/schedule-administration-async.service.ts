@@ -14,6 +14,7 @@ import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 	providedIn: 'root'
 })
 export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService {
+	protected readonly leaguesURL = 'leagues';
 	constructor(protected http: HttpClient) {
 		super(http);
 	}
@@ -36,18 +37,15 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region SportType
 
 	addSport(newSportType: SportType): Observable<SportType> {
-		newSportType.id = cuid();
-		console.log('added new sport to backend', newSportType);
-		return of(newSportType).pipe(delay(1000));
+		return this.http.post<SportType>(this.sportTypeURL, JSON.stringify(newSportType), this.headers);
 	}
 
 	updateSportType(updatedSportType: SportType): Observable<SportType> {
-		console.log('updated sport type through the backend', updatedSportType);
-		return of(updatedSportType).pipe(delay(100));
+		return this.http.patch<SportType>(`${this.sportTypeURL}/${updatedSportType.id}`, JSON.stringify(updatedSportType), this.headers);
 	}
 
-	deleteSportType(id: string): Observable<string> {
-		return of(id).pipe(delay(100));
+	deleteSportType(id: string): Observable<boolean> {
+		return this.http.delete<boolean>(`${this.sportTypeURL}/${id}`);
 	}
 
 	// #endregion
@@ -55,17 +53,19 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region League
 
 	addLeague(newLeague: League): Observable<League> {
-		newLeague.id = cuid();
-		console.log('added new league to the backend', newLeague);
-		return of(newLeague).pipe(delay(100));
+		return this.http.post<League>(this.leaguesURL, JSON.stringify(newLeague), this.headers);
 	}
 
 	updateLeagues(updatedLeagues: League[]): Observable<League[]> {
-		return of(updatedLeagues).pipe(delay(100));
+		return this.http.patch<League[]>(this.leaguesURL, JSON.stringify(updatedLeagues), this.headers);
 	}
 
-	deleteLeagues(leaguesToDelete: string[]): Observable<string[]> {
-		return of(leaguesToDelete).pipe(delay(100));
+	deleteLeagues(leaguesToDelete: string[]): Observable<boolean> {
+		const options = {
+			headers: this.headers.headers,
+			body: leaguesToDelete
+		};
+		return this.http.delete<boolean>(this.leaguesURL, options);
 	}
 
 	// #endregion
@@ -85,12 +85,12 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 		return of(teamsToUnassign).pipe(delay(100));
 	}
 
-	assignTeams(teamsToAssign: Team[]) {
+	assignTeams(teamsToAssign: Team[]): Observable<Team[]> {
 		return of(teamsToAssign).pipe(delay(100));
 	}
 
-	deleteTeams(teamsToDelete: string[]): Observable<string[]> {
-		return of(teamsToDelete).pipe(delay(100));
+	deleteTeams(teamsToDelete: string[]): Observable<boolean> {
+		return of(true).pipe(delay(100));
 	}
 
 	// #endregion

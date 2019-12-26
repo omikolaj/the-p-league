@@ -79,6 +79,7 @@ export class SportTypeState {
 						IDs: normalizedData.result
 					})
 				);
+				console.log('sportTypes state', ctx.getState().entities);
 			}),
 			tap((normalizedData) => ctx.dispatch(new Leagues.InitializeLeagues(normalizedData.entities['leagues']))),
 			tap((normalizedData) => ctx.dispatch(new Teams.InitializeTeams(normalizedData.entities['teams']))),
@@ -111,6 +112,7 @@ export class SportTypeState {
 
 	@Action(Sports.AddSportType)
 	add(ctx: StateContext<SportTypeStateModel>, action: Sports.AddSportType): void {
+		console.log('adding sport type via HTTPs', action.newSportType);
 		ctx.setState(
 			produce((draft: SportTypeStateModel) => {
 				draft.entities[action.newSportType.id] = action.newSportType;

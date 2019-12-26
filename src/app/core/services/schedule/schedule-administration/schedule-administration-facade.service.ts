@@ -100,7 +100,7 @@ export class ScheduleAdministrationFacade {
 	}
 
 	deleteSportType(id: string): void {
-		this.scheduleAdminAsync.deleteSportType(id).subscribe((id) => this.store.dispatch(new Sports.DeleteSportType(id)));
+		this.scheduleAdminAsync.deleteSportType(id).subscribe((_) => this.store.dispatch(new Sports.DeleteSportType(id)));
 	}
 
 	// #endregion
@@ -113,8 +113,8 @@ export class ScheduleAdministrationFacade {
 			.addLeague(newLeague)
 			.subscribe((addedLeague) =>
 				this.store.dispatch([
-					new Sports.AddLeagueIDsToSportType([{ sportTypeID: addedLeague.sportTypeID, ids: [addedLeague.id] }]),
-					new Leagues.AddLeague(newLeague)
+					new Leagues.AddLeague(newLeague),
+					new Sports.AddLeagueIDsToSportType([{ sportTypeID: addedLeague.sportTypeID, ids: [addedLeague.id] }])
 				])
 			);
 	}
@@ -131,18 +131,14 @@ export class ScheduleAdministrationFacade {
 
 		this.scheduleAdminAsync
 			.deleteLeagues(leagueIDsToDelete)
-			.subscribe((deletedLeagueIDs) =>
-				this.store.dispatch([new Sports.DeleteLeagueIDsFromSportType(sportTypeID, deletedLeagueIDs), new Leagues.DeleteLeagues(deletedLeagueIDs)])
+			.subscribe((_) =>
+				this.store.dispatch([new Sports.DeleteLeagueIDsFromSportType(sportTypeID, leagueIDsToDelete), new Leagues.DeleteLeagues(leagueIDsToDelete)])
 			);
 	}
 
 	updateSelectedLeagues(selectedIDs: string[], sportTypeID: string): void {
 		const effectedLeagueIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.types.entities[sportTypeID].leagues);
 		this.store.dispatch(new Leagues.UpdateSelectedLeagues(selectedIDs, effectedLeagueIDs));
-	}
-
-	checkLeagueSelection(): boolean {
-		return; // this.leagueAdminService.allSelectedLeagues.length < 1;
 	}
 
 	// #endregion
@@ -229,8 +225,8 @@ export class ScheduleAdministrationFacade {
 	deleteTeams(leagueID: string, teamIDsToDelete: string[]): void {
 		this.scheduleAdminAsync
 			.deleteTeams(teamIDsToDelete)
-			.subscribe((deletedTeamIDs) =>
-				this.store.dispatch([new Leagues.DeleteTeamIDsFromLeague(leagueID, deletedTeamIDs), new Teams.DeleteTeams(deletedTeamIDs)])
+			.subscribe((_) =>
+				this.store.dispatch([new Leagues.DeleteTeamIDsFromLeague(leagueID, teamIDsToDelete), new Teams.DeleteTeams(teamIDsToDelete)])
 			);
 	}
 
@@ -242,7 +238,6 @@ export class ScheduleAdministrationFacade {
 	 * Updates the selected property setting it to true for every
 	 * selected id and sets it to false for all other not effected
 	 * teams.
-	 * Currently NOT being used
 	 */
 	updateTeamSelection(selectedIDs: string[], leagueID: string): void {
 		const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
@@ -250,8 +245,4 @@ export class ScheduleAdministrationFacade {
 	}
 
 	// #endregion
-
-	checkExistingSchedule() {
-		return false;
-	}
 }

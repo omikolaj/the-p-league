@@ -8,7 +8,6 @@ import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 
-
 @Component({
 	selector: 'app-league-administration',
 	templateUrl: './league-administration.component.html',
@@ -19,6 +18,10 @@ import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/s
 export class LeagueAdministrationComponent implements OnInit {
 	leagues$: Observable<League[]>;
 	@Input() sportType: SportType;
+	@Output() leagueSelectionChanged: EventEmitter<{ matSelectionListChange: MatSelectionListChange; sportTypeID: string }> = new EventEmitter<{
+		matSelectionListChange: MatSelectionListChange;
+		sportTypeID: string;
+	}>();
 	@Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
 	@Output() updatedSportName: EventEmitter<{
 		id: string;
@@ -28,11 +31,7 @@ export class LeagueAdministrationComponent implements OnInit {
 	sportTypeForm: FormGroup;
 	readonlySportName = true;
 
-	constructor(
-		private fb: FormBuilder,
-		private scheduleAdminFacade: ScheduleAdministrationFacade,
-		private scheduleHelper: ScheduleComponentHelperService
-	) {}
+	constructor(private fb: FormBuilder, private scheduleAdminFacade: ScheduleAdministrationFacade) {}
 
 	// #region ng LifeCycle hooks
 
@@ -43,10 +42,6 @@ export class LeagueAdministrationComponent implements OnInit {
 				this.initForms(leagues);
 			})
 		);
-	}
-
-	ngOnDestroy(): void {
-		console.log('destroying league admin');
 	}
 
 	// #endregion
@@ -115,9 +110,7 @@ export class LeagueAdministrationComponent implements OnInit {
 	 * It only updates the selected property on each selected leagues    *
 	 */
 	onLeagueSelectionChange(selectedLeaguesEvent: MatSelectionListChange): void {
-		const ids: string[] = this.scheduleHelper.onSelectionChange(selectedLeaguesEvent);
-
-		this.scheduleAdminFacade.updateSelectedLeagues(ids, this.sportType.id);
+		this.leagueSelectionChanged.emit({ matSelectionListChange: selectedLeaguesEvent, sportTypeID: this.sportType.id });
 	}
 
 	// #region Event handlers

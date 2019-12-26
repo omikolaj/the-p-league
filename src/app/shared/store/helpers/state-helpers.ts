@@ -7,9 +7,13 @@
 export function updateEntity<T>(incoming: T, existing: T): T {
 	const updated: T = existing;
 
-	for (let index = 0; index < Object.getOwnPropertyNames(incoming).length; index++) {
-		const key = Object.getOwnPropertyNames(incoming)[index];
-		updated[key] = incoming[key];
+	for (let index = 0; index < Object.getOwnPropertyNames(existing).length; index++) {
+		const key = Object.getOwnPropertyNames(existing)[index];
+		// check to see if the incoming object has the given property defined
+		// this prevents us from overriding existing values if one of the properties is null
+		if (incoming[key]) {
+			updated[key] = incoming[key];
+		}
 	}
 	return updated;
 }

@@ -45,6 +45,7 @@ export class LeagueState {
 				draft.IDs = Object.keys(action.leagues).map((id) => id);
 			})
 		);
+		console.log('leagues state', ctx.getState().entities);
 	}
 
 	@Action(Leagues.AddLeague)
@@ -63,7 +64,7 @@ export class LeagueState {
 			produce((draft: LeagueStateModel) => {
 				action.payload.forEach((pair) => {
 					if (pair.leagueID !== UNASSIGNED) {
-						draft.entities[pair.leagueID].teams = (draft.entities[pair.leagueID].teams || []).concat([pair.ids]);
+						draft.entities[pair.leagueID].teams = (draft.entities[pair.leagueID].teams || []).concat(pair.ids);
 					}
 				});
 			})

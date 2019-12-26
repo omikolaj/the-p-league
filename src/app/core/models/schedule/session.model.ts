@@ -1,9 +1,10 @@
 import { Moment } from 'moment';
 
 // Represents a session for any P League, league
-export interface Session {
+// TODO currently not in use
+interface Session {
 	id?: number;
-	leagueId?: number;
+	leagueID?: number;
 	name?: string;
 	startDate?: Moment;
 	endDate?: Moment;

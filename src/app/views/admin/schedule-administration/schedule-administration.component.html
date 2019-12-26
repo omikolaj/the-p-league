@@ -13,6 +13,7 @@
 						<app-league-administration
 							(deletedSport)="onDeleteSport($event)"
 							(updatedSportName)="onUpdateSport($event)"
+							(leagueSelectionChanged)="onLeagueSelectionChanged($event)"
 							[sportType]="sport"
 						></app-league-administration>
 					</ng-container>
