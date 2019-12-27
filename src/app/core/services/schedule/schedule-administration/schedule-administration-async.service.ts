@@ -13,7 +13,7 @@ import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 	providedIn: 'root'
 })
 export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService {
-	protected readonly leaguesURL = 'leagues';
+	protected readonly leaguesUrl = 'leagues';
 	protected readonly teamsUrl = 'teams';
 	constructor(protected http: HttpClient) {
 		super(http);
@@ -37,15 +37,15 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region SportType
 
 	addSport(newSportType: SportType): Observable<SportType> {
-		return this.http.post<SportType>(this.sportTypeURL, JSON.stringify(newSportType), this.headers);
+		return this.http.post<SportType>(`${this.sportTypeUrl}/new`, JSON.stringify(newSportType), this.headers);
 	}
 
 	updateSportType(updatedSportType: SportType): Observable<SportType> {
-		return this.http.patch<SportType>(`${this.sportTypeURL}/${updatedSportType.id}`, JSON.stringify(updatedSportType), this.headers);
+		return this.http.patch<SportType>(`${this.sportTypeUrl}/${updatedSportType.id}`, JSON.stringify(updatedSportType), this.headers);
 	}
 
 	deleteSportType(id: string): Observable<boolean> {
-		return this.http.delete<boolean>(`${this.sportTypeURL}/${id}`);
+		return this.http.delete<boolean>(`${this.sportTypeUrl}/${id}`);
 	}
 
 	// #endregion
@@ -53,7 +53,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region League
 
 	addLeague(newLeague: League): Observable<League> {
-		return this.http.post<League>(this.leaguesURL, JSON.stringify(newLeague), this.headers);
+		return this.http.post<League>(`${this.leaguesUrl}/new`, JSON.stringify(newLeague), this.headers);
 	}
 
 	updateLeagues(updatedLeagues: League[]): Observable<League[]> {
@@ -61,7 +61,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 			headers: this.headers.headers,
 			body: updatedLeagues
 		};
-		return this.http.patch<League[]>(this.leaguesURL, JSON.stringify(updatedLeagues), options);
+		return this.http.patch<League[]>(this.leaguesUrl, JSON.stringify(updatedLeagues), options);
 	}
 
 	deleteLeagues(leaguesToDelete: string[]): Observable<boolean> {
@@ -69,7 +69,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 			headers: this.headers.headers,
 			body: leaguesToDelete
 		};
-		return this.http.delete<boolean>(this.leaguesURL, options);
+		return this.http.delete<boolean>(this.leaguesUrl, options);
 	}
 
 	// #endregion
@@ -85,7 +85,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 			headers: this.headers.headers,
 			body: updatedTeams
 		};
-		return this.http.patch<Team[]>(`${this.teamsUrl}/update`, JSON.stringify(updatedTeams), options);
+		return this.http.patch<Team[]>(this.teamsUrl, JSON.stringify(updatedTeams), options);
 	}
 
 	unassignTeams(teamsToUnassign: string[]): Observable<string[]> {
@@ -101,7 +101,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 			headers: this.headers.headers,
 			body: teamsToDelete
 		};
-		return this.http.delete<boolean>(`${this.teamsUrl}/delete`, options);
+		return this.http.delete<boolean>(this.teamsUrl, options);
 	}
 
 	// #endregion

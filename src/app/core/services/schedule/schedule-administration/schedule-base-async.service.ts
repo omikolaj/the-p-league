@@ -14,7 +14,7 @@ export class ScheduleBaseAsyncService {
 			'Content-Type': 'application/json'
 		})
 	};
-	protected readonly sportTypeURL = 'sport-types';
+	protected readonly sportTypeUrl = 'sport-types';
 	constructor(protected http: HttpClient) {}
 
 	fetchAllSportTypes(): Observable<SportTypeDTO[]> {
@@ -103,6 +103,6 @@ export class ScheduleBaseAsyncService {
 		// 	}
 		// ]).pipe(delay(1000));
 
-		return this.http.get<SportTypeDTO[]>(this.sportTypeURL, this.headers);
+		return this.http.get<SportTypeDTO[]>(this.sportTypeUrl, this.headers);
 	}
 }
