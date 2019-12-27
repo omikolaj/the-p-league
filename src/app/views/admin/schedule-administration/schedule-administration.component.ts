@@ -180,7 +180,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 		const newTeam: Team = {
 			name: newTeamForm.get('name').value,
 			leagueID: newTeamForm.get('leagueID').value,
-			selected: true
+			selected: false
 		};
 
 		this.scheduleAdminFacade.addTeam(newTeam);

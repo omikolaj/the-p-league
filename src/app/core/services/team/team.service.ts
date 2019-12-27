@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Subject, Observable, EMPTY, of } from 'rxjs';
-import { TeamSignUpForm } from '../../models/team/team-sign-up-form.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { switchMap, tap, catchError } from 'rxjs/operators';
-import { SnackBarService, SnackBarEvent } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
-import { EventBusService, Events } from '../event-bus/event-bus.service';
+import { Injectable } from '@angular/core';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { SnackBarEvent, SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { TeamSignUpForm } from '../../models/team/team-sign-up-form.model';
 import { EmitEvent } from '../event-bus/EmitEvent';
+import { EventBusService, Events } from '../event-bus/event-bus.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -38,7 +38,7 @@ export class TeamService {
 	}
 
 	addTeamSignUpFormAsync(newTeamForm: TeamSignUpForm): Observable<TeamSignUpForm> {
-		return this.http.post<TeamSignUpForm>('team/signup', JSON.stringify(newTeamForm), this.headers).pipe(
+		return this.http.post<TeamSignUpForm>('teams/signup', JSON.stringify(newTeamForm), this.headers).pipe(
 			tap(() => this.eventBus.emit(new EmitEvent(Events.Loading, false))),
 			catchError((err) => {
 				this.eventBus.emit(new EmitEvent(Events.Loading, false));

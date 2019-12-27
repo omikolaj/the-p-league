@@ -113,13 +113,14 @@ export class ScheduleAdministrationFacade {
 			.addLeague(newLeague)
 			.subscribe((addedLeague) =>
 				this.store.dispatch([
-					new Leagues.AddLeague(newLeague),
+					new Leagues.AddLeague(addedLeague),
 					new Sports.AddLeagueIDsToSportType([{ sportTypeID: addedLeague.sportTypeID, ids: [addedLeague.id] }])
 				])
 			);
 	}
 
 	updateLeagues(updatedLeagues: League[]): void {
+		//
 		this.scheduleAdminAsync.updateLeagues(updatedLeagues).subscribe(() => this.store.dispatch(new Leagues.UpdateLeagues(updatedLeagues)));
 	}
 

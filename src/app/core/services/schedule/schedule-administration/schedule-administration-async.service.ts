@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as cuid from 'cuid';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/internal/operators/delay';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -15,6 +14,7 @@ import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 })
 export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService {
 	protected readonly leaguesURL = 'leagues';
+	protected readonly teamsUrl = 'teams';
 	constructor(protected http: HttpClient) {
 		super(http);
 	}
@@ -57,7 +57,11 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	}
 
 	updateLeagues(updatedLeagues: League[]): Observable<League[]> {
-		return this.http.patch<League[]>(this.leaguesURL, JSON.stringify(updatedLeagues), this.headers);
+		const options = {
+			headers: this.headers.headers,
+			body: updatedLeagues
+		};
+		return this.http.patch<League[]>(this.leaguesURL, JSON.stringify(updatedLeagues), options);
 	}
 
 	deleteLeagues(leaguesToDelete: string[]): Observable<boolean> {
@@ -73,24 +77,31 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region Teams
 
 	addTeam(newTeam: Team): Observable<Team> {
-		newTeam.id = cuid();
-		return of(newTeam).pipe(delay(100));
+		return this.http.post<Team>(`${this.teamsUrl}/new`, JSON.stringify(newTeam), this.headers);
 	}
 
 	updateTeams(updatedTeams: Team[]): Observable<Team[]> {
-		return of(updatedTeams).pipe(delay(100));
+		const options = {
+			headers: this.headers.headers,
+			body: updatedTeams
+		};
+		return this.http.patch<Team[]>(`${this.teamsUrl}/update`, JSON.stringify(updatedTeams), options);
 	}
 
 	unassignTeams(teamsToUnassign: string[]): Observable<string[]> {
-		return of(teamsToUnassign).pipe(delay(100));
+		return this.http.post<string[]>(`${this.teamsUrl}/unassign`, JSON.stringify(teamsToUnassign), this.headers);
 	}
 
 	assignTeams(teamsToAssign: Team[]): Observable<Team[]> {
-		return of(teamsToAssign).pipe(delay(100));
+		return this.http.post<Team[]>(`${this.teamsUrl}/assign`, JSON.stringify(teamsToAssign), this.headers);
 	}
 
 	deleteTeams(teamsToDelete: string[]): Observable<boolean> {
-		return of(true).pipe(delay(100));
+		const options = {
+			headers: this.headers.headers,
+			body: teamsToDelete
+		};
+		return this.http.delete<boolean>(`${this.teamsUrl}/delete`, options);
 	}
 
 	// #endregion
