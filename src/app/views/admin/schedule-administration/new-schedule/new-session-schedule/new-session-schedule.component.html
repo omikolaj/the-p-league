@@ -6,6 +6,9 @@
 					<input matInput formControlName="sessionStart" [matDatepicker]="sessionStart" placeholder="Session Start Date" />
 					<mat-datepicker-toggle matSuffix [for]="sessionStart"></mat-datepicker-toggle>
 					<mat-datepicker #sessionStart></mat-datepicker>
+					<mat-error *ngIf="sessionForm['controls'].sessionDateInfo['controls'].sessionStart.hasError('sessionInProgress')">{{
+						sessionForm['controls'].sessionDateInfo['controls'].sessionStart.errors.sessionInProgress.value
+					}}</mat-error>
 				</mat-form-field>
 
 				<mat-form-field>

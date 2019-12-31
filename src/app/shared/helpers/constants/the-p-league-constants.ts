@@ -44,3 +44,7 @@ export const BYE_WEEK_DATE_TEXT = 'NO GAME';
 
 // Used to represent that user selected to view ALL schedules and not a specific one
 export const VIEW_ALL = '0';
+
+// used to represent the time format for when user selects the game times. This will ensure that the
+// time format is a 12 hour clock and it displays AM or PM
+export const TIME_FORMAT = 'hh:mm a';

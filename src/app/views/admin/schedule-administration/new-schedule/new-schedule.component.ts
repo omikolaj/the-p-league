@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Valida
 import { MatSelectionListChange } from '@angular/material';
 import * as moment from 'moment';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { flatMap, map, takeUntil, tap } from 'rxjs/operators';
 import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
 import { GameDay } from 'src/app/core/models/schedule/game-day.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
@@ -13,7 +13,7 @@ import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
-import { UNASSIGNED } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { TIME_FORMAT, UNASSIGNED } from 'src/app/shared/helpers/constants/the-p-league-constants';
 import { enumKeysToArray } from 'src/app/shared/helpers/enum-keys-to-array';
 import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
 
@@ -44,11 +44,29 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * this.scheduleAdminFacad.getAllForLeagueID$ observable emited new value, and this observable stream
 	 * is part of the teams state.
 	 */
+	// private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
+	// 	tap((selectedLeagues) => {
+	// 		selectedLeagues.forEach((selectedLeague) => {
+	// 			this.initNewLeagueSessionsForm(selectedLeague.id);
+	// 		});
+	// 	})
+	// );
+
+	// private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
+	// 	tap((selectedLeagues) => {
+	// 		selectedLeagues.forEach((selectedLeague) => {
+	// 			this.initNewLeagueSessionsForm(selectedLeague.id);
+	// 		});
+	// 	}),
+	// 	tap((selectedLeagues) => this.scheduleAdminFacade.getActiveSessionsInfo(selectedLeagues.map((l) => l.id)))
+	// );
+
 	private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
-		tap((selectedLeagues) => {
-			selectedLeagues.forEach((selectedLeague) => {
-				this.initNewLeagueSessionsForm(selectedLeague.id);
-			});
+		flatMap((selectedLeagues) => {
+			return this.scheduleAdminFacade.getActiveSessionsInfo(selectedLeagues.map((l) => l.id)).pipe(
+				tap((_) => selectedLeagues.forEach((selectedLeague) => this.initNewLeagueSessionsForm(selectedLeague.id))),
+				map((_) => selectedLeagues)
+			);
 		})
 	);
 
@@ -169,7 +187,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		return this.fb.group({
 			leagueID: this.fb.control(leagueID),
 			sessionDateInfo: this.fb.group({
-				sessionStart: this.fb.control(moment(new Date().toISOString()), Validators.required),
+				sessionStart: this.fb.control(moment(new Date().toISOString()), [Validators.required, this.validateActiveSession(leagueID)]),
 				sessionEnd: this.fb.control(moment(new Date().toISOString()), Validators.required),
 				numberOfWeeks: this.fb.control(null, Validators.required)
 			}),
@@ -209,6 +227,21 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	// #region Custom Form Validators
+
+	private validateActiveSession(leagueID: string): ValidatorFn {
+		return (control: AbstractControl): { [key: string]: any } | null => {
+			const sessionInfo = this.scheduleAdminFacade.activeSessionsInfoSnapshot(leagueID);
+			// check if the server returned any session info for selected leagues
+			if (sessionInfo) {
+				if (moment(sessionInfo.endDate).isSameOrAfter(moment(control.value))) {
+					return { sessionInProgress: { value: `Session overlap. Specify date after ${moment(sessionInfo.endDate).format('MM/DD/YYYY')}` } };
+				}
+			}
+			return null;
+		};
+	}
+
 	/**
 	 * @description Custom validator used by initGameDayAndTimes() => gamesTimes property. Checks to see if user has entered any game times. At least one game time is required.
 	 * @returns whether the validator function returned an error or null if everything was ok
@@ -222,6 +255,8 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 			return { timeRequired: { value: 'Please specify a time' } };
 		};
 	}
+
+	// #endregion
 
 	// #endregion
 
@@ -382,7 +417,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 					if (gT.value.gamesTime) {
 						// add the gamesTime value to the gamesDayValue gamesTime array
 						gamesDayValue.gamesTimes.push({
-							gamesTime: gT.value.gamesTime
+							gamesTime: moment(gT.value.gamesTime, TIME_FORMAT).unix()
 						});
 					}
 				});

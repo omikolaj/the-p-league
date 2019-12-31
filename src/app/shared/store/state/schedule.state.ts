@@ -1,5 +1,6 @@
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, createSelector, Selector, State, StateContext } from '@ngxs/store';
 import { produce } from 'immer';
+import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
 import * as Schedule from '../actions/schedules.actions';
@@ -8,6 +9,9 @@ export interface ScheduleStateModel {
 	entities: {
 		[id: string]: LeagueSessionSchedule;
 	};
+	activeSessionsInfo: {
+		[id: string]: ActiveSessionInfo;
+	};
 	IDs: string[];
 }
 
@@ -15,6 +19,7 @@ export interface ScheduleStateModel {
 	name: 'schedules',
 	defaults: {
 		entities: {},
+		activeSessionsInfo: {},
 		IDs: []
 	}
 })
@@ -38,6 +43,26 @@ export class ScheduleState {
 		return Object.values(state.entities).map((entity) => entity.leagueID);
 	}
 
+	static getActiveSessionInfoForLeagueID(id: string) {
+		return createSelector(
+			[ScheduleState],
+			(state: ScheduleStateModel): ActiveSessionInfo => {
+				return Object.values(state.activeSessionsInfo).find((activeSession) => activeSession.leagueId === id);
+			}
+		);
+	}
+
+	@Action(Schedule.InitializeActiveSessionsInfo)
+	initializeSchedules(ctx: StateContext<ScheduleStateModel>, action: Schedule.InitializeActiveSessionsInfo): void {
+		ctx.setState(
+			produce((draft: ScheduleStateModel) => {
+				action.activeSessions.forEach((activeSession) => {
+					draft.activeSessionsInfo[activeSession.sessionId] = activeSession;
+				});
+			})
+		);
+	}
+
 	/**
 	 * @description Creates sessions for the selected leagues. This can only create a new
 	 * session per selected league.
@@ -50,27 +75,15 @@ export class ScheduleState {
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
 				action.newSessions.forEach((session) => {
+					session.teams.forEach((t) => {
+						session.teamsSessions = (session.teamsSessions || []).concat({
+							teamId: t.id
+						});
+					});
+					session.teams = [];
 					draft.entities[session.leagueID] = session;
 				});
 			})
 		);
-	}
-
-	// TODO consider removing this. currently only used by preview component to perform testing
-	@Action(Schedule.DeleteMatch)
-	deleteMatch(ctx: StateContext<ScheduleStateModel>, action: Schedule.DeleteMatch): void {
-		console.log('delete match from store', action.match);
-		console.log('what are entities', ctx.getState().entities);
-		ctx.setState(
-			produce((draft: ScheduleStateModel) => {
-				draft.entities['1'].matches = draft.entities['1'].matches.filter((m) => {
-					const index = draft.entities['1'].matches.indexOf(m);
-					if (index !== 0) {
-						return true;
-					}
-				});
-			})
-		);
-		console.log('state after the match has been removed', ctx.getState().entities);
 	}
 }

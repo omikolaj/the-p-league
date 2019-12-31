@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/internal/operators/delay';
+import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
-import { Team } from 'src/app/core/models/schedule/team.model';
+import { Team, TeamDTO } from 'src/app/core/models/schedule/team.model';
 import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 
 @Injectable({
@@ -15,6 +15,7 @@ import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService {
 	protected readonly leaguesUrl = 'leagues';
 	protected readonly teamsUrl = 'teams';
+	protected readonly schedulesUrl = 'schedules';
 	constructor(protected http: HttpClient) {
 		super(http);
 	}
@@ -28,8 +29,13 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	}
 
 	publishSessions(newSessions: LeagueSessionSchedule[]): Observable<boolean> {
-		console.log('publishing newSessions');
-		return of(true).pipe(delay(1000));
+		// console.log('publishing newSessions');
+		// return of(true).pipe(delay(1000));
+		return this.http.post<boolean>(`${this.leaguesUrl}/sessions`, JSON.stringify(newSessions), this.headers);
+	}
+
+	fetchActiveSessionsInfo(leaguesIDs: string[]): Observable<ActiveSessionInfo[]> {
+		return this.http.post<ActiveSessionInfo[]>(`${this.leaguesUrl}/sessions/active-sessions-info`, JSON.stringify(leaguesIDs), this.headers);
 	}
 
 	// #endregion
@@ -88,12 +94,16 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 		return this.http.patch<Team[]>(this.teamsUrl, JSON.stringify(updatedTeams), options);
 	}
 
+	fetchUnassignedTeams(): Observable<Team[]> {
+		return this.http.get<TeamDTO[]>(`${this.teamsUrl}/unassigned`);
+	}
+
 	unassignTeams(teamsToUnassign: string[]): Observable<string[]> {
 		return this.http.post<string[]>(`${this.teamsUrl}/unassign`, JSON.stringify(teamsToUnassign), this.headers);
 	}
 
 	assignTeams(teamsToAssign: Team[]): Observable<Team[]> {
-		return this.http.post<Team[]>(`${this.teamsUrl}/assign`, JSON.stringify(teamsToAssign), this.headers);
+		return this.http.post<TeamDTO[]>(`${this.teamsUrl}/assign`, JSON.stringify(teamsToAssign), this.headers);
 	}
 
 	deleteTeams(teamsToDelete: string[]): Observable<boolean> {

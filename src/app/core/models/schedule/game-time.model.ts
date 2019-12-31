@@ -1,3 +1,4 @@
+
 export interface GameTime {
-	gamesTime: string;
+	gamesTime: number; // moment.Moment;
 }

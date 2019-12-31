@@ -7,7 +7,7 @@ import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-s
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 import { MatchTime } from 'src/app/core/models/schedule/match-time.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
-import { BYE_WEEK_DATE_TEXT } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { BYE_WEEK_DATE_TEXT, TIME_FORMAT } from 'src/app/shared/helpers/constants/the-p-league-constants';
 
 @Injectable({
 	providedIn: 'root'
@@ -46,6 +46,7 @@ export class NewSessionScheduleService {
 
 			// generate match times with the selected times
 			session.matches = this.generateMatchUpTimes(matches, session);
+
 			// mark session as active
 			session.active = true;
 
@@ -178,12 +179,20 @@ export class NewSessionScheduleService {
 		});
 		const times: MatchTime[] = gameDay.gamesTimes.map((gT) => {
 			// retrieve just the time without pm. so '3:30'
-			const time = gT.gamesTime.substring(0, gT.gamesTime.length - 3);
+			const time = moment
+				.unix(gT.gamesTime)
+				.format(TIME_FORMAT)
+				.substring(0, moment.unix(gT.gamesTime).format(TIME_FORMAT).length - 3);
 			// split the time on the colon. First object in the array will be hours
 			// second will be minutes.
 			const hourAndMins = time.split(':');
 			const matchTime: MatchTime = {
-				period: gT.gamesTime.endsWith('am') ? 'am' : 'pm',
+				period: moment
+					.unix(gT.gamesTime)
+					.format(TIME_FORMAT)
+					.endsWith('am')
+					? 'AM'
+					: 'PM',
 				hour: hourAndMins[0],
 				minute: hourAndMins[1]
 			};
@@ -253,7 +262,7 @@ export class NewSessionScheduleService {
 		// 	return (this.nextDay = this.findNextLargestNumber(desiredDays));
 		// }
 		// TODO this seems to be working, needs to be tested
-		
+
 		const nextDay = this.findNextLargestNumber(desiredDays);
 		if (nextDay === 0) {
 			// find first day in the list

@@ -23,7 +23,7 @@ export class TeamState {
 	constructor() {}
 
 	@Selector()
-	static getUnassigned(state: TeamStateModel): Team[] {
+	static getUnassigned(state: TeamStateModel): Team[] {		
 		return Object.values(state.entities).filter((t) => t.leagueID === UNASSIGNED);
 	}
 
@@ -41,8 +41,7 @@ export class TeamState {
 				draft.entities = action.teams;
 				draft.IDs = Object.keys(action.teams).map((id) => id);
 			})
-		);
-		console.log('teams state', ctx.getState().entities);
+		);		
 	}
 
 	@Action(Teams.AddTeam)
@@ -52,7 +51,14 @@ export class TeamState {
 				draft.entities[action.newTeam.id] = action.newTeam;
 				draft.IDs.push(action.newTeam.id);
 			})
-		);
+		);		
+	}
+
+	@Action(Teams.AddTeams)
+	addTeams(ctx: StateContext<TeamStateModel>, action: Teams.AddTeams): void {
+		action.teams.forEach((team) => {			
+			this.add(ctx, { newTeam: team });
+		});
 	}
 
 	@Action(Teams.UpdateTeams)

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
 import { League } from 'src/app/core/models/schedule/league.model';
@@ -41,6 +42,10 @@ export class ScheduleAdministrationFacade {
 		return this.store.selectSnapshot(ScheduleState.getMatches);
 	}
 
+	activeSessionsInfoSnapshot(leagueID: string): ActiveSessionInfo {
+		return this.store.selectSnapshot(ScheduleState.getActiveSessionInfoForLeagueID(leagueID));
+	}
+
 	// sessionsLeagueIDsSnapshot = this.store.selectSnapshot(ScheduleState.getSessionsLeagueIDs);
 
 	// #endregion
@@ -68,9 +73,15 @@ export class ScheduleAdministrationFacade {
 
 	publishSessionSchedules(): void {
 		const sessions = this.store.selectSnapshot(ScheduleState.getSessions);
-		this.scheduleAdminAsync.publishSessions(sessions).subscribe((v) => {
+		this.scheduleAdminAsync.publishSessions(sessions).subscribe((_) => {
 			this.router.navigate(['admin']);
 		});
+	}
+
+	getActiveSessionsInfo(leagueIDs: string[]): Observable<ActiveSessionInfo[]> {
+		return this.scheduleAdminAsync
+			.fetchActiveSessionsInfo(leagueIDs)
+			.pipe(tap((activeSessionsInfo) => this.store.dispatch(new Schedules.InitializeActiveSessionsInfo(activeSessionsInfo))));
 	}
 
 	// #endregion

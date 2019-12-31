@@ -45,20 +45,16 @@ export class LeagueState {
 				draft.IDs = Object.keys(action.leagues).map((id) => id);
 			})
 		);
-		console.log('leagues state', ctx.getState().entities);
 	}
 
 	@Action(Leagues.AddLeague)
 	add(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeague): void {
-		console.log('incoming ', action.newLeague);
-		console.log('logging state  before', ctx.getState().entities);
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				draft.entities[action.newLeague.id] = action.newLeague;
 				draft.IDs.push(action.newLeague.id);
 			})
 		);
-		console.log('logging state  after', ctx.getState().entities);
 	}
 
 	@Action(Leagues.AddTeamIDsToLeague)

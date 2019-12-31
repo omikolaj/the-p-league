@@ -4,6 +4,11 @@ export class InitializeTeams {
 	static readonly type = '[Schedule] InitializeTeams';
 	constructor(public teams: { [key: string]: Team }) {}
 }
+
+export class AddTeams {
+	static readonly type = '[Schedule] AddTeams';
+	constructor(public teams: Team[]) {}
+}
 export class AddTeam {
 	static readonly type = '[Schedule API] AddTeam';
 	constructor(public newTeam: Team) {}

@@ -13,7 +13,14 @@ export class AddTeamsComponent {
 	title = 'Add';
 	description = 'Team';
 	@Input() newTeamForm: FormGroup;
-	@Input() sportLeaguePairs: SportTypesLeaguesPairs[];
+	private _pairs: SportTypesLeaguesPairs[] = [];
+	get sportLeaguePairs(): SportTypesLeaguesPairs[] {
+		return this._pairs;
+	}
+	@Input() set sportLeaguePairs(value: SportTypesLeaguesPairs[]) {
+		// filter out any sport types that have leagues empty array
+		this._pairs = value.filter((p) => p.leagues.length !== 0);
+	}
 	@Output() onNewTeam: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
 	@ViewChild(MatExpansionPanel, { static: false })
 	matExpansionPanel: MatExpansionPanel;

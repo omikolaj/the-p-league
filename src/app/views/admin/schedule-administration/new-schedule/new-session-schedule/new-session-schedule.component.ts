@@ -4,7 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { ErrorStateMatcher, MatChipInputEvent } from '@angular/material';
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 
-
 @Component({
 	selector: 'app-new-session-schedule',
 	templateUrl: './new-session-schedule.component.html',
@@ -41,12 +40,11 @@ export class NewLeagueSessionScheduleComponent implements OnInit {
 			} else {
 				isGameDaySelected = false;
 			}
-		}		
+		}
 		return isGameDaySelected;
 	}
 
-	addGamesDay(currentGameDayIndex: number): void {
-		console.log('logging currentGameDayIndex', currentGameDayIndex);
+	addGamesDay(): void {
 		this.gamesDayAdded.emit();
 	}
 

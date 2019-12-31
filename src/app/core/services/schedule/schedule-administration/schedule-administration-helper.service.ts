@@ -18,6 +18,13 @@ export class ScheduleAdministrationHelperService {
 		newSessions.forEach((session) => {
 			const teams: Team[] = Object.values(teamsEntities).filter((t: Team) => t.leagueID === session.leagueID && t.selected === true);
 			session.teams = (session.teams || []).concat(teams);
+			// const teamsSessions: TeamSession[] = teams.map((t) => {
+			// 	const teamSession: TeamSession = {
+			// 		teamId: t.id
+			// 	};
+			// 	return teamSession;
+			// });
+			// session.teamsSessions = (session.teamsSessions || []).concat(teamsSessions);
 			updatedSessions.push(session);
 		});
 		return updatedSessions;

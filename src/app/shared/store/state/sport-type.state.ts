@@ -2,7 +2,7 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 import produce from 'immer';
 import { normalize } from 'normalizr';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
@@ -70,22 +70,47 @@ export class SportTypeState {
 
 	@Action(Sports.FetchAllSportTypes)
 	fetchAll(ctx: StateContext<SportTypeStateModel>): Observable<void> {
-		return this.scheduleAdminAsyncService.fetchAllSportTypes().pipe(
-			map((fetchedSportTypes) => normalize(fetchedSportTypes, sportListSchema)),
-			tap((normalizedData) => {
+		// use forkJoin to wait for both observable streams to complete
+		return forkJoin([this.scheduleAdminAsyncService.fetchAllSportTypes(), this.scheduleAdminAsyncService.fetchUnassignedTeams()]).pipe(
+			map(([fetchedSportTypes, fetchedUnassignedTeams]) => {
+				// normalize the data
+				const normalizedData = normalize(fetchedSportTypes, sportListSchema);
+				return { normaizedData: normalizedData, unassignedTeams: fetchedUnassignedTeams };
+			}),
+			tap((data) => {
 				ctx.setState(
 					patch<SportTypeStateModel>({
-						entities: normalizedData.entities['sports'],
-						IDs: normalizedData.result
+						entities: data.normaizedData.entities['sports'],
+						IDs: data.normaizedData.result
 					})
 				);
-				console.log('sportTypes state', ctx.getState().entities);
 			}),
-			tap((normalizedData) => ctx.dispatch(new Leagues.InitializeLeagues(normalizedData.entities['leagues']))),
-			tap((normalizedData) => ctx.dispatch(new Teams.InitializeTeams(normalizedData.entities['teams']))),
+			tap((data) => ctx.dispatch(new Leagues.InitializeLeagues(data.normaizedData.entities['leagues']))),
+			tap((data) => ctx.dispatch(new Teams.InitializeTeams(data.normaizedData.entities['teams']))),
+			// Teams.AddTeams is used to add unassigned teams to the already initialized list of teams
+			// this is necessary because on the back-end we only return teams associated with a given league
+			// if team is unassigned it will not be returned in the initial payload to the fetchAllSportTypes()
+			tap((data) => ctx.dispatch(new Teams.AddTeams(data.unassignedTeams))),
 			switchMap(() => ctx.dispatch(new Sports.FetchAllSportTypesSuccess())),
 			catchError((err) => ctx.dispatch(new Sports.FetchAllSportTypesFailed(err)))
 		);
+
+		// return this.scheduleAdminAsyncService.fetchAllSportTypes().pipe(
+		// 	map((fetchedSportTypes) => normalize(fetchedSportTypes, sportListSchema)),
+		// 	tap((normalizedData) => {
+		// 		ctx.setState(
+		// 			patch<SportTypeStateModel>({
+		// 				entities: normalizedData.entities['sports'],
+		// 				IDs: normalizedData.result
+		// 			})
+		// 		);
+		// 		console.log('sportTypes state', ctx.getState().entities);
+		// 	}),
+		// 	tap((normalizedData) => ctx.dispatch(new Leagues.InitializeLeagues(normalizedData.entities['leagues']))),
+		// 	tap((normalizedData) => ctx.dispatch(new Teams.InitializeTeams(normalizedData.entities['teams']))),
+		// 	switchMap(() => ctx.dispatch(new Sports.FetchAllSportTypesSuccess())),
+		// 	catchError((err) => ctx.dispatch(new Sports.FetchAllSportTypesFailed(err)))
+		// );
 	}
 
 	/**
@@ -111,8 +136,7 @@ export class SportTypeState {
 	// #region Add
 
 	@Action(Sports.AddSportType)
-	add(ctx: StateContext<SportTypeStateModel>, action: Sports.AddSportType): void {
-		console.log('adding sport type via HTTPs', action.newSportType);
+	add(ctx: StateContext<SportTypeStateModel>, action: Sports.AddSportType): void {		
 		ctx.setState(
 			produce((draft: SportTypeStateModel) => {
 				draft.entities[action.newSportType.id] = action.newSportType;
