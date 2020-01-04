@@ -195,8 +195,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	}
 
 	onLeagueChanged(leagueID: string): void {
-		this.displayLeagueID = leagueID;
-		this.previewDataSource.filter = leagueID;
+		this.displayLeagueID = this.scheduleComponentHelper.filterOnLeagueID(leagueID, this.previewDataSource);
 	}
 
 	// #endregion

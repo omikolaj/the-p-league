@@ -118,7 +118,7 @@ export class ScheduleState {
 					draft.activeSessionsInfo[activeSession.sessionId] = activeSession;
 				});
 			})
-		);		
+		);
 	}
 
 	/**
@@ -142,7 +142,9 @@ export class ScheduleState {
 					// session.teams collection is used by one of the generateSchedules methods to create matches
 					// this gets fired prior to this method (this method meaning createSessions)
 					session.teams = [];
-					draft.entities[session.id] = session;
+					// this has to be session.leagueID because at the time of adding sessions to the store
+					// in order to display them in the preview, we do not have session.id.
+					draft.entities[session.leagueID] = session;
 				});
 			})
 		);
@@ -158,6 +160,5 @@ export class ScheduleState {
 				});
 			})
 		);
-		console.log('activeSessionEntities', ctx.getState().activeEntities);
 	}
 }

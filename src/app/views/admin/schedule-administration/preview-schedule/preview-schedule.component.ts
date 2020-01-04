@@ -6,7 +6,6 @@ import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
-import { filterOnInputValue, filterOnLeagueID } from '../../../../shared/helpers/filter-predicate.function';
 import { matchSortingFn } from '../../../../shared/helpers/sorting-data-accessor.function';
 
 @Component({
@@ -60,22 +59,7 @@ export class PreviewScheduleComponent implements AfterViewInit {
 	 * @returns current title
 	 */
 	getCurrentTitle(): string {
-		// find title for the currently selected league id
-		const leagueID: string = this.selectedLeague.value;
-		const pairs = this.scheduleHelper.filterPairsForGeneratedSessions(this.pairs, [leagueID]);
-		let title = '';
-		if (pairs) {
-			if (pairs.length > 0) {
-				const pair = pairs[0];
-				title = `${pair.name} - `;
-				if (pair.leagues) {
-					if (pair.leagues.length > 0) {
-						title += `${pair.leagues[0].name}`;
-					}
-				}
-			}
-		}
-		return title === '' ? 'All' : title;
+		return this.scheduleHelper.getCurrentTitleTableLeagueSelection(this.pairs, this.selectedLeague.value);
 	}
 
 	/**
@@ -85,21 +69,11 @@ export class PreviewScheduleComponent implements AfterViewInit {
 	 * @returns true if league selection
 	 */
 	showLeagueSelection(): boolean {
-		if (this.pairs.length > 0 && this.pairs.length === 1) {
-			if (this.pairs[0].leagues.length > 1) {
-				return true;
-			}
-		} else {
-			return true;
-		}
+		return this.scheduleHelper.showLeagueSelectionForMatTable(this.pairs);
 	}
 
 	applyFilter(filterValue: string): void {
-		this.matchesDataSource.filterPredicate = filterOnInputValue;
-		this.matchesDataSource.filter = filterValue.trim().toLowerCase();
-		if (this.matchesDataSource.paginator) {
-			this.matchesDataSource.paginator.firstPage();
-		}
+		this.scheduleHelper.applyMatTableFilterValue(filterValue, this.matchesDataSource);
 	}
 
 	// #endregion
@@ -110,14 +84,9 @@ export class PreviewScheduleComponent implements AfterViewInit {
 		this.schedulesPublished.emit();
 	}
 
-	onRowClicked(row: Match): void {
-		console.log('row was clicked', row);
-		// this.test.dispatch(new DeleteMatch(row));
-	}
-
 	onSelectionChange(): void {
+		this.scheduleHelper.applyMatTableLeagueSelectionFilter(this.matchesDataSource);
 		this.filterValue.setValue('');
-		this.matchesDataSource.filterPredicate = filterOnLeagueID;
 		this.leagueChanged.emit(this.selectedLeague.value);
 	}
 

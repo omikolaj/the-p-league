@@ -1,8 +1,18 @@
 import Match from 'src/app/core/models/schedule/classes/match.model';
-import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
+import { VIEW_ALL } from '../constants/the-p-league-constants';
 
 export function filterOnLeagueID(match: Match, leagueID: string): boolean {
 	return leagueID === VIEW_ALL ? true : match.leagueID === leagueID;
+}
+
+export function filterOnTeamID(match: Match, teamID: string): boolean {
+	if (teamID === VIEW_ALL) {
+		return true;
+	} else if (match.homeTeam.id === teamID) {
+		return true;
+	} else if (match.awayTeam.id === teamID) {
+		return true;
+	}
 }
 
 export function filterOnInputValue(match: Match, filterValue: string): boolean {

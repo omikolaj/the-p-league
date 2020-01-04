@@ -44,23 +44,6 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * this.scheduleAdminFacad.getAllForLeagueID$ observable emited new value, and this observable stream
 	 * is part of the teams state.
 	 */
-	// private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
-	// 	tap((selectedLeagues) => {
-	// 		selectedLeagues.forEach((selectedLeague) => {
-	// 			this.initNewLeagueSessionsForm(selectedLeague.id);
-	// 		});
-	// 	})
-	// );
-
-	// private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
-	// 	tap((selectedLeagues) => {
-	// 		selectedLeagues.forEach((selectedLeague) => {
-	// 			this.initNewLeagueSessionsForm(selectedLeague.id);
-	// 		});
-	// 	}),
-	// 	tap((selectedLeagues) => this.scheduleAdminFacade.getActiveSessionsInfo(selectedLeagues.map((l) => l.id)))
-	// );
-
 	private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
 		flatMap((selectedLeagues) => {
 			return this.scheduleAdminFacade.getActiveSessionsInfo(selectedLeagues.map((l) => l.id)).pipe(
@@ -194,7 +177,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		return this.fb.group({
 			leagueID: this.fb.control(leagueID),
 			sessionDateInfo: this.fb.group({
-				sessionStart: this.fb.control(moment(new Date().toISOString()), [Validators.required, this.validateActiveSession(leagueID)]),
+				sessionStart: this.fb.control(null, [Validators.required, this.validateActiveSession(leagueID)]),
 				sessionEnd: this.fb.control(moment(new Date().toISOString()), Validators.required),
 				numberOfWeeks: this.fb.control(null, Validators.required)
 			}),

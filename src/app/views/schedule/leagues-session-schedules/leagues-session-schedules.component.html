@@ -1,1 +1,13 @@
-<app-session-schedules [dataSource]="schedulesDataSource"></app-session-schedules>
+<div>
+	<ng-container *ngIf="filteredPairs$ | async as pairs">
+		<app-session-schedules
+			[dataSource]="leaguesSessionSchduleDataSource"
+			[pairs]="pairs"
+			[displayLeagueID]="displayLeagueID"
+			[displayTeamID]="displayTeamID"
+			(leagueChanged)="onLeagueSelectionChanged($event)"
+			(teamChanged)="onTeamSelectionChanged($event)"
+		>
+		</app-session-schedules>
+	</ng-container>
+</div>

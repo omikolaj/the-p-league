@@ -46,7 +46,7 @@
 		</ng-container>
 
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row [appTeamSwap]="row" *matRowDef="let row; columns: displayedColumns"></mat-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
 	</mat-table>
 	<mat-paginator [pageSizeOptions]="[8, 16, 32, 100]"></mat-paginator>
 

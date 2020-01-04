@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
-import Match from 'src/app/core/models/schedule/classes/match.model';
-import { ScheduleFacadeService } from './../../../core/services/schedule/schedule-facade.service';
 
 @Component({
 	selector: 'app-schedule-list',
@@ -9,9 +6,9 @@ import { ScheduleFacadeService } from './../../../core/services/schedule/schedul
 	styleUrls: ['./schedule-list.component.scss']
 })
 export class ScheduleListComponent implements OnInit {
-	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>(this.scheduleFacade.activeSessionsMatches);
+	
 
-	constructor(private scheduleFacade: ScheduleFacadeService) {}
+	constructor() {}
 
 	ngOnInit() {}
 }

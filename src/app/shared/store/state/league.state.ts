@@ -23,7 +23,7 @@ export class LeagueState {
 	constructor() {}
 
 	@Selector()
-	static getAll(state: LeagueStateModel): League[] {
+	static getAll(state: LeagueStateModel): League[] {		
 		return Object.values(state.entities);
 	}
 
@@ -52,7 +52,10 @@ export class LeagueState {
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				draft.entities[action.newLeague.id] = action.newLeague;
-				draft.IDs.push(action.newLeague.id);
+				// if we do not already have the given id add it
+				if (!draft.IDs.includes(action.newLeague.id)) {
+					draft.IDs.push(action.newLeague.id);
+				}
 			})
 		);
 	}
@@ -63,7 +66,13 @@ export class LeagueState {
 			produce((draft: LeagueStateModel) => {
 				action.payload.forEach((pair) => {
 					if (pair.leagueID !== UNASSIGNED) {
-						draft.entities[pair.leagueID].teams = (draft.entities[pair.leagueID].teams || []).concat(pair.ids);
+						// ensure we are not adding duplicates
+						pair.ids.forEach((id) => {
+							if (!draft.entities[pair.leagueID].teams.includes(id)) {
+								(draft.entities[pair.leagueID].teams || []).push(id);
+								// draft.entities[pair.leagueID].teams = (draft.entities[pair.leagueID].teams || []).concat(pair.ids);
+							}
+						});
 					}
 				});
 			})

@@ -1,4 +1,5 @@
 import LeagueSessionSchedule from './league-session-schedule.model';
+import { SportTypeDTO } from './sport-type.model';
 import { TeamDTO } from './team.model';
 
 // Represents a single league in any P League sport
@@ -23,5 +24,6 @@ export interface LeagueDTO {
 	selected?: boolean;
 	// sportTypeID to which this league belongs
 	sportTypeID?: string;
+	sportType?: SportTypeDTO;
 	sessions?: LeagueSessionSchedule[];
 }

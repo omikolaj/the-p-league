@@ -22,15 +22,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 
 	// #region Session
 
-	// TODO currently not in use, consider deleting
-	generateSessions(newSessions: LeagueSessionSchedule[]): Observable<Match[]> {
-		console.log('Generating new session', newSessions);
-		return of([]);
-	}
-
-	publishSessions(newSessions: LeagueSessionSchedule[]): Observable<boolean> {
-		// console.log('publishing newSessions');
-		// return of(true).pipe(delay(1000));
+	publishSessions(newSessions: LeagueSessionSchedule[]): Observable<boolean> {		
 		return this.http.post<boolean>(`${this.leaguesUrl}/sessions`, JSON.stringify(newSessions), this.headers);
 	}
 

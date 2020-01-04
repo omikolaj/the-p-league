@@ -299,8 +299,6 @@ export class NewSessionScheduleService {
 	 * @description Schedules the match based on the given date and time
 	 */
 	private scheduleMatch(date: string, time: MatchTime, match: Match): void {
-		// console.log('logging date', date);
-		// console.log('logging match dateTime', moment(`${date} ${time.hour}:${time.minute} ${time.period}`).format('MM-DD-YYYY hh:mm A'));
 		match.dateTime = moment(`${date} ${time.hour}:${time.minute} ${time.period}`, 'MM-DD-YYYY hh:mm A').unix();
 	}
 }

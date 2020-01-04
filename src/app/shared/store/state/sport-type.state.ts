@@ -136,13 +136,17 @@ export class SportTypeState {
 	// #region Add
 
 	@Action(Sports.AddSportType)
-	add(ctx: StateContext<SportTypeStateModel>, action: Sports.AddSportType): void {		
+	add(ctx: StateContext<SportTypeStateModel>, action: Sports.AddSportType): void {
 		ctx.setState(
 			produce((draft: SportTypeStateModel) => {
+				// no need to check if this item already exists, it will simply be replaced
 				draft.entities[action.newSportType.id] = action.newSportType;
+				// should not be necessary since we have a separate action to add league ids
 				// initialize the leagues array if it is not already initialized
-				draft.entities[action.newSportType.id].leagues = draft.entities[action.newSportType.id].leagues || [];
-				draft.IDs.push(action.newSportType.id);
+				// draft.entities[action.newSportType.id].leagues = draft.entities[action.newSportType.id].leagues || [];
+				if (!draft.IDs.includes(action.newSportType.id)) {
+					draft.IDs.push(action.newSportType.id);
+				}
 			})
 		);
 	}
@@ -152,8 +156,14 @@ export class SportTypeState {
 		ctx.setState(
 			produce((draft: SportTypeStateModel) => {
 				action.payload.forEach((pair) => {
-					// in case we have not initialized the leagues array, initialize it than add the league id
-					draft.entities[pair.sportTypeID].leagues = (draft.entities[pair.sportTypeID].leagues || []).concat(pair.ids);
+					// we want to make sure we are not adding duplicate values
+					pair.ids.forEach((id) => {
+						// check to see if item alredy exists
+						if (!(draft.entities[pair.sportTypeID].leagues || []).includes(id)) {
+							// in case we have not initialized the leagues array, initialize it than add the league id
+							draft.entities[pair.sportTypeID].leagues = (draft.entities[pair.sportTypeID].leagues || []).concat(id);
+						}
+					});
 				});
 			})
 		);
