@@ -9,6 +9,10 @@
 					<mat-error *ngIf="sessionForm['controls'].sessionDateInfo['controls'].sessionStart.hasError('sessionInProgress')">{{
 						sessionForm['controls'].sessionDateInfo['controls'].sessionStart.errors.sessionInProgress.value
 					}}</mat-error>
+					<mat-hint *ngIf="activeSessionInfo; else noActiveSession">Active session ends: {{ activeSessionInfo.endDate | date: 'M/d/yyyy' }}</mat-hint>
+					<ng-template #noActiveSession>
+						<mat-hint>No active sessions</mat-hint>
+					</ng-template>
 				</mat-form-field>
 
 				<mat-form-field>

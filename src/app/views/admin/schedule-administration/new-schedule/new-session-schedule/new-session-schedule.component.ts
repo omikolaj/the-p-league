@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { FormGroup } from '@angular/forms';
 import { ErrorStateMatcher, MatChipInputEvent } from '@angular/material';
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
+import { ActiveSessionInfo } from './../../../../../core/models/schedule/active-session-info.model';
 
 @Component({
 	selector: 'app-new-session-schedule',
@@ -13,6 +14,7 @@ import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 export class NewLeagueSessionScheduleComponent implements OnInit {
 	@Input() sessionForm: FormGroup;
 	@Input() requireTime: ErrorStateMatcher;
+	@Input() activeSessionInfo: ActiveSessionInfo;
 	@Output() gamesDayAdded: EventEmitter<void> = new EventEmitter<void>();
 	@Output() gamesDayRemved: EventEmitter<number> = new EventEmitter<number>();
 	@Output() gamesTimeAdded: EventEmitter<{ gamesDayIndex: number; time: string }> = new EventEmitter<{ gamesDayIndex: number; time: string }>();

@@ -43,7 +43,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region SportType
 
 	addSport(newSportType: SportType): Observable<SportType> {
-		return this.http.post<SportType>(`${this.sportTypeUrl}/new`, JSON.stringify(newSportType), this.headers);
+		return this.http.post<SportType>(`${this.sportTypeUrl}`, JSON.stringify(newSportType), this.headers);
 	}
 
 	updateSportType(updatedSportType: SportType): Observable<SportType> {
@@ -59,7 +59,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region League
 
 	addLeague(newLeague: League): Observable<League> {
-		return this.http.post<League>(`${this.leaguesUrl}/new`, JSON.stringify(newLeague), this.headers);
+		return this.http.post<League>(`${this.leaguesUrl}`, JSON.stringify(newLeague), this.headers);
 	}
 
 	updateLeagues(updatedLeagues: League[]): Observable<League[]> {
@@ -83,7 +83,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region Teams
 
 	addTeam(newTeam: Team): Observable<Team> {
-		return this.http.post<Team>(`${this.teamsUrl}/new`, JSON.stringify(newTeam), this.headers);
+		return this.http.post<Team>(`${this.teamsUrl}`, JSON.stringify(newTeam), this.headers);
 	}
 
 	updateTeams(updatedTeams: Team[]): Observable<Team[]> {

@@ -1,10 +1,9 @@
-import * as moment from 'moment';
 import { AwayTeam, HomeTeam } from '../team.model';
 
 // Represents two teams facing each other
 export default class Match {
 	id?: string;
-	dateTime?: moment.Moment | string;
+	dateTime?: number | string;
 	homeTeam: HomeTeam;
 	awayTeam: AwayTeam;
 	sessionID: string;

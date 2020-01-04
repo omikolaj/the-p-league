@@ -33,6 +33,7 @@
 					<app-new-session-schedule
 						[sessionForm]="newLeagueSessionsForm['controls'].sessions['controls'][i]"
 						[requireTime]="requireTimeErrorStateMatcher"
+						[activeSessionInfo]="data.sessionInfo"
 						(gamesDayAdded)="onGamesDayAdded(i)"
 						(gamesDayRemved)="onGamesDayRemoved($event, i)"
 						(gamesTimeAdded)="onGamesTimeAdded($event, i)"

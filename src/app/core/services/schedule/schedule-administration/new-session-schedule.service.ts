@@ -138,7 +138,7 @@ export class NewSessionScheduleService {
 					if (index >= matches.length) break;
 
 					// returns next available time from the list of times user has specified games should be played at
-					const time: moment.MomentSetObject = this.getNextAvailableTime(listOfMatchTimes) as moment.MomentSetObject;
+					const time: MatchTime = this.getNextAvailableTime(listOfMatchTimes);
 
 					// first check to see if the current match home team or away team's names equal 'BYE', if they do
 					// we do not want to schedule a time for them so increase the index and check again to see if the next match
@@ -154,7 +154,7 @@ export class NewSessionScheduleService {
 					// loop checks for this already. Given current date, and next available time, schedule
 					// a time for next available match. matches[index] represents that next match
 					if (matches[index].homeTeam.name !== this.DUMMY.name && matches[index].awayTeam.name !== this.DUMMY.name) {
-						this.scheduleMatch(current, time, matches[index]);
+						this.scheduleMatch(current.format('MM-DD-YYYY'), time, matches[index]);
 						index++;
 					}
 				}
@@ -298,7 +298,9 @@ export class NewSessionScheduleService {
 	/**
 	 * @description Schedules the match based on the given date and time
 	 */
-	private scheduleMatch(date: moment.Moment, time: moment.MomentSetObject, match: Match): void {
-		match.dateTime = moment(date).set(time);
+	private scheduleMatch(date: string, time: MatchTime, match: Match): void {
+		// console.log('logging date', date);
+		// console.log('logging match dateTime', moment(`${date} ${time.hour}:${time.minute} ${time.period}`).format('MM-DD-YYYY hh:mm A'));
+		match.dateTime = moment(`${date} ${time.hour}:${time.minute} ${time.period}`, 'MM-DD-YYYY hh:mm A').unix();
 	}
 }

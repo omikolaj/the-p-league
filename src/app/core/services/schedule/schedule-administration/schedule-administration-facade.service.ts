@@ -19,7 +19,7 @@ import { LeagueState } from 'src/app/shared/store/state/league.state';
 import { ScheduleState } from 'src/app/shared/store/state/schedule.state';
 import { SportTypeState } from 'src/app/shared/store/state/sport-type.state';
 import { TeamState } from 'src/app/shared/store/state/team.state';
-import { NewSessionScheduleService } from '../session-schedule/new-session-schedule.service';
+import { NewSessionScheduleService } from './new-session-schedule.service';
 import { ScheduleAdministrationHelperService } from './schedule-administration-helper.service';
 
 @Injectable({
@@ -38,16 +38,17 @@ export class ScheduleAdministrationFacade {
 	@Select(TeamState.getUnassigned) unassignedTeams$: Observable<Team[]>;
 	@Select(TeamState.getAllForLeagueID) getAllForLeagueID$: Observable<(id: string) => Team[]>;
 
+	// Used by new-schedule component to retrieve session info from the store via observable stream
+	@Select(ScheduleState.getSessionInfoByLeagueID) activeSessionInfoByLeagueID$: Observable<(id: string) => ActiveSessionInfo>;
+
 	get matchesSnapshot(): Match[] {
 		return this.store.selectSnapshot(ScheduleState.getMatches);
 	}
 
-	activeSessionsInfoSnapshot(leagueID: string): ActiveSessionInfo {
+	// Used by new-schedule component to perform session start date validation. It returns latest snapshot from the store
+	activeSessionInfoByLeagueIDSnapshot(leagueID: string): ActiveSessionInfo {
 		return this.store.selectSnapshot(ScheduleState.getActiveSessionInfoForLeagueID(leagueID));
 	}
-
-	// sessionsLeagueIDsSnapshot = this.store.selectSnapshot(ScheduleState.getSessionsLeagueIDs);
-
 	// #endregion
 
 	// #region Snapshots

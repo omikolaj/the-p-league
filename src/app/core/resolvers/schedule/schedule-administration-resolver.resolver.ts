@@ -28,6 +28,9 @@ export class ScheduleAdministrationResolver implements Resolve<Sports.FetchAllSp
 			tap(() => this.router.navigate(['']))
 		);
 
-		return race(responseOK, responseError).pipe(first());
+		return race(responseOK, responseError).pipe(
+			tap(() => console.log('inside admin resolver')),
+			first()
+		);
 	}
 }

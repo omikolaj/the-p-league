@@ -1,39 +1,51 @@
 <div [@fadeHeader]="hideToolBarHeader ? 'hide' : 'show'" class="toolbar" [class.mat-elevation-z7]="isSticky">
-  <!-- [ngStyle]="{
+	<!-- [ngStyle]="{
       backgroundColor: isSticky ? null : 'transparent'
     }" -->
-  <mat-toolbar color="primary">
-    <button style="position: absolute" type="button" aria-label="Toggle sidenav" mat-icon-button
-      (click)="onToggleSidenav()" fxHide.xs="false" fxHide.gt-xs="true">
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-    </button>
+	<mat-toolbar color="primary">
+		<button
+			style="position: absolute"
+			type="button"
+			aria-label="Toggle sidenav"
+			mat-icon-button
+			(click)="onToggleSidenav()"
+			fxHide.xs="false"
+			fxHide.gt-xs="true"
+		>
+			<mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+		</button>
 
-    <div style="width: 100%">
-      <div class="nav-items-container" fxLayout="row">
-        <span routerLink="/about" class="branding center-logo">
-          <button mat-button>
-            <img [src]="logo" />
-          </button>
-        </span>
-        
-          <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button
-            [routerLink]="'/schedules'" [routerLinkActive]="'active-route'">
-            Schedule
-          </button>        
+		<div style="width: 100%">
+			<div class="nav-items-container" fxLayout="row">
+				<span routerLink="/about" class="branding center-logo">
+					<button mat-button>
+						<img [src]="logo" />
+					</button>
+				</span>
 
-        <ng-container *ngFor="let linkText of headerLinksText">
-          <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button
-            [routerLink]="'/' + linkText | lowercase" [routerLinkActive]="'active-route'">
-            {{ linkText }}
-          </button>
-        </ng-container>
+				<button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/schedules'" [routerLinkActive]="'active-route'">
+					Schedule
+				</button>
 
-        <ng-container *ngIf="this.authService.isLoggedIn$ | async">
-          <button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/logout'">
-            Logout
-          </button>
-        </ng-container>
-      </div>
-    </div>
-  </mat-toolbar>
+				<ng-container *ngFor="let linkText of headerLinksText">
+					<button
+						fxFlexAlign="center"
+						fxHide.xs="true"
+						fxHide.lg="false"
+						mat-button
+						[routerLink]="'/' + linkText | lowercase"
+						[routerLinkActive]="'active-route'"
+					>
+						{{ linkText }}
+					</button>
+				</ng-container>
+
+				<ng-container *ngIf="this.authService.isLoggedIn$ | async">
+					<button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/logout'">
+						Logout
+					</button>
+				</ng-container>
+			</div>
+		</div>
+	</mat-toolbar>
 </div>

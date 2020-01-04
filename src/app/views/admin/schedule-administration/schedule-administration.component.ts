@@ -106,26 +106,9 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.scheduleAdminFacade.publishSessionSchedules();
 	}
 
-	// leagueSelection: { sportTypeIDs: { sportTypeID: string; leagueIDs: string[] }[] } = { sportTypeIDs: [] };
 	onLeagueSelectionChanged(leagueSelectionChangeEvent: { matSelectionListChange: MatSelectionListChange; sportTypeID: string }): void {
 		const ids: string[] = this.scheduleComponentHelper.onSelectionChange(leagueSelectionChangeEvent.matSelectionListChange);
 		this.scheduleAdminFacade.updateSelectedLeagues(ids, leagueSelectionChangeEvent.sportTypeID);
-		// if the leagueSelection sportTypeIDs list does not contain selection.sportTypeID
-		// if (this.leagueSelection.sportTypeIDs.length > 0) {
-		// 	if (this.leagueSelection.sportTypeIDs.some((sport) => sport.sportTypeID !== selection.sportTypeID)) {
-		// 		this.leagueSelection.sportTypeIDs.push({
-		// 			sportTypeID: selection.sportTypeID,
-		// 			leagueIDs: selection.ids
-		// 		});
-		// 	}
-		// } else {
-		// 	this.leagueSelection.sportTypeIDs.push({
-		// 		sportTypeID: selection.sportTypeID,
-		// 		leagueIDs: selection.ids
-		// 	});
-		// }
-
-		// console.log('this.leagueSelection', this.leagueSelection);
 	}
 
 	onUpdateSport(updatedSport: { id: string; name: string }): void {

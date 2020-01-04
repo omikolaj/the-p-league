@@ -73,11 +73,18 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	leagues$: Observable<{ league: League; teams: Team[]; form: FormGroup; sport: SportType }[]> = combineLatest([
 		this.selectedLeagues$,
 		this.scheduleAdminFacade.getAllForLeagueID$,
-		this.scheduleAdminFacade.getSportByID$
+		this.scheduleAdminFacade.getSportByID$,
+		this.scheduleAdminFacade.activeSessionInfoByLeagueID$
 	]).pipe(
-		map(([selectedLeagues, filterFn, filterSportsFn]) => {
+		map(([selectedLeagues, filterFn, filterSportsFn, activeSessionFn]) => {
 			return selectedLeagues.map((l) => {
-				return { league: l, teams: filterFn(l.id), form: this.initEditTeamsForm(filterFn(l.id)), sport: filterSportsFn(l.sportTypeID) };
+				return {
+					league: l,
+					teams: filterFn(l.id),
+					form: this.initEditTeamsForm(filterFn(l.id)),
+					sport: filterSportsFn(l.sportTypeID),
+					sessionInfo: activeSessionFn(l.id)
+				};
 			});
 		})
 	);
@@ -231,7 +238,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 
 	private validateActiveSession(leagueID: string): ValidatorFn {
 		return (control: AbstractControl): { [key: string]: any } | null => {
-			const sessionInfo = this.scheduleAdminFacade.activeSessionsInfoSnapshot(leagueID);
+			const sessionInfo = this.scheduleAdminFacade.activeSessionInfoByLeagueIDSnapshot(leagueID);
 			// check if the server returned any session info for selected leagues
 			if (sessionInfo) {
 				if (moment(sessionInfo.endDate).isSameOrAfter(moment(control.value))) {

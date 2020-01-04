@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { ScheduleContainerComponent } from './schedule-container.component';
+import { RouterModule, Routes } from '@angular/router';
+import { ScheduleListResolver } from 'src/app/core/resolvers/schedule/schedule-list.resolver';
+import { ScheduleListComponent } from './schedule-list/schedule-list.component';
 
 const routes: Routes = [
 	{
 		path: '',
-		component: ScheduleContainerComponent
+		resolve: [ScheduleListResolver],
+		component: ScheduleListComponent
 	}
 ];
 

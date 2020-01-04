@@ -26,6 +26,7 @@ import { EnumToArrayPipe } from './pipes/enumToArray/enum-to-array.pipe';
 import { FilteredGearSizesPipe } from './pipes/filteredGearSizes/filtered-gear-sizes.pipe';
 import { GearImageViewPipe } from './pipes/gear-image-view/gear-image-view.pipe';
 import { LogPipe } from './pipes/log/log.pipe';
+import { FromUnixPipe } from './pipes/momentjs/from-unix.pipe';
 import { OrderEnumPipe } from './pipes/order-enum.pipe';
 
 library.add(faGithub, faMediumM, faTwitter, faInstagram, faYoutube, faPlayCircle, faRocket, faBasketballBall, faUndo);
@@ -58,7 +59,8 @@ const globalRippleConfig: RippleGlobalOptions = {
 		GearImageViewPipe,
 		FilteredGearSizesPipe,
 		EnumToArrayPipe,
-		TeamSwapDirective
+		TeamSwapDirective,
+		FromUnixPipe
 	],
 	imports: [
 		MatAutocompleteModule,
@@ -168,7 +170,8 @@ const globalRippleConfig: RippleGlobalOptions = {
 		LogPipe,
 		GearImageViewPipe,
 		FilteredGearSizesPipe,
-		EnumToArrayPipe
+		EnumToArrayPipe,
+		FromUnixPipe
 	],
 	entryComponents: [SnackBarComponent]
 })
