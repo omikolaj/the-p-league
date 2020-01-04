@@ -58,7 +58,6 @@ export class ScheduleState {
 
 	@Selector()
 	static getActiveSessionsMatches(state: ScheduleStateModel): Match[] {
-		console.log('returning active session matches');
 		let matches: Match[] = [];
 		if (state) {
 			Object.values(state.activeEntities).forEach((entity) => {
@@ -98,9 +97,7 @@ export class ScheduleState {
 
 	@Action(Schedule.FetchLeaguesSessionSchedules)
 	fetchSessions(ctx: StateContext<ScheduleStateModel>) {
-		console.log('about to send fetchSessions async');
 		return this.scheduleAsync.fetchLeaguesSessionSchedules().pipe(
-			tap(() => console.log('about to call Init LeagueSession Schedules')),
 			tap((sessions) => ctx.dispatch(new Schedule.InitializeLeagueSessionSchedules(sessions))),
 			switchMap(() => ctx.dispatch(new Schedule.FetchLeaguesSessionSchedulesSuccess())),
 			catchError((err) => ctx.dispatch(new Schedule.FetchLeaguesSesssionSchedulesFailed(err)))
@@ -121,7 +118,7 @@ export class ScheduleState {
 					draft.activeSessionsInfo[activeSession.sessionId] = activeSession;
 				});
 			})
-		);
+		);		
 	}
 
 	/**
@@ -153,7 +150,6 @@ export class ScheduleState {
 
 	@Action(Schedule.InitializeLeagueSessionSchedules)
 	initializeLeagueSessionSchedules(ctx: StateContext<ScheduleStateModel>, action: Schedule.InitializeLeagueSessionSchedules): void {
-		console.log('starting leagues session initialization');
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
 				action.payload.forEach((session) => {
@@ -162,6 +158,6 @@ export class ScheduleState {
 				});
 			})
 		);
-		console.log('initialized leaguesession schedules', ctx.getState().activeEntities);
+		console.log('activeSessionEntities', ctx.getState().activeEntities);
 	}
 }

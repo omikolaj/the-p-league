@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import produce from 'immer';
 import { League } from 'src/app/core/models/schedule/league.model';
-import { UNASSIGNED } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { UNASSIGNED } from 'src/app/shared/constants/the-p-league-constants';
 import * as Leagues from 'src/app/shared/store/actions/leagues.actions';
 import { updateEntity } from '../helpers/state-helpers';
 

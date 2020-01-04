@@ -7,7 +7,7 @@ import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-s
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 import { MatchTime } from 'src/app/core/models/schedule/match-time.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
-import { BYE_WEEK_DATE_TEXT, TIME_FORMAT } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { BYE_WEEK_DATE_TEXT, TIME_FORMAT } from 'src/app/shared/constants/the-p-league-constants';
 
 @Injectable({
 	providedIn: 'root'

@@ -4,7 +4,7 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { catchError, map, mergeMap, scan, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { SnackBarEvent, SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
-import { LeagueImageUpload } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { LeagueImageUpload } from 'src/app/shared/constants/the-p-league-constants';
 import { LeaguePicture } from '../../models/league-picture.model';
 import { EmitEvent } from '../event-bus/EmitEvent';
 import { EventBusService, Events } from '../event-bus/event-bus.service';

@@ -9,7 +9,7 @@ import { Size } from 'src/app/core/models/merchandise/gear-size.model';
 import { PreOrderForm } from 'src/app/core/models/merchandise/pre-order-form.model';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { PreOrderService } from 'src/app/core/services/pre-order/pre-order.service';
-import { ROUTER_OUTLET } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { ROUTER_OUTLET } from 'src/app/shared/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-merchandise-pre-order-dialog',

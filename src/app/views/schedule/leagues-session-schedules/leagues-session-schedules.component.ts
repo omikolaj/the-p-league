@@ -12,7 +12,5 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 
 	constructor() {}
 
-	ngOnInit() {
-		console.log('initialized leagues session schedule');
-	}
+	ngOnInit() {}
 }

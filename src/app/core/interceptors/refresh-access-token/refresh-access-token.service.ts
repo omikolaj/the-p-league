@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
-import { TOKEN_HEADER } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { TOKEN_HEADER } from 'src/app/shared/constants/the-p-league-constants';
 import { ApplicationToken } from '../../models/auth/token/ApplicationToken.model';
 import { AuthService } from '../../services/auth/auth.service';
 

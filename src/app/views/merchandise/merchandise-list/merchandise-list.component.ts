@@ -12,7 +12,7 @@ import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
 import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { PaginatorService } from 'src/app/core/services/paginator/paginator.service';
-import { Role } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { Role } from 'src/app/shared/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-merchandise-list',

@@ -5,9 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
-import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from 'src/app/shared/helpers/constants/the-p-league-constants';
-import { filterOnInputValue, filterOnLeagueID } from './filter-predicate.function';
-import { previewMatchSortingFn } from './sorting-data-accessor.function';
+import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
+import { filterOnInputValue, filterOnLeagueID } from '../../../../shared/helpers/filter-predicate.function';
+import { matchSortingFn } from '../../../../shared/helpers/sorting-data-accessor.function';
 
 @Component({
 	selector: 'app-preview-schedule',
@@ -45,7 +45,7 @@ export class PreviewScheduleComponent implements AfterViewInit {
 	ngAfterViewInit(): void {
 		this.matchesDataSource.sort = this.sort;
 		this.matchesDataSource.paginator = this.paginator;
-		this.matchesDataSource.sortingDataAccessor = previewMatchSortingFn;
+		this.matchesDataSource.sortingDataAccessor = matchSortingFn;
 	}
 
 	// #endregion

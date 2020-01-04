@@ -12,7 +12,7 @@ import { GearItem } from 'src/app/core/models/merchandise/gear-item.model';
 import { GearSize, gearSizesArray, Size } from 'src/app/core/models/merchandise/gear-size.model';
 import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
-import { GearItemUpload, ROUTER_OUTLET } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { GearItemUpload, ROUTER_OUTLET } from 'src/app/shared/constants/the-p-league-constants';
 import { NoSizeErrorStateMatcher } from './NoSizeErrorStateMatcher';
 
 @Component({

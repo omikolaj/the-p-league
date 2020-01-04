@@ -7,7 +7,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animati
 import { LeaguePicture } from 'src/app/core/models/league-picture.model';
 import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 import { GalleryService } from 'src/app/core/services/gallery/gallery.service';
-import { LeagueImageUpload } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { LeagueImageUpload } from 'src/app/shared/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-admin-control',

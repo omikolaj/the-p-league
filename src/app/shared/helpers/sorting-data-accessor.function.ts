@@ -6,7 +6,7 @@ import Match from 'src/app/core/models/schedule/classes/match.model';
  * @param header string representation of the column name
  * @returns
  */
-export function previewMatchSortingFn(item: Match, header: string): string | number {
+export function matchSortingFn(item: Match, header: string): string | number {
 	switch (header) {
 		case 'home':
 			return item.homeTeam.name;

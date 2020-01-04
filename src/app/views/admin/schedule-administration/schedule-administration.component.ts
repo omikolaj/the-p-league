@@ -11,7 +11,7 @@ import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
-import { VIEW_ALL } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-schedule-administration',

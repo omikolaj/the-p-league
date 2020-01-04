@@ -4,7 +4,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Role } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { Role } from 'src/app/shared/constants/the-p-league-constants';
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {

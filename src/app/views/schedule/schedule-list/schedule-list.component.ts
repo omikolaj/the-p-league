@@ -13,7 +13,5 @@ export class ScheduleListComponent implements OnInit {
 
 	constructor(private scheduleFacade: ScheduleFacadeService) {}
 
-	ngOnInit() {
-    console.log('initialized schedule list');
-  }
+	ngOnInit() {}
 }

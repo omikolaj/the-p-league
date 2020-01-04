@@ -7,7 +7,7 @@ import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animati
 import { LeaguePicture } from 'src/app/core/models/league-picture.model';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { GalleryService } from 'src/app/core/services/gallery/gallery.service';
-import { Role } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { Role } from 'src/app/shared/constants/the-p-league-constants';
 
 export const galleryOptions: NgxGalleryOptions[] = [
 	{

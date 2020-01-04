@@ -1,5 +1,5 @@
 import Match from 'src/app/core/models/schedule/classes/match.model';
-import { VIEW_ALL } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
 
 export function filterOnLeagueID(match: Match, leagueID: string): boolean {
 	return leagueID === VIEW_ALL ? true : match.leagueID === leagueID;

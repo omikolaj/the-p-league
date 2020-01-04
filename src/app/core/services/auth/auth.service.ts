@@ -4,7 +4,7 @@ import * as jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { LOCAL_STORAGE_ITEM } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { LOCAL_STORAGE_ITEM } from 'src/app/shared/constants/the-p-league-constants';
 import { Login } from '../../models/auth/login.model';
 import { ApplicationToken } from '../../models/auth/token/ApplicationToken.model';
 import { JwtPayload } from '../../models/auth/token/JwtPayload.model';

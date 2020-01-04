@@ -1,6 +1,6 @@
 import { throwError } from 'rxjs';
 import { SnackBarEvent } from '../components/snack-bar/snack-bar-service.service';
-import { ErrorCodes } from './constants/the-p-league-constants';
+import { ErrorCodes } from '../constants/the-p-league-constants';
 
 export function handleError(err, snackBar) {
 	if (err.error instanceof ErrorEvent) {

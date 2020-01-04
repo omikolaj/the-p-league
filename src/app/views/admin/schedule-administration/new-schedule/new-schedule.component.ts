@@ -13,7 +13,7 @@ import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
-import { TIME_FORMAT, UNASSIGNED } from 'src/app/shared/helpers/constants/the-p-league-constants';
+import { TIME_FORMAT, UNASSIGNED } from 'src/app/shared/constants/the-p-league-constants';
 import { enumKeysToArray } from 'src/app/shared/helpers/enum-keys-to-array';
 import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
 
