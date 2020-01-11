@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatSelectionListChange, MatTableDataSource } from '@angular/material';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
-import { filterOnInputValue, filterOnLeagueID, filterOnTeamID } from 'src/app/shared/helpers/filter-predicate.function';
+import { filterOnDateValue, filterOnInputValue, filterOnLeagueID, filterOnTeamID } from 'src/app/shared/helpers/filter-predicate.function';
 import { Team } from './../../../models/schedule/team.model';
 
 @Injectable()
@@ -120,6 +120,10 @@ export class ScheduleComponentHelperService {
 		dataSource.filterPredicate = filterOnTeamID;
 	}
 
+	applyMatTableDateSelectionFilter(dataSource: MatTableDataSource<Match>): void {
+		dataSource.filterPredicate = filterOnDateValue;
+	}
+
 	/**
 	 * @description Determines if the league selection drop down list should be displayed or not.
 	 * If it is a single league we are displaying we want to omit league selection drop down
@@ -143,6 +147,12 @@ export class ScheduleComponentHelperService {
 	filterOnTeamID(teamID: string, datasource: MatTableDataSource<Match>): string {
 		datasource.filter = teamID;
 		return teamID;
+	}
+
+	filterOnDateValue(filterValue: string, datasource: MatTableDataSource<Match>): string {
+		console.log('filtervalue is: ', filterValue)
+		datasource.filter = filterValue;
+		return filterValue;
 	}
 
 	// #endregion

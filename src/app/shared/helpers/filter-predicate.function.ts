@@ -16,6 +16,15 @@ export function filterOnTeamID(match: Match, teamID: string): boolean {
 	}
 }
 
+export function filterOnDateValue(match: Match, dateValue: string): boolean {
+	const filterDate = moment(dateValue);
+	if (typeof match.dateTime === 'number') {
+		if (moment.unix(match.dateTime).diff(filterDate, 'days') === 0) {
+			return true;
+		}
+	}
+}
+
 export function filterOnInputValue(match: Match, filterValue: string): boolean {
 	if (match.homeTeam.name.toLowerCase().includes(filterValue)) {
 		return true;

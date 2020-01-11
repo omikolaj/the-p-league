@@ -300,7 +300,7 @@ export class NewSessionScheduleService {
 	 * @description Schedules the match based on the given date and time
 	 */
 	private scheduleMatch(date: string, time: MatchTime, match: Match): void {
-		match.result = {
+		match.matchResult = {
 			status: MatchResultStatus.Pending
 		};
 		match.dateTime = moment(`${date} ${time.hour}:${time.minute} ${time.period}`, 'MM-DD-YYYY hh:mm A').unix();

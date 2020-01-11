@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -15,6 +16,8 @@ import { VIEW_ALL } from '../../../shared/constants/the-p-league-constants';
 	providers: [ScheduleComponentHelperService]
 })
 export class LeaguesSessionSchedulesComponent implements OnInit {
+	todayDataSource: MatTableDataSource<Match>;
+	todaysTitle = "Today's Games";
 	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>(this.scheduleFacade.activeSessionsMatches);
 	private pairs$ = combineLatest(this.scheduleFacade.sportTypesLeaguesPairs$, this.scheduleFacade.leagues$).pipe(
 		filter(([pairs, leagues]) => leagues.length !== 0 && pairs.length !== 0),
@@ -36,7 +39,10 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 
 	constructor(private scheduleFacade: ScheduleFacadeService, private scheduleComponentHelper: ScheduleComponentHelperService) {}
 
-	ngOnInit() {}
+	ngOnInit(): void {
+		// set up todays data source
+		this.todayDataSource = this.filterTodaysMatches();
+	}
 
 	onLeagueSelectionChanged(leagueID: string): void {
 		this.displayTeamID = VIEW_ALL;
@@ -46,5 +52,37 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 	onTeamSelectionChanged(teamID: string): void {
 		this.displayLeagueID = VIEW_ALL;
 		this.displayTeamID = this.scheduleComponentHelper.filterOnTeamID(teamID, this.leaguesSessionSchduleDataSource);
+	}
+
+	onDateSelectionChanged(filterValue: string, scheduleType: 'all' | 'today'): void {
+		switch (scheduleType) {
+			case 'all':
+				this.scheduleComponentHelper.filterOnDateValue(filterValue, this.leaguesSessionSchduleDataSource);
+				break;
+			case 'today':
+				this.scheduleComponentHelper.filterOnDateValue(filterValue, this.todayDataSource);
+				break;
+			default:
+				break;
+		}
+	}
+
+	onFilterValueChanged(filterValue: string): void {
+		this.scheduleComponentHelper.applyMatTableFilterValue(filterValue, this.leaguesSessionSchduleDataSource);
+	}
+
+	private filterTodaysMatches(): MatTableDataSource<Match> {
+		const allMatches = this.scheduleFacade.activeSessionsMatches;
+		const todaysMatches = allMatches.filter((match) => {
+			if (typeof match.dateTime === 'number') {
+				const today = moment(new Date());
+				const matchDateTime = moment.unix(match.dateTime);
+				if (today.diff(matchDateTime, 'days') === 0) {
+					return true;
+				}
+			}
+		});
+
+		return new MatTableDataSource(todaysMatches);
 	}
 }
