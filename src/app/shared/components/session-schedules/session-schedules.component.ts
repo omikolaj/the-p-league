@@ -5,14 +5,15 @@ import * as moment from 'moment';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { MatchResultStatus } from 'src/app/core/models/schedule/match-result-status.enum';
 import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
-import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { matchSortingFn } from 'src/app/shared/helpers/sorting-data-accessor.function';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from '../../constants/the-p-league-constants';
+import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
 
 @Component({
 	selector: 'app-session-schedules',
 	templateUrl: './session-schedules.component.html',
-	styleUrls: ['./session-schedules.component.scss']
+	styleUrls: ['./session-schedules.component.scss'],
+	providers: [MatTableComponentHelperService]
 })
 export class SessionSchedulesComponent implements OnInit {
 	// #region Properties
@@ -52,7 +53,7 @@ export class SessionSchedulesComponent implements OnInit {
 	@Output() filterByInputChanged = new EventEmitter<string>();
 	// #endregion
 
-	constructor(private fb: FormBuilder, private scheduleHelper: ScheduleComponentHelperService) {}
+	constructor(private fb: FormBuilder, private matTableHelper: MatTableComponentHelperService) {}
 
 	ngOnInit() {
 		this.dataSource.sort = this.sort;
@@ -68,14 +69,14 @@ export class SessionSchedulesComponent implements OnInit {
 	}
 
 	onLeagueSelectionChange(): void {
-		this.scheduleHelper.applyMatTableLeagueSelectionFilter(this.dataSource);
+		this.matTableHelper.applyMatTableLeagueSelectionFilter(this.dataSource);
 		// When using selection drop down to filter data we want to clear the filter input field
 		this.filterValue.setValue('');
 		this.leagueChanged.emit(this.selectedLeague.value);
 	}
 
 	onTeamSelectionChange(): void {
-		this.scheduleHelper.applyMatTableTeamSelectionFilter(this.dataSource);
+		this.matTableHelper.applyMatTableTeamSelectionFilter(this.dataSource);
 		// When using selection drop down to filter data we want to clear the filter input field
 		this.filterValue.setValue('');
 		this.teamChanged.emit(this.selectedTeam.value);
@@ -87,7 +88,7 @@ export class SessionSchedulesComponent implements OnInit {
 	}
 
 	onDateChange(input): void {
-		this.scheduleHelper.applyMatTableDateSelectionFilter(this.dataSource);
+		this.matTableHelper.applyMatTableDateSelectionFilter(this.dataSource);
 		this.filterByDateChanged.emit(moment(input.target.value).isValid() ? moment(input.target.value).format('MM/DD/YYYY') : null);
 	}
 
@@ -96,11 +97,11 @@ export class SessionSchedulesComponent implements OnInit {
 	// #region Methods
 
 	showLeagueSelection(): boolean {
-		return this.scheduleHelper.showLeagueSelectionForMatTable(this.pairs);
+		return this.matTableHelper.showLeagueSelectionForMatTable(this.pairs);
 	}
 
 	getCurrentTitle(): string {
-		return this.scheduleHelper.getCurrentTitleTableLeagueSelection(this.pairs, this.selectedLeague.value);
+		return this.matTableHelper.getCurrentTitleTableLeagueSelection(this.pairs, this.selectedLeague.value);
 	}
 
 	// #endregion

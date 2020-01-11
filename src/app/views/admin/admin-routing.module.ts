@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminAuthGuard } from 'src/app/core/guards/admin/admin-auth.guard';
 import { RolesResolver } from 'src/app/core/resolvers/roles/roles-resolver.resolver';
-import { ScheduleAdministrationResolver } from 'src/app/core/resolvers/schedule/schedule-administration-resolver.resolver';
+import { ScheduleListResolver } from 'src/app/core/resolvers/schedule/schedule-list.resolver';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { ScheduleAdministrationComponent } from './schedule-administration/schedule-administration.component';
+import { ScoreboardsComponent } from './scoreboards/scoreboards.component';
 
 const routes: Routes = [
 	{
@@ -25,7 +26,12 @@ const routes: Routes = [
 				path: 'schedule',
 				component: ScheduleAdministrationComponent,
 				canActivate: [AdminAuthGuard],
-				resolve: [ScheduleAdministrationResolver]
+				resolve: [ScheduleListResolver]
+			},
+			{
+				path: 'scoreboards',
+				component: ScoreboardsComponent,
+				canActivate: [AdminAuthGuard]
 			},
 			{
 				path: '',

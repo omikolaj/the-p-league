@@ -14,7 +14,9 @@ export class AdminDashboardComponent implements OnInit {
 	adminControls: Array<AdminControl> = new Array<AdminControl>(
 		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Schedule] },
 		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Gallery] },
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Merchandise] }
+		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Merchandise] },
+		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Scoreboards] },
+		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.RefGames] }
 	);
 
 	constructor(private router: Router, private route: ActivatedRoute) {}

@@ -8,12 +8,13 @@ import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sp
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { ScheduleFacadeService } from '../../../core/services/schedule/schedule-facade.service';
 import { VIEW_ALL } from '../../../shared/constants/the-p-league-constants';
+import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
 
 @Component({
 	selector: 'app-leagues-session-schedules',
 	templateUrl: './leagues-session-schedules.component.html',
 	styleUrls: ['./leagues-session-schedules.component.scss'],
-	providers: [ScheduleComponentHelperService]
+	providers: [ScheduleComponentHelperService, MatTableComponentHelperService]
 })
 export class LeaguesSessionSchedulesComponent implements OnInit {
 	todayDataSource: MatTableDataSource<Match>;
@@ -37,7 +38,11 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 	displayLeagueID = VIEW_ALL;
 	displayTeamID = VIEW_ALL;
 
-	constructor(private scheduleFacade: ScheduleFacadeService, private scheduleComponentHelper: ScheduleComponentHelperService) {}
+	constructor(
+		private scheduleFacade: ScheduleFacadeService,
+		private scheduleComponentHelper: ScheduleComponentHelperService,
+		private matTableHelper: MatTableComponentHelperService
+	) {}
 
 	ngOnInit(): void {
 		// set up todays data source
@@ -46,21 +51,21 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 
 	onLeagueSelectionChanged(leagueID: string): void {
 		this.displayTeamID = VIEW_ALL;
-		this.displayLeagueID = this.scheduleComponentHelper.filterOnLeagueID(leagueID, this.leaguesSessionSchduleDataSource);
+		this.displayLeagueID = this.matTableHelper.filterOnLeagueID(leagueID, this.leaguesSessionSchduleDataSource);
 	}
 
 	onTeamSelectionChanged(teamID: string): void {
 		this.displayLeagueID = VIEW_ALL;
-		this.displayTeamID = this.scheduleComponentHelper.filterOnTeamID(teamID, this.leaguesSessionSchduleDataSource);
+		this.displayTeamID = this.matTableHelper.filterOnTeamID(teamID, this.leaguesSessionSchduleDataSource);
 	}
 
 	onDateSelectionChanged(filterValue: string, scheduleType: 'all' | 'today'): void {
 		switch (scheduleType) {
 			case 'all':
-				this.scheduleComponentHelper.filterOnDateValue(filterValue, this.leaguesSessionSchduleDataSource);
+				this.matTableHelper.filterOnDateValue(filterValue, this.leaguesSessionSchduleDataSource);
 				break;
 			case 'today':
-				this.scheduleComponentHelper.filterOnDateValue(filterValue, this.todayDataSource);
+				this.matTableHelper.filterOnDateValue(filterValue, this.todayDataSource);
 				break;
 			default:
 				break;
@@ -68,7 +73,7 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 	}
 
 	onFilterValueChanged(filterValue: string): void {
-		this.scheduleComponentHelper.applyMatTableFilterValue(filterValue, this.leaguesSessionSchduleDataSource);
+		this.matTableHelper.applyMatTableFilterValue(filterValue, this.leaguesSessionSchduleDataSource);
 	}
 
 	private filterTodaysMatches(): MatTableDataSource<Match> {

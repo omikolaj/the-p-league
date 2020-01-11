@@ -11,13 +11,14 @@ import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
+import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
 import { VIEW_ALL } from './../../../shared/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-schedule-administration',
 	templateUrl: './schedule-administration.component.html',
 	styleUrls: ['./schedule-administration.component.scss'],
-	providers: [ScheduleComponentHelperService]
+	providers: [ScheduleComponentHelperService, MatTableComponentHelperService]
 })
 export class ScheduleAdministrationComponent implements OnInit {
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
@@ -45,7 +46,8 @@ export class ScheduleAdministrationComponent implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private scheduleAdminFacade: ScheduleAdministrationFacade,
-		private scheduleComponentHelper: ScheduleComponentHelperService
+		private scheduleComponentHelper: ScheduleComponentHelperService,
+		private matTableHelper: MatTableComponentHelperService
 	) {}
 
 	// #region LifeCycle Hooks
@@ -202,11 +204,11 @@ export class ScheduleAdministrationComponent implements OnInit {
 	}
 
 	onLeagueChanged(leagueID: string): void {
-		this.displayLeagueID = this.scheduleComponentHelper.filterOnLeagueID(leagueID, this.previewDataSource);
+		this.displayLeagueID = this.matTableHelper.filterOnLeagueID(leagueID, this.previewDataSource);
 	}
 
 	onTeamChanged(teamID: string): void {
-		this.displayTeamID = this.scheduleComponentHelper.filterOnTeamID(teamID, this.previewDataSource);
+		this.displayTeamID = this.matTableHelper.filterOnTeamID(teamID, this.previewDataSource);
 	}
 
 	// #endregion

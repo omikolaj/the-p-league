@@ -4,14 +4,14 @@ import { MatPaginator, MatSort } from '@angular/material';
 import { MatTableDataSource } from '@angular/material/table';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
-import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
 import { matchSortingFn } from '../../../../shared/helpers/sorting-data-accessor.function';
+import { MatTableComponentHelperService } from './../../../../core/services/schedule/mat-table-component-helper.service';
 
 @Component({
 	selector: 'app-preview-schedule',
 	templateUrl: './preview-schedule.component.html',
-	styleUrls: ['./preview-schedule.component.scss'],
+	styleUrls: ['./preview-schedule.component.scss'],	
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PreviewScheduleComponent implements AfterViewInit {
@@ -37,7 +37,7 @@ export class PreviewScheduleComponent implements AfterViewInit {
 	@Output() leagueChanged = new EventEmitter<string>();
 	@Output() schedulesPublished = new EventEmitter<void>();
 
-	constructor(private fb: FormBuilder, private scheduleHelper: ScheduleComponentHelperService) {}
+	constructor(private fb: FormBuilder, private matTableHelper: MatTableComponentHelperService) {}
 
 	// #region Life Cycle methods
 
@@ -59,7 +59,7 @@ export class PreviewScheduleComponent implements AfterViewInit {
 	 * @returns current title
 	 */
 	getCurrentTitle(): string {
-		return this.scheduleHelper.getCurrentTitleTableLeagueSelection(this.pairs, this.selectedLeague.value);
+		return this.matTableHelper.getCurrentTitleTableLeagueSelection(this.pairs, this.selectedLeague.value);
 	}
 
 	/**
@@ -69,11 +69,11 @@ export class PreviewScheduleComponent implements AfterViewInit {
 	 * @returns true if league selection
 	 */
 	showLeagueSelection(): boolean {
-		return this.scheduleHelper.showLeagueSelectionForMatTable(this.pairs);
+		return this.matTableHelper.showLeagueSelectionForMatTable(this.pairs);
 	}
 
 	applyFilter(filterValue: string): void {
-		this.scheduleHelper.applyMatTableFilterValue(filterValue, this.matchesDataSource);
+		this.matTableHelper.applyMatTableFilterValue(filterValue, this.matchesDataSource);
 	}
 
 	// #endregion
@@ -85,7 +85,7 @@ export class PreviewScheduleComponent implements AfterViewInit {
 	}
 
 	onSelectionChange(): void {
-		this.scheduleHelper.applyMatTableLeagueSelectionFilter(this.matchesDataSource);
+		this.matTableHelper.applyMatTableLeagueSelectionFilter(this.matchesDataSource);
 		this.filterValue.setValue('');
 		this.leagueChanged.emit(this.selectedLeague.value);
 	}

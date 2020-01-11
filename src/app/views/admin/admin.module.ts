@@ -26,6 +26,7 @@ import { NewScheduleComponent } from './schedule-administration/new-schedule/new
 import { NewLeagueSessionScheduleComponent } from './schedule-administration/new-schedule/new-session-schedule/new-session-schedule.component';
 import { PreviewScheduleComponent } from './schedule-administration/preview-schedule/preview-schedule.component';
 import { ScheduleAdministrationComponent } from './schedule-administration/schedule-administration.component';
+import { ScoreboardsComponent } from './scoreboards/scoreboards.component';
 
 @NgModule({
 	declarations: [
@@ -45,7 +46,8 @@ import { ScheduleAdministrationComponent } from './schedule-administration/sched
 		ModifyMatchUpComponent,
 		PreviewScheduleComponent,
 		NewScheduleComponent,
-		ModifyScheduleComponent
+		ModifyScheduleComponent,
+		ScoreboardsComponent
 	],
 	entryComponents: [AdminControlComponent],
 	imports: [

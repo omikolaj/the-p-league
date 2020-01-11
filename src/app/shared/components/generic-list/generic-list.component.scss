@@ -1,15 +1,15 @@
-.container{
-    display: flex;
-    flex-flow: row nowrap;
-    margin-top: 75px;
-    justify-content: center;
-  
-  .element{
-    align-self: center;    
-  }
+.container {
+	display: flex;
+	flex-flow: row wrap;
+	margin-top: 75px;
+	justify-content: center;
 
-  .element:hover{
-    border: 2px solid whitesmoke;
-    cursor: pointer;
-  }
+	.element {
+		align-self: center;
+	}
+
+	.element:hover {
+		border: 2px solid whitesmoke;
+		cursor: pointer;
+	}
 }
