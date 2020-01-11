@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import LeagueSessionSchedule from '../../models/schedule/league-session-schedule.model';
+import LeagueSessionSchedule from '../../models/schedule/classes/league-session-schedule.model';
 import { LeagueDTO } from '../../models/schedule/league.model';
 import { ScheduleBaseAsyncService } from './schedule-administration/schedule-base-async.service';
 
@@ -9,7 +9,7 @@ import { ScheduleBaseAsyncService } from './schedule-administration/schedule-bas
 	providedIn: 'root'
 })
 export class ScheduleAsyncService extends ScheduleBaseAsyncService {
-	protected readonly sessionSchedulesUrl = 'leagues/sessions';
+	protected readonly sessionSchedulesUrl = 'schedules/sessions';
 	protected headers = {
 		headers: new HttpHeaders({
 			'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ export class ScheduleAsyncService extends ScheduleBaseAsyncService {
 	}
 
 	fetchLeaguesSessionSchedules(): Observable<LeagueSessionSchedule[]> {
-		return this.http.get<LeagueSessionSchedule[]>(`${this.sessionSchedulesUrl}`, this.headers);
+		return this.http.get<LeagueSessionSchedule[]>(this.sessionSchedulesUrl, this.headers);
 	}
 
 	fetchLeagueByID(leagueID: string): Observable<LeagueDTO> {

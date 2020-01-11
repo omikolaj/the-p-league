@@ -44,13 +44,15 @@
 			<mat-tab label="Preview" [disabled]="checkSelection()">
 				<ng-template matTabContent>
 					<ng-container *ngIf="filteredPairs$ | async as filteredPairs">
-						<app-preview-schedule
-							[matchesDataSource]="previewDataSource"
+						<app-session-schedules
+							[dataSource]="previewDataSource"
 							[pairs]="filteredPairs"
 							[displayLeagueID]="displayLeagueID"
+							[displayTeamID]="displayTeamID"
 							(leagueChanged)="onLeagueChanged($event)"
-							(schedulesPublished)="onSchedulesPublished()"
-						></app-preview-schedule>
+							(teamChanged)="onTeamChanged($event)"
+						></app-session-schedules>
+						<button mat-raised-button color="accent" (click)="onSchedulesPublished()">Publish</button>
 					</ng-container>
 				</ng-template>
 			</mat-tab>

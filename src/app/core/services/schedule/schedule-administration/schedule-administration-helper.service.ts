@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 
 @Injectable({

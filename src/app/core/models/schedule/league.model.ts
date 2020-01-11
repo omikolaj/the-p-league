@@ -1,4 +1,4 @@
-import LeagueSessionSchedule from './league-session-schedule.model';
+import LeagueSessionSchedule from './classes/league-session-schedule.model';
 import { SportTypeDTO } from './sport-type.model';
 import { TeamDTO } from './team.model';
 

@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
-import Match from 'src/app/core/models/schedule/classes/match.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { Team, TeamDTO } from 'src/app/core/models/schedule/team.model';
@@ -22,12 +21,12 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 
 	// #region Session
 
-	publishSessions(newSessions: LeagueSessionSchedule[]): Observable<boolean> {		
-		return this.http.post<boolean>(`${this.leaguesUrl}/sessions`, JSON.stringify(newSessions), this.headers);
+	publishSessions(newSessions: LeagueSessionSchedule[]): Observable<boolean> {
+		return this.http.post<boolean>(`${this.schedulesUrl}/sessions`, JSON.stringify(newSessions), this.headers);
 	}
 
 	fetchActiveSessionsInfo(leaguesIDs: string[]): Observable<ActiveSessionInfo[]> {
-		return this.http.post<ActiveSessionInfo[]>(`${this.leaguesUrl}/sessions/active-sessions-info`, JSON.stringify(leaguesIDs), this.headers);
+		return this.http.post<ActiveSessionInfo[]>(`${this.schedulesUrl}/sessions/active-sessions-info`, JSON.stringify(leaguesIDs), this.headers);
 	}
 
 	// #endregion
@@ -35,7 +34,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region SportType
 
 	addSport(newSportType: SportType): Observable<SportType> {
-		return this.http.post<SportType>(`${this.sportTypeUrl}`, JSON.stringify(newSportType), this.headers);
+		return this.http.post<SportType>(this.sportTypeUrl, JSON.stringify(newSportType), this.headers);
 	}
 
 	updateSportType(updatedSportType: SportType): Observable<SportType> {
@@ -51,7 +50,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region League
 
 	addLeague(newLeague: League): Observable<League> {
-		return this.http.post<League>(`${this.leaguesUrl}`, JSON.stringify(newLeague), this.headers);
+		return this.http.post<League>(this.leaguesUrl, JSON.stringify(newLeague), this.headers);
 	}
 
 	updateLeagues(updatedLeagues: League[]): Observable<League[]> {
@@ -75,7 +74,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	// #region Teams
 
 	addTeam(newTeam: Team): Observable<Team> {
-		return this.http.post<Team>(`${this.teamsUrl}`, JSON.stringify(newTeam), this.headers);
+		return this.http.post<Team>(this.teamsUrl, JSON.stringify(newTeam), this.headers);
 	}
 
 	updateTeams(updatedTeams: Team[]): Observable<Team[]> {

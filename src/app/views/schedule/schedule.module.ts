@@ -7,12 +7,11 @@ import { SharedModule } from './../../shared/shared.module';
 import { LeagueState } from './../../shared/store/state/league.state';
 import { TeamState } from './../../shared/store/state/team.state';
 import { LeaguesSessionSchedulesComponent } from './leagues-session-schedules/leagues-session-schedules.component';
-import { SessionSchedulesComponent } from './leagues-session-schedules/session-schedules/session-schedules.component';
 import { ScheduleListComponent } from './schedule-list/schedule-list.component';
 import { ScheduleRoutingModule } from './schedule-routing.module';
 
 @NgModule({
-	declarations: [ScheduleListComponent, LeaguesSessionSchedulesComponent, SessionSchedulesComponent],
+	declarations: [ScheduleListComponent, LeaguesSessionSchedulesComponent],
 	imports: [CommonModule, ScheduleRoutingModule, SharedModule, NgxsModule.forFeature([ScheduleState, SportTypeState, LeagueState, TeamState])]
 })
 export class ScheduleModule {}

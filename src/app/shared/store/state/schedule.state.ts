@@ -2,8 +2,8 @@ import { Action, createSelector, Selector, State, StateContext } from '@ngxs/sto
 import { produce } from 'immer';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
 import { ScheduleAsyncService } from 'src/app/core/services/schedule/schedule-async.service';
 import * as Schedule from '../actions/schedules.actions';
 
@@ -115,7 +115,9 @@ export class ScheduleState {
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
 				action.activeSessions.forEach((activeSession) => {
-					draft.activeSessionsInfo[activeSession.sessionId] = activeSession;
+					if (activeSession) {
+						draft.activeSessionsInfo[activeSession.sessionId] = activeSession;
+					}
 				});
 			})
 		);
@@ -152,11 +154,15 @@ export class ScheduleState {
 
 	@Action(Schedule.InitializeLeagueSessionSchedules)
 	initializeLeagueSessionSchedules(ctx: StateContext<ScheduleStateModel>, action: Schedule.InitializeLeagueSessionSchedules): void {
+		console.log('sessions', action.payload);
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
 				action.payload.forEach((session) => {
-					draft.activeEntities[session.id] = session;
-					draft.IDs.push(session.id);
+					// in case there are no sessions
+					if (session) {
+						draft.activeEntities[session.id] = session;
+						draft.IDs.push(session.id);
+					}
 				});
 			})
 		);

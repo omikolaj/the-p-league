@@ -5,8 +5,8 @@ import { filter, map } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
-import { ScheduleFacadeService } from './../../../core/services/schedule/schedule-facade.service';
-import { VIEW_ALL } from './../../../shared/constants/the-p-league-constants';
+import { ScheduleFacadeService } from '../../../core/services/schedule/schedule-facade.service';
+import { VIEW_ALL } from '../../../shared/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-leagues-session-schedules',
@@ -28,25 +28,7 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 
 	filteredPairs$: Observable<SportTypesLeaguesPairsWithTeams[]> = combineLatest(this.pairs$, this.scheduleFacade.getAllTeamsForLeagueID$).pipe(
 		map(([pairs, filterFn]) => {
-			return pairs.map((pair) => {
-				const pairWithTeams: SportTypesLeaguesPairsWithTeams = {
-					name: pair.name,
-					id: pair.id,
-					leagues: pair.leagues.map((l) => {
-						return {
-							id: l.id,
-							name: l.name,
-							teams: filterFn(l.id).map((t) => {
-								return {
-									id: t.id,
-									name: t.name
-								};
-							})
-						};
-					})
-				};
-				return pairWithTeams;
-			});
+			return pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeams(pair, filterFn));
 		})
 	);
 	displayLeagueID = VIEW_ALL;

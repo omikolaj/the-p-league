@@ -15,6 +15,7 @@ import { CarouselComponent } from './components/carousel/carousel.component';
 import { GalleryViewerComponent } from './components/gallery-viewer/gallery-viewer.component';
 import { GenericListItemComponent } from './components/generic-list/generic-list-item/generic-list-item.component';
 import { GenericListComponent } from './components/generic-list/generic-list.component';
+import { SessionSchedulesComponent } from './components/session-schedules/session-schedules.component';
 import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
 import { AllowSpacesDirective } from './directives/allow-space/allow-spaces.directive';
 import { ClearElementValueDirective } from './directives/clear-element-value/clear-element-value.directive';
@@ -45,6 +46,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		CarouselComponent,
 		GenericListComponent,
 		GenericListItemComponent,
+		SessionSchedulesComponent,
 
 		// Directives
 		AllowSpacesDirective,
@@ -155,6 +157,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		CarouselModule,
 		CarouselComponent,
 		GenericListComponent,
+		SessionSchedulesComponent,
 		PortalModule,
 
 		// Directives

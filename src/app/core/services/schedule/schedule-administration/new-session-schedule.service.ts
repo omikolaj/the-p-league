@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as cuid from 'cuid';
 import * as moment from 'moment';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { GameDay } from 'src/app/core/models/schedule/game-day.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
+import { MatchResultStatus } from 'src/app/core/models/schedule/match-result-status.enum';
 import { MatchTime } from 'src/app/core/models/schedule/match-time.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { BYE_WEEK_DATE_TEXT, TIME_FORMAT } from 'src/app/shared/constants/the-p-league-constants';
@@ -299,6 +300,9 @@ export class NewSessionScheduleService {
 	 * @description Schedules the match based on the given date and time
 	 */
 	private scheduleMatch(date: string, time: MatchTime, match: Match): void {
+		match.result = {
+			status: MatchResultStatus.Pending
+		};
 		match.dateTime = moment(`${date} ${time.hour}:${time.minute} ${time.period}`, 'MM-DD-YYYY hh:mm A').unix();
 	}
 }

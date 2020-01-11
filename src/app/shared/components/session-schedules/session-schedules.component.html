@@ -31,7 +31,7 @@
 
 	<!-- filter value form field -->
 	<mat-form-field>
-		<input matInput [formControl]="filterValue" (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
+		<input matInput [formControl]="filterValue" (keyup)="onApplyFilter($event.target.value)" placeholder="Filter" />
 	</mat-form-field>
 
 	<mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8" style="margin: 0 auto;">
@@ -55,7 +55,9 @@
 		<!-- Result Column -->
 		<ng-container matColumnDef="result">
 			<mat-header-cell *matHeaderCellDef mat-sort-header>Result</mat-header-cell>
-			<mat-cell *matCellDef="let match">-</mat-cell>
+			<mat-cell *matCellDef="let match">{{
+				match?.matchResult?.status === matchResult['Completed'] ? match?.matchResult?.score : matchResult[match?.matchResult?.status]
+			}}</mat-cell>
 		</ng-container>
 
 		<!-- Away Column -->

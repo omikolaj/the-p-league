@@ -8,7 +8,7 @@ import * as Leagues from '../../../shared/store/actions/leagues.actions';
 import * as Schedules from '../../../shared/store/actions/schedules.actions';
 import * as Sports from '../../../shared/store/actions/sports.actions';
 import * as Teams from '../../../shared/store/actions/teams.actions';
-import LeagueSessionSchedule from '../../models/schedule/league-session-schedule.model';
+import LeagueSessionSchedule from '../../models/schedule/classes/league-session-schedule.model';
 import { League, LeagueDTO } from '../../models/schedule/league.model';
 import { SportType, SportTypeDTO } from '../../models/schedule/sport-type.model';
 import { TeamDTO } from '../../models/schedule/team.model';

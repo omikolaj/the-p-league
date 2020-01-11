@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { VIEW_ALL } from '../constants/the-p-league-constants';
 
@@ -20,6 +21,15 @@ export function filterOnInputValue(match: Match, filterValue: string): boolean {
 		return true;
 	}
 	if (match.awayTeam.name.toLowerCase().includes(filterValue)) {
+		return true;
+	}
+	if (
+		moment
+			.unix(match.dateTime as number)
+			.format('dddd MMM DD YYYY hh:mm a')
+			.toLocaleLowerCase()
+			.includes(filterValue)
+	) {
 		return true;
 	}
 	return false;

@@ -6,7 +6,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { flatMap, map, takeUntil, tap } from 'rxjs/operators';
 import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
 import { GameDay } from 'src/app/core/models/schedule/game-day.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
@@ -55,7 +55,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 
 	leagues$: Observable<{ league: League; teams: Team[]; form: FormGroup; sport: SportType }[]> = combineLatest([
 		this.selectedLeagues$,
-		this.scheduleAdminFacade.getAllForLeagueID$,
+		this.scheduleAdminFacade.getAllTeamsForLeagueID$,
 		this.scheduleAdminFacade.getSportByID$,
 		this.scheduleAdminFacade.activeSessionInfoByLeagueID$
 	]).pipe(

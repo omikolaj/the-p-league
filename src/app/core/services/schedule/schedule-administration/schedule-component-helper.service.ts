@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatSelectionListChange, MatTableDataSource } from '@angular/material';
 import Match from 'src/app/core/models/schedule/classes/match.model';
-import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { filterOnInputValue, filterOnLeagueID, filterOnTeamID } from 'src/app/shared/helpers/filter-predicate.function';
+import { Team } from './../../../models/schedule/team.model';
 
 @Injectable()
 export class ScheduleComponentHelperService {
@@ -47,6 +48,27 @@ export class ScheduleComponentHelperService {
 				return newSport;
 			});
 	}
+
+	generatePairsWithTeams(pair: SportTypesLeaguesPairs, filterFunction: (id: string) => Team[]): SportTypesLeaguesPairsWithTeams {
+		return {
+			name: pair.name,
+			id: pair.id,
+			leagues: pair.leagues.map((l) => {
+				return {
+					id: l.id,
+					name: l.name,
+					teams: filterFunction(l.id).map((t) => {
+						return {
+							id: t.id,
+							name: t.name
+						};
+					})
+				};
+			})
+		};
+	}
+
+	// #region Mat Table functions
 
 	/**
 	 * @description Used by the components to render the schedule/schedule-preview
@@ -122,4 +144,6 @@ export class ScheduleComponentHelperService {
 		datasource.filter = teamID;
 		return teamID;
 	}
+
+	// #endregion
 }

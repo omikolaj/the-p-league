@@ -1,5 +1,5 @@
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 
 export class FetchLeaguesSessionSchedules {
 	static readonly type = '[Schedule API] FetchLeaguesSessionSchedules';

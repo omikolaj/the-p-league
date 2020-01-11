@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectionListChange, MatTabChangeEvent, MatTableDataSource } from '@angular/material';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
-import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
-import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
+import { VIEW_ALL } from './../../../shared/constants/the-p-league-constants';
 
 @Component({
 	selector: 'app-schedule-administration',
@@ -30,8 +30,9 @@ export class ScheduleAdministrationComponent implements OnInit {
 	 * and their corresponding sport types. This list gets initialized inside the
 	 * onGeneratedSchedules event handler.
 	 */
-	filteredPairs$: Observable<SportTypesLeaguesPairs[]>;
+	filteredPairs$: Observable<SportTypesLeaguesPairsWithTeams[]>;
 	displayLeagueID = VIEW_ALL;
+	displayTeamID = VIEW_ALL;
 	tabTitle: TabTitles = 'Schedule';
 	nextTab: 0 | 1 | 2 | number;
 	newSportLeagueForm: FormGroup;
@@ -95,9 +96,15 @@ export class ScheduleAdministrationComponent implements OnInit {
 		}
 		// filter the sport league pairs based on the passed in league IDs.
 		// the filteredPairs$ observable stream gets consumed by the preview
-		this.filteredPairs$ = this.sportLeaguePairs$.pipe(
-			filter((_) => leagueIDs.length !== 0),
-			map((pairs) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagueIDs))
+		this.filteredPairs$ = combineLatest(this.sportLeaguePairs$, this.scheduleAdminFacade.getAllTeamsForLeagueID$).pipe(
+			filter(([pairs, filterFn]) => leagueIDs.length !== 0),
+			map(([pairs, filterFn]) => {
+				const filteredPairs = this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagueIDs);
+				return [filteredPairs, filterFn];
+			}),
+			map(([pairs, filterFn]: [SportTypesLeaguesPairs[], (id: string) => Team[]]) =>
+				pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeams(pair, filterFn))
+			)
 		);
 		this.onPreviewSchedule();
 	}
@@ -196,6 +203,10 @@ export class ScheduleAdministrationComponent implements OnInit {
 
 	onLeagueChanged(leagueID: string): void {
 		this.displayLeagueID = this.scheduleComponentHelper.filterOnLeagueID(leagueID, this.previewDataSource);
+	}
+
+	onTeamChanged(teamID: string): void {
+		this.displayTeamID = this.scheduleComponentHelper.filterOnTeamID(teamID, this.previewDataSource);
 	}
 
 	// #endregion

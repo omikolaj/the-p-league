@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/league-session-schedule.model';
+import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
@@ -36,7 +36,7 @@ export class ScheduleAdministrationFacade {
 	@Select(LeagueState.getSelected) selectedLeagues$: Observable<League[]>;
 
 	@Select(TeamState.getUnassigned) unassignedTeams$: Observable<Team[]>;
-	@Select(TeamState.getAllForLeagueID) getAllForLeagueID$: Observable<(id: string) => Team[]>;
+	@Select(TeamState.getAllForLeagueID) getAllTeamsForLeagueID$: Observable<(id: string) => Team[]>;
 
 	// Used by new-schedule component to retrieve session info from the store via observable stream
 	@Select(ScheduleState.getSessionInfoByLeagueID) activeSessionInfoByLeagueID$: Observable<(id: string) => ActiveSessionInfo>;
