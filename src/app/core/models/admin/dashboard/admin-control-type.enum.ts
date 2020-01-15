@@ -3,6 +3,5 @@ export enum AdminControlType {
 	Schedule,
 	Gallery,
 	Merchandise,
-	Scoreboards,
-	RefGames
+	Scoreboards
 }

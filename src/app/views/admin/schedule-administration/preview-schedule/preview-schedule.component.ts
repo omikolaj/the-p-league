@@ -11,7 +11,7 @@ import { MatTableComponentHelperService } from './../../../../core/services/sche
 @Component({
 	selector: 'app-preview-schedule',
 	templateUrl: './preview-schedule.component.html',
-	styleUrls: ['./preview-schedule.component.scss'],	
+	styleUrls: ['./preview-schedule.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PreviewScheduleComponent implements AfterViewInit {

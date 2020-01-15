@@ -23,7 +23,8 @@ export class LeagueState {
 	constructor() {}
 
 	@Selector()
-	static getAll(state: LeagueStateModel): League[] {		
+	static getAll(state: LeagueStateModel): League[] {
+		console.log('returning all leagues');
 		return Object.values(state.entities);
 	}
 

@@ -1,7 +1,7 @@
 <div>
 	<app-session-schedules
 		[title]="todaysTitle"
-		(filterByDateChanged)="onDateSelectionChanged($event, 'today')"
+		(filterByInputChanged)="onFilterValueChanged($event, 'today')"
 		[dataSource]="todayDataSource"
 	></app-session-schedules>
 	<ng-container *ngIf="filteredPairs$ | async as pairs">
@@ -12,8 +12,8 @@
 			[displayTeamID]="displayTeamID"
 			(leagueChanged)="onLeagueSelectionChanged($event)"
 			(teamChanged)="onTeamSelectionChanged($event)"
-			(filterByDateChanged)="onDateSelectionChanged($event, 'all')"
-			(filterByInputChanged)="onFilterValueChanged($event)"
+			(filterByDateChanged)="onDateSelectionChanged($event)"
+			(filterByInputChanged)="onFilterValueChanged($event, 'all')"
 		>
 		</app-session-schedules>
 	</ng-container>

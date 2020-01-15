@@ -14,4 +14,5 @@ export interface MatchResult {
 	score?: string;
 	wonTeamName?: string;
 	lostTeamName?: string;
+	sessionId?: string;
 }

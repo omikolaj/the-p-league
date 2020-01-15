@@ -7,7 +7,7 @@ export default class Match {
 	dateTime?: number | string;
 	homeTeam: HomeTeam;
 	awayTeam: AwayTeam;
-	sessionID: string;
+	sessionId: string;
 	leagueID?: string;
 	matchResult?: MatchResult;
 

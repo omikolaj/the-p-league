@@ -1,5 +1,6 @@
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
+import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
 
 export class FetchLeaguesSessionSchedules {
 	static readonly type = '[Schedule API] FetchLeaguesSessionSchedules';
@@ -26,9 +27,14 @@ export class CreateSchedules {
 	constructor(public newSessions: LeagueSessionSchedule[]) {}
 }
 
-export class GetSchedules {
-	static readonly type = '[Schedule] GetSchedules';
+export class ClearSchedules {
+	static readonly type = '[Schedule] ClearSchedules';
 	constructor() {}
+}
+
+export class UpdateMatchResult {
+	static readonly type = '[Schedule] UpdateMatchResult';
+	constructor(public matchResult: MatchResult) {}
 }
 
 export class InitializeLeagueSessionSchedules {

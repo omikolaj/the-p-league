@@ -63,6 +63,7 @@ export class SportTypeState {
 				}
 			});
 		});
+		console.log('returning pairs from the store', pairs);
 		return pairs;
 	}
 

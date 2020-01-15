@@ -1,14 +1,16 @@
-<div>
+<div style="margin-top: 75px;">
 	<ng-container *ngIf="filteredPairs$ | async as pairs">
 		<app-session-schedules
 			[dataSource]="leaguesSessionSchduleDataSource"
 			[pairs]="pairs"
 			[displayLeagueID]="displayLeagueID"
 			[displayTeamID]="displayTeamID"
+			[admin]="admin"
 			(leagueChanged)="onLeagueSelectionChanged($event)"
 			(teamChanged)="onTeamSelectionChanged($event)"
 			(filterByDateChanged)="onDateSelectionChanged($event, 'all')"
 			(filterByInputChanged)="onFilterValueChanged($event)"
+			(matchReported)="onMatchReported($event)"
 		>
 		</app-session-schedules>
 	</ng-container>

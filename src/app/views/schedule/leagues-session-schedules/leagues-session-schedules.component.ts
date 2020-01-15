@@ -59,21 +59,21 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 		this.displayTeamID = this.matTableHelper.filterOnTeamID(teamID, this.leaguesSessionSchduleDataSource);
 	}
 
-	onDateSelectionChanged(filterValue: string, scheduleType: 'all' | 'today'): void {
+	onDateSelectionChanged(filterValue: string): void {
+		this.matTableHelper.filterOnDateValue(filterValue, this.leaguesSessionSchduleDataSource);
+	}
+
+	onFilterValueChanged(filterValue: string, scheduleType: 'all' | 'today'): void {
 		switch (scheduleType) {
 			case 'all':
-				this.matTableHelper.filterOnDateValue(filterValue, this.leaguesSessionSchduleDataSource);
+				this.matTableHelper.applyMatTableFilterValue(filterValue, this.leaguesSessionSchduleDataSource);
 				break;
 			case 'today':
-				this.matTableHelper.filterOnDateValue(filterValue, this.todayDataSource);
+				this.matTableHelper.applyMatTableFilterValue(filterValue, this.todayDataSource);
 				break;
 			default:
 				break;
 		}
-	}
-
-	onFilterValueChanged(filterValue: string): void {
-		this.matTableHelper.applyMatTableFilterValue(filterValue, this.leaguesSessionSchduleDataSource);
 	}
 
 	private filterTodaysMatches(): MatTableDataSource<Match> {

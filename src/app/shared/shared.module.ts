@@ -18,6 +18,7 @@ import { GenericListComponent } from './components/generic-list/generic-list.com
 import { SessionSchedulesComponent } from './components/session-schedules/session-schedules.component';
 import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
 import { AllowSpacesDirective } from './directives/allow-space/allow-spaces.directive';
+import { CdkDetailRowDirective } from './directives/cdk-detail-row/cdk-detail-row.directive';
 import { ClearElementValueDirective } from './directives/clear-element-value/clear-element-value.directive';
 import { HasRoleDirective } from './directives/has-role/has-role.directive';
 import { IosVHDirective } from './directives/iosVH/ios-vh.directive';
@@ -62,7 +63,8 @@ const globalRippleConfig: RippleGlobalOptions = {
 		FilteredGearSizesPipe,
 		EnumToArrayPipe,
 		TeamSwapDirective,
-		FromUnixPipe
+		FromUnixPipe,
+		CdkDetailRowDirective
 	],
 	imports: [
 		MatAutocompleteModule,
@@ -167,6 +169,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		IosVHDirective,
 		ListItemComponentDirective,
 		TeamSwapDirective,
+		CdkDetailRowDirective,
 
 		// Pipes
 		OrderEnumPipe,

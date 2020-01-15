@@ -59,7 +59,7 @@
 		<h1>{{ title }}</h1>
 	</ng-container>
 
-	<mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8" style="margin: 0 auto;">
+	<mat-table matSort [dataSource]="dataSource1" multiTemplateDataRows class="mat-elevation-z8" style="margin: 0 auto;">
 		<!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -85,14 +85,65 @@
 			}}</mat-cell>
 		</ng-container>
 
+		<!-- <ng-container *ngIf="admin" matColumnDef="expandedDetail">
+			<mat-cell *matCellDef="let match" [attr.colspan]="displayColumns.length">
+				<div class="example-element-detail" [@detailExpand]="match == expandedElement ? 'expanded' : 'collapsed'">
+					<mat-form-field style="display: block">
+						<input matInput type="text" placeholder="HomeTeam Score" />
+					</mat-form-field>
+
+					<mat-form-field style="display: block">
+						<input matInput type="text" placeholder="AwayTeam Score" />
+					</mat-form-field>
+
+					<button mat-raised-button>Report</button>
+				</div>
+			</mat-cell>
+		</ng-container> -->
+
 		<!-- Away Column -->
 		<ng-container matColumnDef="away">
 			<mat-header-cell *matHeaderCellDef mat-sort-header>Away</mat-header-cell>
 			<mat-cell *matCellDef="let match">{{ match?.awayTeam?.name }}</mat-cell>
 		</ng-container>
 
+		<!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row
+			*matRowDef="let match; columns: displayedColumns"
+			class="example-element-row"
+			[class.example-expanded-row]="expandedElement === match"
+			(click)="onGameClicked(match)"
+		></mat-row>		 -->
+
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+		<mat-row
+			*matRowDef="let row; columns: displayedColumns"
+			matRipple
+			class="element-row"
+			[appCdkDetailRow]="row"
+			[appCdkDetailRowTpl]="tpl"
+			[admin]="admin"
+		></mat-row>
 	</mat-table>
+
 	<mat-paginator [pageSizeOptions]="[8, 16, 32, 100]"></mat-paginator>
 </div>
+
+<ng-template #tpl let-match>
+	<div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
+		<form [formGroup]="matchReportForm" #formDirective="ngForm" (ngSubmit)="onMatchReported(formDirective, match)" novalidate>
+			<mat-form-field>
+				<input formControlName="homeTeamScore" matInput [placeholder]="match?.homeTeam?.name + 'score'" type="number" />
+				<mat-error *ngIf="matchReportForm.get('homeTeamScore').hasError('required')">You must enter home team's score</mat-error>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeam?.name + 'score'" type="number" />
+				<mat-error *ngIf="matchReportForm.get('awayTeamScore').hasError('required')">You must enter away team's score</mat-error>
+			</mat-form-field>
+
+			<button mat-raised-button color="accent" [disabled]="!matchReportForm.valid">Report</button>
+			<button mat-raised-button color="accent" type="button" (click)="onFillInStats()">Fill in Stats</button>
+		</form>
+	</div>
+</ng-template>

@@ -13,6 +13,9 @@ import { ScheduleComponentHelperService } from './schedule-administration/schedu
 export class MatTableComponentHelperService {
 	constructor(private scheduleHelper: ScheduleComponentHelperService) {}
 
+  
+
+
 	/**
 	 * @description Used by the components to render the schedule/schedule-preview
 	 * determines what the title of the given schedule should be. It could be 'All'

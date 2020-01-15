@@ -4,9 +4,10 @@ import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
-import Match from 'src/app/core/models/schedule/classes/match.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
+import Match from 'src/app/core/models/schedule/classes/match.model';
 import { League } from 'src/app/core/models/schedule/league.model';
+import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
@@ -32,6 +33,7 @@ export class ScheduleAdministrationFacade {
 	@Select(SportTypeState.getSportTypeByID) getSportByID$: Observable<(id: string) => SportType>;
 	@Select(SportTypeState.getSportTypesLeaguesPairs) sportTypesLeaguesPairs$: Observable<SportTypesLeaguesPairs[]>;
 
+	@Select(LeagueState.getAll) leagues$: Observable<League[]>;
 	@Select(LeagueState.getAllForSportTypeID) getAllForSportTypeID$: Observable<(id: string) => League[]>;
 	@Select(LeagueState.getSelected) selectedLeagues$: Observable<League[]>;
 
@@ -41,8 +43,13 @@ export class ScheduleAdministrationFacade {
 	// Used by new-schedule component to retrieve session info from the store via observable stream
 	@Select(ScheduleState.getSessionInfoByLeagueID) activeSessionInfoByLeagueID$: Observable<(id: string) => ActiveSessionInfo>;
 
+	// Used by the preview component to populate MatTableDataSource.data property
 	get matchesSnapshot(): Match[] {
 		return this.store.selectSnapshot(ScheduleState.getMatches);
+	}
+
+	get activeSessionsMatches(): Match[] {
+		return this.store.selectSnapshot(ScheduleState.getActiveSessionsMatches);
 	}
 
 	// Used by new-schedule component to perform session start date validation. It returns latest snapshot from the store
@@ -75,6 +82,9 @@ export class ScheduleAdministrationFacade {
 	publishSessionSchedules(): void {
 		const sessions = this.store.selectSnapshot(ScheduleState.getSessions);
 		this.scheduleAdminAsync.publishSessions(sessions).subscribe((_) => {
+			// clear created schedules from memory. They were only saved to be displayed
+			// in the preview component
+			this.store.dispatch(new Schedules.ClearSchedules());
 			this.router.navigate(['admin']);
 		});
 	}
@@ -83,6 +93,12 @@ export class ScheduleAdministrationFacade {
 		return this.scheduleAdminAsync
 			.fetchActiveSessionsInfo(leagueIDs)
 			.pipe(tap((activeSessionsInfo) => this.store.dispatch(new Schedules.InitializeActiveSessionsInfo(activeSessionsInfo))));
+	}
+
+	reportMatch(matchResult: MatchResult): void {
+		this.scheduleAdminAsync.reportMatch(matchResult).subscribe((result) => {
+			this.store.dispatch(new Schedules.UpdateMatchResult(result));
+		});
 	}
 
 	// #endregion

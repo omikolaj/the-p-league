@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import { League } from 'src/app/core/models/schedule/league.model';
+import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { Team, TeamDTO } from 'src/app/core/models/schedule/team.model';
 import { ScheduleBaseAsyncService } from './schedule-base-async.service';
@@ -27,6 +28,15 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 
 	fetchActiveSessionsInfo(leaguesIDs: string[]): Observable<ActiveSessionInfo[]> {
 		return this.http.post<ActiveSessionInfo[]>(`${this.schedulesUrl}/sessions/active-sessions-info`, JSON.stringify(leaguesIDs), this.headers);
+	}
+
+	reportMatch(matchResult: MatchResult): Observable<MatchResult> {
+		console.log('matchResult', matchResult);
+		return this.http.post<MatchResult>(
+			`${this.schedulesUrl}/sessions/${matchResult.sessionId}/matches/${matchResult.matchId}/report`,
+			JSON.stringify(matchResult),
+			this.headers
+		);
 	}
 
 	// #endregion

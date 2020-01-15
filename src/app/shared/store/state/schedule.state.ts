@@ -1,5 +1,6 @@
 import { Action, createSelector, Selector, State, StateContext } from '@ngxs/store';
 import { produce } from 'immer';
+import { Observable } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
@@ -53,6 +54,7 @@ export class ScheduleState {
 		Object.values(state.entities).forEach((entity) => {
 			matches = [...matches, ...entity.matches];
 		});
+		console.log('returning matches', matches);
 		return matches;
 	}
 
@@ -96,11 +98,27 @@ export class ScheduleState {
 	}
 
 	@Action(Schedule.FetchLeaguesSessionSchedules)
-	fetchSessions(ctx: StateContext<ScheduleStateModel>) {
+	fetchSessions(ctx: StateContext<ScheduleStateModel>): Observable<void> {
 		return this.scheduleAsync.fetchLeaguesSessionSchedules().pipe(
 			tap((sessions) => ctx.dispatch(new Schedule.InitializeLeagueSessionSchedules(sessions))),
 			switchMap(() => ctx.dispatch(new Schedule.FetchLeaguesSessionSchedulesSuccess())),
 			catchError((err) => ctx.dispatch(new Schedule.FetchLeaguesSesssionSchedulesFailed(err)))
+		);
+	}
+
+	@Action(Schedule.InitializeLeagueSessionSchedules)
+	initializeLeagueSessionSchedules(ctx: StateContext<ScheduleStateModel>, action: Schedule.InitializeLeagueSessionSchedules): void {
+		console.log('sessions', action.payload);
+		ctx.setState(
+			produce((draft: ScheduleStateModel) => {
+				action.payload.forEach((session) => {
+					// in case there are no sessions
+					if (session) {
+						draft.activeEntities[session.id] = session;
+						draft.IDs.push(session.id);
+					}
+				});
+			})
 		);
 	}
 
@@ -111,7 +129,7 @@ export class ScheduleState {
 	fetchSessionsFailed(ctx: StateContext<ScheduleStateModel>) {}
 
 	@Action(Schedule.InitializeActiveSessionsInfo)
-	initializeSchedules(ctx: StateContext<ScheduleStateModel>, action: Schedule.InitializeActiveSessionsInfo): void {
+	initializeActiveSessionsInfo(ctx: StateContext<ScheduleStateModel>, action: Schedule.InitializeActiveSessionsInfo): void {
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
 				action.activeSessions.forEach((activeSession) => {
@@ -125,11 +143,12 @@ export class ScheduleState {
 
 	/**
 	 * @description Creates sessions for the selected leagues. This can only create a new
-	 * session per selected league.
+	 * session per selected league. This is only used to store the created sessions so the
+	 * Preview component can display them. Entities state of this store slice should be cleared
+	 * once user publishes schedules
 	 * @param ctx
 	 * @param action
 	 */
-
 	@Action(Schedule.CreateSchedules)
 	createSessions(ctx: StateContext<ScheduleStateModel>, action: Schedule.CreateSchedules): void {
 		ctx.setState(
@@ -152,19 +171,29 @@ export class ScheduleState {
 		);
 	}
 
-	@Action(Schedule.InitializeLeagueSessionSchedules)
-	initializeLeagueSessionSchedules(ctx: StateContext<ScheduleStateModel>, action: Schedule.InitializeLeagueSessionSchedules): void {
-		console.log('sessions', action.payload);
+	@Action(Schedule.ClearSchedules)
+	clearSessions(ctx: StateContext<ScheduleStateModel>): void {
 		ctx.setState(
 			produce((draft: ScheduleStateModel) => {
-				action.payload.forEach((session) => {
-					// in case there are no sessions
-					if (session) {
-						draft.activeEntities[session.id] = session;
-						draft.IDs.push(session.id);
-					}
-				});
+				draft.entities = {};
 			})
 		);
+	}
+
+	@Action(Schedule.UpdateMatchResult)
+	updateMatchResult(ctx: StateContext<ScheduleStateModel>, action: Schedule.UpdateMatchResult): void {
+		// console.warn('Update match results client side is NOT implemented. Payload is: ', action.matchResult);
+		ctx.setState(
+			produce((draft: ScheduleStateModel) => {
+				const session: LeagueSessionSchedule = draft.activeEntities[action.matchResult.sessionId];
+				if (session) {
+					const match: Match = session.matches.find((m) => m.id === action.matchResult.matchId);
+					if (match) {
+						match.matchResult = action.matchResult;
+					}
+				}
+			})
+		);
+		console.log('logging updated matches', ctx.getState().activeEntities);
 	}
 }
