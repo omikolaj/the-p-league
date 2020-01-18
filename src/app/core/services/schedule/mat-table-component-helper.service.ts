@@ -13,9 +13,6 @@ import { ScheduleComponentHelperService } from './schedule-administration/schedu
 export class MatTableComponentHelperService {
 	constructor(private scheduleHelper: ScheduleComponentHelperService) {}
 
-  
-
-
 	/**
 	 * @description Used by the components to render the schedule/schedule-preview
 	 * determines what the title of the given schedule should be. It could be 'All'
@@ -72,7 +69,7 @@ export class MatTableComponentHelperService {
 
 	/**
 	 * @description Determines if the league selection drop down list should be displayed or not.
-	 * If it is a single league we are displaying we want to omit league selection drop down
+	 * If it is a single league we are displaying, we want to omit league selection drop down
 	 * @returns true if there are more than one league in the pairs array
 	 */
 	showLeagueSelectionForMatTable(pairs: SportTypesLeaguesPairs[]): boolean {

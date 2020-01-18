@@ -1,13 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDatepicker, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { MatchResultStatus } from 'src/app/core/models/schedule/match-result-status.enum';
 import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
 import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
-import { LeaguesSchedulesDataSourceService } from 'src/app/core/services/schedule/leagues-schedules-data-source.service';
 import { matchSortingFn } from 'src/app/shared/helpers/sorting-data-accessor.function';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from '../../constants/the-p-league-constants';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
@@ -55,8 +54,16 @@ export class SessionSchedulesComponent implements OnInit {
 		this.selectedTeam.setValue(value);
 	}
 	@Input() admin = false;
-	@Input() dataSource: MatTableDataSource<Match>;
-	dataSource1 = new LeaguesSchedulesDataSourceService();
+	private _dataSource: MatTableDataSource<Match>;
+	get dataSource(): MatTableDataSource<Match> {
+		return this._dataSource;
+	}
+
+	@Input() set dataSource(value: MatTableDataSource<Match>) {
+		this._dataSource = value;
+		this.tableSetUp();
+	}
+
 	@Input() pairs: SportTypesLeaguesPairsWithTeams[] = [];
 	@Input() title = '';
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -75,12 +82,8 @@ export class SessionSchedulesComponent implements OnInit {
 
 	constructor(private fb: FormBuilder, private matTableHelper: MatTableComponentHelperService) {}
 
-	ngOnInit() {
+	ngOnInit(): void {
 		this.initForms();
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sortingDataAccessor = matchSortingFn;
-		console.log('logging is admin', this.admin);
 	}
 
 	// #region Event Handlers
@@ -114,23 +117,16 @@ export class SessionSchedulesComponent implements OnInit {
 	}
 
 	onMatchReported(formGroupDirective: FormGroupDirective, match: Match): void {
-		console.log('logging the match', match);
 		const matchResult = { ...match.matchResult };
 		matchResult.homeTeamScore = this.matchReportForm.get('homeTeamScore').value;
 		matchResult.awayTeamScore = this.matchReportForm.get('awayTeamScore').value;
 		formGroupDirective.resetForm();
-		console.log('logging matchResult', matchResult);
 		this.matchReported.emit(matchResult);
 	}
 
 	onFillInStats(): void {
 		console.log('inside onFillInStats');
 	}
-
-	// onGameClicked(match: Match): void {
-	// 	console.log('inside ongameClicked,', match);
-	// 	this.expandedElement = this.expandedElement === match ? null : match;
-	// }
 
 	// #endregion
 
@@ -144,10 +140,53 @@ export class SessionSchedulesComponent implements OnInit {
 		return this.matTableHelper.getCurrentTitleTableLeagueSelection(this.pairs, this.selectedLeague.value);
 	}
 
+	private tableSetUp(): void {
+		if (this.sort && this.paginator) {
+			this.dataSource.sort = this.sort;
+			this.dataSource.paginator = this.paginator;
+			this.dataSource.sortingDataAccessor = matchSortingFn;
+		}
+	}
+
+	matchesResultsForms: FormGroup;
+	private initForms1(): void {
+		if (this.admin) {
+			console.log('logging data', this.dataSource.data);
+			this.dataSource.data.forEach((match) => {
+				const matchResultForm = this.initMatchResultForm(match);
+				if (this.matchesResultsForms && this.matchesResultsForms.value.results) {
+					const formArray = this.matchesResultsForms['controls'].results as FormArray;
+					formArray.controls.push(matchResultForm);
+				} else {
+					this.matchesResultsForms = this.fb.group({
+						results: this.fb.array([matchResultForm])
+					});
+				}
+			});
+
+			console.log('logging matchesForm', this.matchesResultsForms);
+		}
+	}
+
 	private initForms(): void {
 		this.matchReportForm = this.fb.group({
 			homeTeamScore: this.fb.control(null, Validators.required),
 			awayTeamScore: this.fb.control(null, Validators.required)
+		});
+	}
+
+	private initMatchResultForm(match: Match): FormGroup {
+		let homeTeamScore = null;
+		if (match.matchResult.homeTeamScore) {
+			homeTeamScore = match.matchResult.homeTeamScore;
+		}
+		let awayTeamScore = null;
+		if (match.matchResult.awayTeamScore) {
+			awayTeamScore = match.matchResult.awayTeamScore;
+		}
+		return this.fb.group({
+			homeTeamScore: this.fb.control(homeTeamScore, Validators.required),
+			awayTeamScore: this.fb.control(awayTeamScore, Validators.required)
 		});
 	}
 

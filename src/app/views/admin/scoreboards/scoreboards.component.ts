@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { combineLatest, Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil, tap } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
 import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
@@ -16,7 +16,7 @@ import { ScheduleAdministrationFacade } from './../../../core/services/schedule/
 	styleUrls: ['./scoreboards.component.scss'],
 	providers: [ScheduleComponentHelperService, MatTableComponentHelperService]
 })
-export class ScoreboardsComponent implements OnInit {
+export class ScoreboardsComponent implements OnInit, OnDestroy {
 	private pairs$ = combineLatest(this.scheduleFacade.sportTypesLeaguesPairs$, this.scheduleFacade.leagues$).pipe(
 		filter(([pairs, leagues]) => leagues.length !== 0 && pairs.length !== 0),
 		map(([pairs, leagues]) =>
@@ -40,6 +40,7 @@ export class ScoreboardsComponent implements OnInit {
 	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>(this.scheduleFacade.activeSessionsMatches);
 	admin = true;
 	displayColumns = ['home', 'result', 'actions', 'away', 'date'];
+	private unsubscribe$: Subject<void> = new Subject();
 
 	constructor(
 		private scheduleFacade: ScheduleAdministrationFacade,
@@ -47,8 +48,18 @@ export class ScoreboardsComponent implements OnInit {
 		private matTableHelper: MatTableComponentHelperService
 	) {}
 
-	ngOnInit() {
-		console.log('inside ngOnInit');
+	ngOnInit(): void {
+		this.scheduleFacade.activeSessionMatches$
+			.pipe(
+				takeUntil(this.unsubscribe$),
+				tap((matches) => (this.leaguesSessionSchduleDataSource = new MatTableDataSource(matches)))
+			)
+			.subscribe();
+	}
+
+	ngOnDestroy(): void {
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
 	}
 
 	onLeagueSelectionChanged(leagueID: string): void {

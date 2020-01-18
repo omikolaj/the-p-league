@@ -60,6 +60,7 @@ export class ScheduleState {
 
 	@Selector()
 	static getActiveSessionsMatches(state: ScheduleStateModel): Match[] {
+		console.log('updated');
 		let matches: Match[] = [];
 		if (state) {
 			Object.values(state.activeEntities).forEach((entity) => {

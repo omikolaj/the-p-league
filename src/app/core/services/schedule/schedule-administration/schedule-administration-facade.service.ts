@@ -51,6 +51,7 @@ export class ScheduleAdministrationFacade {
 	get activeSessionsMatches(): Match[] {
 		return this.store.selectSnapshot(ScheduleState.getActiveSessionsMatches);
 	}
+	@Select(ScheduleState.getActiveSessionsMatches) activeSessionMatches$: Observable<Match[]>;
 
 	// Used by new-schedule component to perform session start date validation. It returns latest snapshot from the store
 	activeSessionInfoByLeagueIDSnapshot(leagueID: string): ActiveSessionInfo {
