@@ -74,7 +74,7 @@
 		<!-- Home Column -->
 		<ng-container matColumnDef="home">
 			<mat-header-cell *matHeaderCellDef mat-sort-header>Home</mat-header-cell>
-			<mat-cell *matCellDef="let match">{{ match?.homeTeam?.name }}</mat-cell>
+			<mat-cell *matCellDef="let match">{{ match?.homeTeamName }}</mat-cell>
 		</ng-container>
 
 		<!-- Result Column -->
@@ -85,35 +85,11 @@
 			}}</mat-cell>
 		</ng-container>
 
-		<!-- <ng-container *ngIf="admin" matColumnDef="expandedDetail">
-			<mat-cell *matCellDef="let match" [attr.colspan]="displayColumns.length">
-				<div class="example-element-detail" [@detailExpand]="match == expandedElement ? 'expanded' : 'collapsed'">
-					<mat-form-field style="display: block">
-						<input matInput type="text" placeholder="HomeTeam Score" />
-					</mat-form-field>
-
-					<mat-form-field style="display: block">
-						<input matInput type="text" placeholder="AwayTeam Score" />
-					</mat-form-field>
-
-					<button mat-raised-button>Report</button>
-				</div>
-			</mat-cell>
-		</ng-container> -->
-
 		<!-- Away Column -->
 		<ng-container matColumnDef="away">
 			<mat-header-cell *matHeaderCellDef mat-sort-header>Away</mat-header-cell>
-			<mat-cell *matCellDef="let match">{{ match?.awayTeam?.name }}</mat-cell>
+			<mat-cell *matCellDef="let match">{{ match?.awayTeamName }}</mat-cell>
 		</ng-container>
-
-		<!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row
-			*matRowDef="let match; columns: displayedColumns"
-			class="example-element-row"
-			[class.example-expanded-row]="expandedElement === match"
-			(click)="onGameClicked(match)"
-		></mat-row>		 -->
 
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 		<mat-row
@@ -122,11 +98,12 @@
 			class="element-row"
 			[appCdkDetailRow]="row"
 			[appCdkDetailRowTpl]="tpl"
-			[admin]="admin"
+			[appCdKAdmin]="admin"
+			(rowClicked)="onRowSelected($event)"
 		></mat-row>
 	</mat-table>
 
-	<mat-paginator [pageSizeOptions]="[8, 16, 32, 100]"></mat-paginator>
+	<mat-paginator [pageSizeOptions]="[4, 8, 16, 32, 100]"></mat-paginator>
 </div>
 
 <ng-template #tpl let-match>
@@ -138,30 +115,14 @@
 			</mat-form-field>
 
 			<mat-form-field>
-				<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeam?.name + 'score'" type="number" />
+				<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeam?.name + ' score'" type="number" />
 				<mat-error *ngIf="matchReportForm.get('awayTeamScore').hasError('required')">You must enter away team's score</mat-error>
 			</mat-form-field>
 
-			<button mat-raised-button color="accent" [disabled]="!matchReportForm.valid">Report</button>
+			<button mat-raised-button color="accent" [disabled]="!matchReportForm.valid">
+				{{ matchReportForm.get('homeTeamScore').value !== 0 ? 'Update' : 'Report' }}
+			</button>
 			<button mat-raised-button color="accent" type="button" (click)="onFillInStats()">Fill in Stats</button>
 		</form>
 	</div>
 </ng-template>
-<!-- <ng-template #tpl let-match>
-	<div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
-		<form [formGroup]="matchReportForm" #formDirective="ngForm" (ngSubmit)="onMatchReported(formDirective, match)" novalidate>
-			<mat-form-field>
-				<input formControlName="homeTeamScore" matInput [placeholder]="match?.homeTeam?.name + 'score'" type="number" />
-				<mat-error *ngIf="matchReportForm.get('homeTeamScore').hasError('required')">You must enter home team's score</mat-error>
-			</mat-form-field>
-
-			<mat-form-field>
-				<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeam?.name + 'score'" type="number" />
-				<mat-error *ngIf="matchReportForm.get('awayTeamScore').hasError('required')">You must enter away team's score</mat-error>
-			</mat-form-field>
-
-			<button mat-raised-button color="accent" [disabled]="!matchReportForm.valid">Report</button>
-			<button mat-raised-button color="accent" type="button" (click)="onFillInStats()">Fill in Stats</button>
-		</form>
-	</div>
-</ng-template> -->

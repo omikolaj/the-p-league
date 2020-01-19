@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { MatSelectionListChange } from '@angular/material';
 import { League } from 'src/app/core/models/schedule/league.model';
 
-
 @Component({
 	selector: 'app-edit-leagues-list',
 	templateUrl: './edit-leagues-list.component.html',
@@ -29,9 +28,7 @@ export class EditLeaguesListComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {}
 
-	ngOnDestroy(): void {
-		console.log('destroying edit leagues');
-	}
+	ngOnDestroy(): void {}
 
 	onSelectionChange(event: MatSelectionListChange): void {
 		this.numberOfSelectedLeagues = event.source.selectedOptions.selected.length;

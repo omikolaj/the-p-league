@@ -1,5 +1,5 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { MatSortModule, MatTableModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,6 +12,7 @@ import { NavigationModule } from './core/components/navigation/navigation.module
 import { CoreModule } from './core/core.module';
 import { ApiRequestPrefixInterceptor } from './core/interceptors/api-request-prefix/api-request-prefix.service';
 import { RefreshAccessTokenInterceptor } from './core/interceptors/refresh-access-token/refresh-access-token.service';
+import { setRootInjector } from './root-injector';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -59,4 +60,8 @@ import { SharedModule } from './shared/shared.module';
 	],
 	bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+	constructor(private injector: Injector) {
+		setRootInjector(injector);
+	}
+}

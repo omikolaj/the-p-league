@@ -22,8 +22,7 @@ export class LeaguesSchedulesDataSourceService implements DataSource<Match>, OnD
 	 * @param [collectionViewer]
 	 * @returns connect
 	 */
-	connect(collectionViewer: CollectionViewer): Observable<Match[] | readonly Match[]> {
-		console.log('inside connect method');
+	connect(collectionViewer: CollectionViewer): Observable<Match[] | readonly Match[]> {		
 		return this.matchesSubject$.asObservable();
 	}
 	disconnect(collectionViewer: CollectionViewer): void {

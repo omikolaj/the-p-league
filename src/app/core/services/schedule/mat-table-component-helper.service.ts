@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import * as moment from 'moment';
 import { filterOnDateValue, filterOnInputValue, filterOnLeagueID, filterOnTeamID } from 'src/app/shared/helpers/filter-predicate.function';
 import Match from '../../models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs } from '../../models/schedule/sport-types-leagues-pairs.model';
@@ -95,5 +96,19 @@ export class MatTableComponentHelperService {
 	filterOnDateValue(filterValue: string, datasource: MatTableDataSource<Match>): string {
 		datasource.filter = filterValue;
 		return filterValue;
+	}
+
+	filterTodaysMatches(allMatches: Match[]): Match[] {
+		const todaysMatches = allMatches.filter((match) => {
+			if (typeof match.dateTime === 'number') {
+				const today = moment(new Date());
+				const matchDateTime = moment.unix(match.dateTime);
+				if (today.diff(matchDateTime, 'days') === 0) {
+					return true;
+				}
+			}
+		});
+
+		return todaysMatches;
 	}
 }

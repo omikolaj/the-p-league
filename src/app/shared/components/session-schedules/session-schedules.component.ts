@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDatepicker, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -23,13 +23,6 @@ import { MatTableComponentHelperService } from './../../../core/services/schedul
 			transition('void <=> *', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
 		])
 	]
-	// animations: [
-	// 	trigger('detailExpand', [
-	// 		state('collapsed', style({ height: '0px', minHeight: '0' })),
-	// 		state('expanded', style({ height: '*' })),
-	// 		transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-	// 	])
-	// ]
 })
 export class SessionSchedulesComponent implements OnInit {
 	// #region Properties
@@ -124,8 +117,12 @@ export class SessionSchedulesComponent implements OnInit {
 		this.matchReported.emit(matchResult);
 	}
 
+	onRowSelected(event: { status: 'expanded' | 'collapsed'; match: Match }): void {
+		this.populateMatchResults(event.match.matchResult);
+	}
+
 	onFillInStats(): void {
-		console.log('inside onFillInStats');
+		console.log('not implemented');
 	}
 
 	// #endregion
@@ -140,6 +137,13 @@ export class SessionSchedulesComponent implements OnInit {
 		return this.matTableHelper.getCurrentTitleTableLeagueSelection(this.pairs, this.selectedLeague.value);
 	}
 
+	private populateMatchResults(matchResult: MatchResult): void {
+		if (matchResult) {
+			this.matchReportForm.get('homeTeamScore').setValue(matchResult.homeTeamScore);
+			this.matchReportForm.get('awayTeamScore').setValue(matchResult.awayTeamScore);
+		}
+	}
+
 	private tableSetUp(): void {
 		if (this.sort && this.paginator) {
 			this.dataSource.sort = this.sort;
@@ -148,45 +152,10 @@ export class SessionSchedulesComponent implements OnInit {
 		}
 	}
 
-	matchesResultsForms: FormGroup;
-	private initForms1(): void {
-		if (this.admin) {
-			console.log('logging data', this.dataSource.data);
-			this.dataSource.data.forEach((match) => {
-				const matchResultForm = this.initMatchResultForm(match);
-				if (this.matchesResultsForms && this.matchesResultsForms.value.results) {
-					const formArray = this.matchesResultsForms['controls'].results as FormArray;
-					formArray.controls.push(matchResultForm);
-				} else {
-					this.matchesResultsForms = this.fb.group({
-						results: this.fb.array([matchResultForm])
-					});
-				}
-			});
-
-			console.log('logging matchesForm', this.matchesResultsForms);
-		}
-	}
-
 	private initForms(): void {
 		this.matchReportForm = this.fb.group({
 			homeTeamScore: this.fb.control(null, Validators.required),
 			awayTeamScore: this.fb.control(null, Validators.required)
-		});
-	}
-
-	private initMatchResultForm(match: Match): FormGroup {
-		let homeTeamScore = null;
-		if (match.matchResult.homeTeamScore) {
-			homeTeamScore = match.matchResult.homeTeamScore;
-		}
-		let awayTeamScore = null;
-		if (match.matchResult.awayTeamScore) {
-			awayTeamScore = match.matchResult.awayTeamScore;
-		}
-		return this.fb.group({
-			homeTeamScore: this.fb.control(homeTeamScore, Validators.required),
-			awayTeamScore: this.fb.control(awayTeamScore, Validators.required)
 		});
 	}
 

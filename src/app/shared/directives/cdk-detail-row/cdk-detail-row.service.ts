@@ -1,9 +1,7 @@
 import { Injectable, TemplateRef, ViewContainerRef } from '@angular/core';
 import { CdkDetailRowDirective } from './cdk-detail-row.directive';
 
-@Injectable({
-	providedIn: 'root'
-})
+@Injectable()
 export class CdkDetailRowService {
 	private previousVcRef: ViewContainerRef;
 	private previousOpened: boolean;

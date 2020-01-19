@@ -63,7 +63,6 @@ export class SportTypeState {
 				}
 			});
 		});
-		console.log('returning pairs from the store', pairs);
 		return pairs;
 	}
 
@@ -75,7 +74,9 @@ export class SportTypeState {
 		return forkJoin([this.scheduleAdminAsyncService.fetchAllSportTypes(), this.scheduleAdminAsyncService.fetchUnassignedTeams()]).pipe(
 			map(([fetchedSportTypes, fetchedUnassignedTeams]) => {
 				// normalize the data
+				console.log('raw SportsData', fetchedSportTypes);
 				const normalizedData = normalize(fetchedSportTypes, sportListSchema);
+				console.log('normalized SportsData', normalizedData);
 				return { normaizedData: normalizedData, unassignedTeams: fetchedUnassignedTeams };
 			}),
 			tap((data) => {
@@ -95,23 +96,6 @@ export class SportTypeState {
 			switchMap(() => ctx.dispatch(new Sports.FetchAllSportTypesSuccess())),
 			catchError((err) => ctx.dispatch(new Sports.FetchAllSportTypesFailed(err)))
 		);
-
-		// return this.scheduleAdminAsyncService.fetchAllSportTypes().pipe(
-		// 	map((fetchedSportTypes) => normalize(fetchedSportTypes, sportListSchema)),
-		// 	tap((normalizedData) => {
-		// 		ctx.setState(
-		// 			patch<SportTypeStateModel>({
-		// 				entities: normalizedData.entities['sports'],
-		// 				IDs: normalizedData.result
-		// 			})
-		// 		);
-		// 		console.log('sportTypes state', ctx.getState().entities);
-		// 	}),
-		// 	tap((normalizedData) => ctx.dispatch(new Leagues.InitializeLeagues(normalizedData.entities['leagues']))),
-		// 	tap((normalizedData) => ctx.dispatch(new Teams.InitializeTeams(normalizedData.entities['teams']))),
-		// 	switchMap(() => ctx.dispatch(new Sports.FetchAllSportTypesSuccess())),
-		// 	catchError((err) => ctx.dispatch(new Sports.FetchAllSportTypesFailed(err)))
-		// );
 	}
 
 	/**

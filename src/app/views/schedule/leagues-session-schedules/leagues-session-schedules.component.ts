@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -17,7 +16,7 @@ import { MatTableComponentHelperService } from './../../../core/services/schedul
 	providers: [ScheduleComponentHelperService, MatTableComponentHelperService]
 })
 export class LeaguesSessionSchedulesComponent implements OnInit {
-	todayDataSource: MatTableDataSource<Match>;
+	todayDataSource: MatTableDataSource<Match> = new MatTableDataSource<Match>();
 	todaysTitle = "Today's Games";
 	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>(this.scheduleFacade.activeSessionsMatches);
 	private pairs$ = combineLatest(this.scheduleFacade.sportTypesLeaguesPairs$, this.scheduleFacade.leagues$).pipe(
@@ -46,7 +45,7 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 
 	ngOnInit(): void {
 		// set up todays data source
-		this.todayDataSource = this.filterTodaysMatches();
+		this.todayDataSource.data = this.matTableHelper.filterTodaysMatches(this.scheduleFacade.activeSessionsMatches); // this.filterTodaysMatches();
 	}
 
 	onLeagueSelectionChanged(leagueID: string): void {
@@ -76,18 +75,18 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 		}
 	}
 
-	private filterTodaysMatches(): MatTableDataSource<Match> {
-		const allMatches = this.scheduleFacade.activeSessionsMatches;
-		const todaysMatches = allMatches.filter((match) => {
-			if (typeof match.dateTime === 'number') {
-				const today = moment(new Date());
-				const matchDateTime = moment.unix(match.dateTime);
-				if (today.diff(matchDateTime, 'days') === 0) {
-					return true;
-				}
-			}
-		});
+	// private filterTodaysMatches(): MatTableDataSource<Match> {
+	// 	const allMatches = this.scheduleFacade.activeSessionsMatches;
+	// 	const todaysMatches = allMatches.filter((match) => {
+	// 		if (typeof match.dateTime === 'number') {
+	// 			const today = moment(new Date());
+	// 			const matchDateTime = moment.unix(match.dateTime);
+	// 			if (today.diff(matchDateTime, 'days') === 0) {
+	// 				return true;
+	// 			}
+	// 		}
+	// 	});
 
-		return new MatTableDataSource(todaysMatches);
-	}
+	// 	return new MatTableDataSource(todaysMatches);
+	// }
 }

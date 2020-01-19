@@ -1,37 +1,31 @@
-import { Directive, HostBinding, HostListener, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, EventEmitter, HostBinding, HostListener, Input, Optional, Output, TemplateRef, ViewContainerRef } from '@angular/core';
+import Match from 'src/app/core/models/schedule/classes/match.model';
 import { CdkDetailRowService } from './cdk-detail-row.service';
 
 @Directive({
 	selector: '[appCdkDetailRow]'
 })
 export class CdkDetailRowDirective {
-	
-	/**
-	 * @description Row of cdk detail row directive
-	 */
-	private row: any;
 
 	/**
-	 * @description TemplateRef of cdk detail row directive
+	 * @description this will add the 'expanded' class to the host element
+	 * if this.opened is true, otherwise it will return false
+	 * and not add the 'expanded' class
 	 */
-	private tRef: TemplateRef<any>;
-
-	/**
-	 * @description opened property has to be public. CdKDetailRowService uses it
-	 */
-	public opened: boolean;
-
-	/**
-	 * @description isAdmin property determines if this directive should be enabled for togglig table rows
-	 */
-	private isAdmin: boolean;
-
-	// this will add the 'expanded' class to the host element
-	// if this.opened is true, otherwise it will return false
-	// and not add the 'expanded' class
 	@HostBinding('class.expanded')
 	get expended(): boolean {
 		return this.opened;
+	}
+
+	/**
+	 * @description Hosts listener for click event of row
+	 */
+	@HostListener('click')
+	onClick(): void {
+		if (this.isAdmin) {
+			this.toggle();
+			this.rowClicked.emit({ status: this.opened ? 'expanded' : 'collapsed', match: this.row });
+		}
 	}
 
 	/**
@@ -68,7 +62,7 @@ export class CdkDetailRowDirective {
 	 * @description Sets admin input property, if passed in value
 	 * is not a boolean, set it to false
 	 */
-	@Input() set admin(value: boolean) {
+	@Input('appCdKAdmin') set admin(value: boolean) {
 		if (typeof value === 'boolean') {
 			this.isAdmin = value;
 		} else {
@@ -76,14 +70,32 @@ export class CdkDetailRowDirective {
 		}
 	}
 
-	constructor(public vcRef: ViewContainerRef, private detailRowService: CdkDetailRowService) {}
+	@Output() rowClicked: EventEmitter<{ status: 'expanded' | 'collapsed'; match: Match }> = new EventEmitter<{
+		status: 'expanded' | 'collapsed';
+		match: Match;
+	}>();
 
-	@HostListener('click')
-	onClick(): void {
-		if (this.isAdmin) {
-			this.toggle();
-		}
-	}
+	/**
+	 * @description opened property has to be public. CdKDetailRowService uses it
+	 */
+	opened: boolean;
+
+	/**
+	 * @description Row of cdk detail row directive
+	 */
+	private row: any;
+
+	/**
+	 * @description TemplateRef of cdk detail row directive
+	 */
+	private tRef: TemplateRef<any>;
+
+	/**
+	 * @description isAdmin property determines if this directive should be enabled for togglig table rows
+	 */
+	private isAdmin: boolean;
+
+	constructor(public vcRef: ViewContainerRef, @Optional() private detailRowService: CdkDetailRowService) {}
 
 	/**
 	 * @description Toggles the expansion of a row

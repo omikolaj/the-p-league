@@ -10,7 +10,7 @@ import * as Schedule from '../actions/schedules.actions';
 
 export interface ScheduleStateModel {
 	// entties is used by the admin preview component to display the
-	// matches user has created so far
+	// matches user has created so far before publishing
 	entities: {
 		[id: string]: LeagueSessionSchedule;
 	};
@@ -54,13 +54,11 @@ export class ScheduleState {
 		Object.values(state.entities).forEach((entity) => {
 			matches = [...matches, ...entity.matches];
 		});
-		console.log('returning matches', matches);
 		return matches;
 	}
 
 	@Selector()
 	static getActiveSessionsMatches(state: ScheduleStateModel): Match[] {
-		console.log('updated');
 		let matches: Match[] = [];
 		if (state) {
 			Object.values(state.activeEntities).forEach((entity) => {
@@ -195,6 +193,5 @@ export class ScheduleState {
 				}
 			})
 		);
-		console.log('logging updated matches', ctx.getState().activeEntities);
 	}
 }

@@ -30,8 +30,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 		return this.http.post<ActiveSessionInfo[]>(`${this.schedulesUrl}/sessions/active-sessions-info`, JSON.stringify(leaguesIDs), this.headers);
 	}
 
-	reportMatch(matchResult: MatchResult): Observable<MatchResult> {
-		console.log('matchResult', matchResult);
+	reportMatch(matchResult: MatchResult): Observable<MatchResult> {		
 		return this.http.post<MatchResult>(
 			`${this.schedulesUrl}/sessions/${matchResult.sessionId}/matches/${matchResult.matchId}/report`,
 			JSON.stringify(matchResult),
