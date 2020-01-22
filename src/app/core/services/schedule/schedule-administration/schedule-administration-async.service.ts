@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
+import LeagueSessionScheduleDTO from 'src/app/core/models/schedule/classes/league-session-schedule-DTO.model';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
-import { Team, TeamDTO } from 'src/app/core/models/schedule/team.model';
+import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleBaseAsyncService } from './schedule-base-async.service';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 
 	// #region Session
 
-	publishSessions(newSessions: LeagueSessionSchedule[]): Observable<boolean> {
+	publishSessions(newSessions: LeagueSessionScheduleDTO[]): Observable<boolean> {
 		return this.http.post<boolean>(`${this.schedulesUrl}/sessions`, JSON.stringify(newSessions), this.headers);
 	}
 
@@ -30,10 +30,10 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 		return this.http.post<ActiveSessionInfo[]>(`${this.schedulesUrl}/sessions/active-sessions-info`, JSON.stringify(leaguesIDs), this.headers);
 	}
 
-	reportMatch(matchResult: MatchResult): Observable<MatchResult> {		
+	reportMatch(report: { result: MatchResult; sessionID: string }): Observable<MatchResult> {
 		return this.http.post<MatchResult>(
-			`${this.schedulesUrl}/sessions/${matchResult.sessionId}/matches/${matchResult.matchId}/report`,
-			JSON.stringify(matchResult),
+			`${this.schedulesUrl}/sessions/${report.sessionID}/matches/${report.result.matchId}/report`,
+			JSON.stringify(report.result),
 			this.headers
 		);
 	}
@@ -95,7 +95,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	}
 
 	fetchUnassignedTeams(): Observable<Team[]> {
-		return this.http.get<TeamDTO[]>(`${this.teamsUrl}/unassigned`);
+		return this.http.get<Team[]>(`${this.teamsUrl}/unassigned`);
 	}
 
 	unassignTeams(teamsToUnassign: string[]): Observable<string[]> {
@@ -103,7 +103,7 @@ export class ScheduleAdministrationAsyncService extends ScheduleBaseAsyncService
 	}
 
 	assignTeams(teamsToAssign: Team[]): Observable<Team[]> {
-		return this.http.post<TeamDTO[]>(`${this.teamsUrl}/assign`, JSON.stringify(teamsToAssign), this.headers);
+		return this.http.post<Team[]>(`${this.teamsUrl}/assign`, JSON.stringify(teamsToAssign), this.headers);
 	}
 
 	deleteTeams(teamsToDelete: string[]): Observable<boolean> {

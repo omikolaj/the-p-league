@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
-import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { ScheduleFacadeService } from '../../../core/services/schedule/schedule-facade.service';
 import { VIEW_ALL } from '../../../shared/constants/the-p-league-constants';
@@ -18,20 +18,19 @@ import { MatTableComponentHelperService } from './../../../core/services/schedul
 export class LeaguesSessionSchedulesComponent implements OnInit {
 	todayDataSource: MatTableDataSource<Match> = new MatTableDataSource<Match>();
 	todaysTitle = "Today's Games";
-	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>(this.scheduleFacade.activeSessionsMatches);
-	private pairs$ = combineLatest(this.scheduleFacade.sportTypesLeaguesPairs$, this.scheduleFacade.leagues$).pipe(
+	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>(this.scheduleFacade.sessionsMatches);
+	private pairs$ = combineLatest(this.scheduleFacade.sessionsSportLeaguePairs$, this.scheduleFacade.sessionsLeagueIDs$).pipe(
 		filter(([pairs, leagues]) => leagues.length !== 0 && pairs.length !== 0),
-		map(([pairs, leagues]) =>
-			this.scheduleComponentHelper.filterPairsForGeneratedSessions(
-				pairs,
-				leagues.map((l) => l.id)
-			)
-		)
+		map(([pairs, leagues]) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagues)),
+		startWith([] as SportTypesLeaguesPairs[])
 	);
 
-	filteredPairs$: Observable<SportTypesLeaguesPairsWithTeams[]> = combineLatest(this.pairs$, this.scheduleFacade.getAllTeamsForLeagueID$).pipe(
+	filteredPairs$: Observable<SportTypesLeaguesPairsWithTeams[]> = combineLatest(
+		this.pairs$,
+		this.scheduleFacade.sessionsTeamsSessionsByLeagueIDFn$
+	).pipe(
 		map(([pairs, filterFn]) => {
-			return pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeams(pair, filterFn));
+			return pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeamsForTeamSessions(pair, filterFn));
 		})
 	);
 	displayLeagueID = VIEW_ALL;
@@ -45,7 +44,7 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 
 	ngOnInit(): void {
 		// set up todays data source
-		this.todayDataSource.data = this.matTableHelper.filterTodaysMatches(this.scheduleFacade.activeSessionsMatches); // this.filterTodaysMatches();
+		this.todayDataSource.data = this.matTableHelper.filterTodaysMatches(this.scheduleFacade.sessionsMatches);
 	}
 
 	onLeagueSelectionChanged(leagueID: string): void {

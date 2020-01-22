@@ -9,9 +9,9 @@ import Match from 'src/app/core/models/schedule/classes/match.model';
 export function matchSortingFn(item: Match, header: string): string | number {
 	switch (header) {
 		case 'home':
-			return item.homeTeam.name;
+			return item.homeTeamName;
 		case 'away':
-			return item.awayTeam.name;
+			return item.awayTeamName;
 		case 'date':
 			// if did not specify enough times to schedule all matches for every team
 			// than some matches will NOT have a dateTime defined. Since we didn't

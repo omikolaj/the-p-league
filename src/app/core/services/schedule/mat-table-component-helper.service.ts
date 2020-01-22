@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
 import { filterOnDateValue, filterOnInputValue, filterOnLeagueID, filterOnTeamID } from 'src/app/shared/helpers/filter-predicate.function';
 import Match from '../../models/schedule/classes/match.model';
-import { SportTypesLeaguesPairs } from '../../models/schedule/sport-types-leagues-pairs.model';
+import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from '../../models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from './schedule-administration/schedule-component-helper.service';
 
 /**
@@ -20,7 +20,7 @@ export class MatTableComponentHelperService {
 	 * 'Basketball - Monday' etc.
 	 * @returns current title table league selection
 	 */
-	getCurrentTitleTableLeagueSelection(pairs: SportTypesLeaguesPairs[], selectedLeagueValue: string): string {
+	getCurrentTitleTableLeagueSelection(pairs: SportTypesLeaguesPairs[] | SportTypesLeaguesPairsWithTeams[], selectedLeagueValue: string): string {
 		const leagueID: string = selectedLeagueValue;
 		const filteredPairs = this.scheduleHelper.filterPairsForGeneratedSessions(pairs, [leagueID]);
 		let title = '';

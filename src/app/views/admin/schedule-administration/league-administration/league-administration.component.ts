@@ -36,7 +36,7 @@ export class LeagueAdministrationComponent implements OnInit {
 	// #region ng LifeCycle hooks
 
 	ngOnInit(): void {
-		this.leagues$ = this.scheduleAdminFacade.getAllForSportTypeID$.pipe(
+		this.leagues$ = this.scheduleAdminFacade.getLeaguesForSportTypeIDFn$.pipe(
 			map((filterFn) => filterFn(this.sportType.id)),
 			tap((leagues) => {
 				this.initForms(leagues);

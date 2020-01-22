@@ -9,9 +9,9 @@ export function filterOnLeagueID(match: Match, leagueID: string): boolean {
 export function filterOnTeamID(match: Match, teamID: string): boolean {
 	if (teamID === VIEW_ALL) {
 		return true;
-	} else if (match.homeTeam.id === teamID) {
+	} else if (match.homeTeamId === teamID) {
 		return true;
-	} else if (match.awayTeam.id === teamID) {
+	} else if (match.awayTeamId === teamID) {
 		return true;
 	}
 }
@@ -26,10 +26,10 @@ export function filterOnDateValue(match: Match, dateValue: string): boolean {
 }
 
 export function filterOnInputValue(match: Match, filterValue: string): boolean {
-	if (match.homeTeam.name.toLowerCase().includes(filterValue)) {
+	if (match.homeTeamName.toLowerCase().includes(filterValue)) {
 		return true;
 	}
-	if (match.awayTeam.name.toLowerCase().includes(filterValue)) {
+	if (match.awayTeamName.toLowerCase().includes(filterValue)) {
 		return true;
 	}
 	if (

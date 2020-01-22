@@ -110,12 +110,12 @@
 	<div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
 		<form [formGroup]="matchReportForm" #formDirective="ngForm" (ngSubmit)="onMatchReported(formDirective, match)" novalidate>
 			<mat-form-field>
-				<input formControlName="homeTeamScore" matInput [placeholder]="match?.homeTeam?.name + 'score'" type="number" />
+				<input formControlName="homeTeamScore" matInput [placeholder]="match?.homeTeamName + ' score'" type="number" />
 				<mat-error *ngIf="matchReportForm.get('homeTeamScore').hasError('required')">You must enter home team's score</mat-error>
 			</mat-form-field>
 
 			<mat-form-field>
-				<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeam?.name + ' score'" type="number" />
+				<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeamName + ' score'" type="number" />
 				<mat-error *ngIf="matchReportForm.get('awayTeamScore').hasError('required')">You must enter away team's score</mat-error>
 			</mat-form-field>
 

@@ -10,7 +10,7 @@ import { ScheduleState } from 'src/app/shared/store/state/schedule.state';
 export class LeaguesSchedulesDataSourceService implements DataSource<Match>, OnDestroy {
 	private matchesSubject$ = new BehaviorSubject<Match[]>([]);
 	private unsubscribe$ = new Subject();
-	@Select(ScheduleState.getActiveSessionsMatches) private matches$: Observable<Match[]>;
+	@Select(ScheduleState.getSessionsMatches) private matches$: Observable<Match[]>;
 
 	constructor() {
 		// sync up this subject with the observable stream of matches inside the store

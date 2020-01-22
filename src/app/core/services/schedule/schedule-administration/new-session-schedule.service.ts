@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import * as cuid from 'cuid';
 import * as moment from 'moment';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
+import LeagueSessionScheduleDTO from 'src/app/core/models/schedule/classes/league-session-schedule-DTO.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { GameDay } from 'src/app/core/models/schedule/game-day.model';
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 import { MatchResultStatus } from 'src/app/core/models/schedule/match-result-status.enum';
 import { MatchTime } from 'src/app/core/models/schedule/match-time.model';
+import { TeamSession } from 'src/app/core/models/schedule/team-session.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { BYE_WEEK_DATE_TEXT, TIME_FORMAT } from 'src/app/shared/constants/the-p-league-constants';
 
@@ -27,13 +27,13 @@ export class NewSessionScheduleService {
 	 * @param newSessions
 	 * @returns schedules
 	 */
-	generateSchedules(newSessions: LeagueSessionSchedule[]): LeagueSessionSchedule[] {
-		const generatedSessionSchedules: LeagueSessionSchedule[] = [];
+	generateSchedules(newSessions: LeagueSessionScheduleDTO[], selectedTeams: Team[]): LeagueSessionScheduleDTO[] {
+		const generatedSessionSchedules: LeagueSessionScheduleDTO[] = [];
 
 		for (let i = 0; i < newSessions.length; i++) {
 			const session = newSessions[i];
-			// make a copy of the teams array
-			const teams: Team[] = session.teams.slice();
+			// make a copy of the teams array, and grab the teams matching this session league id
+			const teams: Team[] = selectedTeams.filter((t) => t.leagueID === session.leagueID);
 
 			// if we have odd number of teams
 			if (teams.length % 2 === 1) {
@@ -41,6 +41,9 @@ export class NewSessionScheduleService {
 				// so we can match algorithm for even numbers
 				teams.push(this.DUMMY);
 			}
+
+			// // assign team ids to teamsSessions
+			session.teamsSessions = this.setTeamIDsForTeamSession(teams);
 
 			// generate match ups for this session's teams
 			const matches = this.generateMatchUps(teams, session.byeWeeks, session.leagueID);
@@ -56,6 +59,47 @@ export class NewSessionScheduleService {
 
 		return generatedSessionSchedules;
 	}
+
+	/**
+	 * @description Iterates over given list of teams and returns TeamSession array	 *
+	 * @returns team ids for team session
+	 */
+	private setTeamIDsForTeamSession(teams: Team[]): TeamSession[] {
+		return teams.map((t) => {
+			return {
+				teamId: t.id
+			} as TeamSession;
+		});
+	}
+	// generateSchedules(newSessions: LeagueSessionSchedule[]): LeagueSessionSchedule[] {
+	// 	const generatedSessionSchedules: LeagueSessionSchedule[] = [];
+
+	// 	for (let i = 0; i < newSessions.length; i++) {
+	// 		const session = newSessions[i];
+	// 		// make a copy of the teams array
+	// 		const teams: Team[] = session.teams.slice();
+
+	// 		// if we have odd number of teams
+	// 		if (teams.length % 2 === 1) {
+	// 			// handle odd numbers
+	// 			// so we can match algorithm for even numbers
+	// 			teams.push(this.DUMMY);
+	// 		}
+
+	// 		// generate match ups for this session's teams
+	// 		const matches = this.generateMatchUps(teams, session.byeWeeks, session.leagueID);
+
+	// 		// generate match times with the selected times
+	// 		session.matches = this.generateMatchUpTimes(matches, session);
+
+	// 		// mark session as active
+	// 		session.active = true;
+
+	// 		generatedSessionSchedules.push(session);
+	// 	}
+
+	// 	return generatedSessionSchedules;
+	// }
 
 	/**
 	 * @description Generates match ups between the given list of teams. If includeByeWeeks
@@ -84,16 +128,18 @@ export class NewSessionScheduleService {
 
 				// if include BYE weeks is true, add all matches including bye weeks
 				if (includeByeWeeks) {
-					const match: Match = new Match(homeTeam, awayTeam);
-					// TODO temp
-					match.id = cuid();
+					const match: Match = new Match(homeTeam.name, awayTeam.name, homeTeam.id, awayTeam.id);
 					match.leagueID = leagueID;
+
+					// // TODO temp
+					// match.id = cuid();
+
 					matches.push(match);
 				} else if (homeTeam.name !== this.DUMMY.name && awayTeam.name !== this.DUMMY.name) {
-					const match: Match = new Match(homeTeam, awayTeam);
-					// TODO temp
-					match.id = cuid();
+					const match: Match = new Match(homeTeam.name, awayTeam.name, homeTeam.id, awayTeam.id);
 					match.leagueID = leagueID;
+					// // TODO temp
+					// match.id = cuid();
 					matches.push(match);
 				}
 			}
@@ -110,7 +156,7 @@ export class NewSessionScheduleService {
 	 * @description Generates match up times for the given matches
 	 * @returns match ups with times
 	 */
-	private generateMatchUpTimes(matches: Match[], newSession: LeagueSessionSchedule): Match[] {
+	private generateMatchUpTimes(matches: Match[], newSession: LeagueSessionScheduleDTO): Match[] {
 		// returns an array of match days selected by user. [Monday, Tuesday] etc.
 		const desiredDays: MatchDay[] = newSession.gamesDays.map((gD) => this.matchDays[gD.gamesDay]);
 		// make current variable equal to start date and clone the date since we will mutate it
@@ -144,7 +190,7 @@ export class NewSessionScheduleService {
 					// first check to see if the current match home team or away team's names equal 'BYE', if they do
 					// we do not want to schedule a time for them so increase the index and check again to see if the next match
 					// home team or away team's name equal 'BYE'
-					while (matches[index].homeTeam.name === this.DUMMY.name || matches[index].awayTeam.name === this.DUMMY.name) {
+					while (matches[index].homeTeamName === this.DUMMY.name || matches[index].awayTeamName === this.DUMMY.name) {
 						// custom text for date field if the game is bye
 						matches[index].dateTime = BYE_WEEK_DATE_TEXT;
 						index++;
@@ -154,7 +200,7 @@ export class NewSessionScheduleService {
 					// we are ready to schedule the match. This should never be false since the while
 					// loop checks for this already. Given current date, and next available time, schedule
 					// a time for next available match. matches[index] represents that next match
-					if (matches[index].homeTeam.name !== this.DUMMY.name && matches[index].awayTeam.name !== this.DUMMY.name) {
+					if (matches[index].homeTeamName !== this.DUMMY.name && matches[index].awayTeamName !== this.DUMMY.name) {
 						this.scheduleMatch(current.format('MM-DD-YYYY'), time, matches[index]);
 						index++;
 					}

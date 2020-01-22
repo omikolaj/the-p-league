@@ -98,14 +98,14 @@ export class ScheduleAdministrationComponent implements OnInit {
 		}
 		// filter the sport league pairs based on the passed in league IDs.
 		// the filteredPairs$ observable stream gets consumed by the preview
-		this.filteredPairs$ = combineLatest(this.sportLeaguePairs$, this.scheduleAdminFacade.getAllTeamsForLeagueID$).pipe(
+		this.filteredPairs$ = combineLatest(this.sportLeaguePairs$, this.scheduleAdminFacade.getTeamsForLeagueIDFn$).pipe(
 			filter(([pairs, filterFn]) => leagueIDs.length !== 0),
 			map(([pairs, filterFn]) => {
 				const filteredPairs = this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagueIDs);
 				return [filteredPairs, filterFn];
 			}),
 			map(([pairs, filterFn]: [SportTypesLeaguesPairs[], (id: string) => Team[]]) =>
-				pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeams(pair, filterFn))
+				pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeamsForTeams(pair, filterFn))
 			)
 		);
 		this.onPreviewSchedule();

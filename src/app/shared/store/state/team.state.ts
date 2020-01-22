@@ -9,60 +9,74 @@ export interface TeamStateModel {
 	entities: {
 		[id: string]: Team;
 	};
-	IDs: string[];
 }
 
 @State<TeamStateModel>({
 	name: 'teams',
 	defaults: {
-		entities: {},
-		IDs: []
+		entities: {}
 	}
 })
 export class TeamState {
 	constructor() {}
 
+	/**
+	 * @description Selects all unassigned teams
+	 * @param state
+	 * @returns unassigned teams
+	 */
 	@Selector()
-	static getUnassigned(state: TeamStateModel): Team[] {
+	static getUnassignedTeams(state: TeamStateModel): Team[] {
 		return Object.values(state.entities).filter((t) => t.leagueID === UNASSIGNED);
 	}
 
+	/**
+	 * @description Returns filter function that allows consumer for retrieving
+	 * list of teams for the specified league id
+	 * @param state
+	 * @returns teams for league id
+	 */
 	@Selector()
-	static getAllForLeagueID(state: TeamStateModel) {
+	static getTeamsForLeagueIDFn(state: TeamStateModel): (id: string) => Team[] {
 		return (id: string): Team[] => {
 			return Object.values(state.entities).filter((t) => t.leagueID === id);
 		};
 	}
 
+	/**
+	 * @description Initial action that is triggered to initialize the teams collection
+	 * The incoming collection of teams is already normalized with noramlize by the resolver
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Teams.InitializeTeams)
 	initializeTeams(ctx: StateContext<TeamStateModel>, action: Teams.InitializeTeams): void {
 		ctx.setState(
 			produce((draft: TeamStateModel) => {
 				draft.entities = action.teams;
-				draft.IDs = Object.keys(action.teams).map((id) => id);
 			})
 		);
 	}
 
+	/**
+	 * @description Adds the team to the store
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Teams.AddTeam)
 	add(ctx: StateContext<TeamStateModel>, action: Teams.AddTeam): void {
 		ctx.setState(
 			produce((draft: TeamStateModel) => {
 				draft.entities[action.newTeam.id] = action.newTeam;
-				if (!draft.IDs.includes(action.newTeam.id)) {
-					draft.IDs.push(action.newTeam.id);
-				}
 			})
 		);
 	}
 
-	@Action(Teams.AddTeams)
-	addTeams(ctx: StateContext<TeamStateModel>, action: Teams.AddTeams): void {
-		action.teams.forEach((team) => {
-			this.add(ctx, { newTeam: team });
-		});
-	}
-
+	/**
+	 * @description Updates the given team's info
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Teams.UpdateTeams)
 	update(ctx: StateContext<TeamStateModel>, action: Teams.UpdateTeams): void {
 		ctx.setState(
@@ -75,6 +89,11 @@ export class TeamState {
 		);
 	}
 
+	/**
+	 * @description Updates only selected teams
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Teams.UpdateSelectedTeams)
 	updateSelected(ctx: StateContext<TeamStateModel>, action: Teams.UpdateSelectedTeams): void {
 		ctx.setState(
@@ -90,6 +109,11 @@ export class TeamState {
 		);
 	}
 
+	/**
+	 * @description Assigns the teams in the payload to assigned league ids
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Teams.AssignTeams)
 	assign(ctx: StateContext<TeamStateModel>, action: Teams.AssignTeams): void {
 		ctx.setState(
@@ -102,6 +126,13 @@ export class TeamState {
 		);
 	}
 
+	/**
+	 * @description Unassigns the teams in the payload. Marks each team in the
+	 * payload 'leagueID' property to '-1' (UNASSIGNED), and marks the team as not
+	 * selected
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Teams.UnassignTeams)
 	unassign(ctx: StateContext<TeamStateModel>, action: Teams.UnassignTeams): void {
 		ctx.setState(
@@ -114,13 +145,17 @@ export class TeamState {
 		);
 	}
 
+	/**
+	 * @description Deletes the passed in team from the store
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Teams.DeleteTeams)
 	delete(ctx: StateContext<TeamStateModel>, action: Teams.DeleteTeams): void {
 		ctx.setState(
 			produce((draft: TeamStateModel) => {
 				action.deleteIDs.forEach((deleteID) => {
 					delete draft.entities[deleteID];
-					draft.IDs = draft.IDs.filter((id) => id !== deleteID);
 				});
 			})
 		);

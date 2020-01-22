@@ -3,10 +3,10 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Valida
 import { MatSelectionListChange } from '@angular/material';
 import * as moment from 'moment';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { flatMap, map, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, flatMap, map, takeUntil, tap } from 'rxjs/operators';
 import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
+import LeagueSessionScheduleDTO from 'src/app/core/models/schedule/classes/league-session-schedule-DTO.model';
 import { GameDay } from 'src/app/core/models/schedule/game-day.model';
-import LeagueSessionSchedule from 'src/app/core/models/schedule/classes/league-session-schedule.model';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
@@ -45,6 +45,10 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * is part of the teams state.
 	 */
 	private selectedLeagues$ = this.scheduleAdminFacade.selectedLeagues$.pipe(
+		// distinctUntilChanged is necessary because when user adds new league,
+		// then adds new team to that league, part of the logic we update the effected league's
+		// teams property, thus emitting new value and calling this.initNewLeagueSeessionsForm.
+		distinctUntilChanged((prev, curr) => prev.length === curr.length),
 		flatMap((selectedLeagues) => {
 			return this.scheduleAdminFacade.getActiveSessionsInfo(selectedLeagues.map((l) => l.id)).pipe(
 				tap((_) => selectedLeagues.forEach((selectedLeague) => this.initNewLeagueSessionsForm(selectedLeague.id))),
@@ -55,9 +59,9 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 
 	leagues$: Observable<{ league: League; teams: Team[]; form: FormGroup; sport: SportType }[]> = combineLatest([
 		this.selectedLeagues$,
-		this.scheduleAdminFacade.getAllTeamsForLeagueID$,
+		this.scheduleAdminFacade.getTeamsForLeagueIDFn$,
 		this.scheduleAdminFacade.getSportByID$,
-		this.scheduleAdminFacade.activeSessionInfoByLeagueID$
+		this.scheduleAdminFacade.getSessionInfoByLeagueIDFn$
 	]).pipe(
 		map(([selectedLeagues, filterFn, filterSportsFn, activeSessionFn]) => {
 			return selectedLeagues.map((l) => {
@@ -221,7 +225,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 
 	private validateActiveSession(leagueID: string): ValidatorFn {
 		return (control: AbstractControl): { [key: string]: any } | null => {
-			const sessionInfo = this.scheduleAdminFacade.activeSessionInfoByLeagueIDSnapshot(leagueID);
+			const sessionInfo = this.scheduleAdminFacade.sessionInfoByLeagueID(leagueID);
 			// check if the server returned any session info for selected leagues
 			if (sessionInfo) {
 				if (moment(sessionInfo.endDate).isSameOrAfter(moment(control.value))) {
@@ -376,12 +380,12 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * schedules for the selected teams
 	 */
 	onGenerate(leaguesData: { league: League; teams: Team[]; form: FormGroup; sport: SportType }[]): void {
-		const newLeagueSessions: LeagueSessionSchedule[] = [];
+		const newLeagueSessions: LeagueSessionScheduleDTO[] = [];
 		const sessions = this.newLeagueSessionsForm.value['sessions'] as [];
 		// iterate over all new sessions that were submitted
 		sessions.forEach((s: any) => {
 			// create new object with the NewLeagueSession shape
-			const session: LeagueSessionSchedule = {
+			const session: LeagueSessionScheduleDTO = {
 				leagueID: s.leagueID,
 				byeWeeks: s.byeWeeks,
 				numberOfWeeks: s.sessionDateInfo.numberOfWeeks,
@@ -419,7 +423,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 			newLeagueSessions.push(session);
 		});
 		// send the new sessions array to the facade for further handling
-		this.scheduleAdminFacade.generateNewSchedules(newLeagueSessions);
+		this.scheduleAdminFacade.generatePreviewSchedules(newLeagueSessions);
 		// iterate over the selected leaguesData list, and emit all selected league IDs
 		this.generateSchedules.emit(leaguesData.map((leagueData) => leagueData.league.id));
 	}

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SportTypeDTO } from 'src/app/core/models/schedule/sport-type.model';
+import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -15,7 +15,7 @@ export class ScheduleBaseAsyncService {
 	protected readonly sportTypeUrl = 'sport-types';
 	constructor(protected http: HttpClient) {}
 
-	fetchAllSportTypes(): Observable<SportTypeDTO[]> {
-		return this.http.get<SportTypeDTO[]>(this.sportTypeUrl, this.headers);
+	fetchAllSportTypes(): Observable<SportType[]> {
+		return this.http.get<SportType[]>(this.sportTypeUrl, this.headers);
 	}
 }

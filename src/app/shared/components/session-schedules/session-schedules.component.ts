@@ -70,7 +70,7 @@ export class SessionSchedulesComponent implements OnInit {
 	@Output() teamChanged = new EventEmitter<string>();
 	@Output() filterByDateChanged = new EventEmitter<string>();
 	@Output() filterByInputChanged = new EventEmitter<string>();
-	@Output() matchReported = new EventEmitter<MatchResult>();
+	@Output() matchReported = new EventEmitter<{ result: MatchResult; sessionID: string }>();
 	// #endregion
 
 	constructor(private fb: FormBuilder, private matTableHelper: MatTableComponentHelperService) {}
@@ -114,7 +114,7 @@ export class SessionSchedulesComponent implements OnInit {
 		matchResult.homeTeamScore = this.matchReportForm.get('homeTeamScore').value;
 		matchResult.awayTeamScore = this.matchReportForm.get('awayTeamScore').value;
 		formGroupDirective.resetForm();
-		this.matchReported.emit(matchResult);
+		this.matchReported.emit({ result: matchResult, sessionID: match.sessionId });
 	}
 
 	onRowSelected(event: { status: 'expanded' | 'collapsed'; match: Match }): void {

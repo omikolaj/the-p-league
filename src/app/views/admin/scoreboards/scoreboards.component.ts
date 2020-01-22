@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, startWith, takeUntil, tap } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
-import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { MatTableComponentHelperService } from 'src/app/core/services/schedule/mat-table-component-helper.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
@@ -18,19 +18,18 @@ import { CdkDetailRowService } from './../../../shared/directives/cdk-detail-row
 	providers: [ScheduleComponentHelperService, MatTableComponentHelperService, CdkDetailRowService]
 })
 export class ScoreboardsComponent implements OnInit, OnDestroy {
-	private pairs$ = combineLatest(this.scheduleFacade.sportTypesLeaguesPairs$, this.scheduleFacade.leagues$).pipe(
+	private pairs$ = combineLatest(this.scheduleFacade.sessionsSportLeaguePairs$, this.scheduleFacade.sessionsLeagueIDs$).pipe(
 		filter(([pairs, leagues]) => leagues.length !== 0 && pairs.length !== 0),
-		map(([pairs, leagues]) =>
-			this.scheduleComponentHelper.filterPairsForGeneratedSessions(
-				pairs,
-				leagues.map((l) => l.id)
-			)
-		)
+		map(([pairs, leagues]) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagues)),
+		startWith([] as SportTypesLeaguesPairs[])
 	);
 
-	filteredPairs$: Observable<SportTypesLeaguesPairsWithTeams[]> = combineLatest(this.pairs$, this.scheduleFacade.getAllTeamsForLeagueID$).pipe(
+	filteredPairs$: Observable<SportTypesLeaguesPairsWithTeams[]> = combineLatest(
+		this.pairs$,
+		this.scheduleFacade.sessionsTeamsSessionsByLeagueIDFn$
+	).pipe(
 		map(([pairs, filterFn]) => {
-			return pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeams(pair, filterFn));
+			return pairs.map((pair) => this.scheduleComponentHelper.generatePairsWithTeamsForTeamSessions(pair, filterFn));
 		})
 	);
 	todaysTitle = "Today's Games";
@@ -49,7 +48,7 @@ export class ScoreboardsComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
-		this.scheduleFacade.activeSessionMatches$
+		this.scheduleFacade.sessionsMatches$
 			.pipe(
 				takeUntil(this.unsubscribed$),
 				tap((matches) => {
@@ -92,7 +91,7 @@ export class ScoreboardsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onMatchReported(matchResult: MatchResult): void {
-		this.scheduleFacade.reportMatch(matchResult);
+	onMatchReported(event: { result: MatchResult; sessionID: string }): void {
+		this.scheduleFacade.reportMatch(event);
 	}
 }

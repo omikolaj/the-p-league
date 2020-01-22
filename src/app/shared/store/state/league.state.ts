@@ -9,57 +9,85 @@ export interface LeagueStateModel {
 	entities: {
 		[id: string]: League;
 	};
-	IDs: string[];
 }
 
 @State<LeagueStateModel>({
 	name: 'leagues',
 	defaults: {
-		entities: {},
-		IDs: []
+		entities: {}
 	}
 })
 export class LeagueState {
 	constructor() {}
 
+	/**
+	 * @description Retrieves all leagues from the store
+	 * @param state
+	 * @returns leagues
+	 */
 	@Selector()
-	static getAll(state: LeagueStateModel): League[] {		
+	static getLeagues(state: LeagueStateModel): League[] {
 		return Object.values(state.entities);
 	}
 
+	/**
+	 * @description Retrieves all selected leagues from the store
+	 * @param state
+	 * @returns selected leagues
+	 */
 	@Selector()
-	static getSelected(state: LeagueStateModel): League[] {
+	static getSelectedLeagues(state: LeagueStateModel): League[] {
 		return Object.values(state.entities).filter((l) => l.selected);
 	}
 
+	/**
+	 * @description Returns filter function to the consumer, which allows
+	 * for returning list of leagues matching passed in sport type id
+	 * @param state
+	 * @returns leagues for sport type idfn
+	 */
 	@Selector()
-	static getAllForSportTypeID(state: LeagueStateModel) {
+	static getLeaguesForSportTypeIDFn(state: LeagueStateModel): (id: string) => League[] {
 		return (id: string): League[] => Object.values(state.entities).filter((l) => l.sportTypeID === id);
 	}
 
+	/**
+	 * @description Initializes the leagues collection. The incoming league entities
+	 * are already in a normalized state
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Leagues.InitializeLeagues)
 	initializeLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.InitializeLeagues): void {
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				draft.entities = action.leagues;
-				draft.IDs = Object.keys(action.leagues).map((id) => id);
 			})
 		);
 	}
 
+	/**
+	 * @description Adds the given league to the store
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Leagues.AddLeague)
 	add(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeague): void {
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				draft.entities[action.newLeague.id] = action.newLeague;
-				// if we do not already have the given id add it
-				if (!draft.IDs.includes(action.newLeague.id)) {
-					draft.IDs.push(action.newLeague.id);
-				}
+				// initialize the teams array to avoid unforseen errors. Whenever adding leagues, currently
+				// the app will neveer send teams along with it
+				draft.entities[action.newLeague.id].teams = [];
 			})
 		);
 	}
 
+	/**
+	 * @description Adds the given team ids to the passed in league
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Leagues.AddTeamIDsToLeague)
 	addTeamIDs(ctx: StateContext<LeagueStateModel>, action: Leagues.AddTeamIDsToLeague): void {
 		ctx.setState(
@@ -70,7 +98,6 @@ export class LeagueState {
 						pair.ids.forEach((id) => {
 							if (!draft.entities[pair.leagueID].teams.includes(id)) {
 								(draft.entities[pair.leagueID].teams || []).push(id);
-								// draft.entities[pair.leagueID].teams = (draft.entities[pair.leagueID].teams || []).concat(pair.ids);
 							}
 						});
 					}
@@ -79,6 +106,11 @@ export class LeagueState {
 		);
 	}
 
+	/**
+	 * @description Updates the passed in league
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Leagues.UpdateLeagues)
 	update(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateLeagues): void {
 		ctx.setState(
@@ -90,6 +122,11 @@ export class LeagueState {
 		);
 	}
 
+	/**
+	 * @description Updates only selected leagues
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Leagues.UpdateSelectedLeagues)
 	updatedSelected(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateSelectedLeagues): void {
 		ctx.setState(
@@ -105,18 +142,27 @@ export class LeagueState {
 		);
 	}
 
+	/**
+	 * @description Deletes the passed in league from the store
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Leagues.DeleteLeagues)
 	delete(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteLeagues): void {
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				action.deleteIDs.forEach((deleteID) => {
 					delete draft.entities[deleteID];
-					draft.IDs = draft.IDs.filter((id) => id !== deleteID);
 				});
 			})
 		);
 	}
 
+	/**
+	 * @description Deletes team ids from the passed in league
+	 * @param ctx
+	 * @param action
+	 */
 	@Action(Leagues.DeleteTeamIDsFromLeague)
 	deleteTeamIDs(ctx: StateContext<LeagueStateModel>, action: Leagues.DeleteTeamIDsFromLeague): void {
 		ctx.setState(

@@ -1,15 +1,8 @@
-import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 
-export class FetchAllSportTypes {
-	static readonly type = '[Schedule API] FetchAllSportTypes';
-}
-export class FetchAllSportTypesSuccess {
-	static readonly type = '[Schedule API] FetchAllSportTypesSuccess';
-}
-export class FetchAllSportTypesFailed {
-	static readonly type = '[Schedule API] FetchALlSportTypesFailed';
-	constructor(public error: any) {}
+export class InitializeSports {
+	static readonly type = '[Schedule] InitializeSports';
+	constructor(public sports: { [key: string]: SportType }) {}
 }
 export class AddSportType {
 	static readonly type = '[Schedule API] AddSportType';
@@ -22,10 +15,6 @@ export class AddLeagueIDsToSportType {
 export class UpdateSportType {
 	static readonly type = '[Schedule API] UpdateSportType';
 	constructor(public updatedSportType: SportType) {}
-}
-export class UpdateSelectedLeaguesForSportType {
-	static readonly type = '[Schedule] UpdateSelectedLeaguesForSportType';
-	constructor(public selectedLeagues: League[]) {}
 }
 export class DeleteSportType {
 	static readonly type = '[Schedule API] DeleteSportType';

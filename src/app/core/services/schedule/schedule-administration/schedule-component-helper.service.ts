@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatSelectionListChange } from '@angular/material';
 import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { TeamSession } from 'src/app/core/models/schedule/team-session.model';
 import { Team } from './../../../models/schedule/team.model';
 
 @Injectable()
@@ -23,7 +24,10 @@ export class ScheduleComponentHelperService {
 	 * view matches for. We only care to display a list of sports and leagues that user generated sessions for
 	 * @returns filtered pairs
 	 */
-	filterPairsForGeneratedSessions(pairs: SportTypesLeaguesPairs[], sessionsLeagueIDs: string[]): SportTypesLeaguesPairs[] {
+	filterPairsForGeneratedSessions(
+		pairs: SportTypesLeaguesPairs[] | SportTypesLeaguesPairsWithTeams[],
+		sessionsLeagueIDs: string[]
+	): SportTypesLeaguesPairs[] {
 		return pairs
 			.filter((s) => {
 				return s.leagues.some((l) => {
@@ -46,7 +50,29 @@ export class ScheduleComponentHelperService {
 			});
 	}
 
-	generatePairsWithTeams(pair: SportTypesLeaguesPairs, filterFunction: (id: string) => Team[]): SportTypesLeaguesPairsWithTeams {
+	generatePairsWithTeamsForTeamSessions(
+		pair: SportTypesLeaguesPairs,
+		filterFunction: (id: string) => TeamSession[]
+	): SportTypesLeaguesPairsWithTeams {
+		return {
+			name: pair.name,
+			id: pair.id,
+			leagues: pair.leagues.map((l) => {
+				return {
+					id: l.id,
+					name: l.name,
+					teams: filterFunction(l.id).map((tS) => {
+						return {
+							id: tS.teamId,
+							name: tS.teamName
+						};
+					})
+				};
+			})
+		};
+	}
+
+	generatePairsWithTeamsForTeams(pair: SportTypesLeaguesPairs, filterFunction: (id: string) => Team[]): SportTypesLeaguesPairsWithTeams {
 		return {
 			name: pair.name,
 			id: pair.id,
