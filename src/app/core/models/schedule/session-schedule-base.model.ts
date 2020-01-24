@@ -8,6 +8,7 @@ import { TeamSession } from './team-session.model';
  */
 export default class SessionScheduleBase {
 	id?: string;
+	active?: boolean;
 	leagueID: string;
 	leagueName?: string;
 	byeWeeks: boolean;

@@ -120,12 +120,8 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.scheduleAdminFacade.updateSelectedLeagues(ids, leagueSelectionChangeEvent.sportTypeID);
 	}
 
-	onUpdateSport(updatedSport: { id: string; name: string }): void {
-		const updatedSportType: SportType = {
-			id: updatedSport.id,
-			name: updatedSport.name
-		};
-		this.scheduleAdminFacade.updateSportType(updatedSportType);
+	onUpdateSport(updatedSport: SportType): void {
+		this.scheduleAdminFacade.updateSportType(updatedSport);
 	}
 
 	onDeleteSport(id: string): void {

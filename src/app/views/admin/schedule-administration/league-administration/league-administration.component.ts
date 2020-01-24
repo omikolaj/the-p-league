@@ -23,10 +23,7 @@ export class LeagueAdministrationComponent implements OnInit {
 		sportTypeID: string;
 	}>();
 	@Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
-	@Output() updatedSportName: EventEmitter<{
-		id: string;
-		name: string;
-	}> = new EventEmitter<{ id: string; name: string }>();
+	@Output() updatedSportName: EventEmitter<SportType> = new EventEmitter<SportType>();
 	editForm: FormGroup;
 	sportTypeForm: FormGroup;
 	readonlySportName = true;
@@ -55,6 +52,7 @@ export class LeagueAdministrationComponent implements OnInit {
 	initEditForm(leagues: League[]): void {
 		const leagueNameControls = leagues.map((l) =>
 			this.fb.group({
+				active: this.fb.control(l.active),
 				name: this.fb.control(l.name, Validators.required),
 				id: this.fb.control(l.id)
 			})
@@ -80,8 +78,9 @@ export class LeagueAdministrationComponent implements OnInit {
 
 	onSaveSportType(): void {
 		this.readonlySportName = !this.readonlySportName;
-		const updatedSport = {
+		const updatedSport: SportType = {
 			id: this.sportType.id,
+			active: this.sportType.active,
 			name: this.sportTypeForm.get('name').value
 		};
 		this.updatedSportName.emit(updatedSport);
@@ -127,6 +126,7 @@ export class LeagueAdministrationComponent implements OnInit {
 			const currentLeague = leaguesFormArray.at(index);
 			leaguesToUpdate.push({
 				id: currentLeague.value.id,
+				active: currentLeague.value.active,
 				name: currentLeague.value.name
 			});
 		}
