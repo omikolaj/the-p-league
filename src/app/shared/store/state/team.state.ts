@@ -59,6 +59,22 @@ export class TeamState {
 	}
 
 	/**
+	 * @description Adds unassigned teams
+	 * @param ctx
+	 * @param action
+	 */
+	@Action(Teams.AddUnassignedTeams)
+	addTeams(ctx: StateContext<TeamStateModel>, action: Teams.AddUnassignedTeams): void {
+		ctx.setState(
+			produce((draft: TeamStateModel) => {
+				action.teams.forEach((unassigned) => {
+					draft.entities[unassigned.id] = unassigned;
+				});
+			})
+		);
+	}
+
+	/**
 	 * @description Adds the team to the store
 	 * @param ctx
 	 * @param action

@@ -8,6 +8,10 @@ export class AddTeam {
 	static readonly type = '[Schedule API] AddTeam';
 	constructor(public newTeam: Team) {}
 }
+export class AddUnassignedTeams {
+	static readonly type = '[Schedule] AddTeams';
+	constructor(public teams: Team[]) {}
+}
 export class UpdateTeams {
 	static readonly type = '[Schedule API] UpdateTeams';
 	constructor(public updatedTeams: Team[]) {}

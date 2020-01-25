@@ -52,6 +52,16 @@ export class LeagueState {
 	}
 
 	/**
+	 * @description Selects team ids for the given league ids
+	 * @param state
+	 * @returns team ids for league ids fn
+	 */
+	@Selector()
+	static getTeamIDsForLeagueIDsFn(state: LeagueStateModel): (leagueIDs: string[]) => string[] {
+		return (leagueIDs: string[]): string[] => leagueIDs.reduce((acc, curr) => acc.concat(state.entities[curr].teams), [] as string[]);
+	}
+
+	/**
 	 * @description Initializes the leagues collection. The incoming league entities
 	 * are already in a normalized state
 	 * @param ctx

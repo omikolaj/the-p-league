@@ -69,11 +69,6 @@ export class ScheduleAdministrationFacade {
 	sessionInfoByLeagueID(leagueID: string): ActiveSessionInfo {
 		return this.store.selectSnapshot(ScheduleState.getSessionInfoByLeagueIDFn)(leagueID);
 	}
-
-	// get sessionsMatches(): Match[] {
-	// 	return this.store.selectSnapshot(ScheduleState.getSessionsMatches);
-	// }
-
 	// #endregion
 
 	// #endregion Streams/snapshots
@@ -94,8 +89,6 @@ export class ScheduleAdministrationFacade {
 	 */
 	generatePreviewSchedules(newLeagueSessions: LeagueSessionScheduleDTO[]): void {
 		const teamsForPreviewSchedules: Team[] = this.scheduleAdminHelper.getTeamsForLeagueIDs(newLeagueSessions.map((s) => s.leagueID));
-		// const teamEntities = this.store.selectSnapshot<Team[]>((state) => state.teams.entities);
-		// newLeagueSessions = this.scheduleAdminHelper.matchTeamsWithLeagues(newLeagueSessions, teamsForPreviewSchedules);
 		const newSessions: LeagueSessionScheduleDTO[] = this.newSessionService.generateSchedules(newLeagueSessions, teamsForPreviewSchedules);
 		this.store.dispatch(new Schedules.GeneratePreviewSchedules(newSessions));
 	}
@@ -218,13 +211,17 @@ export class ScheduleAdministrationFacade {
 	deleteLeagues(sportTypeID: string): void {
 		const leagueIDs = this.store.selectSnapshot<string[]>((state) => state.types.entities[sportTypeID].leagues);
 		const leagueEntities = this.store.selectSnapshot<{ [key: string]: League }>((state) => state.leagues.entities);
-
 		const leagueIDsToDelete = this.scheduleAdminHelper.findSelectedIDs(leagueIDs, leagueEntities);
+		const teamsToUnassign = this.store.selectSnapshot(LeagueState.getTeamIDsForLeagueIDsFn)(leagueIDsToDelete);
 
 		this.scheduleAdminAsync
 			.deleteLeagues(leagueIDsToDelete)
 			.subscribe((_) =>
-				this.store.dispatch([new Sports.DeleteLeagueIDsFromSportType(sportTypeID, leagueIDsToDelete), new Leagues.DeleteLeagues(leagueIDsToDelete)])
+				this.store.dispatch([
+					new Sports.DeleteLeagueIDsFromSportType(sportTypeID, leagueIDsToDelete),
+					new Leagues.DeleteLeagues(leagueIDsToDelete),
+					new Teams.UnassignTeams(teamsToUnassign)
+				])
 			);
 	}
 
