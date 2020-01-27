@@ -1,6 +1,24 @@
-.wrapper{
-    display: flex;
-    flex-flow: row nowrap;
-    margin-top: 75px;
-    justify-content: center;
+.wrapper {
+	margin: 75px 0 0 0;
+
+	.schedule-action-buttons {
+		margin-top: 0.5rem;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: flex-end;
+
+		button {
+			margin: 0.25rem;
+		}
+	}
+
+	::ng-deep mat-tab-body {
+		margin-right: 0.75em;
+		margin-left: 0.75em;
+	}
+
+	::ng-deep.mat-tab-labels {
+		justify-content: space-evenly;
+	}
 }

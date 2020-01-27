@@ -77,6 +77,8 @@ export class MatTableComponentHelperService {
 		if (pairs.length > 0 && pairs.length === 1) {
 			if (pairs[0].leagues.length > 1) {
 				return true;
+			} else {
+				return false;
 			}
 		} else {
 			return true;

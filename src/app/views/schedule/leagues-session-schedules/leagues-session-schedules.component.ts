@@ -5,8 +5,8 @@ import { filter, map, startWith } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
+import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
 import { ScheduleFacadeService } from '../../../core/services/schedule/schedule-facade.service';
-import { VIEW_ALL } from '../../../shared/constants/the-p-league-constants';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
 
 @Component({
@@ -73,19 +73,4 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 				break;
 		}
 	}
-
-	// private filterTodaysMatches(): MatTableDataSource<Match> {
-	// 	const allMatches = this.scheduleFacade.activeSessionsMatches;
-	// 	const todaysMatches = allMatches.filter((match) => {
-	// 		if (typeof match.dateTime === 'number') {
-	// 			const today = moment(new Date());
-	// 			const matchDateTime = moment.unix(match.dateTime);
-	// 			if (today.diff(matchDateTime, 'days') === 0) {
-	// 				return true;
-	// 			}
-	// 		}
-	// 	});
-
-	// 	return new MatTableDataSource(todaysMatches);
-	// }
 }

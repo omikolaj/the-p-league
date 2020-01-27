@@ -3,24 +3,19 @@
 		<app-session-schedules
 			[title]="todaysTitle"
 			[dataSource]="todayDataSource"
-			[pairs]="pairs"
-			[displayLeagueID]="displayLeagueID"
-			[displayTeamID]="displayTeamID"
 			[admin]="admin"
 			(filterByInputChanged)="onFilterValueChanged($event, 'today')"
-			(teamChanged)="onTeamSelectionChanged($event)"
-			(leagueChanged)="onLeagueSelectionChanged($event)"
 			(matchReported)="onMatchReported($event)"
 		></app-session-schedules>
 
 		<app-session-schedules
 			[dataSource]="leaguesSessionSchduleDataSource"
 			[pairs]="pairs"
-			[displayLeagueID]="displayLeagueID"
-			[displayTeamID]="displayTeamID"
+			[displayLeagueID]="allDisplayLeagueID"
+			[displayTeamID]="allDisplayTeamID"
 			[admin]="admin"
-			(leagueChanged)="onLeagueSelectionChanged($event)"
-			(teamChanged)="onTeamSelectionChanged($event)"
+			(leagueChanged)="onLeagueSelectionChanged($event, 'all')"
+			(teamChanged)="onTeamSelectionChanged($event, 'all')"
 			(filterByDateChanged)="onDateSelectionChanged($event)"
 			(filterByInputChanged)="onFilterValueChanged($event, 'all')"
 			(matchReported)="onMatchReported($event)"

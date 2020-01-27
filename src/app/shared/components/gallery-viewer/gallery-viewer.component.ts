@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
+import { NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import 'hammerjs';
-import { NgxGalleryOptions } from 'ngx-gallery';
-import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 import { EmitEvent } from 'src/app/core/services/event-bus/EmitEvent';
+import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 
 @Component({
 	selector: 'app-gallery-viewer',

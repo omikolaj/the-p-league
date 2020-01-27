@@ -7,7 +7,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 export class DeviceInfoService {
 	private _mobile: boolean = undefined;
 
-	get mobile() {
+	get mobile(): boolean {
 		if (this._mobile === undefined) {
 			return this.mobileFunction();
 		}

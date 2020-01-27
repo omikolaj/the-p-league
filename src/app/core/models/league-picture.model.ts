@@ -1,5 +1,4 @@
-import { NgxGalleryImage, INgxGalleryImage } from 'ngx-gallery';
-import { SafeResourceUrl } from '@angular/platform-browser';
+import { INgxGalleryImage } from '@kolkov/ngx-gallery';
 import { ImageBase } from './image-base.model';
 import { Preview } from './image-preview.model';
 

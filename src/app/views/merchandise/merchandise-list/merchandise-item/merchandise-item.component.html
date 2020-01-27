@@ -1,56 +1,57 @@
 <mat-card [class.mat-elevation-z7]="true" class="gear-item" [ngClass]="routeAnimationsElements">
-  <mat-card-header>
-    <mat-card-title>
-      <div>
-        <h3>
-          {{ gearItem.name }}
-        </h3>
-      </div>
-    </mat-card-title>
+	<mat-card-header>
+		<mat-card-title>
+			<div>
+				<h3>
+					{{ gearItem.name }}
+				</h3>
+			</div>
+		</mat-card-title>
 
-    <mat-card-subtitle>
-      <div>
-        {{ gearItem.inStock ? "In stock" : "Out of stock" }}
-      </div>
-    </mat-card-subtitle>
-  </mat-card-header>
+		<mat-card-subtitle>
+			<div>
+				{{ gearItem.inStock ? 'In stock' : 'Out of stock' }}
+			</div>
+		</mat-card-subtitle>
+	</mat-card-header>
 
-  <div mat-card-image>
-    <app-gallery-viewer [ngxGalleryOptions]="galleryOptions" [images]="gearItem.images"></app-gallery-viewer>
-  </div>
+	<div mat-card-image>
+		<!-- <app-gallery-viewer [ngxGalleryOptions]="galleryOptions" [images]="gearItem.images"></app-gallery-viewer> -->
+		<app-gallery-viewer [ngxGalleryOptions]="galleryOptions" [images]="gearItem.images"></app-gallery-viewer>
+	</div>
 
-  <mat-card-content>
-    <div>
-      <div class="gear-sizes">
-        <span class="sizes">Available Sizes:</span>
+	<mat-card-content>
+		<div>
+			<div class="gear-sizes">
+				<span class="sizes">Available Sizes:</span>
 
-        <br />
+				<br />
 
-        <mat-chip-list [selectable]="false">
-          <ng-container *ngFor="let gearSize of gearItem.sizes">
-            <mat-chip id="chip" *ngIf="gearSize.available">
-              {{ sizes[gearSize.size] }}
-            </mat-chip>
-          </ng-container>
-        </mat-chip-list>
-      </div>
-      <h2 class="price">${{ gearItem.price }}</h2>
-    </div>
-  </mat-card-content>
+				<mat-chip-list [selectable]="false">
+					<ng-container *ngFor="let gearSize of gearItem.sizes">
+						<mat-chip id="chip" *ngIf="gearSize.available">
+							{{ sizes[gearSize.size] }}
+						</mat-chip>
+					</ng-container>
+				</mat-chip-list>
+			</div>
+			<h2 class="price">${{ gearItem.price }}</h2>
+		</div>
+	</mat-card-content>
 
-  <mat-card-actions>
-    <ng-container *ngIf="this.authService.isLoggedIn$ | async">
-      <ng-container *ngIf="isAdmin">
-        <button id="edit" mat-raised-button color="accent" (click)="onEditGearItem()">
-          EDIT
-        </button>
-        <button id="delete" mat-raised-button color="warn" (click)="onDeleteGearItem()">
-          DELETE
-        </button>
-      </ng-container>
-    </ng-container>
-    <button id="pre-order" mat-raised-button color="accent" (click)="onPreOrderGearItem()">
-      PRE-ORDER
-    </button>
-  </mat-card-actions>
+	<mat-card-actions>
+		<ng-container *ngIf="this.authService.isLoggedIn$ | async">
+			<ng-container *ngIf="isAdmin">
+				<button id="edit" mat-raised-button color="accent" (click)="onEditGearItem()">
+					EDIT
+				</button>
+				<button id="delete" mat-raised-button color="warn" (click)="onDeleteGearItem()">
+					DELETE
+				</button>
+			</ng-container>
+		</ng-container>
+		<button id="pre-order" mat-raised-button color="accent" (click)="onPreOrderGearItem()">
+			PRE-ORDER
+		</button>
+	</mat-card-actions>
 </mat-card>

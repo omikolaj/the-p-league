@@ -1,3 +1,14 @@
-// .edit-actions-buttons{
-//   float: right;
-// }
+.mat-list-item-disabled {
+	background-color: #303030;
+}
+
+.edit-actions-buttons {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-end;
+
+	button {
+		margin: 0.25rem;
+	}
+}

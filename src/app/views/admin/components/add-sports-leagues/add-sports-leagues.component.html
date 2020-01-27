@@ -2,11 +2,11 @@
 	<mat-expansion-panel>
 		<mat-expansion-panel-header>
 			<mat-panel-title>
-				<mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
 				{{ title }}
+				<mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
 			</mat-panel-title>
 			<mat-panel-description>
-				{{ description }}
+				Add
 			</mat-panel-description>
 		</mat-expansion-panel-header>
 
@@ -14,8 +14,9 @@
 
 		<form [formGroup]="newSportLeagueForm" (ngSubmit)="onSubmit(formDirective)" #formDirective="ngForm" novalidate>
 			<div>
-				<mat-form-field>
+				<mat-form-field appearance="outline">
 					<input formControlName="sportType" type="text" placeholder="Sport" aria-label="sports" matInput [matAutocomplete]="auto" />
+					<mat-icon matSuffix>sports</mat-icon>
 					<mat-hint>Volleyball, Basketball etc</mat-hint>
 					<mat-error>Sport name is required</mat-error>
 				</mat-form-field>
@@ -28,8 +29,10 @@
 					</ng-container>
 				</mat-autocomplete>
 
-				<mat-form-field>
+				<mat-form-field appearance="outline">
 					<input formControlName="leagueName" matInput placeholder="League Name" />
+					<mat-icon matSuffix>sports_basketball</mat-icon>
+					<mat-hint>New league name</mat-hint>
 				</mat-form-field>
 			</div>
 			<button mat-raised-button color="accent" [disabled]="!newSportLeagueForm.valid">

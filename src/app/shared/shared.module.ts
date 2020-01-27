@@ -9,12 +9,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGithub, faInstagram, faMediumM, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { faBasketballBall, faPlayCircle, faRocket, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { NgxGalleryModule } from 'ngx-gallery';
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { GalleryViewerComponent } from './components/gallery-viewer/gallery-viewer.component';
-import { GenericListItemComponent } from './components/generic-list/generic-list-item/generic-list-item.component';
-import { GenericListComponent } from './components/generic-list/generic-list.component';
 import { SessionSchedulesComponent } from './components/session-schedules/session-schedules.component';
 import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
 import { AllowSpacesDirective } from './directives/allow-space/allow-spaces.directive';
@@ -30,6 +28,7 @@ import { GearImageViewPipe } from './pipes/gear-image-view/gear-image-view.pipe'
 import { LogPipe } from './pipes/log/log.pipe';
 import { FromUnixPipe } from './pipes/momentjs/from-unix.pipe';
 import { OrderEnumPipe } from './pipes/order-enum.pipe';
+import { SizeEnumToSizePipe } from './pipes/sizeEnumToSize/size-enum-to-size.pipe';
 
 library.add(faGithub, faMediumM, faTwitter, faInstagram, faYoutube, faPlayCircle, faRocket, faBasketballBall, faUndo);
 
@@ -45,8 +44,6 @@ const globalRippleConfig: RippleGlobalOptions = {
 		GalleryViewerComponent,
 		SnackBarComponent,
 		CarouselComponent,
-		GenericListComponent,
-		GenericListItemComponent,
 		SessionSchedulesComponent,
 
 		// Directives
@@ -64,7 +61,8 @@ const globalRippleConfig: RippleGlobalOptions = {
 		EnumToArrayPipe,
 		TeamSwapDirective,
 		FromUnixPipe,
-		CdkDetailRowDirective
+		CdkDetailRowDirective,
+		SizeEnumToSizePipe
 	],
 	imports: [
 		MatAutocompleteModule,
@@ -158,7 +156,6 @@ const globalRippleConfig: RippleGlobalOptions = {
 		CommonModule,
 		CarouselModule,
 		CarouselComponent,
-		GenericListComponent,
 		SessionSchedulesComponent,
 		PortalModule,
 

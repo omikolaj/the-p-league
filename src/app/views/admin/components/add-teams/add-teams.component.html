@@ -1,50 +1,44 @@
 <mat-accordion hideToggle="true">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon class="md-18" aria-hidden="false" aria-label="Add icon"
-          >add</mat-icon
-        >
-        {{ title }}
-      </mat-panel-title>
-      <mat-panel-description>
-        {{ description }}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+	<mat-expansion-panel>
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				{{ title }}
+				<mat-icon class="md-18" aria-hidden="false" aria-label="Add icon">add</mat-icon>
+			</mat-panel-title>
+			<mat-panel-description>
+				Add
+			</mat-panel-description>
+		</mat-expansion-panel-header>
 
-    <!-- START -- contents -->
+		<!-- START -- contents -->
 
-    <form
-      [formGroup]="newTeamForm"
-      (ngSubmit)="onSubmit(formDirective)"
-      #formDirective="ngForm"
-      novalidate
-    >
-      <mat-form-field>
-        <input formControlName="name" matInput placeholder="Team Name" />
-        <mat-error>Team name is required</mat-error>
-      </mat-form-field>
+		<form [formGroup]="newTeamForm" (ngSubmit)="onSubmit(formDirective)" #formDirective="ngForm" novalidate>
+			<div>
+				<mat-form-field appearance="outline">
+					<input formControlName="name" matInput placeholder="Team Name" />
+					<mat-icon matSuffix>group_add</mat-icon>
+					<mat-error>Team name is required</mat-error>
+				</mat-form-field>
 
-      <mat-form-field>
-        <mat-label>League</mat-label>
-        <mat-select formControlName="leagueID">
-          <!-- <mat-option>-- None --</mat-option> -->
-          <mat-optgroup
-            *ngFor="let pair of sportLeaguePairs"
-            [label]="pair.name"
-          >
-            <mat-option *ngFor="let league of pair.leagues" [value]="league.id">
-              {{ league.name }}
-            </mat-option>
-          </mat-optgroup>
-        </mat-select>
-        <mat-error>You must select a league</mat-error>
-      </mat-form-field>
-      <button mat-raised-button color="accent" [disabled]="!newTeamForm.valid">
-        Add
-      </button>
-    </form>
+				<mat-form-field appearance="outline">
+					<mat-label>League</mat-label>
+					<mat-select formControlName="leagueID">
+						<!-- <mat-option>-- None --</mat-option> -->
+						<mat-optgroup *ngFor="let pair of sportLeaguePairs" [label]="pair.name">
+							<mat-option *ngFor="let league of pair.leagues" [value]="league.id">
+								{{ league.name }}
+							</mat-option>
+						</mat-optgroup>
+					</mat-select>
+					<mat-icon matSuffix>whatshot</mat-icon>
+					<mat-error>You must select a league</mat-error>
+				</mat-form-field>
+			</div>
+			<button mat-raised-button color="accent" [disabled]="!newTeamForm.valid">
+				Add
+			</button>
+		</form>
 
-    <!-- END -- contents -->
-  </mat-expansion-panel>
+		<!-- END -- contents -->
+	</mat-expansion-panel>
 </mat-accordion>

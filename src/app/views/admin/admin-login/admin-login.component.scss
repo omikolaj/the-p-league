@@ -1,63 +1,63 @@
 .admin-login-wrapper {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 
-  form {
-    margin: 0 auto;
-    width: 80%;
-    .admin-card {
-      padding-top: 10px;
-      min-width: 120px;
-      margin: 20px auto;
+	form {
+		margin: 0 auto;
+		width: 80%;
+		.admin-card {
+			padding-top: 10px;
+			min-width: 120px;
+			margin: 20px auto;
 
-      mat-card-title {
-        margin-top: 12px;
-      }
+			mat-card-title {
+				margin-top: 12px;
+			}
 
-      #cancel {
-        margin: 0 8px;
-      }
+			#cancel {
+				margin: 0 8px;
+			}
 
-      button {
-        margin-top: 10px;
-      }
+			button {
+				margin-top: 10px;
+			}
 
-      .admin-lock-container span {
-        padding-right: 10px;
-        display: inline-block;
-      }
+			.admin-lock-container span {
+				padding-right: 10px;
+				display: inline-block;
+			}
 
-      .admin-lock-img {
-        max-width: 150px;
-        max-height: 150px;
-      }
+			.admin-lock-img {
+				max-width: 150px;
+				max-height: 150px;
+			}
 
-      mat-form-field {
-        width: 100%;
-      }
-    }
-  }
+			mat-form-field {
+				width: 100%;
+			}
+		}
+	}
 }
 
 @media (min-width: 530px) {
-  form {
-    width: 450px !important;
-  }
+	form {
+		width: 450px !important;
+	}
 }
 
 @media (max-width: 452px) {
-  // :host /deep/ .mat-card-header-text {
-  //   width: 100%;
-  //   mat-card-title {
-  //     text-align: center;
-  //   }
-  // }
-  .admin-login {
-    flex-wrap: wrap !important;
+	:host ::ng-deep .mat-card-header-text {
+		width: 100%;
+		mat-card-title {
+			text-align: center;
+		}
+	}
+	.admin-login {
+		flex-wrap: wrap !important;
 
-    .admin-lock-container {
-      text-align: center;
-      width: 100%;
-    }
-  }
+		.admin-lock-container {
+			text-align: center;
+			width: 100%;
+		}
+	}
 }

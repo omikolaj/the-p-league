@@ -12,10 +12,10 @@ import { AdminControlComponent } from '../components/admin-control/admin-control
 })
 export class AdminDashboardComponent implements OnInit {
 	adminControls: Array<AdminControl> = new Array<AdminControl>(
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Schedule] },
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Gallery] },
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Merchandise] },
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Scoreboards] }
+		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Schedule], icon: 'schedule' },
+		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Scoreboards], icon: 'score' },
+		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Gallery], icon: 'collections' },
+		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Merchandise], icon: 'store' }
 	);
 
 	constructor(private router: Router, private route: ActivatedRoute) {}
@@ -24,5 +24,25 @@ export class AdminDashboardComponent implements OnInit {
 
 	openControl(event: GenericListItem): void {
 		this.router.navigate([event.name.toLocaleLowerCase()], { relativeTo: this.route.parent });
+	}
+
+	onControlClicked(event: AdminControl): void {
+		switch (event.name) {
+			case AdminControlType[AdminControlType.Schedule]:
+				this.router.navigate(['schedule'], { relativeTo: this.route.parent });
+				break;
+			case AdminControlType[AdminControlType.Scoreboards]:
+				this.router.navigate(['scoreboards'], { relativeTo: this.route.parent });
+				break;
+			case AdminControlType[AdminControlType.Merchandise]:
+				this.router.navigate(['merchandise']);
+				break;
+			case AdminControlType[AdminControlType.Gallery]:
+				this.router.navigate(['gallery']);
+				break;
+			default:
+				this.router.navigate(['']);
+				break;
+		}
 	}
 }

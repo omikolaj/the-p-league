@@ -32,7 +32,7 @@ export class SessionSchedulesComponent implements OnInit {
 	viewAll = VIEW_ALL;
 	byeWeekOptionalDateText = BYE_WEEK_DATE_TEXT;
 	filterDatepickerValue = '';
-	// TODO enable this dynamically. Set to try only for mobile false for desktop
+	// TODO enable this dynamically. Set to true only for mobile false for desktop
 	calendarTouchUi = true;
 	displayedColumns = ['home', 'result', 'away', 'date'];
 	matchReportForm: FormGroup;
@@ -47,6 +47,8 @@ export class SessionSchedulesComponent implements OnInit {
 		this.selectedTeam.setValue(value);
 	}
 	@Input() admin = false;
+	// currently not consumed. Future functionality if desired. Too Many filters
+	@Input() searchTermFilter = false;
 	private _dataSource: MatTableDataSource<Match>;
 	get dataSource(): MatTableDataSource<Match> {
 		return this._dataSource;

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatExpansionPanel } from '@angular/material';
-import { cloneDeep } from 'lodash';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 
 /**
@@ -14,24 +13,32 @@ import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types
 	styleUrls: ['./add-sports-leagues.component.scss']
 })
 export class AddLeaguesComponent {
-	title = 'Add';
-	description = 'Sport/League';
+	title = 'Sport/League';
 	@Input() newSportLeagueForm: FormGroup;
 	@Input() sportLeaguePairs: SportTypesLeaguesPairs[];
-	@Output() onNewSportLeague: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+	@Output() onNewSportLeague: EventEmitter<{ sportType: string; leagueName: string; sportTypeID: string }> = new EventEmitter<{
+		sportType: string;
+		leagueName: string;
+		sportTypeID: string;
+	}>();
 	@ViewChild(MatExpansionPanel, { static: false })
 	matExpansionPanel: MatExpansionPanel;
 
 	constructor() {}
 
 	onSubmit(formGroupDirective: FormGroupDirective): void {
-		const newSportLeague = cloneDeep(this.newSportLeagueForm);
-		// Necessary to reset validations
-		formGroupDirective.resetForm();
+		const newSportLeague: { sportType: string; leagueName: string; sportTypeID: string } = {
+			sportType: this.newSportLeagueForm.get('sportType').value,
+			leagueName: this.newSportLeagueForm.get('leagueName').value,
+			sportTypeID: this.newSportLeagueForm.get('sportTypeID').value
+		};
 
 		this.onNewSportLeague.emit(newSportLeague);
+
 		// Collapse the expansion panel
 		this.matExpansionPanel.close();
+		// Necessary to reset validations
+		formGroupDirective.resetForm();
 	}
 
 	onSportSelectionChange(event: MatAutocompleteSelectedEvent): void {

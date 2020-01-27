@@ -1,35 +1,39 @@
 :host {
-  margin: 0 4px;
+	margin: 0 4px;
 }
 
 .gear-item {
-  margin: 1.5rem 0 1.5rem 0;
-  box-sizing: border-box;
-  position: relative;
-  top: 0;
-  width: 300px;
-  transition: top ease 0.3s;
+	margin: 1.5rem 0 1.5rem 0;
+	box-sizing: border-box;
+	position: relative;
+	top: 0;
+	width: 300px;
+	transition: top ease 0.3s;
 }
 
 @media (min-width: 375px) {
-  .gear-item {
-    width: 360px;
-  }
+	.gear-item {
+		width: 360px;
+	}
+}
+
+::ng-deep app-gallery-viewer > ngx-gallery {
+	display: inline-block;
 }
 
 .sizes {
-  margin-bottom: 8px;
-  display: inline-block;
+	margin-bottom: 8px;
+	display: inline-block;
 }
 
 .price {
-  margin-top: 8px;
+	margin-top: 8px;
 }
 
 .gear-item:hover {
-  top: -10px;
+	top: -10px;
 }
 
 #delete {
-  margin-right: 0px !important;
+	margin-right: 0px !important;
 }

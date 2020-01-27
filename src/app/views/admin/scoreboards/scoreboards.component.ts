@@ -33,8 +33,10 @@ export class ScoreboardsComponent implements OnInit, OnDestroy {
 		})
 	);
 	todaysTitle = "Today's Games";
-	displayLeagueID = VIEW_ALL;
-	displayTeamID = VIEW_ALL;
+	allDisplayLeagueID = VIEW_ALL;
+	todayDisplayLeagueID = VIEW_ALL;
+	allDisplayTeamID = VIEW_ALL;
+	todayDisplayTeamID = VIEW_ALL;
 	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>();
 	todayDataSource = new MatTableDataSource<Match>();
 	admin = true;
@@ -64,14 +66,35 @@ export class ScoreboardsComponent implements OnInit, OnDestroy {
 		this.unsubscribed$.complete();
 	}
 
-	onLeagueSelectionChanged(leagueID: string): void {
-		this.displayTeamID = VIEW_ALL;
-		this.displayLeagueID = this.matTableHelper.filterOnLeagueID(leagueID, this.leaguesSessionSchduleDataSource);
+	onLeagueSelectionChanged(leagueID: string, scheduleType: 'all' | 'today'): void {
+		switch (scheduleType) {
+			case 'all':
+				this.allDisplayTeamID = VIEW_ALL;
+				this.allDisplayLeagueID = this.matTableHelper.filterOnLeagueID(leagueID, this.leaguesSessionSchduleDataSource);
+				break;
+			case 'today':
+				this.todayDisplayTeamID = VIEW_ALL;
+				this.todayDisplayLeagueID = this.matTableHelper.filterOnLeagueID(leagueID, this.todayDataSource);
+				break;
+			default:
+				break;
+		}
 	}
 
-	onTeamSelectionChanged(teamID: string): void {
-		this.displayLeagueID = VIEW_ALL;
-		this.displayTeamID = this.matTableHelper.filterOnTeamID(teamID, this.leaguesSessionSchduleDataSource);
+	onTeamSelectionChanged(teamID: string, scheduleType: 'all' | 'today'): void {
+		// this.displayLeagueID = VIEW_ALL;
+		switch (scheduleType) {
+			case 'all':
+				this.allDisplayLeagueID = VIEW_ALL;
+				this.allDisplayTeamID = this.matTableHelper.filterOnTeamID(teamID, this.leaguesSessionSchduleDataSource);
+				break;
+			case 'today':
+				this.todayDisplayLeagueID = VIEW_ALL;
+				this.todayDisplayTeamID = this.matTableHelper.filterOnTeamID(teamID, this.todayDataSource);
+				break;
+			default:
+				break;
+		}
 	}
 
 	onDateSelectionChanged(filterValue: string): void {

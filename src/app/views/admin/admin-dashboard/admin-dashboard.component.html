@@ -1,6 +1,7 @@
 <div class="wrapper">
-	<p>
-		admin-league-dashboard works!
-	</p>
-	<app-generic-list (itemSelected)="openControl($event)" [list]="adminControls"> </app-generic-list>
+	<div class="admin-controls-container">
+		<ng-container *ngFor="let adminControl of adminControls">
+			<app-admin-control (controlClicked)="onControlClicked($event)" [control]="adminControl"></app-admin-control>
+		</ng-container>
+	</div>
 </div>

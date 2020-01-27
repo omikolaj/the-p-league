@@ -111,6 +111,14 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.onPreviewSchedule();
 	}
 
+	onDateSelectionChanged(filterValue: string): void {
+		this.matTableHelper.filterOnDateValue(filterValue, this.previewDataSource);
+	}
+
+	onFilterValueChanged(filterValue: string): void {
+		this.matTableHelper.applyMatTableFilterValue(filterValue, this.previewDataSource);
+	}
+
 	onSchedulesPublished(): void {
 		this.scheduleAdminFacade.publishSessionSchedules();
 	}
@@ -128,14 +136,14 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.scheduleAdminFacade.deleteSportType(id);
 	}
 
-	onNewSportLeague(newSportLeague: FormGroup): void {
+	onNewSportLeague(newSportLeague: { sportType: string; leagueName: string; sportTypeID: string }): void {
 		const newSportType: SportType = {
-			name: newSportLeague.get('sportType').value
+			name: newSportLeague.sportType
 		};
 
 		const newLeague: League = {
-			name: newSportLeague.get('leagueName').value,
-			sportTypeID: newSportLeague.get('sportTypeID').value,
+			name: newSportLeague.leagueName,
+			sportTypeID: newSportLeague.sportTypeID,
 			type: newSportType.name
 		};
 		// if we have sportTypeID were adding to existing sport type
@@ -161,15 +169,9 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.newSportLeagueForm.get('sportTypeID').reset();
 	}
 
-	onNewTeam(newTeamForm: FormGroup): void {
+	onNewTeam(newTeam: Team): void {
 		this.newTeamForm.get('name').reset();
 		this.newTeamForm.get('leagueID').reset();
-
-		const newTeam: Team = {
-			name: newTeamForm.get('name').value,
-			leagueID: newTeamForm.get('leagueID').value,
-			selected: false
-		};
 
 		this.scheduleAdminFacade.addTeam(newTeam);
 	}
@@ -208,22 +210,6 @@ export class ScheduleAdministrationComponent implements OnInit {
 	}
 
 	// #endregion
-
-	// #region Private Methods
-
-	// #endregion
-
-	/**
-	 * @description Checks to see if the 'Modify' action button should be enabled or disabled
-	 * @returns true if schedule already exists for the selected league
-	 */
-	// checkExistingSchedule(): boolean {
-	// 	const isDisabled = this.checkSelection();
-	// 	if (!isDisabled) {
-	// 		return this.scheduleAdminFacade.checkExistingSchedule();
-	// 	}
-	// 	return isDisabled;
-	// }
 
 	reset(event: MatTabChangeEvent): void {
 		this.nextTab = event.index;

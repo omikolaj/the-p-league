@@ -10,11 +10,11 @@
 	</mat-selection-list>
 
 	<div class="edit-actions-buttons">
-		<button mat-stroked-button color="accent">
-			{{ disableListSelection ? 'Save' : 'Edit' }}
-		</button>
 		<button mat-stroked-button color="warn" [disabled]="disableDelete" type="button" (click)="onDelete()">
 			Delete
+		</button>
+		<button mat-stroked-button color="accent">
+			{{ disableListSelection ? 'Save' : 'Edit' }}
 		</button>
 	</div>
 </form>

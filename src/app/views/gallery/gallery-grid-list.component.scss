@@ -1,36 +1,40 @@
-@import "src/styles.scss";
+@import 'src/styles.scss';
 
 .heading {
-  text-align: center;
-  margin: 20px;
+	text-align: center;
+	margin: 20px;
+}
+
+::ng-deep app-gallery-viewer > ngx-gallery {
+	display: inline-block;
 }
 
 .admin {
-  display: block;
-  #admin-upload {
-    line-height: 36px !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-    display: block;
-    margin: 0 auto;
-  }
+	display: block;
+	#admin-upload {
+		line-height: 36px !important;
+		border-radius: 4px !important;
+		cursor: pointer !important;
+		display: block;
+		margin: 0 auto;
+	}
 }
 
 .season-gallery {
-  height: 100%;
-  .season-card {
-    margin: 1.5rem auto 1.5rem auto;
-    box-sizing: border-box;
-    position: relative;
-    top: 0;
-    max-width: 95%;
-    transition: top ease 0.3s;
-    width: 100%;
+	height: 100%;
+	.season-card {
+		margin: 1.5rem auto 1.5rem auto;
+		box-sizing: border-box;
+		position: relative;
+		top: 0;
+		max-width: 95%;
+		transition: top ease 0.3s;
+		width: 100%;
 
-    .season-header-image {
-      background-image: url("../../../assets/logo_no_title.png");
-      background-size: cover;
-      margin: 0 0 10px 0;
-    }
-  }
+		.season-header-image {
+			background-image: url('../../../assets/logo_no_title.png');
+			background-size: cover;
+			margin: 0 0 10px 0;
+		}
+	}
 }

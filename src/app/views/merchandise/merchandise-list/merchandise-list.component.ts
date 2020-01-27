@@ -23,7 +23,7 @@ import { Role } from 'src/app/shared/constants/the-p-league-constants';
 })
 export class MerchandiseListComponent implements OnInit, OnDestroy {
 	@ViewChild('gearUp', { static: false }) merchandiseCards: ElementRef;
-	@ViewChild('paginator', { static: false }) paginator: MatPaginator;
+	@ViewChild('paginator', { static: true }) paginator: MatPaginator;
 
 	routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
 	gearItems: GearItem[] = [];
@@ -48,6 +48,7 @@ export class MerchandiseListComponent implements OnInit, OnDestroy {
 		this.merchandiseService.pageChangeAction
 	]).pipe(
 		map(([gearItems]) => {
+			console.log('gearItems', gearItems);
 			const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
 				[...gearItems],
 				[...this.gearItems],

@@ -1,24 +1,25 @@
-<ng-container *ngIf="leagues$ | async as leagueData">
-	<form [formGroup]="newLeagueSessionsForm" (ngSubmit)="onGenerate(leagueData)">
-		<!--------------------------------------------------------------------------------- 
+<div>
+	<ng-container *ngIf="leagues$ | async as leagueData">
+		<form [formGroup]="newLeagueSessionsForm" (ngSubmit)="onGenerate(leagueData)">
+			<!--------------------------------------------------------------------------------- 
     formArrayName="sessions"
     Description:
     sessions is a FormArray on NewLeagueSessionForms containing list of NewLeagueSessionForms for the selected leagues 
     ----------------------------------------------------------------------------------->
-		<ng-container formArrayName="sessions">
-			<ng-container *ngFor="let data of leagueData; let i = index">
-				<ng-container [formGroupName]="i">
-					<app-edit-teams-list
-						(updatedTeams)="onUpdatedTeams($event, data?.league?.id)"
-						(deletedTeams)="onDeletedTeams(data?.league?.id)"
-						(unassignedTeamsChange)="onUnassignedTeamsChange(data?.league?.id)"
-						(teamsSelectionChange)="onTeamsSelectionChange($event, data?.league?.id)"
-						[teamsForm]="data?.form"
-						[teams]="data?.teams"
-						[sport]="data?.sport"
-						[league]="data?.league"
-					></app-edit-teams-list>
-					<!----------------------------------------------------------------------------
+			<ng-container formArrayName="sessions">
+				<ng-container *ngFor="let data of leagueData; let i = index">
+					<ng-container [formGroupName]="i">
+						<app-edit-teams-list
+							(updatedTeams)="onUpdatedTeams($event, data?.league?.id)"
+							(deletedTeams)="onDeletedTeams(data?.league?.id)"
+							(unassignedTeamsChange)="onUnassignedTeamsChange(data?.league?.id)"
+							(teamsSelectionChange)="onTeamsSelectionChange($event, data?.league?.id)"
+							[teamsForm]="data?.form"
+							[teams]="data?.teams"
+							[sport]="data?.sport"
+							[league]="data?.league"
+						></app-edit-teams-list>
+						<!----------------------------------------------------------------------------
             [sessionForm]="NewLeagueSessionForms['controls'].sessions['controls'][i]"
             
             Description:
@@ -30,31 +31,32 @@
             Description:
              Each one of the above referenced event handlers, needs to have i passed into it, in order to know which NewLeagueSessionForm we are attempting to perform actions on.
             --------------------------------------------------------------------------->
-					<app-new-session-schedule
-						[sessionForm]="newLeagueSessionsForm['controls'].sessions['controls'][i]"
-						[requireTime]="requireTimeErrorStateMatcher"
-						[activeSessionInfo]="data?.sessionInfo"
-						(gamesDayAdded)="onGamesDayAdded(i)"
-						(gamesDayRemved)="onGamesDayRemoved($event, i)"
-						(gamesTimeAdded)="onGamesTimeAdded($event, i)"
-						(gamesTimeRemoved)="onGamesTimeRemoved($event, i)"
-					>
-					</app-new-session-schedule>
+						<app-new-session-schedule
+							[sessionForm]="newLeagueSessionsForm['controls'].sessions['controls'][i]"
+							[requireTime]="requireTimeErrorStateMatcher"
+							[activeSessionInfo]="data?.sessionInfo"
+							(gamesDayAdded)="onGamesDayAdded(i)"
+							(gamesDayRemved)="onGamesDayRemoved($event, i)"
+							(gamesTimeAdded)="onGamesTimeAdded($event, i)"
+							(gamesTimeRemoved)="onGamesTimeRemoved($event, i)"
+						>
+						</app-new-session-schedule>
+					</ng-container>
+
+					<mat-divider></mat-divider>
 				</ng-container>
-
-				<mat-divider></mat-divider>
 			</ng-container>
-		</ng-container>
-		<div>{{ newLeagueSessionsForm | log }}</div>
-		<button mat-raised-button [disabled]="!newLeagueSessionsForm.valid">Generate</button>
-	</form>
-</ng-container>
+			<div>{{ newLeagueSessionsForm | log }}</div>
+			<button mat-raised-button [disabled]="!newLeagueSessionsForm.valid">Generate</button>
+		</form>
+	</ng-container>
 
-<ng-container *ngIf="unassignedTeamsData$ | async as data">
-	<app-unassigned
-		*ngIf="data.unassignedTeams?.length > 0"
-		[sportLeaguePairs]="data.pairs"
-		[assignTeamsForm]="assignTeamsForm"
-		(onAssignTeamsToLeagues)="onAssignTeams($event)"
-	></app-unassigned>
-</ng-container>
+	<ng-container *ngIf="unassignedTeamsData$ | async as data">
+		<app-unassigned
+			*ngIf="data.unassignedTeams?.length > 0"
+			[sportLeaguePairs]="data.pairs"
+			[assignTeamsForm]="assignTeamsForm"
+			(onAssignTeamsToLeagues)="onAssignTeams($event)"
+		></app-unassigned>
+	</ng-container>
+</div>

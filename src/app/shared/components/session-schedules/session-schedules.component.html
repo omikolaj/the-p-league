@@ -1,62 +1,83 @@
-<div>
-	<ng-container *ngIf="selectedLeague.value">
-		<mat-form-field *ngIf="showLeagueSelection()">
-			<mat-label>Sessions</mat-label>
-			<mat-select [formControl]="selectedLeague" (selectionChange)="onLeagueSelectionChange()">
-				<mat-option [value]="viewAll">
-					All
-				</mat-option>
-				<mat-optgroup *ngFor="let sport of pairs" [label]="sport.name">
-					<mat-option *ngFor="let league of sport.leagues" [value]="league.id">
-						{{ league.name }}
-					</mat-option>
-				</mat-optgroup>
-			</mat-select>
-		</mat-form-field>
-	</ng-container>
-
-	<ng-container *ngIf="selectedTeam.value">
-		<mat-form-field>
-			<mat-label>Teams</mat-label>
-			<mat-select [formControl]="selectedTeam" (selectionChange)="onTeamSelectionChange()">
-				<mat-option [value]="viewAll">
-					All
-				</mat-option>
-				<ng-container *ngFor="let sport of pairs">
-					<mat-optgroup *ngFor="let league of sport.leagues" [label]="league.name">
-						<mat-option *ngFor="let team of league.teams" [value]="team.id">
-							{{ team?.name }}
+<div class="wrapper">
+	<div class="filter-container">
+		<div id="leagues-filter">
+			<ng-container *ngIf="selectedLeague.value">
+				<mat-form-field appearance="outline" *ngIf="showLeagueSelection()">
+					<mat-label>Leagues</mat-label>
+					<mat-select [formControl]="selectedLeague" (selectionChange)="onLeagueSelectionChange()">
+						<mat-option [value]="viewAll">
+							All
 						</mat-option>
-					</mat-optgroup>
-				</ng-container>
-			</mat-select>
-		</mat-form-field>
-	</ng-container>
+						<mat-optgroup *ngFor="let sport of pairs" [label]="sport.name">
+							<mat-option *ngFor="let league of sport.leagues" [value]="league.id">
+								{{ league.name }}
+							</mat-option>
+						</mat-optgroup>
+					</mat-select>
+					<mat-icon matSuffix>sports_basketball</mat-icon>
+					<mat-hint>Filter by league</mat-hint>
+				</mat-form-field>
+			</ng-container>
+		</div>
 
-	<!-- filter by date -->
-	<ng-container *ngIf="selectedLeague.value">
-		<mat-form-field>
-			<input
-				#filterByDateInput
-				matInput
-				[value]="filterDatepickerValue"
-				(dateChange)="onDateChange($event)"
-				[matDatepicker]="filterByDatepicker"
-				placeholder="Date filter"
-				disabled
-			/>
-			<mat-datepicker-toggle matSuffix [for]="filterByDatepicker"></mat-datepicker-toggle>
-			<mat-datepicker [touchUi]="calendarTouchUi" (opened)="onDatePickerOpened()" #filterByDatepicker disabled="false"></mat-datepicker>
-		</mat-form-field>
-	</ng-container>
+		<div id="teams-filter">
+			<ng-container *ngIf="selectedTeam.value">
+				<mat-form-field appearance="outline">
+					<mat-label>Teams</mat-label>
+					<mat-select [formControl]="selectedTeam" (selectionChange)="onTeamSelectionChange()">
+						<mat-option [value]="viewAll">
+							All
+						</mat-option>
+						<ng-container *ngFor="let sport of pairs">
+							<mat-optgroup *ngFor="let league of sport.leagues" [label]="league.name">
+								<mat-option *ngFor="let team of league.teams" [value]="team.id">
+									{{ team?.name }}
+								</mat-option>
+							</mat-optgroup>
+						</ng-container>
+					</mat-select>
+					<mat-icon matSuffix>sports_basketball</mat-icon>
+					<mat-hint>Filter by team</mat-hint>
+				</mat-form-field>
+			</ng-container>
+		</div>
 
-	<!-- filter value form field -->
-	<mat-form-field>
-		<input matInput [formControl]="filterValue" (keyup)="onApplyFilter($event.target.value)" placeholder="Filter" />
-	</mat-form-field>
+		<div id="date-filter">
+			<!-- filter by date -->
+			<ng-container *ngIf="selectedLeague.value">
+				<mat-form-field appearance="outline">
+					<input
+						#filterByDateInput
+						matInput
+						[value]="filterDatepickerValue"
+						(dateChange)="onDateChange($event)"
+						[matDatepicker]="filterByDatepicker"
+						placeholder="Date"
+						disabled
+					/>
+					<mat-datepicker-toggle matSuffix [for]="filterByDatepicker"></mat-datepicker-toggle>
+					<mat-datepicker [touchUi]="calendarTouchUi" (opened)="onDatePickerOpened()" #filterByDatepicker disabled="false"></mat-datepicker>
+					<mat-hint>Filter games by date {{ calendarTouchUi }}</mat-hint>
+				</mat-form-field>
+			</ng-container>
+		</div>
+
+		<ng-container *ngIf="searchTermFilter">
+			<div id="input-filter">
+				<!-- filter value form field -->
+				<mat-form-field appearance="outline">
+					<input matInput [formControl]="filterValue" (keyup)="onApplyFilter($event.target.value)" placeholder="Filter by term" />
+					<mat-icon matSuffix>vpn_key</mat-icon>
+					<mat-hint>Enter search term</mat-hint>
+				</mat-form-field>
+			</div>
+		</ng-container>
+	</div>
 
 	<ng-container *ngIf="title">
-		<h1>{{ title }}</h1>
+		<div >
+			<h1 class="title">{{ title }}</h1>
+		</div>
 	</ng-container>
 
 	<mat-table matSort [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" style="margin: 0 auto;">
@@ -103,7 +124,7 @@
 		></mat-row>
 	</mat-table>
 
-	<mat-paginator [pageSizeOptions]="[4, 8, 16, 32, 100]"></mat-paginator>
+	<mat-paginator class="paginator" [pageSizeOptions]="[4, 8, 16, 32, 100]"></mat-paginator>
 </div>
 
 <ng-template #tpl let-match>

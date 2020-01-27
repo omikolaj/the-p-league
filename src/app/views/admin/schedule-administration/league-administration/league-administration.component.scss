@@ -1,4 +1,28 @@
-mat-card-actions.sport-action-buttons{
-  display: inline-block;
-  padding-left: 20%;
+div.sport-action-buttons {
+	display: inline-block;
+}
+
+mat-icon {
+	cursor: pointer;
+}
+
+.disable-delete {
+	pointer-events: none;
+	opacity: 0.4;
+}
+
+.sport-type {
+	background-color: #424242;
+	border-radius: 0.25rem;
+	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+	padding-top: 6px;
+	margin-top: 1rem;
+
+	form {
+		padding: 0 24px 0 24px;
+	}
+
+	.sport-type-name-field {
+		vertical-align: middle;
+	}
 }

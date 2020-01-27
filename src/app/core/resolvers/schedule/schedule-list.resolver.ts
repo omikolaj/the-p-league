@@ -21,9 +21,8 @@ export class ScheduleListResolver implements Resolve<LeagueSessionSchedule[]> {
 	): LeagueSessionSchedule[] | Observable<LeagueSessionSchedule[]> | Promise<LeagueSessionSchedule[]> {
 		return this.scheduleAsync.fetchLeaguesSessionSchedules().pipe(
 			tap((sessions) => {
-				console.log('raw sessionsData', sessions);
+				console.log('Running ScheduleListResolver');
 				const normalizedData = normalize(sessions, sessionListSchema);
-				console.log('normalized sessionsData', normalizedData);
 				this.store.dispatch([
 					new Schedules.InitializeSessions(normalizedData.entities['sessions']),
 					new Schedules.InitializeMatches(normalizedData.entities['matches'])

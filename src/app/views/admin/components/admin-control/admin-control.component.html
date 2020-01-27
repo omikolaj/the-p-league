@@ -1,5 +1,7 @@
-<div style="margin: 75px;">
-  <p>
-    {{ name }}
-  </p>
+<div class="control-container" [id]="control.name">
+	<div>
+		<h4>{{ control.name }}</h4>
+	</div>
+	<mat-icon aria-hidden="false" aria-label="Admin control">{{ control.icon }}</mat-icon>
+	<button mat-raised-button (click)="onControlSelected()" color="accent" type="button">Manage</button>
 </div>

@@ -18,15 +18,15 @@
 						></app-league-administration>
 					</ng-container>
 				</ng-container>
-				<div>
-					<button mat-raised-button (click)="onNewSchedule()" [disabled]="checkSelection()">
-						New
+				<div class="schedule-action-buttons">
+					<button mat-raised-button (click)="onModifySchedule()" [disabled]="true">
+						Modify
 					</button>
 					<button mat-raised-button (click)="onPlayOffsSchedule()" [disabled]="true">
 						Play Offs
 					</button>
-					<button mat-raised-button (click)="onModifySchedule()" [disabled]="true">
-						Modify
+					<button mat-raised-button (click)="onNewSchedule()" [disabled]="checkSelection()">
+						New
 					</button>
 				</div>
 			</mat-tab>
@@ -51,6 +51,8 @@
 							[displayTeamID]="displayTeamID"
 							(leagueChanged)="onLeagueChanged($event)"
 							(teamChanged)="onTeamChanged($event)"
+							(filterByDateChanged)="onDateSelectionChanged($event)"
+							(filterByInputChanged)="onFilterValueChanged($event)"
 						></app-session-schedules>
 						<button mat-raised-button color="accent" (click)="onSchedulesPublished()">Publish</button>
 					</ng-container>

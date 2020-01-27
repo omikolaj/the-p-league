@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgxGalleryAnimation, NgxGalleryOptions } from 'ngx-gallery';
+import { NgxGalleryAnimation, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';

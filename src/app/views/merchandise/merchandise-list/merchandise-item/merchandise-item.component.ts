@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgxGalleryAnimation, NgxGalleryOptions } from 'ngx-gallery';
+import { NgxGalleryAnimation, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
 import { GearItem } from 'src/app/core/models/merchandise/gear-item.model';
 import { Size } from 'src/app/core/models/merchandise/gear-size.model';
@@ -65,6 +65,10 @@ export class MerchandiseItemComponent {
 		private merchandiseService: MerchandiseService,
 		public authService: AuthService
 	) {}
+
+	ngOnInit() {
+		console.log('gearItem', this.gearItem);
+	}
 
 	onEditGearItem(): void {
 		this.router.navigate(

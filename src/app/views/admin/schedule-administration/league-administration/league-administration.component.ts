@@ -90,6 +90,7 @@ export class LeagueAdministrationComponent implements OnInit {
 		// In case the sport type was created and the leagues property has
 		// not been initialized. This property should be initialized inside
 		// the store already. This is just in case
+
 		if ('leagues' in this.sportType) {
 			if (this.sportType.leagues.length > 0) {
 				console.warn('Cannot delete sport type that has leagues assigned to it');

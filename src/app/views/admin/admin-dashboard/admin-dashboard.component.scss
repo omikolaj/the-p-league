@@ -1,0 +1,19 @@
+@import '../../../../styles-variables.scss';
+
+.wrapper {
+	margin-top: 75px;
+
+	.admin-controls-container {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+	}
+}
+
+@media (min-width: map-get($grid-breakpoints, md)) {
+	.wrapper {
+		.admin-controls-container {
+			flex-direction: row;
+		}
+	}
+}

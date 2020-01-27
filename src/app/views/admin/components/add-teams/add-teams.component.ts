@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatExpansionPanel } from '@angular/material';
-import { cloneDeep } from 'lodash';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { Team } from 'src/app/core/models/schedule/team.model';
 
 @Component({
 	selector: 'app-add-teams',
@@ -10,8 +10,7 @@ import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types
 	styleUrls: ['./add-teams.component.scss']
 })
 export class AddTeamsComponent {
-	title = 'Add';
-	description = 'Team';
+	title = 'Team';
 	@Input() newTeamForm: FormGroup;
 	private _pairs: SportTypesLeaguesPairs[] = [];
 	get sportLeaguePairs(): SportTypesLeaguesPairs[] {
@@ -21,16 +20,20 @@ export class AddTeamsComponent {
 		// filter out any sport types that have leagues empty array
 		this._pairs = value.filter((p) => p.leagues.length !== 0);
 	}
-	@Output() onNewTeam: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+	@Output() onNewTeam: EventEmitter<Team> = new EventEmitter<Team>();
 	@ViewChild(MatExpansionPanel, { static: false })
 	matExpansionPanel: MatExpansionPanel;
 
 	constructor() {}
 
 	onSubmit(formGroupDirective: FormGroupDirective): void {
-		const newTeam = cloneDeep(this.newTeamForm);
-		formGroupDirective.resetForm();
+		const newTeam: Team = {
+			leagueID: this.newTeamForm.get('leagueID').value,
+			name: this.newTeamForm.get('name').value,
+			selected: true
+		};
 		this.onNewTeam.emit(newTeam);
 		this.matExpansionPanel.close();
+		formGroupDirective.resetForm();
 	}
 }

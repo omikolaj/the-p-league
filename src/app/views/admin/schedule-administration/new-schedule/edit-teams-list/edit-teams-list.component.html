@@ -1,6 +1,4 @@
-<mat-expansion-panel expanded="true">
-	<mat-expansion-panel-header> {{ league?.name }} - {{ sport?.name }} </mat-expansion-panel-header>
-
+<div class="teams-list">
 	<form [formGroup]="teamsForm" (ngSubmit)="onSubmit()" novalidate>
 		<mat-selection-list #teamsList formArrayName="teams" [disabled]="disableListSelection" (selectionChange)="onTeamsSelectionChange($event)">
 			<mat-list-option *ngFor="let team of teams; let i = index" [selected]="team?.selected" [value]="team?.id">
@@ -32,4 +30,4 @@
 			<button mat-stroked-button color="warn" [disabled]="disableActions" type="button" (click)="deletedTeamsHandler()">Delete</button>
 		</mat-action-row>
 	</form>
-</mat-expansion-panel>
+</div>
