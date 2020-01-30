@@ -41,6 +41,7 @@ export class ScoreboardsComponent implements OnInit, OnDestroy {
 	todayDataSource = new MatTableDataSource<Match>();
 	admin = true;
 	displayColumns = ['home', 'result', 'actions', 'away', 'date'];
+	isMobile = this.scheduleFacade.isMobile;
 	private unsubscribed$: Subject<void> = new Subject();
 
 	constructor(

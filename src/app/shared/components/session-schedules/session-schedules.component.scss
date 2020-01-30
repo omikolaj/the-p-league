@@ -16,6 +16,11 @@
 	.title {
 		text-align: center;
 	}
+
+	.empty-message {
+		text-align: center;
+		margin: 1em;
+	}
 }
 
 @media (min-width: map-get($grid-breakpoints, md)) {

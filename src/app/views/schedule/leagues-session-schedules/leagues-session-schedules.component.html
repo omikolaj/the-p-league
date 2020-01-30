@@ -8,6 +8,7 @@
 		<app-session-schedules
 			[dataSource]="leaguesSessionSchduleDataSource"
 			[pairs]="pairs"
+			[mobile]="isMobile"
 			[displayLeagueID]="displayLeagueID"
 			(leagueChanged)="onLeagueSelectionChanged($event)"
 			[displayTeamID]="displayTeamID"

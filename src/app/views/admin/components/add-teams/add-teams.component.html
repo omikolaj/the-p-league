@@ -21,16 +21,16 @@
 				</mat-form-field>
 
 				<mat-form-field appearance="outline">
-					<mat-label>League</mat-label>
+					<mat-label>{{ sportLeaguePairs[active] === undefined ? 'League' : sportLeaguePairs[active].name }}</mat-label>
 					<mat-select formControlName="leagueID">
 						<!-- <mat-option>-- None --</mat-option> -->
-						<mat-optgroup *ngFor="let pair of sportLeaguePairs" [label]="pair.name">
-							<mat-option *ngFor="let league of pair.leagues" [value]="league.id">
+						<mat-optgroup *ngFor="let pair of sportLeaguePairs; let i = index" [label]="pair.name">
+							<mat-option *ngFor="let league of pair.leagues" [value]="league.id" (click)="active = i">
 								{{ league.name }}
 							</mat-option>
 						</mat-optgroup>
 					</mat-select>
-					<mat-icon matSuffix>whatshot</mat-icon>
+					<mat-icon matSuffix>timer</mat-icon>
 					<mat-error>You must select a league</mat-error>
 				</mat-form-field>
 			</div>

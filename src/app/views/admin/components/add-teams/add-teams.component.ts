@@ -11,6 +11,7 @@ import { Team } from 'src/app/core/models/schedule/team.model';
 })
 export class AddTeamsComponent {
 	title = 'Team';
+	active = undefined;
 	@Input() newTeamForm: FormGroup;
 	private _pairs: SportTypesLeaguesPairs[] = [];
 	get sportLeaguePairs(): SportTypesLeaguesPairs[] {
@@ -35,5 +36,6 @@ export class AddTeamsComponent {
 		this.onNewTeam.emit(newTeam);
 		this.matExpansionPanel.close();
 		formGroupDirective.resetForm();
+		this.active = undefined;
 	}
 }

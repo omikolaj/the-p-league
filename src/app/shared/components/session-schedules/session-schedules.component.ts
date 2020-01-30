@@ -32,8 +32,7 @@ export class SessionSchedulesComponent implements OnInit {
 	viewAll = VIEW_ALL;
 	byeWeekOptionalDateText = BYE_WEEK_DATE_TEXT;
 	filterDatepickerValue = '';
-	// TODO enable this dynamically. Set to true only for mobile false for desktop
-	calendarTouchUi = true;
+	@Input() mobile = true;
 	displayedColumns = ['home', 'result', 'away', 'date'];
 	matchReportForm: FormGroup;
 

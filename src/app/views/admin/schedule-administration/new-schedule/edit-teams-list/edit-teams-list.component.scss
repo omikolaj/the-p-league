@@ -1,3 +1,18 @@
 .mat-list-item-disabled {
 	background-color: #424242;
 }
+
+mat-action-row {
+	padding: 16px 12px 16px 24px !important;
+}
+
+.action-buttons {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+
+	button {
+		margin: 0.25rem;
+	}
+}

@@ -1,13 +1,46 @@
+@import '../../../../../../styles-variables.scss';
+
 .wrapper {
 	margin: 0 auto;
+
+	button {
+		margin: 0 auto;
+		display: block;
+	}
 	.container {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
-		flex-flow: row wrap;
 
-		.gameDayTimes {
-			border: 2px solid white;
+		.mat-slide-toggle {
+			margin-bottom: 1.34375em;
+		}
+
+		.gameDaysTimes {
+			border: grey 1px solid;
+			border-radius: 0.25em;
+			margin-bottom: 0.75em;
+
+			.remove-game-day {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-end;
+				border-bottom: 1px solid rgb(255, 255, 255, 0.5);
+				padding: 0.5em;
+				background-color: #6161611c;
+
+				mat-icon {
+					cursor: pointer;
+				}
+			}
+
+			.gameDayTimes {
+				padding: 0.5em;
+			}
+
+			mat-form-field {
+				width: 100%;
+			}
 
 			.game-times-chips {
 				width: 100%;

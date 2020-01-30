@@ -2,34 +2,45 @@
 	<div class="container">
 		<ng-container [formGroup]="sessionForm">
 			<ng-container formGroupName="sessionDateInfo">
-				<mat-form-field>
-					<input matInput formControlName="sessionStart" [matDatepicker]="sessionStart" placeholder="Session Start Date" />
+				<mat-form-field appearance="outline">
+					<mat-label>Session start date</mat-label>
+					<input matInput formControlName="sessionStart" [matDatepicker]="sessionStart" placeholder="Date" readonly />
 					<mat-datepicker-toggle matSuffix [for]="sessionStart"></mat-datepicker-toggle>
-					<mat-datepicker #sessionStart></mat-datepicker>
+					<mat-datepicker [touchUi]="mobile" #sessionStart disabled="false"></mat-datepicker>
 					<mat-error *ngIf="sessionForm['controls'].sessionDateInfo['controls'].sessionStart.hasError('sessionInProgress')">{{
 						sessionForm['controls'].sessionDateInfo['controls'].sessionStart.errors.sessionInProgress.value
 					}}</mat-error>
+					<mat-error
+						*ngIf="
+							!sessionForm['controls'].sessionDateInfo['controls'].sessionStart.hasError('sessionInProgress') &&
+							sessionForm['controls'].sessionDateInfo['controls'].sessionStart.hasError('required') &&
+							sessionForm['controls'].sessionDateInfo['controls'].sessionStart.touched
+						"
+						>You must specify start date</mat-error
+					>
+
 					<mat-hint *ngIf="activeSessionInfo; else noActiveSession">Active session ends: {{ activeSessionInfo.endDate | date: 'M/d/yyyy' }}</mat-hint>
-					<ng-template #noActiveSession>
-						<mat-hint>No active sessions</mat-hint>
-					</ng-template>
 				</mat-form-field>
 
-				<mat-form-field>
-					<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="# of weeks" required />
+				<mat-form-field appearance="outline">
+					<mat-label>Number of weeks</mat-label>
+					<input formControlName="numberOfWeeks" matInput type="number" min="1" max="16" placeholder="Weeks" required />
 					<mat-error>
 						Please specify number of weeks
 					</mat-error>
 				</mat-form-field>
 
-				<mat-form-field>
-					<input matInput formControlName="sessionEnd" [matDatepicker]="sessionEnd" placeholder="Session End Date" />
+				<mat-form-field appearance="outline">
+					<mat-label>Session end date</mat-label>
+					<input matInput formControlName="sessionEnd" [matDatepicker]="sessionEnd" placeholder="Date" readonly />
 					<mat-datepicker-toggle matSuffix [for]="sessionEnd"></mat-datepicker-toggle>
-					<mat-datepicker #sessionEnd></mat-datepicker>
+					<mat-datepicker [touchUi]="mobile" #sessionEnd></mat-datepicker>
 				</mat-form-field>
 			</ng-container>
 
-			<div class="gameDayTimes">
+			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
+
+			<div>
 				<!----------------------------------------------------
 			formArrayName="gamesDays"
 
@@ -46,75 +57,81 @@
 						gamesDay formControls by binding [formGroupName]="indexGamesDay". When user chooses to remove one of the gamesDay formControls we can pass down the index, and parent component will know exactly what formControl to remove from the gamesDays array
 						----------------------------------------------------->
 						<ng-container [formGroupName]="indexGamesDay">
-							<mat-form-field>
-								<mat-label>Game Day</mat-label>
-								<mat-select #matSelect formControlName="gamesDay" required>
-									<!-----------------------------------------------------------
+							<div class="gameDaysTimes">
+								<div *ngIf="!firstIndex" class="remove-game-day">
+									<mat-icon (click)="removeGamesDay(indexGamesDay)" aria-hidden="false" aria-label="Remove Game Day">clear</mat-icon>
+								</div>
+								<div class="gameDayTimes">
+									<mat-form-field appearance="outline">
+										<mat-label>Game Day</mat-label>
+										<mat-select #matSelect formControlName="gamesDay" required>
+											<!-----------------------------------------------------------
 										matchDays are just days of the week (Monday, Tuesday etc.)
 									------------------------------------------------------------>
-									<!-- <mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option> -->
+											<!-- <mat-option *ngFor="let day of matchDays | enumToArray" [value]="day"> {{ day }}</mat-option> -->
 
-									<!-- activeIndex = indexGamesDay is a work around for getting access to the indexGamesDay variable outside of *ngFor loop scope -->
-									<mat-option (click)="activeIndex = indexGamesDay" *ngFor="let day of gamesDay.value.availableGamesDays | orderEnum" [value]="day">{{
-										day
-									}}</mat-option>
-								</mat-select>
-								<mat-error>
-									Please select game day
-								</mat-error>
-							</mat-form-field>
-							<!-----------------------------------------------------------------------------------------
+											<!-- activeIndex = indexGamesDay is a work around for getting access to the indexGamesDay variable outside of *ngFor loop scope -->
+											<mat-option
+												(click)="activeIndex = indexGamesDay"
+												*ngFor="let day of gamesDay.value.availableGamesDays | orderEnum"
+												[value]="day"
+												>{{ day }}</mat-option
+											>
+										</mat-select>
+										<mat-error>
+											Please select game day
+										</mat-error>
+									</mat-form-field>
+									<!-----------------------------------------------------------------------------------------
 								only allow user to remove added gamesDay formControl to any formControl BUT the first one 
 							------------------------------------------------------------------------------------------>
-							<mat-icon *ngIf="!firstIndex" (click)="removeGamesDay(indexGamesDay)" aria-hidden="false" aria-label="Remove Game Day">clear</mat-icon>
-
-							<mat-form-field class="game-times-chips">
-								<mat-chip-list formControlName="gamesTimes" #chipList aria-label="Game Times" [errorStateMatcher]="requireTime" required>
-									<ng-container *ngFor="let gamesTime of gamesDay['controls'].gamesTimes.value; let indexGamesTime = index">
-										<!------------------------------------------------------------------------------------
+									<mat-form-field class="game-times-chips">
+										<mat-chip-list formControlName="gamesTimes" #chipList aria-label="Game Times" [errorStateMatcher]="requireTime" required>
+											<ng-container *ngFor="let gamesTime of gamesDay['controls'].gamesTimes.value; let indexGamesTime = index">
+												<!------------------------------------------------------------------------------------
 											let gamesTime of gamesDay['controls'].gamesTimes.value; let indexGamesTime = index"
 
 											Description:
 											iterate over the current iteration of gamesDay formControl, which has a gamesTimes formGroup property and retireve gamesTimes value, which is an array of formControls
 											and then for display mat-chip for each gamesTime instance in the formControls array 
 										-------------------------------------------------------------------------------------->
-										<mat-chip
-											*ngIf="gamesTime.value.gamesTime"
-											selectable="true"
-											removable="true"
-											(removed)="removeGameTime(indexGamesDay, indexGamesTime)"
-										>
-											{{ gamesTime.value?.gamesTime }}
-											<mat-icon matChipRemove>cancel</mat-icon>
-										</mat-chip>
-									</ng-container>
-									<!----------------------------------------------------------
+												<mat-chip
+													*ngIf="gamesTime.value.gamesTime"
+													selectable="true"
+													removable="true"
+													(removed)="removeGameTime(indexGamesDay, indexGamesTime)"
+												>
+													{{ gamesTime.value?.gamesTime }}
+													<mat-icon matChipRemove>cancel</mat-icon>
+												</mat-chip>
+											</ng-container>
+											<!----------------------------------------------------------
 									(matChipInputTokenEnd)="addGameTime($event, indexGamesDay)"
 
 									Description:
 									The (matChipInputTokenEnd) event is triggered whenever user finishes entering a new gamesTime by selecting enter, comma or on blur, which means whenever the input control loses focus 
 									----------------------------------------------------------->
-									<input
-										placeholder="Game Times..."
-										[ngxTimepicker]="timePick"
-										[matChipInputFor]="chipList"
-										matChipInputAddOnBlur="true"
-										[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-										(matChipInputTokenEnd)="addGameTime($event, indexGamesDay)"
-									/>
-									<ngx-material-timepicker #timePick></ngx-material-timepicker>
-								</mat-chip-list>
-								<mat-error *ngIf="gamesDay['controls'].gamesTimes.hasError('timeRequired')">{{
-									gamesDay['controls'].gamesTimes.errors.timeRequired.value
-								}}</mat-error>
-							</mat-form-field>
+											<input
+												placeholder="Game Times..."
+												[ngxTimepicker]="timePick"
+												[matChipInputFor]="chipList"
+												matChipInputAddOnBlur="true"
+												[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+												(matChipInputTokenEnd)="addGameTime($event, indexGamesDay)"
+											/>
+											<ngx-material-timepicker #timePick></ngx-material-timepicker>
+										</mat-chip-list>
+										<mat-error *ngIf="gamesDay['controls'].gamesTimes.hasError('timeRequired')">{{
+											gamesDay['controls'].gamesTimes.errors.timeRequired.value
+										}}</mat-error>
+									</mat-form-field>
+								</div>
+							</div>
 						</ng-container>
 					</ng-container>
 				</ng-container>
 			</div>
-
-			<button type="button" mat-raised-button [disabled]="!isGameDaySelected()" (click)="addGamesDay()" color="primary">Add Day</button>
-			<mat-slide-toggle formControlName="byeWeeks">Include BYE Weeks</mat-slide-toggle>
 		</ng-container>
 	</div>
+	<button type="button" mat-raised-button [disabled]="!isGameDaySelected()" (click)="addGamesDay()" color="accent">Add Game Day</button>
 </div>

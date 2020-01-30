@@ -15,7 +15,6 @@
 						</mat-optgroup>
 					</mat-select>
 					<mat-icon matSuffix>sports_basketball</mat-icon>
-					<mat-hint>Filter by league</mat-hint>
 				</mat-form-field>
 			</ng-container>
 		</div>
@@ -37,7 +36,6 @@
 						</ng-container>
 					</mat-select>
 					<mat-icon matSuffix>sports_basketball</mat-icon>
-					<mat-hint>Filter by team</mat-hint>
 				</mat-form-field>
 			</ng-container>
 		</div>
@@ -56,8 +54,7 @@
 						disabled
 					/>
 					<mat-datepicker-toggle matSuffix [for]="filterByDatepicker"></mat-datepicker-toggle>
-					<mat-datepicker [touchUi]="calendarTouchUi" (opened)="onDatePickerOpened()" #filterByDatepicker disabled="false"></mat-datepicker>
-					<mat-hint>Filter games by date {{ calendarTouchUi }}</mat-hint>
+					<mat-datepicker [touchUi]="mobile" (opened)="onDatePickerOpened()" #filterByDatepicker disabled="false"></mat-datepicker>
 				</mat-form-field>
 			</ng-container>
 		</div>
@@ -75,12 +72,20 @@
 	</div>
 
 	<ng-container *ngIf="title">
-		<div >
+		<div>
 			<h1 class="title">{{ title }}</h1>
 		</div>
 	</ng-container>
 
-	<mat-table matSort [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" style="margin: 0 auto;">
+	<mat-table
+		matSort
+		matSortActive="date"
+		matSortDirection="asc"
+		[dataSource]="dataSource"
+		multiTemplateDataRows
+		class="mat-elevation-z8"
+		style="margin: 0 auto;"
+	>
 		<!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -123,6 +128,10 @@
 			(rowClicked)="onRowSelected($event)"
 		></mat-row>
 	</mat-table>
+
+	<div class="empty-message" *ngIf="dataSource.data.length === 0">
+		<p><i>No scheduled games</i></p>
+	</div>
 
 	<mat-paginator class="paginator" [pageSizeOptions]="[4, 8, 16, 32, 100]"></mat-paginator>
 </div>

@@ -32,6 +32,7 @@
              Each one of the above referenced event handlers, needs to have i passed into it, in order to know which NewLeagueSessionForm we are attempting to perform actions on.
             --------------------------------------------------------------------------->
 						<app-new-session-schedule
+							[mobile]="isMobile"
 							[sessionForm]="newLeagueSessionsForm['controls'].sessions['controls'][i]"
 							[requireTime]="requireTimeErrorStateMatcher"
 							[activeSessionInfo]="data?.sessionInfo"
@@ -46,8 +47,9 @@
 					<mat-divider></mat-divider>
 				</ng-container>
 			</ng-container>
-			<div>{{ newLeagueSessionsForm | log }}</div>
-			<button mat-raised-button [disabled]="!newLeagueSessionsForm.valid">Generate</button>
+			<div class="generate-schedule">
+				<button mat-raised-button [disabled]="!newLeagueSessionsForm.valid">Generate</button>
+			</div>
 		</form>
 	</ng-container>
 

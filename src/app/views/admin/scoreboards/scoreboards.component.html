@@ -4,6 +4,7 @@
 			[title]="todaysTitle"
 			[dataSource]="todayDataSource"
 			[admin]="admin"
+			[mobile]="isMobile"
 			(filterByInputChanged)="onFilterValueChanged($event, 'today')"
 			(matchReported)="onMatchReported($event)"
 		></app-session-schedules>
@@ -14,6 +15,7 @@
 			[displayLeagueID]="allDisplayLeagueID"
 			[displayTeamID]="allDisplayTeamID"
 			[admin]="admin"
+			[mobile]="isMobile"
 			(leagueChanged)="onLeagueSelectionChanged($event, 'all')"
 			(teamChanged)="onTeamSelectionChanged($event, 'all')"
 			(filterByDateChanged)="onDateSelectionChanged($event)"

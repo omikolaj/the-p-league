@@ -19,6 +19,7 @@ export class LeaguesSessionSchedulesComponent implements OnInit {
 	todayDataSource: MatTableDataSource<Match> = new MatTableDataSource<Match>();
 	todaysTitle = "Today's Games";
 	leaguesSessionSchduleDataSource = new MatTableDataSource<Match>(this.scheduleFacade.sessionsMatches);
+	isMobile = this.scheduleFacade.isMobile;
 	private pairs$ = combineLatest(this.scheduleFacade.sessionsSportLeaguePairs$, this.scheduleFacade.sessionsLeagueIDs$).pipe(
 		filter(([pairs, leagues]) => leagues.length !== 0 && pairs.length !== 0),
 		map(([pairs, leagues]) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagues)),

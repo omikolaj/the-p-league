@@ -1,44 +1,30 @@
-<mat-expansion-panel>
-  <mat-expansion-panel-header>
-    Unassigned Teams
-  </mat-expansion-panel-header>
-
-  <form [formGroup]="assignTeamsForm" (ngSubmit)="onSubmit()" novalidate>
-    <ng-container *ngFor="let team of teams; let i = index">
-      <ng-container formArrayName="unassignedTeams">
-        <ng-container [formGroupName]="i">
-          <mat-form-field>
-            <input
-              formControlName="teamName"
-              [value]="team.teamName"
-              matInput
-              [readonly]="true"
-            />
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>League</mat-label>
-            <mat-select formControlName="leagueID">
-              <mat-option>-- None --</mat-option>
-              <mat-optgroup
-                *ngFor="let pair of sportLeaguePairs"
-                [label]="pair.name"
-              >
-                <mat-option
-                  *ngFor="let league of pair.leagues"
-                  [value]="league.id"
-                >
-                  {{ league.name }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
-        </ng-container>
-      </ng-container>
-    </ng-container>
-
-    <mat-action-row>
-      <button mat-raised-button color="accent">Assign</button>
-    </mat-action-row>
-  </form>
-</mat-expansion-panel>
+<mat-list>
+	<h1 mat-subheader>Unassigned Teams</h1>
+	<form [formGroup]="assignTeamsForm" (ngSubmit)="onSubmit()" novalidate>
+		<div class="unassigned-teams">
+			<ng-container *ngFor="let team of teams; let i = index">
+				<ng-container formArrayName="unassignedTeams">
+					<ng-container [formGroupName]="i">
+						<mat-list-item>
+							<mat-form-field appearance="outline">
+								<mat-label>{{ team.teamName }}</mat-label>
+								<mat-select formControlName="leagueID">
+									<mat-option>-- None --</mat-option>
+									<mat-optgroup *ngFor="let pair of sportLeaguePairs" [label]="pair.name">
+										<mat-option *ngFor="let league of pair.leagues" [value]="league.id">
+											{{ league.name }}
+										</mat-option>
+									</mat-optgroup>
+								</mat-select>
+							</mat-form-field>
+						</mat-list-item>
+					</ng-container>
+				</ng-container>
+			</ng-container>
+		</div>
+		<mat-divider></mat-divider>
+		<div class="assign">
+			<button mat-raised-button color="accent">Assign</button>
+		</div>
+	</form>
+</mat-list>

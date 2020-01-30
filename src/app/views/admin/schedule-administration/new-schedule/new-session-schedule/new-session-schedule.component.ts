@@ -14,6 +14,7 @@ import { ActiveSessionInfo } from './../../../../../core/models/schedule/active-
 export class NewLeagueSessionScheduleComponent implements OnInit {
 	@Input() sessionForm: FormGroup;
 	@Input() requireTime: ErrorStateMatcher;
+	@Input() mobile = true;
 	@Input() activeSessionInfo: ActiveSessionInfo;
 	@Output() gamesDayAdded: EventEmitter<void> = new EventEmitter<void>();
 	@Output() gamesDayRemved: EventEmitter<number> = new EventEmitter<number>();

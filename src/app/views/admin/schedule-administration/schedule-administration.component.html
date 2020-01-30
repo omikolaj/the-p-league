@@ -2,42 +2,46 @@
 	<ng-container *ngIf="sportLeaguePairs$ | async as pairs">
 		<mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
 			<mat-tab label="League">
-				<app-add-sports-leagues
-					[sportLeaguePairs]="pairs"
-					[newSportLeagueForm]="newSportLeagueForm"
-					(onNewSportLeague)="onNewSportLeague($event)"
-				></app-add-sports-leagues>
-				<!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
-				<ng-container *ngIf="sportTypes$ | async as types">
-					<ng-container *ngFor="let sport of types">
-						<app-league-administration
-							(deletedSport)="onDeleteSport($event)"
-							(updatedSportName)="onUpdateSport($event)"
-							(leagueSelectionChanged)="onLeagueSelectionChanged($event)"
-							[sportType]="sport"
-						></app-league-administration>
+				<div class="schedule-admin">
+					<app-add-sports-leagues
+						[sportLeaguePairs]="pairs"
+						[newSportLeagueForm]="newSportLeagueForm"
+						(onNewSportLeague)="onNewSportLeague($event)"
+					></app-add-sports-leagues>
+					<!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
+					<ng-container *ngIf="sportTypes$ | async as types">
+						<ng-container *ngFor="let sport of types">
+							<app-league-administration
+								(deletedSport)="onDeleteSport($event)"
+								(updatedSportName)="onUpdateSport($event)"
+								(leagueSelectionChanged)="onLeagueSelectionChanged($event)"
+								[sportType]="sport"
+							></app-league-administration>
+						</ng-container>
 					</ng-container>
-				</ng-container>
-				<div class="schedule-action-buttons">
-					<button mat-raised-button (click)="onModifySchedule()" [disabled]="true">
-						Modify
-					</button>
-					<button mat-raised-button (click)="onPlayOffsSchedule()" [disabled]="true">
-						Play Offs
-					</button>
-					<button mat-raised-button (click)="onNewSchedule()" [disabled]="checkSelection()">
-						New
-					</button>
+					<div class="schedule-action-buttons">
+						<button mat-raised-button color="accent" (click)="onModifySchedule()" [disabled]="true">
+							Modify
+						</button>
+						<button mat-raised-button color="accent" (click)="onPlayOffsSchedule()" [disabled]="true">
+							Play Offs
+						</button>
+						<button mat-raised-button color="accent" (click)="onNewSchedule()" [disabled]="checkSelection()">
+							New
+						</button>
+					</div>
 				</div>
 			</mat-tab>
 
-			<mat-tab [label]="tabTitle" [disabled]="checkSelection()">
+			<mat-tab class="schedule-admin" [label]="tabTitle" [disabled]="checkSelection()">
 				<ng-template matTabContent>
-					<app-add-teams [sportLeaguePairs]="pairs" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
+					<div class="schedule-admin">
+						<app-add-teams [sportLeaguePairs]="pairs" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
 
-					<ng-container [ngSwitch]="adminComponent">
-						<app-new-schedule *ngSwitchCase="'new'" (generateSchedules)="onGeneratedSchedules($event)"></app-new-schedule>
-					</ng-container>
+						<ng-container [ngSwitch]="adminComponent">
+							<app-new-schedule *ngSwitchCase="'new'" (generateSchedules)="onGeneratedSchedules($event)"></app-new-schedule>
+						</ng-container>
+					</div>
 				</ng-template>
 			</mat-tab>
 
@@ -46,6 +50,7 @@
 					<ng-container *ngIf="filteredPairs$ | async as filteredPairs">
 						<app-session-schedules
 							[dataSource]="previewDataSource"
+							[mobile]="isMobile"
 							[pairs]="filteredPairs"
 							[displayLeagueID]="displayLeagueID"
 							[displayTeamID]="displayTeamID"
@@ -54,7 +59,9 @@
 							(filterByDateChanged)="onDateSelectionChanged($event)"
 							(filterByInputChanged)="onFilterValueChanged($event)"
 						></app-session-schedules>
-						<button mat-raised-button color="accent" (click)="onSchedulesPublished()">Publish</button>
+						<div class="publish">
+							<button mat-raised-button color="accent" (click)="onSchedulesPublished()">Publish</button>
+						</div>
 					</ng-container>
 				</ng-template>
 			</mat-tab>

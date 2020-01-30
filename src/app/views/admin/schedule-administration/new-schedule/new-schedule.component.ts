@@ -30,6 +30,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	newLeagueSessionsForm: FormGroup;
 	requireTimeErrorStateMatcher = new RequireTimeErrorStateMatcher();
 	selectedTeamIDs: string[] = [];
+	isMobile = this.scheduleAdminFacade.isMobile;
 	private unsubscribe$ = new Subject<void>();
 	@Output() generateSchedules = new EventEmitter<string[]>();
 
@@ -229,7 +230,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 			// check if the server returned any session info for selected leagues
 			if (sessionInfo) {
 				if (moment(sessionInfo.endDate).isSameOrAfter(moment(control.value))) {
-					return { sessionInProgress: { value: `Session overlap. Specify date after ${moment(sessionInfo.endDate).format('MM/DD/YYYY')}` } };
+					return { sessionInProgress: { value: `Specify date after ${moment(sessionInfo.endDate).format('MM/DD/YYYY')}` } };
 				}
 			}
 			return null;

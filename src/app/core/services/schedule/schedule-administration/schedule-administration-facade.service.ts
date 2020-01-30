@@ -21,6 +21,7 @@ import { LeagueState } from 'src/app/shared/store/state/league.state';
 import { ScheduleState } from 'src/app/shared/store/state/schedule.state';
 import { SportTypeState } from 'src/app/shared/store/state/sport-type.state';
 import { TeamState } from 'src/app/shared/store/state/team.state';
+import { DeviceInfoService } from '../../device-info/device-info.service';
 import { NewSessionScheduleService } from './new-session-schedule.service';
 import { ScheduleAdministrationHelperService } from './schedule-administration-helper.service';
 
@@ -73,12 +74,19 @@ export class ScheduleAdministrationFacade {
 
 	// #endregion Streams/snapshots
 
+	// #region Properties
+
+	isMobile = this.deviceInfo.mobile;
+
+	// #endregion
+
 	constructor(
 		private scheduleAdminAsync: ScheduleAdministrationAsyncService,
 		private store: Store,
 		private scheduleAdminHelper: ScheduleAdministrationHelperService,
 		private newSessionService: NewSessionScheduleService,
-		private router: Router
+		private router: Router,
+		private deviceInfo: DeviceInfoService
 	) {}
 
 	// #region Schedules

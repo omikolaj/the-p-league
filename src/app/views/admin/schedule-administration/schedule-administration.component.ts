@@ -39,9 +39,8 @@ export class ScheduleAdministrationComponent implements OnInit {
 	newSportLeagueForm: FormGroup;
 	newTeamForm: FormGroup;
 	previewDataSource: MatTableDataSource<Match> = new MatTableDataSource();
-	// previewDataSource: LeaguesSchedulesDataSourceService;
-	// adminComponent: Type<NewScheduleComponent | ModifyScheduleComponent>;
 	adminComponent: 'new' | 'modify' | 'playoffs' | 'preview';
+	isMobile = this.scheduleAdminFacade.isMobile;
 
 	constructor(
 		private fb: FormBuilder,
