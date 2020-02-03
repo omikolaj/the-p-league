@@ -1,5 +1,4 @@
-// #dismiss {
-//   position: absolute;
-//   right: 10px;
-//   top: 9px;
-// }
+:host {
+	display: flex;
+	justify-content: space-between;
+}

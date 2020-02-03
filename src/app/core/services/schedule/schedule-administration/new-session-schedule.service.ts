@@ -17,6 +17,7 @@ export class NewSessionScheduleService {
 	private readonly DUMMY: Team = { name: 'BYE' };
 	private matchDays = MatchDay;
 	private nextDay = MatchDay.None;
+	private nextDayIndex = -1;
 	constructor() {}
 
 	/**
@@ -61,7 +62,7 @@ export class NewSessionScheduleService {
 	}
 
 	/**
-	 * @description Iterates over given list of teams and returns TeamSession array	 *
+	 * @description Iterates over given list of teams and returns TeamSession array
 	 * @returns team ids for team session
 	 */
 	private setTeamIDsForTeamSession(teams: Team[]): TeamSession[] {
@@ -71,35 +72,6 @@ export class NewSessionScheduleService {
 			} as TeamSession;
 		});
 	}
-	// generateSchedules(newSessions: LeagueSessionSchedule[]): LeagueSessionSchedule[] {
-	// 	const generatedSessionSchedules: LeagueSessionSchedule[] = [];
-
-	// 	for (let i = 0; i < newSessions.length; i++) {
-	// 		const session = newSessions[i];
-	// 		// make a copy of the teams array
-	// 		const teams: Team[] = session.teams.slice();
-
-	// 		// if we have odd number of teams
-	// 		if (teams.length % 2 === 1) {
-	// 			// handle odd numbers
-	// 			// so we can match algorithm for even numbers
-	// 			teams.push(this.DUMMY);
-	// 		}
-
-	// 		// generate match ups for this session's teams
-	// 		const matches = this.generateMatchUps(teams, session.byeWeeks, session.leagueID);
-
-	// 		// generate match times with the selected times
-	// 		session.matches = this.generateMatchUpTimes(matches, session);
-
-	// 		// mark session as active
-	// 		session.active = true;
-
-	// 		generatedSessionSchedules.push(session);
-	// 	}
-
-	// 	return generatedSessionSchedules;
-	// }
 
 	/**
 	 * @description Generates match ups between the given list of teams. If includeByeWeeks
@@ -158,7 +130,7 @@ export class NewSessionScheduleService {
 	 */
 	private generateMatchUpTimes(matches: Match[], newSession: LeagueSessionScheduleDTO): Match[] {
 		// returns an array of match days selected by user. [Monday, Tuesday] etc.
-		const desiredDays: MatchDay[] = newSession.gamesDays.map((gD) => this.matchDays[gD.gamesDay]);
+		const desiredDays: MatchDay[] = newSession.gamesDays.map((gD) => this.matchDays[gD.gamesDay]).sort((curr, next) => curr - next);
 		// make current variable equal to start date and clone the date since we will mutate it
 		const current = newSession.sessionStart.clone();
 
@@ -208,10 +180,13 @@ export class NewSessionScheduleService {
 			}
 			// figure out how days we have to add to current day to get next user defined day
 			// on which games should be scheduled
-			const requiredDays = this.computeNumberOfDaysNeeded(currentDayNum, desiredDays);
+			const requiredDays = this.computeNumberOfDaysNeeded(currentDayNum, desiredDays, newSession.sessionStart.isoWeekday());
 			// add this number to current date
 			current.add(requiredDays, 'days');
 		}
+		// reset this.nextDayIndex property
+		this.nextDayIndex = -1;
+
 		// return matches
 		return matches;
 	}
@@ -276,8 +251,8 @@ export class NewSessionScheduleService {
 	 * @param desiredDays
 	 * @returns number of days needed
 	 */
-	private computeNumberOfDaysNeeded(currentDayNum: MatchDay, desiredDays: MatchDay[]): number {
-		let nextDayNum: MatchDay = this.getNextAvailableDay(desiredDays);
+	private computeNumberOfDaysNeeded(currentDayNum: MatchDay, desiredDays: MatchDay[], startDayNum: MatchDay): number {
+		let nextDayNum: MatchDay = this.getNextAvailableDay(desiredDays, startDayNum);
 
 		if (currentDayNum < nextDayNum) {
 			nextDayNum = nextDayNum - currentDayNum;
@@ -300,46 +275,47 @@ export class NewSessionScheduleService {
 	 * @param desiredDays
 	 * @returns next available day
 	 */
-	private getNextAvailableDay(desiredDays: MatchDay[]): MatchDay {
-		// TODO this function keeps returning the same day. Even if desiredDays list has two days 1 - 4 it will keep returning 1.
-		// if (this.nextDay === MatchDay.None || this.nextDay === desiredDays[0]) {
-		// 	// find next available day from the desiredDays list
-		// 	return (this.nextDay = desiredDays.reduce((previousDay, currentDay) => Math.min(previousDay, currentDay)));
-		// } else {
-		// 	return (this.nextDay = this.findNextLargestNumber(desiredDays));
-		// }
-		// TODO this seems to be working, needs to be tested
-
-		const nextDay = this.findNextLargestNumber(desiredDays);
-		if (nextDay === 0) {
-			// find first day in the list
-			return (this.nextDay = desiredDays[0]);
+	private getNextAvailableDay(desiredDays: MatchDay[], startDayNum: MatchDay): MatchDay {
+		let nextDay = 0;
+		// if this.nextDayIndex has nnot yet been set
+		if (this.nextDayIndex === -1) {
+			if (!desiredDays.includes(startDayNum)) {
+				// find any desired days bigger than start day (if startDayNum = 5, then larger days are 6 and 7)
+				const largerDays = desiredDays.filter((d) => d > startDayNum);
+				if (largerDays.length > 0) {
+					// grab next closest day to start day
+					nextDay = largerDays[0];
+					this.nextDayIndex = desiredDays.indexOf(nextDay);
+				} else {
+					// grab the first one from the sorted list
+					this.nextDayIndex = 0;
+					nextDay = desiredDays[0];
+				}
+			}
+			// if desired days includes start date get next day
+			else {
+				if (desiredDays.length > 1) {
+					// grab the second day
+					this.nextDayIndex = desiredDays.indexOf(desiredDays[1]);
+					nextDay = desiredDays[this.nextDayIndex];
+				}
+				this.nextDayIndex = desiredDays.indexOf(startDayNum);
+				nextDay = desiredDays[this.nextDayIndex];
+			}
 		} else {
-			return (this.nextDay = nextDay);
-		}
-	}
+			// this is not the first time we are attempting to get next available day since this.nextDayIndex has been set
 
-	/**
-	 * @description Finds next largest number in the list of days of the week.
-	 * Given list of days [Monday, Thursday, Sunday], it will return Sunday
-	 * because Sunday = 7, and is thus the largest number
-	 * @param desiredDays
-	 * @returns next largest number
-	 */
-	private findNextLargestNumber(desiredDays: MatchDay[]): MatchDay {
-		let next = 0,
-			i = 0;
-		for (; i < desiredDays.length; i++) {
-			if (desiredDays[i] > this.nextDay) {
-				next = desiredDays[i];
-				// if we dont break, we will keep looping if there are more than 2 items in the list
-				// and lets say the value of next is 2 and this.nextDay is 1, and there is another value
-				// to loop over and that value is 3, then next will end up being 3 and not 2 even though,
-				// 2 was the next largest number...
-				break;
+			// if nextDayIndex is the last day in the desiredDays array, start from the beginning
+			if (this.nextDayIndex === desiredDays.length - 1) {
+				this.nextDayIndex = 0;
+				nextDay = desiredDays[this.nextDayIndex];
+			} else {
+				this.nextDayIndex++;
+				nextDay = desiredDays[this.nextDayIndex];
 			}
 		}
-		return next;
+
+		return nextDay;
 	}
 
 	/**
@@ -347,7 +323,7 @@ export class NewSessionScheduleService {
 	 */
 	private scheduleMatch(date: string, time: MatchTime, match: Match): void {
 		match.matchResult = {
-			status: MatchResultStatus.Pending
+			status: MatchResultStatus.TBD
 		};
 		match.dateTime = moment(`${date} ${time.hour}:${time.minute} ${time.period}`, 'MM-DD-YYYY hh:mm A').unix();
 	}

@@ -108,8 +108,8 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		unassignedTeams.forEach((t) => {
 			assignTeamControls.push(
 				this.fb.group({
-					teamName: this.fb.control(t.name),
-					teamID: this.fb.control(t.id),
+					name: this.fb.control(t.name),
+					id: this.fb.control(t.id),
 					leagueID: this.fb.control(UNASSIGNED)
 				})
 			);
@@ -281,7 +281,12 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		});
 
 		numberOfWeeksControl.valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((weeks) => {
-			sessionEndControl.setValue(moment().add(weeks, 'w'));
+			const sessionStartDate = sessionStartControl.value;
+			if (sessionStartDate) {
+				sessionEndControl.setValue(moment(sessionStartDate).add(weeks, 'w'));
+			} else {
+				sessionEndControl.setValue(moment().add(weeks, 'w'));
+			}
 		});
 	}
 
@@ -429,7 +434,6 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		this.generateSchedules.emit(leaguesData.map((leagueData) => leagueData.league.id));
 	}
 
-	// TODO see if you can just use formGroup.value to retireve all the necessary info
 	/**
 	 * @param  {FormGroup} assignedTeamsForm
 	 * Fired whenever user assigns teams to a league.
@@ -437,49 +441,34 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	 * instead of creating a separate object to carry this information
 	 */
 	onAssignTeams(assignedTeamsForm: FormGroup): void {
-		const formControls = [...assignedTeamsForm.get('unassignedTeams')['controls']];
-		const teamsToAssign: Team[] = [];
-		for (let index = 0; index < formControls.length; index++) {
-			const control: FormGroup = formControls[index];
-			if (control.value.leagueID !== UNASSIGNED) {
-				teamsToAssign.push({
-					id: control.value.teamID,
-					leagueID: control.value.leagueID
-				});
-			}
-		}
+		const teamsToAssign: Team[] = assignedTeamsForm.value.unassignedTeams.filter((t: Team) => t.leagueID !== UNASSIGNED);
 		this.scheduleAdminFacade.assignTeams(teamsToAssign);
 	}
 
-	// TODO see if you can use formGroup.value to retireve all necessary info
 	/**
 	 * @param  {FormGroup} updatedTeams
 	 * Fired whenever user updates team names in the edit-teams-list component
 	 */
 	onUpdatedTeams(updatedTeamNames: FormGroup): void {
-		const teamsToUpdate: Team[] = [];
-		const teamsFormArray = updatedTeamNames.get('teams') as FormArray;
-		for (let index = 0; index < teamsFormArray.length; index++) {
-			const currentTeam = teamsFormArray.at(index);
-			teamsToUpdate.push({
-				id: currentTeam.value.id,
-				name: currentTeam.value.name
-			});
-		}
-
+		const teamsToUpdate: Team[] = updatedTeamNames.value.teams;
 		this.scheduleAdminFacade.updateTeams(teamsToUpdate);
 	}
 
-	onTeamsSelectionChange(selectedTeamsEvent: MatSelectionListChange, leagueID: string): void {
+	onTeamsSelectionChange(selectedTeamsEvent: MatSelectionListChange): void {
 		this.selectedTeamIDs = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
-		this.scheduleAdminFacade.updateTeamSelection(this.selectedTeamIDs, leagueID);
 	}
 
 	onUnassignedTeamsChange(leagueID: string): void {
-		this.scheduleAdminFacade.unassignTeams(leagueID, this.selectedTeamIDs);
+		if (this.selectedTeamIDs.length > 0) {
+			this.scheduleAdminFacade.updateTeamSelection(this.selectedTeamIDs, leagueID);
+		}
+		this.scheduleAdminFacade.unassignTeams(leagueID);
 	}
 
 	onDeletedTeams(leagueID: string): void {
+		if (this.selectedTeamIDs.length > 0) {
+			this.scheduleAdminFacade.updateTeamSelection(this.selectedTeamIDs, leagueID);
+		}
 		this.scheduleAdminFacade.deleteTeams(leagueID, this.selectedTeamIDs);
 	}
 

@@ -3,6 +3,40 @@
 .wrapper {
 	margin: 0 auto;
 
+	::ng-deep.dark-theme {
+		.timepicker__body {
+			background-color: #424242;
+		}
+		.timepicker__header {
+			background-color: #555;
+		}
+		.timepicker__main-content {
+			background-color: #424242;
+		}
+		.timepicker__actions {
+			background-color: #424242;
+		}
+		.timepicker-button {
+			color: white;
+		}
+		.clock-face {
+			background-color: #555;
+		}
+		.clock-face__clock-hand {
+			background-color: #9fbd90;
+		}
+		.clock-face__number span {
+			color: white;
+		}
+		.clock-face__number span.active {
+			background-color: #9fbd90;
+		}
+	}
+
+	.white-icon {
+		color: white;
+	}
+
 	button {
 		margin: 0 auto;
 		display: block;

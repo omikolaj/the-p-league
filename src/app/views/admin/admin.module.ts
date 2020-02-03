@@ -28,6 +28,7 @@ import { PreviewScheduleComponent } from './schedule-administration/preview-sche
 import { ScheduleAdministrationComponent } from './schedule-administration/schedule-administration.component';
 import { ScoreboardsComponent } from './scoreboards/scoreboards.component';
 
+
 @NgModule({
 	declarations: [
 		AdminLoginComponent,
@@ -51,12 +52,12 @@ import { ScoreboardsComponent } from './scoreboards/scoreboards.component';
 	],
 	entryComponents: [AdminControlComponent],
 	imports: [
-		NgxMaterialTimepickerModule,
 		CommonModule,
 		ReactiveFormsModule,
 		SharedModule,
 		CoreModule,
 		AdminRoutingModule,
+		NgxMaterialTimepickerModule,
 		NgxsModule.forFeature([SportTypeState, LeagueState, TeamState, ScheduleState])
 	],
 	providers: [AdminAuthGuard]

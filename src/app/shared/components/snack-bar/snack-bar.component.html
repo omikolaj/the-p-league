@@ -1,6 +1,7 @@
-<span class="snack-bar">
-  {{ snackBarData.message }}
+<span>
+	{{ snackBarData.message }}
 </span>
-<button id="dismiss" mat-button color="accent" (click)="snackBar.dismiss()">
-  {{ snackBarData.action }}
+
+<button mat-button color="accent" (click)="snackBar.dismiss()">
+	{{ snackBarData.action }}
 </button>

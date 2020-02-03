@@ -1,5 +1,5 @@
 export enum MatchResultStatus {
-	Pending = 0,
+	TBD = 0,
 	Completed,
 	Canceled,
 	Forfeit

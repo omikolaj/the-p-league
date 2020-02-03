@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { NEVER, Observable } from 'rxjs';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import LeagueSessionScheduleDTO from 'src/app/core/models/schedule/classes/league-session-schedule-DTO.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -13,6 +13,7 @@ import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types
 import { TeamSession } from 'src/app/core/models/schedule/team-session.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
+import { SnackBarEvent, SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
 import * as Leagues from 'src/app/shared/store/actions/leagues.actions';
 import * as Schedules from 'src/app/shared/store/actions/schedules.actions';
 import * as Sports from 'src/app/shared/store/actions/sports.actions';
@@ -86,7 +87,8 @@ export class ScheduleAdministrationFacade {
 		private scheduleAdminHelper: ScheduleAdministrationHelperService,
 		private newSessionService: NewSessionScheduleService,
 		private router: Router,
-		private deviceInfo: DeviceInfoService
+		private deviceInfo: DeviceInfoService,
+		public snackBarService: SnackBarService
 	) {}
 
 	// #region Schedules
@@ -106,12 +108,21 @@ export class ScheduleAdministrationFacade {
 	 */
 	publishSessionSchedules(): void {
 		const sessions = this.store.selectSnapshot(ScheduleState.getPreviewSessions);
-		this.scheduleAdminAsync.publishSessions(sessions).subscribe((_) => {
-			// clear created schedules from memory. They were only saved to be displayed
-			// in the preview component
-			this.store.dispatch(new Schedules.ClearPreviewSchedules());
-			this.router.navigate(['admin']);
-		});
+		this.scheduleAdminAsync
+			.publishSessions(sessions)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Schedules published', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.publish_new_sessions}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
+			.subscribe((_) => {
+				// clear created schedules from memory. They were only saved to be displayed
+				// in the preview component
+				this.store.dispatch(new Schedules.ClearPreviewSchedules());
+				this.router.navigate(['admin']);
+			});
 	}
 
 	/**
@@ -125,6 +136,12 @@ export class ScheduleAdministrationFacade {
 	getActiveSessionsInfo(leagueIDs: string[]): Observable<ActiveSessionInfo[]> {
 		return this.scheduleAdminAsync
 			.fetchActiveSessionsInfo(leagueIDs)
+			.pipe(
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.active_sessions_info}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.pipe(tap((activeSessionsInfo) => this.store.dispatch(new Schedules.InitializeActiveSessionsInfo(activeSessionsInfo))));
 	}
 
@@ -133,9 +150,18 @@ export class ScheduleAdministrationFacade {
 	 * @param report
 	 */
 	reportMatch(report: { result: MatchResult; sessionID: string }): void {
-		this.scheduleAdminAsync.reportMatch(report).subscribe((result) => {
-			this.store.dispatch(new Schedules.UpdateMatchResult(result));
-		});
+		this.scheduleAdminAsync
+			.reportMatch(report)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Game score saved', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.match_result}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
+			.subscribe((result) => {
+				this.store.dispatch(new Schedules.UpdateMatchResult(result));
+			});
 	}
 
 	// #endregion
@@ -147,7 +173,16 @@ export class ScheduleAdministrationFacade {
 	 * @param newSport
 	 */
 	addSportType(newSport: SportType): void {
-		this.scheduleAdminAsync.addSport(newSport).subscribe((newSport) => this.store.dispatch(new Sports.AddSportType(newSport)));
+		this.scheduleAdminAsync
+			.addSport(newSport)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Sport added', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.sport_type_add}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
+			.subscribe((newSport) => this.store.dispatch(new Sports.AddSportType(newSport)));
 	}
 
 	/**
@@ -159,9 +194,14 @@ export class ScheduleAdministrationFacade {
 		this.scheduleAdminAsync
 			.addSport(newSportType)
 			.pipe(
-				tap((newSportType) => {
+				mergeMap((newSportType) => {
 					newLeague.sportTypeID = newSportType.id;
-					this.addLeague(newLeague);
+					return this.scheduleAdminAsync.addLeague(newLeague);
+				}),
+				tap(() => this.snackBarService.openSnackBarFromComponent('Sport and league added', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent([e.error.sport_type_add, e.error.league_add].join(''), 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
 				})
 			)
 			.subscribe((newSportType) => this.store.dispatch(new Sports.AddSportType(newSportType)));
@@ -174,6 +214,13 @@ export class ScheduleAdministrationFacade {
 	updateSportType(updatedSportType: SportType): void {
 		this.scheduleAdminAsync
 			.updateSportType(updatedSportType)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Sport updated', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.sport_type_update}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.subscribe((updatedSportType) => this.store.dispatch(new Sports.UpdateSportType(updatedSportType)));
 	}
 
@@ -182,7 +229,16 @@ export class ScheduleAdministrationFacade {
 	 * @param id
 	 */
 	deleteSportType(id: string): void {
-		this.scheduleAdminAsync.deleteSportType(id).subscribe((_) => this.store.dispatch(new Sports.DeleteSportType(id)));
+		this.scheduleAdminAsync
+			.deleteSportType(id)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Sport deleted', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.sport_type_delete}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
+			.subscribe((_) => this.store.dispatch(new Sports.DeleteSportType(id)));
 	}
 
 	// #endregion
@@ -196,6 +252,15 @@ export class ScheduleAdministrationFacade {
 	addLeague(newLeague: League): void {
 		this.scheduleAdminAsync
 			.addLeague(newLeague)
+			.pipe(
+				tap(() => {
+					this.snackBarService.openSnackBarFromComponent('League added', 'Dismiss', SnackBarEvent.Success);
+				}),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.league_add}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.subscribe((addedLeague) =>
 				this.store.dispatch([
 					new Leagues.AddLeague(addedLeague),
@@ -209,7 +274,16 @@ export class ScheduleAdministrationFacade {
 	 * @param updatedLeagues
 	 */
 	updateLeagues(updatedLeagues: League[]): void {
-		this.scheduleAdminAsync.updateLeagues(updatedLeagues).subscribe(() => this.store.dispatch(new Leagues.UpdateLeagues(updatedLeagues)));
+		this.scheduleAdminAsync
+			.updateLeagues(updatedLeagues)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Leagues updated', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.league_update}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
+			.subscribe(() => this.store.dispatch(new Leagues.UpdateLeagues(updatedLeagues)));
 	}
 
 	/**
@@ -224,6 +298,13 @@ export class ScheduleAdministrationFacade {
 
 		this.scheduleAdminAsync
 			.deleteLeagues(leagueIDsToDelete)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Leagues deleted', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.league_delete}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.subscribe((_) =>
 				this.store.dispatch([
 					new Sports.DeleteLeagueIDsFromSportType(sportTypeID, leagueIDsToDelete),
@@ -258,6 +339,13 @@ export class ScheduleAdministrationFacade {
 	addTeam(inNewTeam: Team): void {
 		this.scheduleAdminAsync
 			.addTeam(inNewTeam)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Team added', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.team_add}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.subscribe((newTeam) =>
 				this.store.dispatch([new Leagues.AddTeamIDsToLeague([{ leagueID: newTeam.leagueID, ids: [newTeam.id] }]), new Teams.AddTeam(newTeam)])
 			);
@@ -268,7 +356,16 @@ export class ScheduleAdministrationFacade {
 	 * @param updatedTeams
 	 */
 	updateTeams(updatedTeams: Team[]): void {
-		this.scheduleAdminAsync.updateTeams(updatedTeams).subscribe((updatedTeams) => this.store.dispatch(new Teams.UpdateTeams(updatedTeams)));
+		this.scheduleAdminAsync
+			.updateTeams(updatedTeams)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Teams updated', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.team_update}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
+			.subscribe((updatedTeams) => this.store.dispatch(new Teams.UpdateTeams(updatedTeams)));
 	}
 
 	/**
@@ -280,9 +377,20 @@ export class ScheduleAdministrationFacade {
 	 * @param leagueID
 	 * @param teamIDsToUnassign
 	 */
-	unassignTeams(leagueID: string, teamIDsToUnassign: string[]): void {
+	unassignTeams(leagueID: string): void {
+		const teamIDsToUnassign = this.store
+			.selectSnapshot(TeamState.getTeamsForLeagueIDFn)(leagueID)
+			.filter((t) => t.selected === true)
+			.map((t) => t.id);
 		this.scheduleAdminAsync
 			.unassignTeams(teamIDsToUnassign)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Teams unassigned', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.team_unassign}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.subscribe((unassignedTeamIDs) =>
 				this.store.dispatch([new Leagues.DeleteTeamIDsFromLeague(leagueID, teamIDsToUnassign), new Teams.UnassignTeams(unassignedTeamIDs)])
 			);
@@ -303,6 +411,13 @@ export class ScheduleAdministrationFacade {
 		const addTeamIDsToLeague: { leagueID: string; ids: string[] }[] = this.scheduleAdminHelper.generateTeamIDsForLeague(teams);
 		this.scheduleAdminAsync
 			.assignTeams(teams)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Teams assigned', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.team_unassign}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.subscribe((teams) => this.store.dispatch([new Leagues.AddTeamIDsToLeague(addTeamIDsToLeague), new Teams.AssignTeams(teams)]));
 	}
 
@@ -319,6 +434,13 @@ export class ScheduleAdministrationFacade {
 	deleteTeams(leagueID: string, teamIDsToDelete: string[]): void {
 		this.scheduleAdminAsync
 			.deleteTeams(teamIDsToDelete)
+			.pipe(
+				tap(() => this.snackBarService.openSnackBarFromComponent('Teams deleted', 'Dismiss', SnackBarEvent.Success)),
+				catchError((e) => {
+					this.snackBarService.openSnackBarFromComponent(`${e.error.team_delete}`, 'Dismiss', SnackBarEvent.Error);
+					return NEVER;
+				})
+			)
 			.subscribe((_) =>
 				this.store.dispatch([new Leagues.DeleteTeamIDsFromLeague(leagueID, teamIDsToDelete), new Teams.DeleteTeams(teamIDsToDelete)])
 			);
@@ -332,8 +454,8 @@ export class ScheduleAdministrationFacade {
 	 * @param leagueID
 	 */
 	updateTeamSelection(selectedIDs: string[], leagueID: string): void {
-		const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
-		this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, effectedTeamIDs));
+		// const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
+		this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, leagueID));
 	}
 
 	// #endregion

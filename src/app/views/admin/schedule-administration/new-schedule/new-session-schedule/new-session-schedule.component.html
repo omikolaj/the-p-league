@@ -119,7 +119,8 @@
 												[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
 												(matChipInputTokenEnd)="addGameTime($event, indexGamesDay)"
 											/>
-											<ngx-material-timepicker #timePick></ngx-material-timepicker>
+											<ngx-material-timepicker-toggle [for]="timePick"> </ngx-material-timepicker-toggle>
+											<ngx-material-timepicker class="dark-theme" [minutesGap]="5" [defaultTime]="'6:00 pm'" #timePick></ngx-material-timepicker>
 										</mat-chip-list>
 										<mat-error *ngIf="gamesDay['controls'].gamesTimes.hasError('timeRequired')">{{
 											gamesDay['controls'].gamesTimes.errors.timeRequired.value

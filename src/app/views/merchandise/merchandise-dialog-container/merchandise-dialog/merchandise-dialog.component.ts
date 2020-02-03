@@ -79,7 +79,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 				r.params
 					.pipe(
 						switchMap((params) => {
-							this.editMode = params['id'] !== null;
+							this.editMode = params['id'] !== undefined;
 							return this.merchandiseService.findGearItem(+params['id']);
 						}),
 						tap((gearItem: GearItem) => {

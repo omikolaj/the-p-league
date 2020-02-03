@@ -1,4 +1,5 @@
 <div class="wrapper">
+	<app-acting-spinner *ngIf="acting$ | async"></app-acting-spinner>
 	<ng-container *ngIf="sportLeaguePairs$ | async as pairs">
 		<mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
 			<mat-tab label="League">
@@ -51,6 +52,7 @@
 						<app-session-schedules
 							[dataSource]="previewDataSource"
 							[mobile]="isMobile"
+							[sortOrder]="sortOrderPreview"
 							[pairs]="filteredPairs"
 							[displayLeagueID]="displayLeagueID"
 							[displayTeamID]="displayTeamID"

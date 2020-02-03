@@ -114,11 +114,13 @@ export class TeamState {
 	updateSelected(ctx: StateContext<TeamStateModel>, action: Teams.UpdateSelectedTeams): void {
 		ctx.setState(
 			produce((draft: TeamStateModel) => {
-				action.effected.forEach((effectedID) => {
-					if (action.selected.some((selectedID) => selectedID === effectedID)) {
-						draft.entities[effectedID].selected = true;
-					} else {
-						draft.entities[effectedID].selected = false;
+				Object.values(draft.entities).forEach((team) => {
+					if (team.leagueID === action.leagueID) {
+						if (action.selected.some((selectedID) => selectedID === team.id)) {
+							team.selected = true;
+						} else {
+							team.selected = false;
+						}
 					}
 				});
 			})
@@ -136,7 +138,7 @@ export class TeamState {
 			produce((draft: TeamStateModel) => {
 				action.assignTeams.forEach((team) => {
 					draft.entities[team.id].leagueID = team.leagueID;
-					draft.entities[team.id].selected = false;
+					draft.entities[team.id].selected = true;
 				});
 			})
 		);

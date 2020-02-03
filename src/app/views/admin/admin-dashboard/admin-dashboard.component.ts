@@ -12,10 +12,30 @@ import { AdminControlComponent } from '../components/admin-control/admin-control
 })
 export class AdminDashboardComponent implements OnInit {
 	adminControls: Array<AdminControl> = new Array<AdminControl>(
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Schedule], icon: 'schedule' },
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Scoreboards], icon: 'score' },
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Gallery], icon: 'collections' },
-		{ component: AdminControlComponent, name: AdminControlType[AdminControlType.Merchandise], icon: 'store' }
+		{
+			component: AdminControlComponent,
+			name: AdminControlType[AdminControlType.Schedule],
+			icon: 'schedule',
+			description: 'Publish new schedules. Manage sports, leagues and teams.'
+		},
+		{
+			component: AdminControlComponent,
+			name: AdminControlType[AdminControlType.Scoreboards],
+			icon: 'score',
+			description: 'Report scores for scheduled games.'
+		},
+		{
+			component: AdminControlComponent,
+			name: AdminControlType[AdminControlType.Gallery],
+			icon: 'collections',
+			description: 'Manage photos for the gallery'
+		},
+		{
+			component: AdminControlComponent,
+			name: AdminControlType[AdminControlType.Merchandise],
+			icon: 'store',
+			description: 'Create, update and/or delete gear items.'
+		}
 	);
 
 	constructor(private router: Router, private route: ActivatedRoute) {}

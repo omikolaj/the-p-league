@@ -3,6 +3,7 @@
 		[title]="todaysTitle"
 		(filterByInputChanged)="onFilterValueChanged($event, 'today')"
 		[dataSource]="todayDataSource"
+		[mobile]="isMobile"
 	></app-session-schedules>
 	<ng-container *ngIf="filteredPairs$ | async as pairs">
 		<app-session-schedules

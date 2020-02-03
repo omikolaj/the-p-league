@@ -1,7 +1,13 @@
 @import '../../../../styles-variables.scss';
 
 .wrapper {
-	margin-top: 75px;
+	margin: 75px auto;
+	max-width: 768px;
+
+	h1 {
+		text-align: center;
+		margin: 0.25em auto;
+	}
 
 	.admin-controls-container {
 		display: flex;

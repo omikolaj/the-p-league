@@ -1,56 +1,59 @@
 <div class="dark-theme theme-wrapper">
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav id="side-nav-width" [autoFocus]="true" (openedStart)="sideNavList.sideNavOpening()"
-      (closedStart)="sideNavList.sideNavClosing()" #drawer class="sidenav" mode="push">
-      <app-sidenav-list #sideNavList [logo]="logo" [appTitle]="title" (sideNavClose)="drawer.close()">
-      </app-sidenav-list>
-    </mat-sidenav>
+	<mat-sidenav-container class="sidenav-container">
+		<mat-sidenav
+			id="side-nav-width"
+			[autoFocus]="true"
+			(openedStart)="sideNavList.sideNavOpening()"
+			(closedStart)="sideNavList.sideNavClosing()"
+			#drawer
+			class="sidenav"
+			mode="push"
+		>
+			<app-sidenav-list #sideNavList [logo]="logo" [appTitle]="title" (sideNavClose)="drawer.close()"> </app-sidenav-list>
+		</mat-sidenav>
 
-    <mat-sidenav-content [ngStyle]="{ overflow: hideScrollbar ? 'hidden' : null }">
-      <div class="wrapper">
-        <app-toolbar [logo]="logo" [appTitle]="title" (sidenavToggle)="drawer.toggle()"></app-toolbar>
+		<mat-sidenav-content [ngStyle]="{ overflow: hideScrollbar ? 'hidden' : null }">
+			<div class="wrapper">
+				<app-toolbar [logo]="logo" [appTitle]="title" (sidenavToggle)="drawer.toggle()"></app-toolbar>
 
-        <main class="content" [@routeAnimations]="prepareRoute(outlet)">
-          <mat-progress-bar color="warn" *ngIf="loading" mode="indeterminate" style="position: fixed">
-          </mat-progress-bar>
-          <router-outlet #outlet="outlet"></router-outlet>
-          <router-outlet name="modal"></router-outlet>
-        </main>
-
-        <div class="footer">
-          <div class="row">
-            <div class="col-sm-12 links">
-              <a href="https://twitter.com/thepleague1?lang=en" target="_blank">
-                <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
-                <span>Twitter</span>
-              </a>
-              <a href="https://www.instagram.com/the.p.league/" target="_blank">
-                <fa-icon [icon]="['fab', 'instagram']"></fa-icon>
-                <span>Instagram</span>
-              </a>
-              <a href="" target="_blank">
-                <fa-icon icon="play-circle"></fa-icon>
-                <span>Slides</span>
-              </a>
-              <a href="https://github.com/omikolaj/the-p-league" target="_blank">
-                <fa-icon [icon]="['fab', 'github']"></fa-icon>
-                <span>Github</span>
-              </a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12 signature">
-              &#169;
-              <span class="year" data-testid="footer-year">{{ year }}</span> -
-              The P League
-              <br class="d-block d-sm-none" />
-              <a matTooltipPosition="before" href="http://www.clevelandfitnessclub.com/">
-                <!-- <fa-icon [icon]="['fas','basketball-ball']" size="4x" [spin]="syncRunning"></fa-icon> -->
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+				<main class="content" [@routeAnimations]="prepareRoute(outlet)">
+					<app-loading-spinner *ngIf="loading$ | async"></app-loading-spinner>
+					<router-outlet #outlet="outlet"></router-outlet>
+					<router-outlet name="modal"></router-outlet>
+				</main>
+				<div class="footer">
+					<div class="row">
+						<div class="col-sm-12 links">
+							<a href="https://twitter.com/thepleague1?lang=en" target="_blank">
+								<fa-icon [icon]="['fab', 'twitter']"></fa-icon>
+								<span>Twitter</span>
+							</a>
+							<a href="https://www.instagram.com/the.p.league/" target="_blank">
+								<fa-icon [icon]="['fab', 'instagram']"></fa-icon>
+								<span>Instagram</span>
+							</a>
+							<a href="" target="_blank">
+								<fa-icon icon="play-circle"></fa-icon>
+								<span>Slides</span>
+							</a>
+							<a href="https://github.com/omikolaj/the-p-league" target="_blank">
+								<fa-icon [icon]="['fab', 'github']"></fa-icon>
+								<span>Github</span>
+							</a>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12 signature">
+							&#169;
+							<span class="year" data-testid="footer-year">{{ year }}</span> - The P League
+							<br class="d-block d-sm-none" />
+							<a matTooltipPosition="before" href="http://www.clevelandfitnessclub.com/">
+								<!-- <fa-icon [icon]="['fas','basketball-ball']" size="4x" [spin]="syncRunning"></fa-icon> -->
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</mat-sidenav-content>
+	</mat-sidenav-container>
 </div>

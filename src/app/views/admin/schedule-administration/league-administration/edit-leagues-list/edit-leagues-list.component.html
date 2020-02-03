@@ -1,10 +1,17 @@
 <form [formGroup]="editLeaguesForm" (ngSubmit)="onSubmit()">
 	<mat-selection-list formArrayName="leagues" (selectionChange)="onSelectionChange($event)" [disabled]="disableListSelection">
+		<p *ngIf="leagues.length === 0" class="empty-leagues-message" matLine><i>Sport has no leagues</i></p>
 		<mat-list-option *ngFor="let league of leagues; let i = index; trackBy: trackByFn" [value]="league.id" [selected]="league.selected">
 			<ng-container [formGroupName]="i">
-				<mat-form-field [appearance]="!disableListSelection ? 'none' : 'legacy'" appAllowSpaces>
-					<input formControlName="name" matInput [value]="league?.name" [readonly]="!disableListSelection" />
+				<mat-form-field *ngIf="!disableListSelection; else updateLeagueName" appearance="none" appAllowSpaces>
+					<input formControlName="name" matInput [value]="league?.name" readonly="true" />
 				</mat-form-field>
+
+				<ng-template #updateLeagueName>
+					<mat-form-field appearance="legacy" appAllowSpaces>
+						<input formControlName="name" matInput [value]="league?.name" />
+					</mat-form-field>
+				</ng-template>
 			</ng-container>
 		</mat-list-option>
 	</mat-selection-list>

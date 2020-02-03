@@ -33,6 +33,7 @@ export class SessionSchedulesComponent implements OnInit {
 	byeWeekOptionalDateText = BYE_WEEK_DATE_TEXT;
 	filterDatepickerValue = '';
 	@Input() mobile = true;
+	@Input() sortOrder: 'asc' | 'desc' = 'asc';
 	displayedColumns = ['home', 'result', 'away', 'date'];
 	matchReportForm: FormGroup;
 
@@ -119,6 +120,7 @@ export class SessionSchedulesComponent implements OnInit {
 	}
 
 	onRowSelected(event: { status: 'expanded' | 'collapsed'; match: Match }): void {
+		this.matchReportForm.reset();
 		this.populateMatchResults(event.match.matchResult);
 	}
 
@@ -140,8 +142,8 @@ export class SessionSchedulesComponent implements OnInit {
 
 	private populateMatchResults(matchResult: MatchResult): void {
 		if (matchResult) {
-			this.matchReportForm.get('homeTeamScore').setValue(matchResult.homeTeamScore);
-			this.matchReportForm.get('awayTeamScore').setValue(matchResult.awayTeamScore);
+			this.matchReportForm.get('homeTeamScore').setValue(matchResult.homeTeamScore === 0 ? null : matchResult.homeTeamScore);
+			this.matchReportForm.get('awayTeamScore').setValue(matchResult.awayTeamScore === 0 ? null : matchResult.awayTeamScore);
 		}
 	}
 

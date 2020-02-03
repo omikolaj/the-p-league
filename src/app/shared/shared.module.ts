@@ -11,6 +11,7 @@ import { faGithub, faInstagram, faMediumM, faTwitter, faYoutube } from '@fortawe
 import { faBasketballBall, faPlayCircle, faRocket, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { ActingSpinnerComponent } from './components/acting-spinner/acting-spinner/acting-spinner.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { GalleryViewerComponent } from './components/gallery-viewer/gallery-viewer.component';
 import { SessionSchedulesComponent } from './components/session-schedules/session-schedules.component';
@@ -29,6 +30,7 @@ import { LogPipe } from './pipes/log/log.pipe';
 import { FromUnixPipe } from './pipes/momentjs/from-unix.pipe';
 import { OrderEnumPipe } from './pipes/order-enum.pipe';
 import { SizeEnumToSizePipe } from './pipes/sizeEnumToSize/size-enum-to-size.pipe';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner/loading-spinner.component';
 
 library.add(faGithub, faMediumM, faTwitter, faInstagram, faYoutube, faPlayCircle, faRocket, faBasketballBall, faUndo);
 
@@ -62,7 +64,9 @@ const globalRippleConfig: RippleGlobalOptions = {
 		TeamSwapDirective,
 		FromUnixPipe,
 		CdkDetailRowDirective,
-		SizeEnumToSizePipe
+		SizeEnumToSizePipe,
+		ActingSpinnerComponent,
+		LoadingSpinnerComponent
 	],
 	imports: [
 		MatAutocompleteModule,
@@ -147,6 +151,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		MatTooltipModule,
 		MatTreeModule,
 		MatMomentDateModule,
+		LoadingSpinnerComponent,
 
 		FontAwesomeModule,
 
@@ -158,6 +163,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 		CarouselComponent,
 		SessionSchedulesComponent,
 		PortalModule,
+		ActingSpinnerComponent,
 
 		// Directives
 		AllowSpacesDirective,

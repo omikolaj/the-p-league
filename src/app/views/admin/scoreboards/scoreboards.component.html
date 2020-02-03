@@ -1,4 +1,5 @@
 <div style="margin-top: 75px;">
+	<app-acting-spinner *ngIf="acting$ | async"></app-acting-spinner>
 	<ng-container *ngIf="filteredPairs$ | async as pairs">
 		<app-session-schedules
 			[title]="todaysTitle"

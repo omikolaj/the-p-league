@@ -3,6 +3,35 @@
 .wrapper {
 	margin: 1em 1em;
 
+	.mat-header-cell {
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.action-buttons {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		margin: 0 1em 1em 1em;
+
+		button {
+			margin-right: 0.25em;
+		}
+	}
+
+	.report-fields {
+		margin: 0 1em;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+	}
+
+	.mat-cell {
+		text-align: center;
+		justify-content: center;
+	}
+
 	.filter-container {
 		display: flex;
 		flex-direction: column;
@@ -30,6 +59,15 @@
 			flex-wrap: nowrap;
 			justify-content: space-around;
 			margin: 0 auto;
+		}
+
+		.report-fields {
+			flex-direction: row;
+			flex-wrap: nowrap;
+			max-width: 625.5px;
+			.mat-form-field {
+				margin-right: 0.25em;
+			}
 		}
 	}
 }

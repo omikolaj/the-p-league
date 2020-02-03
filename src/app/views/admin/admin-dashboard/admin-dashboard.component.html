@@ -1,5 +1,8 @@
 <div class="wrapper">
 	<div class="admin-controls-container">
+		<h1>
+			The <strong><i>P League</i></strong> Control Center
+		</h1>
 		<ng-container *ngFor="let adminControl of adminControls">
 			<app-admin-control (controlClicked)="onControlClicked($event)" [control]="adminControl"></app-admin-control>
 		</ng-container>

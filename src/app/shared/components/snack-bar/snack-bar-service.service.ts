@@ -23,14 +23,14 @@ export class SnackBarService {
 		panelClass: ['style-error'],
 		horizontalPosition: 'center',
 		verticalPosition: 'bottom',
-		duration: 3000
+		duration: 5000
 	};
 
 	private warnConfig: MatSnackBarConfig = {
 		panelClass: ['style-warn'],
 		horizontalPosition: 'center',
 		verticalPosition: 'bottom',
-		duration: 3000
+		duration: 5000
 	};
 
 	constructor(private snackBar: MatSnackBar) {}

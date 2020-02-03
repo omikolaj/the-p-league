@@ -9,22 +9,6 @@ import { TeamState } from 'src/app/shared/store/state/team.state';
 export class ScheduleAdministrationHelperService {
 	constructor(private store: Store) {}
 
-	/**
-	 * @description Extracts the passed team entities for each session in the newSessions list
-	 * and associating teams with their corresponding sessions
-	 * @returns updated newSessions list, where each session contains its corresponding teams
-	 * TODO currently not in use
-	 */
-	// matchTeamsWithLeagues(newSessions: LeagueSessionScheduleDTO[], teamsEntities): LeagueSessionScheduleDTO[] {
-	// 	const updatedSessions: LeagueSessionScheduleDTO[] = [];
-	// 	newSessions.forEach((session) => {
-	// 		const teams: Team[] = Object.values(teamsEntities).filter((t: Team) => t.leagueID === session.leagueID && t.selected === true);
-	// 		session.teams = (session.teams || []).concat(teams);
-	// 		updatedSessions.push(session);
-	// 	});
-	// 	return updatedSessions;
-	// }
-
 	getTeamsForLeagueIDs(leagueIDs: string[]): Team[] {
 		const matchedTeams = leagueIDs.reduce(
 			(accumulator, leagueID) => accumulator.concat(this.store.selectSnapshot<(id: string) => Team[]>(TeamState.getTeamsForLeagueIDFn)(leagueID)),

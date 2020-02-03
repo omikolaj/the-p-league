@@ -11,6 +11,8 @@ import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app
 import { Team } from 'src/app/core/models/schedule/team.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
+import { SnackBarEvent } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { Acting } from 'src/app/shared/decorators/acting.decorator';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
 import { VIEW_ALL } from './../../../shared/constants/the-p-league-constants';
 
@@ -21,6 +23,7 @@ import { VIEW_ALL } from './../../../shared/constants/the-p-league-constants';
 	providers: [ScheduleComponentHelperService, MatTableComponentHelperService]
 })
 export class ScheduleAdministrationComponent implements OnInit {
+	@Acting() acting$;
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
 	unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
 	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
@@ -40,6 +43,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	newTeamForm: FormGroup;
 	previewDataSource: MatTableDataSource<Match> = new MatTableDataSource();
 	adminComponent: 'new' | 'modify' | 'playoffs' | 'preview';
+	sortOrderPreview: 'asc' | 'desc' = 'desc';
 	isMobile = this.scheduleAdminFacade.isMobile;
 
 	constructor(
@@ -131,8 +135,12 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.scheduleAdminFacade.updateSportType(updatedSport);
 	}
 
-	onDeleteSport(id: string): void {
-		this.scheduleAdminFacade.deleteSportType(id);
+	onDeleteSport(event: { id: string; leaguesCount: number }): void {
+		if (event.leaguesCount > 0) {
+			this.scheduleAdminFacade.snackBarService.openSnackBarFromComponent('You must delete leagues first', 'Dismiss', SnackBarEvent.Warning);
+		} else {
+			this.scheduleAdminFacade.deleteSportType(event.id);
+		}
 	}
 
 	onNewSportLeague(newSportLeague: { sportType: string; leagueName: string; sportTypeID: string }): void {

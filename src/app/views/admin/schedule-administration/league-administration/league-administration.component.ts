@@ -17,12 +17,13 @@ import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/s
 })
 export class LeagueAdministrationComponent implements OnInit {
 	leagues$: Observable<League[]>;
+	@Input() validationErrors;
 	@Input() sportType: SportType;
 	@Output() leagueSelectionChanged: EventEmitter<{ matSelectionListChange: MatSelectionListChange; sportTypeID: string }> = new EventEmitter<{
 		matSelectionListChange: MatSelectionListChange;
 		sportTypeID: string;
 	}>();
-	@Output() deletedSport: EventEmitter<string> = new EventEmitter<string>();
+	@Output() deletedSport: EventEmitter<{ id: string; leaguesCount: number }> = new EventEmitter<{ id: string; leaguesCount: number }>();
 	@Output() updatedSportName: EventEmitter<SportType> = new EventEmitter<SportType>();
 	editForm: FormGroup;
 	sportTypeForm: FormGroup;
@@ -91,14 +92,14 @@ export class LeagueAdministrationComponent implements OnInit {
 		// not been initialized. This property should be initialized inside
 		// the store already. This is just in case
 
-		if ('leagues' in this.sportType) {
-			if (this.sportType.leagues.length > 0) {
-				console.warn('Cannot delete sport type that has leagues assigned to it');
-				console.error('UPDATE TO DISPLAY TOAST MESSAGE');
-				return;
-			}
-		}
-		this.deletedSport.emit(this.sportType.id);
+		// if ('leagues' in this.sportType) {
+		// 	if (this.sportType.leagues.length > 0) {
+		// 		console.warn('Cannot delete sport type that has leagues assigned to it');
+		// 		console.error('UPDATE TO DISPLAY TOAST MESSAGE');
+		// 		return;
+		// 	}
+		// }
+		this.deletedSport.emit({ id: this.sportType.id, leaguesCount: this.sportType.leagues.length });
 	}
 
 	// #endregion

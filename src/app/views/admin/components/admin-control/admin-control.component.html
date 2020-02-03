@@ -3,5 +3,6 @@
 		<h4>{{ control.name }}</h4>
 	</div>
 	<mat-icon aria-hidden="false" aria-label="Admin control">{{ control.icon }}</mat-icon>
+	<span class="description">{{ control?.description }}</span>
 	<button mat-raised-button (click)="onControlSelected()" color="accent" type="button">Manage</button>
 </div>

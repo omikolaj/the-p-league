@@ -123,6 +123,7 @@ export class LeagueState {
 	 */
 	@Action(Leagues.UpdateLeagues)
 	update(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateLeagues): void {
+		console.log('updating local state');
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				action.updatedLeagues.forEach((updatedLeague) => {

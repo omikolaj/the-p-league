@@ -11,7 +11,9 @@ import { AppComponent } from './app.component';
 import { NavigationModule } from './core/components/navigation/navigation.module';
 import { CoreModule } from './core/core.module';
 import { ApiRequestPrefixInterceptor } from './core/interceptors/api-request-prefix/api-request-prefix.service';
+import { HttpStatusInterceptorService } from './core/interceptors/http-status-interceptor/http-status-interceptor.service';
 import { RefreshAccessTokenInterceptor } from './core/interceptors/refresh-access-token/refresh-access-token.service';
+import { HttpStatusService } from './core/services/http-status/http-status.service';
 import { setRootInjector } from './root-injector';
 import { SharedModule } from './shared/shared.module';
 
@@ -55,6 +57,12 @@ import { SharedModule } from './shared/shared.module';
 			provide: HTTP_INTERCEPTORS,
 			useClass: RefreshAccessTokenInterceptor,
 			multi: true
+		},
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: HttpStatusInterceptorService,
+			multi: true,
+			deps: [HttpStatusService]
 		},
 		{ provide: 'BASE_API_URL', useValue: environment.backend.baseURL }
 	],

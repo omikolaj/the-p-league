@@ -1,8 +1,8 @@
 <div class="wrapper">
 	<div class="filter-container">
-		<div id="leagues-filter">
-			<ng-container *ngIf="selectedLeague.value">
-				<mat-form-field appearance="outline" *ngIf="showLeagueSelection()">
+		<ng-container *ngIf="selectedLeague.value">
+			<div id="leagues-filter" *ngIf="showLeagueSelection()">
+				<mat-form-field appearance="outline">
 					<mat-label>Leagues</mat-label>
 					<mat-select [formControl]="selectedLeague" (selectionChange)="onLeagueSelectionChange()">
 						<mat-option [value]="viewAll">
@@ -16,8 +16,8 @@
 					</mat-select>
 					<mat-icon matSuffix>sports_basketball</mat-icon>
 				</mat-form-field>
-			</ng-container>
-		</div>
+			</div>
+		</ng-container>
 
 		<div id="teams-filter">
 			<ng-container *ngIf="selectedTeam.value">
@@ -80,7 +80,7 @@
 	<mat-table
 		matSort
 		matSortActive="date"
-		matSortDirection="asc"
+		[matSortDirection]="sortOrder"
 		[dataSource]="dataSource"
 		multiTemplateDataRows
 		class="mat-elevation-z8"
@@ -93,7 +93,13 @@
 		<ng-container matColumnDef="date">
 			<mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
 			<mat-cell *matCellDef="let match">
-				{{ match?.dateTime === byeWeekOptionalDateText ? byeWeekOptionalDateText : (match?.dateTime | fromUnix | date: 'EEEE MMM d, y, h:mm a') }}
+				{{
+					match?.dateTime === byeWeekOptionalDateText
+						? byeWeekOptionalDateText
+						: mobile
+						? (match?.dateTime | fromUnix | date: 'short')
+						: (match?.dateTime | fromUnix | date: 'EEEE MMM d, y, h:mm a')
+				}}
 			</mat-cell>
 		</ng-container>
 
@@ -139,20 +145,25 @@
 <ng-template #tpl let-match>
 	<div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
 		<form [formGroup]="matchReportForm" #formDirective="ngForm" (ngSubmit)="onMatchReported(formDirective, match)" novalidate>
-			<mat-form-field>
-				<input formControlName="homeTeamScore" matInput [placeholder]="match?.homeTeamName + ' score'" type="number" />
-				<mat-error *ngIf="matchReportForm.get('homeTeamScore').hasError('required')">You must enter home team's score</mat-error>
-			</mat-form-field>
-
-			<mat-form-field>
-				<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeamName + ' score'" type="number" />
-				<mat-error *ngIf="matchReportForm.get('awayTeamScore').hasError('required')">You must enter away team's score</mat-error>
-			</mat-form-field>
-
+			<div class="report-fields">
+				<mat-form-field appearance="outline">
+					<input formControlName="homeTeamScore" matInput [placeholder]="match?.homeTeamName + ' score'" type="number" />
+					<mat-icon matSuffix>post_add</mat-icon>
+					<mat-error *ngIf="matchReportForm.get('homeTeamScore').hasError('required')">You must enter home team's score</mat-error>
+				</mat-form-field>
+			
+				<mat-form-field appearance="outline">
+					<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeamName + ' score'" type="number" />
+					<mat-icon matSuffix>post_add</mat-icon>
+					<mat-error *ngIf="matchReportForm.get('awayTeamScore').hasError('required')">You must enter away team's score</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="action-buttons">
 			<button mat-raised-button color="accent" [disabled]="!matchReportForm.valid">
 				{{ matchReportForm.get('homeTeamScore').value !== 0 ? 'Update' : 'Report' }}
 			</button>
-			<button mat-raised-button color="accent" type="button" (click)="onFillInStats()">Fill in Stats</button>
+			<button mat-raised-button color="accent" type="button" disabled="true" (click)="onFillInStats()">Fill in Stats</button>
+			</div>
 		</form>
 	</div>
 </ng-template>

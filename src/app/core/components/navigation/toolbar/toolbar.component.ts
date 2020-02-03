@@ -1,11 +1,10 @@
-import { Component, Output, EventEmitter, Input, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
-import { trigger, transition, style, animate, state } from '@angular/animations';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { SnackBarService, SnackBarEvent } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 
 @Component({
 	selector: 'app-toolbar',

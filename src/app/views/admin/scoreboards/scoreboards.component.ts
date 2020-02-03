@@ -8,6 +8,7 @@ import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app
 import { MatTableComponentHelperService } from 'src/app/core/services/schedule/mat-table-component-helper.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
 import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
+import { Acting } from 'src/app/shared/decorators/acting.decorator';
 import { ScheduleAdministrationFacade } from './../../../core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { CdkDetailRowService } from './../../../shared/directives/cdk-detail-row/cdk-detail-row.service';
 
@@ -18,6 +19,7 @@ import { CdkDetailRowService } from './../../../shared/directives/cdk-detail-row
 	providers: [ScheduleComponentHelperService, MatTableComponentHelperService, CdkDetailRowService]
 })
 export class ScoreboardsComponent implements OnInit, OnDestroy {
+	@Acting() acting$;
 	private pairs$ = combineLatest(this.scheduleFacade.sessionsSportLeaguePairs$, this.scheduleFacade.sessionsLeagueIDs$).pipe(
 		filter(([pairs, leagues]) => leagues.length !== 0 && pairs.length !== 0),
 		map(([pairs, leagues]) => this.scheduleComponentHelper.filterPairsForGeneratedSessions(pairs, leagues)),

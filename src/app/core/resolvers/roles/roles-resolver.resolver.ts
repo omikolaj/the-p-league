@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { share, switchMap } from 'rxjs/operators';
 import { AuthService } from '../../services/auth/auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth/auth.service';
 	providedIn: 'root'
 })
 export class RolesResolver implements Resolve<Observable<string[]>> {
-	constructor(private http: HttpClient, private authService: AuthService) {}
+	constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
 
 	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
 		if (this.authService.wasLoggedIn) {

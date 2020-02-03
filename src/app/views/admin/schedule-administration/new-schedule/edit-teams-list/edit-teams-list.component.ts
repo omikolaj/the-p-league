@@ -11,21 +11,20 @@ import { Team } from 'src/app/core/models/schedule/team.model';
 	selector: 'app-edit-teams-list',
 	templateUrl: './edit-teams-list.component.html',
 	styleUrls: ['./edit-teams-list.component.scss'],
-	// TODO ensure this is not causing issues
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditTeamsListComponent implements OnInit {
+export class EditTeamsListComponent implements OnInit {	
 	@ViewChild(MatSelectionList, { static: false }) teamList: MatSelectionList;
 	@Input() teamsForm: FormGroup;
 	@Input() teams: Team[];
 	@Input() league: League;
-	@Input() sport: SportType;
+	@Input() sport: SportType;	
 	@Output() unassignedTeamsChange: EventEmitter<void> = new EventEmitter<void>();
 	@Output() updatedTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
 	@Output() deletedTeams: EventEmitter<void> = new EventEmitter<void>();
-	@Output() teamsSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
-	private debouncer$: Subject<MatSelectionListChange> = new Subject<MatSelectionListChange>();
-	private unsubscribed$: Subject<void> = new Subject<void>();
+	@Output() teamsSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();	
+	// private debouncer$: Subject<MatSelectionListChange> = new Subject<MatSelectionListChange>();
+	// private unsubscribed$: Subject<void> = new Subject<void>();
 	disableListSelection = false;
 
 	get disableActions(): boolean {
@@ -41,9 +40,9 @@ export class EditTeamsListComponent implements OnInit {
 	}
 
 	constructor() {
-		this.debouncer$
-			.pipe(takeUntil(this.unsubscribed$), debounceTime(1000))
-			.subscribe((teamSelection) => this.teamsSelectionChange.emit(teamSelection));
+		// this.debouncer$
+		// 	.pipe(takeUntil(this.unsubscribed$), debounceTime(1000))
+		// 	.subscribe((teamSelection) => this.teamsSelectionChange.emit(teamSelection));
 	}
 
 	// #region ng LifeCycle Hooks
@@ -51,14 +50,15 @@ export class EditTeamsListComponent implements OnInit {
 	ngOnInit(): void {}
 
 	ngOnDestroy(): void {
-		this.unsubscribed$.next();
-		this.unsubscribed$.complete();
+		// this.unsubscribed$.next();
+		// this.unsubscribed$.complete();
 	}
 
 	// #endregion
 
 	onTeamsSelectionChange(event: MatSelectionListChange): void {
-		this.debouncer$.next(event);
+		// this.debouncer$.next(event);
+		this.teamsSelectionChange.emit(event);
 	}
 
 	onSubmit(): void {

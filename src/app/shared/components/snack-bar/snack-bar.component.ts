@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Inject, ViewEncapsulation } from '@angular/core';
-import { MatSnackBar, MatTabChangeEvent, MAT_SNACK_BAR_DATA, MatSnackBarConfig } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material';
 
 @Component({
 	selector: 'app-snack-bar',
