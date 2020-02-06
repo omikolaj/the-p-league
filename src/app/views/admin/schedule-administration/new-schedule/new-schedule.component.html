@@ -13,7 +13,7 @@
 							(updatedTeams)="onUpdatedTeams($event, data?.league?.id)"
 							(deletedTeams)="onDeletedTeams(data?.league?.id)"
 							(unassignedTeamsChange)="onUnassignedTeamsChange(data?.league?.id)"
-							(teamsSelectionChange)="onTeamsSelectionChange($event)"
+							(teamsSelectionChange)="onTeamsSelectionChange($event, data?.league?.id)"
 							[teamsForm]="data?.form"
 							[teams]="data?.teams"
 							[sport]="data?.sport"

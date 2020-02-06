@@ -8,7 +8,7 @@ import { MatchResultStatus } from 'src/app/core/models/schedule/match-result-sta
 import { MatchTime } from 'src/app/core/models/schedule/match-time.model';
 import { TeamSession } from 'src/app/core/models/schedule/team-session.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
-import { BYE_WEEK_DATE_TEXT, TIME_FORMAT } from 'src/app/shared/constants/the-p-league-constants';
+import { TIME_FORMAT } from 'src/app/shared/constants/the-p-league-constants';
 
 @Injectable({
 	providedIn: 'root'
@@ -162,20 +162,23 @@ export class NewSessionScheduleService {
 					// first check to see if the current match home team or away team's names equal 'BYE', if they do
 					// we do not want to schedule a time for them so increase the index and check again to see if the next match
 					// home team or away team's name equal 'BYE'
-					while (matches[index].homeTeamName === this.DUMMY.name || matches[index].awayTeamName === this.DUMMY.name) {
-						// custom text for date field if the game is bye
-						matches[index].dateTime = BYE_WEEK_DATE_TEXT;
-						index++;
-					}
+					// if (matches[index].homeTeamName === this.DUMMY.name || matches[index].awayTeamName === this.DUMMY.name) {
+					// 	// custom text for date field if the game is bye
+					// 	// matches[index].dateTime = BYE_WEEK_DATE_TEXT;
+					// 	this.scheduleMatch(current.format('MM-DD-YYYY'), time, matches[index]);
+					// 	index++;
+					// }
 
 					// if the current match home team or away team's name do not equal 'BYE'
 					// we are ready to schedule the match. This should never be false since the while
 					// loop checks for this already. Given current date, and next available time, schedule
 					// a time for next available match. matches[index] represents that next match
-					if (matches[index].homeTeamName !== this.DUMMY.name && matches[index].awayTeamName !== this.DUMMY.name) {
-						this.scheduleMatch(current.format('MM-DD-YYYY'), time, matches[index]);
-						index++;
-					}
+					// if (matches[index].homeTeamName !== this.DUMMY.name && matches[index].awayTeamName !== this.DUMMY.name) {
+					// 	this.scheduleMatch(current.format('MM-DD-YYYY'), time, matches[index]);
+					// 	index++;
+					// }
+					this.scheduleMatch(current.format('MM-DD-YYYY'), time, matches[index]);
+					index++;
 				}
 			}
 			// figure out how days we have to add to current day to get next user defined day
@@ -224,7 +227,7 @@ export class NewSessionScheduleService {
 		// TODO consider returning times array as an ordered list
 		// return times.sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
 		// return timesForCurrentDay[MatchDay[currentDayNum]].sort((a, b) => a.hour - b.hour);
-		return times;
+		return times.sort((a, b) => (a.hour as number) - (b.hour as number));
 	}
 
 	/**

@@ -125,6 +125,7 @@ export class TeamState {
 				});
 			})
 		);
+		console.log('updated selected called', ctx.getState().entities);
 	}
 
 	/**

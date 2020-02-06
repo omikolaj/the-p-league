@@ -450,12 +450,9 @@ export class ScheduleAdministrationFacade {
 	 * @description Updates the selected property setting it to true for every
 	 * selected id and sets it to false for all other not effected
 	 * teams.
-	 * @param selectedIDs
-	 * @param leagueID
 	 */
-	updateTeamSelection(selectedIDs: string[], leagueID: string): void {
-		// const effectedTeamIDs: string[] = this.store.selectSnapshot<string[]>((state) => state.leagues.entities[leagueID].teams);
-		this.store.dispatch(new Teams.UpdateSelectedTeams(selectedIDs, leagueID));
+	updateTeamSelection(event: { selectedTeamIDs: string[]; leagueID: string }[]): void {
+		event.forEach((e) => this.store.dispatch(new Teams.UpdateSelectedTeams(e.selectedTeamIDs, e.leagueID)));
 	}
 
 	// #endregion

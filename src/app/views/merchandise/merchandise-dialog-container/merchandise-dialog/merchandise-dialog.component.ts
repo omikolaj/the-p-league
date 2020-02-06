@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from
 import { MatDialogRef } from '@angular/material';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
-import { cloneDeep } from 'lodash';
+import * as cloneDeep from 'clone-deep';
 import { Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { GearImage } from 'src/app/core/models/merchandise/gear-image.model';

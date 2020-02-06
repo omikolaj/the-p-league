@@ -1,258 +1,258 @@
-@import "../../../styles-variables.scss";
+@import '../../../styles-variables.scss';
 
 h1 {
-  text-align: center;
-  font-size: 3em;
-  text-transform: uppercase;
+	text-align: center;
+	font-size: 3em;
+	text-transform: uppercase;
 }
 
 .welcome-title {
-  margin-top: 82px;
-  margin-bottom: 26px;
+	margin-top: 82px;
+	margin-bottom: 26px;
 }
 
 .center {
-  text-align: center;
+	text-align: center;
 }
 
 .basketball {
-  display: block;
-  text-align: right;
-  margin: auto;
+	display: block;
+	text-align: right;
+	margin: auto;
 }
 
 .ball {
-  border-radius: 50%;
-  background-color: transparent;
+	border-radius: 50%;
+	background-color: transparent;
 
-  animation: bounce 1s !important;
-  -webkit-animation: bounce 1s !important;
-  -ms-animation: bounce 1s !important;
+	animation: bounce 1s !important;
+	-webkit-animation: bounce 1s !important;
+	-ms-animation: bounce 1s !important;
 
-  animation-direction: alternate !important;
-  -webkit-animation-direction: alternate !important;
-  -ms-animation-direction: alternate !important;
+	animation-direction: alternate !important;
+	-webkit-animation-direction: alternate !important;
+	-ms-animation-direction: alternate !important;
 
-  animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
-  -webkit-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
-  -ms-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
+	animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
+	-webkit-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
+	-ms-animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.84) !important;
 
-  animation-iteration-count: infinite !important;
-  -webkit-animation-iteration-count: infinite !important;
-  -ms-animation-iteration-count: infinite !important;
+	animation-iteration-count: infinite !important;
+	-webkit-animation-iteration-count: infinite !important;
+	-ms-animation-iteration-count: infinite !important;
 }
 
 @keyframes bounce {
-  from {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    -webkit-transform: translate3d(0, 45px, 0);
-    transform: translate3d(0, 45px, 0);
-  }
+	from {
+		-webkit-transform: translate3d(0, 0, 0);
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		-webkit-transform: translate3d(0, 45px, 0);
+		transform: translate3d(0, 45px, 0);
+	}
 }
 
 @-webkit-keyframes bounce {
-  from {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    -webkit-transform: translate3d(0, 45px, 0);
-    transform: translate3d(0, 45px, 0);
-  }
+	from {
+		-webkit-transform: translate3d(0, 0, 0);
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		-webkit-transform: translate3d(0, 45px, 0);
+		transform: translate3d(0, 45px, 0);
+	}
 }
 
 .info {
-  text-align: left;
-  margin: 15px;
-  line-height: 1.75em;
+	text-align: left;
+	margin: 15px;
+	line-height: 1.75em;
 }
 
 .background {
-  padding: 6px 0 0 0;
-  position: relative;
-  margin: 8px;
+	padding: 6px 0 0 0;
+	position: relative;
+	margin: 8px;
 
-  .get-started {
-    max-width: 700px;
-    margin: 50px auto;
-    letter-spacing: 0.01px;
-    overflow-wrap: break-word;
-    z-index: 1;
-    overflow: hidden;
+	.get-started {
+		max-width: 700px;
+		margin: 50px auto;
+		letter-spacing: 0.01px;
+		overflow-wrap: break-word;
+		z-index: 1;
+		overflow: hidden;
 
-    code {
-      font-size: 0.9em;
-      display: inline-block;
-      word-wrap: break-word;
-      white-space: normal;
-      margin: 0 0 10px 0;
-    }
-  }
+		code {
+			font-size: 0.9em;
+			display: inline-block;
+			word-wrap: break-word;
+			white-space: normal;
+			margin: 0 0 10px 0;
+		}
+	}
 
-  &::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: url("../../../assets/logo_no_title.png") no-repeat center top;
-    background-size: contain;
-    opacity: 0.7;
-    content: "";
-    z-index: 0;
-  }
+	&::before {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background: url('../../../assets/logo_no_title.png') no-repeat center top;
+		background-size: contain;
+		opacity: 0.7;
+		content: '';
+		z-index: 0;
+	}
 
-  .gradient {
-    &::before {
-      position: absolute;
-      top: 51%;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      content: "";
-      z-index: 0;
-    }
-  }
+	.gradient {
+		&::before {
+			position: absolute;
+			top: 51%;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			content: '';
+			z-index: 0;
+		}
+	}
 
-  .container {
-    position: relative;
-  }
+	.container {
+		position: relative;
+	}
 }
 
 .parallax {
-  min-height: 700px;
-  background: url(src/assets/merchandise_welcome.jpg) no-repeat center top;
-  background-size: cover;
+	min-height: 700px;
+	background: url(src/assets/merchandise_welcome.jpg) no-repeat center top;
+	background-size: cover;
 }
 
 .desktop-parallax {
-  background-attachment: fixed;
+	background-attachment: fixed;
 }
 
 .mobile-img {
-  background-attachment: scroll;
+	background-attachment: scroll;
 }
 
 .second-background {
-  padding: 6px 0 0 0;
-  position: relative;
-  // margin: 8px;
+	padding: 6px 0 0 0;
+	position: relative;
+	// margin: 8px;
 
-  &::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    opacity: 0.7;
-    content: "";
-    z-index: 0;
-  }
+	&::before {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		opacity: 0.7;
+		content: '';
+		z-index: 0;
+	}
 
-  .gradient {
-    &::before {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 40%;
-      right: 0;
-      content: "";
-      z-index: 0;
-    }
-  }
-  .gradient-2 {
-    &::before {
-      position: absolute;
-      top: 40%;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      content: "";
-      z-index: 0;
-    }
-  }
+	.gradient {
+		&::before {
+			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 40%;
+			right: 0;
+			content: '';
+			z-index: 0;
+		}
+	}
+	.gradient-2 {
+		&::before {
+			position: absolute;
+			top: 40%;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			content: '';
+			z-index: 0;
+		}
+	}
 
-  .container {
-    position: relative;
-  }
+	.container {
+		position: relative;
+	}
 }
 
 .actions {
-  text-align: center;
-  margin: 50px;
-  z-index: 1;
+	text-align: center;
+	margin: 50px;
+	z-index: 1;
 
-  span {
-    display: inline-block;
-    font-weight: bold;
-    padding: 20px 10px 30px 10px;
-  }
+	span {
+		display: inline-block;
+		font-weight: 500;
+		padding: 20px 10px 30px 10px;
+	}
 
-  a {
-    margin: 0 5px 10px 0;
+	a {
+		margin: 0 5px 10px 0;
 
-    &.actions-main {
-      text-transform: uppercase;
-      padding: 3px 24px;
-      cursor: pointer;
-      text-decoration: none;
-    }
+		&.actions-main {
+			text-transform: uppercase;
+			padding: 3px 24px;
+			cursor: pointer;
+			text-decoration: none;
+		}
 
-    fa-icon {
-      position: relative;
-      bottom: 1px;
-    }
-  }
+		fa-icon {
+			position: relative;
+			bottom: 1px;
+		}
+	}
 }
 
 @media (max-width: map-get($grid-breakpoints, md)) {
-  .background {
-    .actions {
-      margin: 50px 0;
-    }
-    .get-started {
-      width: auto;
-    }
-  }
-  .follow-releases {
-    width: auto;
+	.background {
+		.actions {
+			margin: 50px 0;
+		}
+		.get-started {
+			width: auto;
+		}
+	}
+	.follow-releases {
+		width: auto;
 
-    img {
-      max-width: 100%;
-    }
-  }
+		img {
+			max-width: 100%;
+		}
+	}
 }
 
 @media (max-width: map-get($grid-breakpoints, sm)) {
-  .background {
-    padding: 40px 0 0 0;
+	.background {
+		padding: 40px 0 0 0;
 
-    h1 {
-      line-height: 1em;
-    }
+		h1 {
+			line-height: 1em;
+		}
 
-    .actions {
-      margin: 40px 0 0 0;
+		.actions {
+			margin: 40px 0 0 0;
 
-      span {
-        padding: 10px 0 20px 0;
-      }
+			span {
+				padding: 10px 0 20px 0;
+			}
 
-      a {
-        width: 100%;
-      }
-    }
+			a {
+				width: 100%;
+			}
+		}
 
-    .get-started {
-      width: auto;
-      margin: 40px auto 40px auto;
-    }
-  }
+		.get-started {
+			width: auto;
+			margin: 40px auto 40px auto;
+		}
+	}
 
-  .follow-releases {
-    margin: 0 auto 40px auto;
-  }
+	.follow-releases {
+		margin: 0 auto 40px auto;
+	}
 }

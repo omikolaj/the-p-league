@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-import { cloneDeep } from 'lodash';
+import * as cloneDeep from 'clone-deep';
 import { switchMap, tap } from 'rxjs/operators';
 import { GearItem } from 'src/app/core/models/merchandise/gear-item.model';
 import { Size } from 'src/app/core/models/merchandise/gear-size.model';

@@ -1,157 +1,157 @@
-@import "../../../../styles-variables.scss";
+@import '../../../../styles-variables.scss';
 
 mat-paginator {
-  margin: 1.5rem 0 1rem 0;
+	margin: 1.5rem 0 1rem 0;
 }
 
 .heading {
-  text-align: center;
-  letter-spacing: 0.05rem;
-  line-height: 1.4;
-  font-weight: 300;
-  text-transform: uppercase;
-  font-style: normal;
+	text-align: center;
+	letter-spacing: 0.05rem;
+	line-height: 1.4;
+	font-weight: 400;
+	text-transform: uppercase;
+	font-style: normal;
 }
 
 .admin {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	height: 100%;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
 }
 
 .admin span {
-  align-self: center;
+	align-self: center;
 }
 
 .admin button {
-  align-self: center;
-  margin: 16px;
+	align-self: center;
+	margin: 16px;
 }
 
 .merchandise-cards {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: flex-start;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-items: flex-start;
 }
 
 .background {
-  padding: 0 0 0 0;
-  position: relative;
+	padding: 0 0 0 0;
+	position: relative;
 
-  &::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    opacity: 0.7;
-    content: "";
-    z-index: 0;
-  }
+	&::before {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		opacity: 0.7;
+		content: '';
+		z-index: 0;
+	}
 
-  .parallax {
-    background: url("src/assets/about.jpg");
-    background-size: cover;
+	.parallax {
+		background: url('src/assets/about.jpg');
+		background-size: cover;
 
-    /* Set a specific height */
-    height: 100vh;
-    height: calc(var(--vh, 1vh) * 100);
+		/* Set a specific height */
+		height: 100vh;
+		height: calc(var(--vh, 1vh) * 100);
 
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
+		/* Create the parallax scrolling effect */
+		background-attachment: fixed;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
 
-  .mobile-img {
-    @extend .parallax;
-    background-attachment: scroll;
-  }
+	.mobile-img {
+		@extend .parallax;
+		background-attachment: scroll;
+	}
 
-  .gradient {
-    &::before {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 51%;
-      right: 0;
-      content: "";
-      z-index: 0;
-    }
-  }
+	.gradient {
+		&::before {
+			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 51%;
+			right: 0;
+			content: '';
+			z-index: 0;
+		}
+	}
 
-  .gradient-2 {
-    &::before {
-      position: absolute;
-      top: 51%;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      content: "";
-      z-index: 0;
-    }
-  }
+	.gradient-2 {
+		&::before {
+			position: absolute;
+			top: 51%;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			content: '';
+			z-index: 0;
+		}
+	}
 
-  .container {
-    position: relative;
-  }
+	.container {
+		position: relative;
+	}
 }
 
 #arrow-wrapper {
-  width: 60px;
-  height: 60px;
-  display: block;
-  margin: 0 auto;
-  position: absolute;
-  left: 50%;
-  margin-left: -30px;
-  cursor: pointer;
-  bottom: 15px;
+	width: 60px;
+	height: 60px;
+	display: block;
+	margin: 0 auto;
+	position: absolute;
+	left: 50%;
+	margin-left: -30px;
+	cursor: pointer;
+	bottom: 15px;
 }
 .arrow-border {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+	position: relative;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
 }
 
 .pulse {
-  border-radius: 50%;
-  height: 60px;
-  width: 60px;
-  position: absolute;
-  margin: 0;
-  animation: pulsate 2s ease-out;
-  animation-iteration-count: infinite;
-  opacity: 0;
-  box-shadow: 0 0 1px 2px #89849b;
-  animation-delay: 2s;
+	border-radius: 50%;
+	height: 60px;
+	width: 60px;
+	position: absolute;
+	margin: 0;
+	animation: pulsate 2s ease-out;
+	animation-iteration-count: infinite;
+	opacity: 0;
+	box-shadow: 0 0 1px 2px #89849b;
+	animation-delay: 2s;
 }
 
 @keyframes pulsate {
-  0% {
-    transform: scale(0.9, 0.9);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.3, 1.3);
-    opacity: 0;
-  }
+	0% {
+		transform: scale(0.9, 0.9);
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1.3, 1.3);
+		opacity: 0;
+	}
 }
 
 .down {
-  -moz-transform: rotate(135deg);
-  -webkit-transform: rotate(135deg);
-  -o-transform: rotate(135deg);
-  -ms-transform: rotate(135deg);
-  transform: rotate(135deg);
+	-moz-transform: rotate(135deg);
+	-webkit-transform: rotate(135deg);
+	-o-transform: rotate(135deg);
+	-ms-transform: rotate(135deg);
+	transform: rotate(135deg);
 }

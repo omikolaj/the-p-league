@@ -19,7 +19,7 @@
 						>You must specify start date</mat-error
 					>
 
-					<mat-hint *ngIf="activeSessionInfo; else noActiveSession">Active session ends: {{ activeSessionInfo.endDate | date: 'M/d/yyyy' }}</mat-hint>
+					<mat-hint *ngIf="activeSessionInfo">Active session ends: {{ activeSessionInfo.endDate | date: 'M/d/yyyy' }}</mat-hint>
 				</mat-form-field>
 
 				<mat-form-field appearance="outline">

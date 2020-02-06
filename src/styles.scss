@@ -72,14 +72,30 @@
 	@include custom-components-theme($the-p-league-theme);
 }
 
+/* roboto-regular - latin */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 400;
+	src: url('https://localhost:5001/wwwroot/fonts/roboto-v20-latin-regular.eot'); /* IE9 Compat Modes */
+	src: local('Roboto'), local('Roboto-Regular'),
+		url('https://localhost:5001/wwwroot/fonts/roboto-v20-latin-regular.eot?#iefix') format('embedded-opentype'),
+		/* IE6-IE8 */ url('https://localhost:5001/wwwroot/fonts/roboto-v20-latin-regular.woff2') format('woff2'),
+		/* Super Modern Browsers */ url('https://localhost:5001/wwwroot/fonts/roboto-v20-latin-regular.woff') format('woff'),
+		/* Modern Browsers */ url('https://localhost:5001/wwwroot/fonts/roboto-v20-latin-regular.ttf') format('truetype'),
+		/* Safari, Android, iOS */ url('https://localhost:5001/wwwroot/fonts/roboto-v20-latin-regular.svg#Roboto') format('svg');
+	unicode-range: U+000-5FF;
+}
+
 html,
 body {
 	height: 100%;
 }
-body {
+body.font-family {
 	margin: 0;
-	font-family: Roboto, 'Helvetica Neue', sans-serif;
+	font-family: 'Roboto', 'Helvetica Neue', sans-serif;
 	line-height: 1.5;
+	font-size: 16px;
 }
 
 // May be required for ngx-gallery

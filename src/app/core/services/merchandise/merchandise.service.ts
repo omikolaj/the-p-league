@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -54,7 +54,14 @@ export class MerchandiseService implements Resolve<Observable<GearItem[]>> {
 	);
 
 	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
-		this.gearItems$ = this.http.get<GearItem[]>(this.merchandiseUrl).pipe(
+		const headers = {
+			headers: new HttpHeaders({
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			})
+		};
+
+		this.gearItems$ = this.http.get<GearItem[]>(this.merchandiseUrl, headers).pipe(
 			map((gearItems: GearItem[]) => (this.gearItems = gearItems).reverse()),
 			catchError(() => {
 				this.router.navigate(['about']);

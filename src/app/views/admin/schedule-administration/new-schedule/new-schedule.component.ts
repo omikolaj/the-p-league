@@ -29,7 +29,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	assignTeamsForm: FormGroup;
 	newLeagueSessionsForm: FormGroup;
 	requireTimeErrorStateMatcher = new RequireTimeErrorStateMatcher();
-	selectedTeamIDs: string[] = [];
+	selectedTeams: { leagueID: string; selectedTeamIDs: string[] }[] = [];
 	isMobile = this.scheduleAdminFacade.isMobile;
 	private unsubscribe$ = new Subject<void>();
 	@Output() generateSchedules = new EventEmitter<string[]>();
@@ -428,6 +428,11 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 			// push the entire session object to the new sessions array
 			newLeagueSessions.push(session);
 		});
+
+		// update the teams selection
+		if (this.selectedTeams.length > 0) {
+			this.scheduleAdminFacade.updateTeamSelection(this.selectedTeams);
+		}
 		// send the new sessions array to the facade for further handling
 		this.scheduleAdminFacade.generatePreviewSchedules(newLeagueSessions);
 		// iterate over the selected leaguesData list, and emit all selected league IDs
@@ -454,22 +459,35 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		this.scheduleAdminFacade.updateTeams(teamsToUpdate);
 	}
 
-	onTeamsSelectionChange(selectedTeamsEvent: MatSelectionListChange): void {
-		this.selectedTeamIDs = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
+	onTeamsSelectionChange(selectedTeamsEvent: MatSelectionListChange, leagueID: string): void {
+		const selectedTeamIDs = this.scheduleHelper.onSelectionChange(selectedTeamsEvent);
+		if (this.selectedTeams.some((teamLeaguePair) => teamLeaguePair.leagueID === leagueID)) {
+			// replace
+			const replace = this.selectedTeams.find((t) => t.leagueID === leagueID);
+			const indexToReplace = this.selectedTeams.indexOf(replace);
+			this.selectedTeams[indexToReplace] = { leagueID: leagueID, selectedTeamIDs: selectedTeamIDs };
+		} else {
+			this.selectedTeams = [...this.selectedTeams, { leagueID: leagueID, selectedTeamIDs: selectedTeamIDs }];
+		}
 	}
 
 	onUnassignedTeamsChange(leagueID: string): void {
-		if (this.selectedTeamIDs.length > 0) {
-			this.scheduleAdminFacade.updateTeamSelection(this.selectedTeamIDs, leagueID);
+		// ensures we only call udpate selected teams when user selects unassign button
+		if (this.selectedTeams.length > 0) {
+			this.scheduleAdminFacade.updateTeamSelection(this.selectedTeams);
 		}
 		this.scheduleAdminFacade.unassignTeams(leagueID);
 	}
 
 	onDeletedTeams(leagueID: string): void {
-		if (this.selectedTeamIDs.length > 0) {
-			this.scheduleAdminFacade.updateTeamSelection(this.selectedTeamIDs, leagueID);
+		// ensures that we only update selected teams when user selects delete button
+		if (this.selectedTeams.length > 0) {
+			this.scheduleAdminFacade.updateTeamSelection(this.selectedTeams);
 		}
-		this.scheduleAdminFacade.deleteTeams(leagueID, this.selectedTeamIDs);
+		const teamsLeaguePair = this.selectedTeams.find((t) => t.leagueID === leagueID);
+		if (teamsLeaguePair) {
+			this.scheduleAdminFacade.deleteTeams(teamsLeaguePair.leagueID, teamsLeaguePair.selectedTeamIDs);
+		}
 	}
 
 	// #endregion

@@ -1,7 +1,7 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, finalize } from 'rxjs/operators';
+import { catchError, finalize, tap } from 'rxjs/operators';
 import { HttpStatusService } from '../../services/http-status/http-status.service';
 import { SnackBarService } from './../../../shared/components/snack-bar/snack-bar-service.service';
 
@@ -17,6 +17,15 @@ export class HttpStatusInterceptorService implements HttpInterceptor {
 	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		this.changeStatus(true, req.method);
 		return next.handle(req.clone()).pipe(
+			tap((res) => {
+				if (res instanceof HttpResponse) {
+					if (res.headers) {
+						if (res.headers.get('etag')) {
+							localStorage.setItem('etag', res.headers.get('etag'));
+						}
+					}
+				}
+			}),
 			catchError((e) => {
 				// throw the error back
 				// or put that in the 'HttpStatusService' as well

@@ -23,12 +23,21 @@
 					</button>
 				</span>
 
-				<button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/schedules'" [routerLinkActive]="'active-route'">
+				<button
+					class="nav-button"
+					fxFlexAlign="center"
+					fxHide.xs="true"
+					fxHide.lg="false"
+					mat-button
+					[routerLink]="'/schedules'"
+					[routerLinkActive]="'active-route'"
+				>
 					Schedule
 				</button>
 
 				<ng-container *ngFor="let linkText of headerLinksText">
 					<button
+						class="nav-button"
 						fxFlexAlign="center"
 						fxHide.xs="true"
 						fxHide.lg="false"
@@ -41,7 +50,7 @@
 				</ng-container>
 
 				<ng-container *ngIf="this.authService.isLoggedIn$ | async">
-					<button fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/logout'">
+					<button class="nav-button" fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/logout'">
 						Logout
 					</button>
 				</ng-container>

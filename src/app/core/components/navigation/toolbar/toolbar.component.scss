@@ -1,61 +1,65 @@
 :host {
-  // Required because carousel in team sign up comp has z-index of 15
-  // and because the ngx-gallery has a z-index of 1000
-  z-index: 1001;
+	// Required because carousel in team sign up comp has z-index of 15
+	// and because the ngx-gallery has a z-index of 1000
+	z-index: 1001;
 }
 
 .sidenav .mat-toolbar {
-  background: inherit;
+	background: inherit;
 }
 
 .toolbar button {
-  outline: none;
+	outline: none;
+}
+
+.nav-button {
+	font-weight: bold;
 }
 
 .mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 1;
+	position: sticky;
+	top: 0;
+	z-index: 1;
 }
 
 .toolbar {
-  position: fixed;
-  width: 100%;
-  display: flex;
-  z-index: 10;
+	position: fixed;
+	width: 100%;
+	display: flex;
+	z-index: 10;
 
-  .branding {
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+	.branding {
+		cursor: pointer;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-  img {
-    position: relative;
-    top: 0px;
-    width: auto;
-    height: 48px;
-  }
+	img {
+		position: relative;
+		top: 0px;
+		width: auto;
+		height: 48px;
+	}
 
-  .center-logo {
-    display: block;
-  }
+	.center-logo {
+		display: block;
+	}
 
-  .center {
-    text-align: center;
-  }
+	.center {
+		text-align: center;
+	}
 
-  .spacer {
-    flex: 1 1 auto;
-  }
+	.spacer {
+		flex: 1 1 auto;
+	}
 
-  mat-icon {
-    font-size: 24px;
-  }
+	mat-icon {
+		font-size: 24px;
+	}
 }
 
 @media (max-width: 600px) {
-  .center-logo {
-    margin: 0 auto;
-  }
+	.center-logo {
+		margin: 0 auto;
+	}
 }

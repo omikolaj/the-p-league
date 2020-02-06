@@ -151,7 +151,7 @@
 					<mat-icon matSuffix>post_add</mat-icon>
 					<mat-error *ngIf="matchReportForm.get('homeTeamScore').hasError('required')">You must enter home team's score</mat-error>
 				</mat-form-field>
-			
+
 				<mat-form-field appearance="outline">
 					<input matInput formControlName="awayTeamScore" [placeholder]="match?.awayTeamName + ' score'" type="number" />
 					<mat-icon matSuffix>post_add</mat-icon>
@@ -159,10 +159,10 @@
 				</mat-form-field>
 			</div>
 			<div class="action-buttons">
-			<button mat-raised-button color="accent" [disabled]="!matchReportForm.valid">
-				{{ matchReportForm.get('homeTeamScore').value !== 0 ? 'Update' : 'Report' }}
-			</button>
-			<button mat-raised-button color="accent" type="button" disabled="true" (click)="onFillInStats()">Fill in Stats</button>
+				<button mat-raised-button color="accent" [disabled]="!matchReportForm.valid">
+					{{ matchReportForm.get('homeTeamScore').value !== 0 ? 'Update' : 'Report' }}
+				</button>
+				<button mat-raised-button color="accent" type="button" disabled="true" (click)="onFillInStats()">Fill in Stats</button>
 			</div>
 		</form>
 	</div>
