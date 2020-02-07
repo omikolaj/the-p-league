@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatSelectionList, MatSelectionListChange } from '@angular/material';
+
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 
 @Component({
 	selector: 'app-edit-teams-list',
@@ -13,16 +14,16 @@ import { Team } from 'src/app/core/models/schedule/team.model';
 	styleUrls: ['./edit-teams-list.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditTeamsListComponent implements OnInit {	
-	@ViewChild(MatSelectionList, { static: false }) teamList: MatSelectionList;
+export class EditTeamsListComponent implements OnInit {
+	@ViewChild(MatSelectionList) teamList: MatSelectionList;
 	@Input() teamsForm: FormGroup;
 	@Input() teams: Team[];
 	@Input() league: League;
-	@Input() sport: SportType;	
+	@Input() sport: SportType;
 	@Output() unassignedTeamsChange: EventEmitter<void> = new EventEmitter<void>();
 	@Output() updatedTeams: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
 	@Output() deletedTeams: EventEmitter<void> = new EventEmitter<void>();
-	@Output() teamsSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();	
+	@Output() teamsSelectionChange: EventEmitter<MatSelectionListChange> = new EventEmitter<MatSelectionListChange>();
 	// private debouncer$: Subject<MatSelectionListChange> = new Subject<MatSelectionListChange>();
 	// private unsubscribed$: Subject<void> = new Subject<void>();
 	disableListSelection = false;

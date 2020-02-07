@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -8,6 +8,7 @@ import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/s
 import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
 import { ScheduleFacadeService } from '../../../core/services/schedule/schedule-facade.service';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
 	selector: 'app-leagues-session-schedules',

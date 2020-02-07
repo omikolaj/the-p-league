@@ -1,21 +1,18 @@
-export interface TeamSignUpImage {
-	title: string;
-	description: string;
-	src: string;
-	alt?: string;
-}
+import { NgxGalleryImage } from '@kolkov/ngx-gallery';
 
-export const TeamSignUpImages: TeamSignUpImage[] = [
+export const TeamSignUpImages: NgxGalleryImage[] = [
 	{
-		title: 'Got a Squad?',
+		small: '../../../../../assets/p-league-3.JPG',
+		medium: '../../../../../assets/p-league-3.JPG',
+		big: '../../../../../assets/p-league-3.JPG',
 		description: 'If you enjoy good competition and want to have fun at the same time this is the league for you!',
-		src: '../../../../../assets/p-league-4.JPG',
-		alt: 'slide-one'
+		label: 'Got a Squad?'
 	},
 	{
-		title: 'Sign up and Start Competing',
+		small: '../../../../../assets/p-league-4.JPG',
+		medium: '../../../../../assets/p-league-4.JPG',
+		big: '../../../../../assets/p-league-4.JPG',
 		description: 'Games are on Weds, Thurs and Sat',
-		src: '../../../../../assets/p-league-3.JPG',
-		alt: 'slide-two'
+		label: 'Sign up and Start Competing'
 	}
 ];

@@ -1,5 +1,6 @@
 <div>
 	<p>placeholder for ng gallery</p>
+	<app-gallery-viewer [ngxGalleryOptions]="options" [images]="images"> </app-gallery-viewer>
 </div>
 
 <ng-container *ngIf="!(teamSignUpSubmitted$ | async); else info">

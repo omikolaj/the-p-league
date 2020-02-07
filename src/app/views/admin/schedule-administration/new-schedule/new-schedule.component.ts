@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { MatSelectionListChange } from '@angular/material';
+
 import * as moment from 'moment';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, flatMap, map, takeUntil, tap } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/s
 import { TIME_FORMAT, UNASSIGNED } from 'src/app/shared/constants/the-p-league-constants';
 import { enumKeysToArray } from 'src/app/shared/helpers/enum-keys-to-array';
 import { RequireTimeErrorStateMatcher } from './require-time-error-state-matcher';
+import { MatSelectionListChange } from '@angular/material/list';
 
 @Component({
 	selector: 'app-new-schedule',

@@ -5,8 +5,8 @@
     "types": [],
     "sourceMap": true
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
+  "files": [
+    "main.ts",
+    "polyfills.ts"
   ]
 }

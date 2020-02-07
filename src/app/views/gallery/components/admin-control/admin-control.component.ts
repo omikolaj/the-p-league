@@ -1,13 +1,14 @@
 import { CdkDrag, CdkDragMove, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ViewportRuler } from '@angular/cdk/overlay';
 import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material';
+
 import { Subscription } from 'rxjs';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
 import { LeaguePicture } from 'src/app/core/models/league-picture.model';
 import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 import { GalleryService } from 'src/app/core/services/gallery/gallery.service';
 import { LeagueImageUpload } from 'src/app/shared/constants/the-p-league-constants';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
 	selector: 'app-admin-control',
@@ -18,8 +19,8 @@ import { LeagueImageUpload } from 'src/app/shared/constants/the-p-league-constan
 export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
 	routeAnimationsElements = ROUTE_ANIMATIONS_ELEMENTS;
 	// #region DragAndDrop Properties
-	@ViewChild(CdkDropListGroup, { static: false }) listGroup: CdkDropListGroup<CdkDropList>;
-	@ViewChild(CdkDropList, { static: false }) placeholder: CdkDropList;
+	@ViewChild(CdkDropListGroup) listGroup: CdkDropListGroup<CdkDropList>;
+	@ViewChild(CdkDropList) placeholder: CdkDropList;
 	public target: CdkDropList;
 	public targetIndex: number;
 	public source: CdkDropList;

@@ -1,12 +1,14 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { MatPaginator, MatSort } from '@angular/material';
+
 import { MatTableDataSource } from '@angular/material/table';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
 import { matchSortingFn } from '../../../../shared/helpers/sorting-data-accessor.function';
 import { MatTableComponentHelperService } from './../../../../core/services/schedule/mat-table-component-helper.service';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
 	selector: 'app-preview-schedule',

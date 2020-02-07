@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatExpansionPanel } from '@angular/material';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
+import { MatExpansionPanel } from '@angular/material/expansion';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 /**
  * @description AddLeagueComponent is responsible for adding new sport OR league.
@@ -21,7 +22,7 @@ export class AddLeaguesComponent {
 		leagueName: string;
 		sportTypeID: string;
 	}>();
-	@ViewChild(MatExpansionPanel, { static: false })
+	@ViewChild(MatExpansionPanel)
 	matExpansionPanel: MatExpansionPanel;
 
 	constructor() {}

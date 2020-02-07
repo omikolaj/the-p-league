@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSelectionListChange } from '@angular/material';
+
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { League } from 'src/app/core/models/schedule/league.model';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { ScheduleAdministrationFacade } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { ScheduleComponentHelperService } from 'src/app/core/services/schedule/schedule-administration/schedule-component-helper.service';
+import { MatSelectionListChange } from '@angular/material/list';
 
 @Component({
 	selector: 'app-league-administration',

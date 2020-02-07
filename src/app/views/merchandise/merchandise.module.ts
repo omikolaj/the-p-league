@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
 import { RolesResolver } from 'src/app/core/resolvers/roles/roles-resolver.resolver';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MerchandiseDialogContainerComponent } from './merchandise-dialog-container/merchandise-dialog-container.component';
@@ -11,6 +11,7 @@ import { MerchandisePreOrderDialogComponent } from './merchandise-dialog-contain
 import { MerchandiseItemComponent } from './merchandise-list/merchandise-item/merchandise-item.component';
 import { MerchandiseListComponent } from './merchandise-list/merchandise-list.component';
 import { MerchandiseRoutingModule } from './merchandise-routing.module';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @NgModule({
 	declarations: [

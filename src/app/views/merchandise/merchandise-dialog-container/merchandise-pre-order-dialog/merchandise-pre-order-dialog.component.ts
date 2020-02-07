@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
+
 import { ActivatedRoute } from '@angular/router';
 import * as cloneDeep from 'clone-deep';
 import { switchMap, tap } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { PreOrderForm } from 'src/app/core/models/merchandise/pre-order-form.mod
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { PreOrderService } from 'src/app/core/services/pre-order/pre-order.service';
 import { ROUTER_OUTLET } from 'src/app/shared/constants/the-p-league-constants';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-merchandise-pre-order-dialog',

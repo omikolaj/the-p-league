@@ -3,7 +3,6 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
 import { TeamService } from 'src/app/core/services/team/team.service';
 import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
-import { TeamSignUpImage, TeamSignUpImages } from '../team-signup-images';
 import { trigger, transition, query, style, animate, state } from '@angular/animations';
 import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
 import { Subscription } from 'rxjs';

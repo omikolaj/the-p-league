@@ -1,10 +1,8 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Injector, NgModule } from '@angular/core';
-import { MatSortModule, MatTableModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsModule } from '@ngxs/store';
-import { DeviceDetectorModule } from 'ngx-device-detector';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,12 +29,9 @@ import { SharedModule } from './shared/shared.module';
 
 		// features
 		NavigationModule,
-		MatTableModule,
-		MatSortModule,
 
 		// app
 		AppRoutingModule,
-		DeviceDetectorModule.forRoot(),
 
 		// NGXS Store
 		NgxsModule.forRoot([], {

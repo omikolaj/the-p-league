@@ -1,7 +1,7 @@
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
+
 import { ErrorStateMatcher } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
 import * as cloneDeep from 'clone-deep';
@@ -14,6 +14,7 @@ import { EventBusService, Events } from 'src/app/core/services/event-bus/event-b
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { GearItemUpload, ROUTER_OUTLET } from 'src/app/shared/constants/the-p-league-constants';
 import { NoSizeErrorStateMatcher } from './NoSizeErrorStateMatcher';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-merchandise-dialog',

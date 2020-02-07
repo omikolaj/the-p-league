@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, startWith, takeUntil, tap } from 'rxjs/operators';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -11,6 +11,7 @@ import { VIEW_ALL } from 'src/app/shared/constants/the-p-league-constants';
 import { Acting } from 'src/app/shared/decorators/acting.decorator';
 import { ScheduleAdministrationFacade } from './../../../core/services/schedule/schedule-administration/schedule-administration-facade.service';
 import { CdkDetailRowService } from './../../../shared/directives/cdk-detail-row/cdk-detail-row.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
 	selector: 'app-scoreboards',
