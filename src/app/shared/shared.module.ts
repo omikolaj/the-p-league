@@ -45,14 +45,8 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faGithub, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
-
-// import { library } from '@fortawesome/fontawesome-svg-core';
-// import { faGithub, faInstagram, faMediumM, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
-// import { faBasketballBall, faPlayCircle, faRocket, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
-import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ActingSpinnerComponent } from './components/acting-spinner/acting-spinner/acting-spinner.component';
-import { CarouselComponent } from './components/carousel/carousel.component';
 import { GalleryViewerComponent } from './components/gallery-viewer/gallery-viewer.component';
 import { SessionSchedulesComponent } from './components/session-schedules/session-schedules.component';
 import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
@@ -85,7 +79,6 @@ const globalRippleConfig: RippleGlobalOptions = {
 	declarations: [
 		GalleryViewerComponent,
 		SnackBarComponent,
-		CarouselComponent,
 		SessionSchedulesComponent,
 
 		// Directives
@@ -152,7 +145,6 @@ const globalRippleConfig: RippleGlobalOptions = {
 		NgxGalleryModule,
 		ReactiveFormsModule,
 		CommonModule,
-		CarouselModule,
 		PortalModule
 	],
 	exports: [
@@ -199,8 +191,6 @@ const globalRippleConfig: RippleGlobalOptions = {
 		GalleryViewerComponent,
 		ReactiveFormsModule,
 		CommonModule,
-		CarouselModule,
-		CarouselComponent,
 		SessionSchedulesComponent,
 		PortalModule,
 		ActingSpinnerComponent,
