@@ -3,12 +3,52 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatBadgeModule, MatBottomSheetModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule, MatTreeModule, MAT_RIPPLE_GLOBAL_OPTIONS, RippleGlobalOptions } from '@angular/material';
+import {
+	MatAutocompleteModule,
+	MatBadgeModule,
+	MatBottomSheetModule,
+	MatButtonModule,
+	MatButtonToggleModule,
+	MatCardModule,
+	MatCheckboxModule,
+	MatChipsModule,
+	MatDatepickerModule,
+	MatDialogModule,
+	MatDividerModule,
+	MatExpansionModule,
+	MatGridListModule,
+	MatIconModule,
+	MatInputModule,
+	MatListModule,
+	MatMenuModule,
+	MatPaginatorModule,
+	MatProgressBarModule,
+	MatProgressSpinnerModule,
+	MatRadioModule,
+	MatRippleModule,
+	MatSelectModule,
+	MatSidenavModule,
+	MatSliderModule,
+	MatSlideToggleModule,
+	MatSnackBarModule,
+	MatSortModule,
+	MatStepperModule,
+	MatTableModule,
+	MatTabsModule,
+	MatToolbarModule,
+	MatTooltipModule,
+	MatTreeModule,
+	MAT_RIPPLE_GLOBAL_OPTIONS,
+	RippleGlobalOptions
+} from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faGithub, faInstagram, faMediumM, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
-import { faBasketballBall, faPlayCircle, faRocket, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faGithub, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
+
+// import { library } from '@fortawesome/fontawesome-svg-core';
+// import { faGithub, faInstagram, faMediumM, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
+// import { faBasketballBall, faPlayCircle, faRocket, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ActingSpinnerComponent } from './components/acting-spinner/acting-spinner/acting-spinner.component';
@@ -32,7 +72,7 @@ import { OrderEnumPipe } from './pipes/order-enum.pipe';
 import { SizeEnumToSizePipe } from './pipes/sizeEnumToSize/size-enum-to-size.pipe';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner/loading-spinner.component';
 
-library.add(faGithub, faMediumM, faTwitter, faInstagram, faYoutube, faPlayCircle, faRocket, faBasketballBall, faUndo);
+//library.add(faGithub, faMediumM, faTwitter, faInstagram, faYoutube, faPlayCircle, faRocket, faBasketballBall, faUndo);
 
 // This is used for controling the Angular ripples effect globally
 // https://material.angular.io/components/ripple/api
@@ -184,4 +224,8 @@ const globalRippleConfig: RippleGlobalOptions = {
 	],
 	entryComponents: [SnackBarComponent]
 })
-export class SharedModule {}
+export class SharedModule {
+	constructor(library: FaIconLibrary) {
+		library.addIcons(faGithub, faInstagram, faTwitter, faPlayCircle);
+	}
+}

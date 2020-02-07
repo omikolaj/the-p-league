@@ -1,4 +1,4 @@
-@import "~@angular/material/theming";
+@import '~@angular/material/theming';
 
 $toolbar-breakpoint: 600px;
 
@@ -6,10 +6,10 @@ $link-hover-decoration: none;
 $label-margin-bottom: 0;
 
 $grid-breakpoints: (
-  xxs: 0px,
-  xs: 320px,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px
+	xxs: 0,
+	xs: 320px,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px
 );
