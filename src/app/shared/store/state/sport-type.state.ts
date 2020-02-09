@@ -2,7 +2,6 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import produce from 'immer';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
-import { ScheduleAdministrationAsyncService } from 'src/app/core/services/schedule/schedule-administration/schedule-administration-async.service';
 import * as Sports from '../actions/sports.actions';
 import { updateEntity } from '../helpers/state-helpers';
 import { LeagueState, LeagueStateModel } from './league.state';
@@ -20,7 +19,7 @@ export interface SportTypeStateModel {
 	}
 })
 export class SportTypeState {
-	constructor(private scheduleAdminAsyncService: ScheduleAdministrationAsyncService) {}
+	constructor() {}
 
 	/**
 	 * @description Selects all of the sport type entities

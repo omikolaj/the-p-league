@@ -1,11 +1,11 @@
-import { Component, ChangeDetectionStrategy, HostBinding, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
-import { TeamService } from 'src/app/core/services/team/team.service';
-import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
-import { trigger, transition, query, style, animate, state } from '@angular/animations';
-import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
+import { animate, query, style, transition, trigger } from '@angular/animations';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { ROUTE_ANIMATIONS_ELEMENTS } from 'src/app/core/animations/route.animations';
+import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
+import { EventBusService, Events } from 'src/app/core/services/event-bus/event-bus.service';
+import { TeamService } from 'src/app/core/services/team/team.service';
 
 @Component({
 	selector: 'app-team-signup-form',
@@ -51,7 +51,7 @@ export class TeamSignupFormComponent implements OnInit, OnDestroy {
 		this.subscription.unsubscribe();
 	}
 
-	onSubmit() {
+	onSubmit(): void {
 		const teamSignUpForm: TeamSignUpForm = {
 			name: this.contactForm.value.teamName,
 			contact: {

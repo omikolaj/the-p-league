@@ -62,15 +62,8 @@
 			</ng-container>
 
 			<div class="photos-container" cdkDropListGroup>
-				<div cdkDropList [cdkDropListEnterPredicate]="dropListEnterPredicate" (cdkDropListDropped)="dropListDropped()"></div>
-
-				<div
-					cdkDropList
-					*ngFor="let photo of galleryImages; let i = index"
-					[cdkDropListEnterPredicate]="dropListEnterPredicate"
-					(cdkDropListDropped)="dropListDropped($event)"
-				>
-					<div cdkDrag class="photo-element" (cdkDragMoved)="dragMoved($event)">
+				<div *ngFor="let photo of galleryImages; let i = index">
+					<div class="photo-element">
 						<mat-checkbox (change)="onChange($event, i)" color="warn">Flag</mat-checkbox>
 						<img [src]="photo.url" alt="Gallery preview image" />
 					</div>

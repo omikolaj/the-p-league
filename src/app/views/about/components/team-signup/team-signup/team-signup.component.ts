@@ -1,20 +1,21 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { TeamSignUpImages } from '../team-signup-images';
-import { TeamService } from 'src/app/core/services/team/team.service';
-import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { NgxGalleryAnimation, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { NgxGalleryImage } from '@kolkov/ngx-gallery/lib/ngx-gallery-image';
-import { NgxGalleryOptions, NgxGalleryAnimation } from '@kolkov/ngx-gallery';
+import { map } from 'rxjs/operators';
+import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
+import { TeamService } from 'src/app/core/services/team/team.service';
+import { TeamSignUpImages } from '../team-signup-images';
 
 const galleryOptions: NgxGalleryOptions[] = [
 	{
-		width: '360px',
+		width: '100%',
 		height: '400px',
 		imageAnimation: NgxGalleryAnimation.Zoom,
 		thumbnails: false,
-		previewSwipe: false,
+		previewSwipe: true,
+		previewArrows: true,
 		imageSwipe: true,
-		imageArrowsAutoHide: false,
+		imageArrowsAutoHide: true,
 		previewAutoPlayInterval: 4000,
 		imageAutoPlayInterval: 4000,
 		previewCloseOnClick: true,
@@ -27,7 +28,7 @@ const galleryOptions: NgxGalleryOptions[] = [
 		imageAutoPlayPauseOnHover: true,
 		previewAutoPlay: true,
 		previewAutoPlayPauseOnHover: true,
-		imageBullets: true,
+		imageBullets: false,
 		lazyLoading: true,
 		imageDescription: true,
 		imageArrows: true

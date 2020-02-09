@@ -43,7 +43,8 @@ export const galleryOptions: NgxGalleryOptions[] = [
 	// max-width 400
 	{
 		breakpoint: 400,
-		preview: false
+		preview: false,
+		height: '260px'
 	}
 ];
 

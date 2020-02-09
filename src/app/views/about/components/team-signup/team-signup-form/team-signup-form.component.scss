@@ -1,58 +1,59 @@
-@import "../../../../merchandise/merchandise-list/merchandise-list.component.scss";
+@import '../../../../merchandise/merchandise-list/merchandise-list.component.scss';
 
 .full-width {
-  width: 100%;
+	width: 100%;
 }
 
 .signup-card {
-  min-width: 120px;
-  margin: 20px auto;
+	min-width: 120px;
+	margin: 20px auto;
 }
 
 .row {
-  display: flex;
-  flex-direction: row;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .col {
-  flex: 1;
+	flex: 1;
 }
 
 .col:last-child {
-  margin-right: 0;
+	margin-right: 0;
 }
 
 form {
-  margin: 0 auto;
-  width: 70%;
+	margin: 0 auto;
+	width: 70%;
 }
 
 .form-wrapper {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .contact-preference {
-  margin-left: 10px;
+	margin-left: 10px;
 }
 
 #preferred-contact-lable {
-  margin-bottom: 7px;
+	margin-bottom: 7px;
 }
 
 .mat-radio-button ~ .mat-radio-button {
-  margin-left: 16px;
+	margin-left: 16px;
 }
 
 @media (max-width: 600px) {
-  form {
-    width: 100%;
-    padding: 10px;
-  }
+	form {
+		width: 100%;
+		padding: 10px;
+	}
 }
 
 @media (min-width: 903px) {
-  form {
-    width: 450px;
-  }
+	form {
+		width: 450px;
+	}
 }
