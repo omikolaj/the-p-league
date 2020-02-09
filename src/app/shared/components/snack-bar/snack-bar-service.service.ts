@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { SnackBarComponent } from './snack-bar.component';
+import { MatSnackBarConfig, MatSnackBar } from '@angular/material/snack-bar';
 
 export enum SnackBarEvent {
 	Success,

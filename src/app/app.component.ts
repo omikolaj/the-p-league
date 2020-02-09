@@ -7,6 +7,9 @@ import { map, takeUntil } from 'rxjs/operators';
 import { routeAnimations } from './core/animations/route.animations';
 import { EventBusService, Events } from './core/services/event-bus/event-bus.service';
 import { HttpStatusService } from './core/services/http-status/http-status.service';
+//import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
 	selector: 'app-root',
@@ -25,7 +28,6 @@ export class AppComponent implements OnInit {
 	// cannot use @Loading() decorator because the decorator function gets called before
 	// rootInjector is instantiated which is set inside app.module.ts constructor.
 	loading$ = this.httpStatusService.loading$;
-
 	title = 'The P League';
 	logo = '../../../../assets/logo.png';
 	year = new Date().getFullYear();

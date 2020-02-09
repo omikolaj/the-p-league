@@ -1,7 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { MatDatepicker, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
 import Match from 'src/app/core/models/schedule/classes/match.model';
 import { MatchResultStatus } from 'src/app/core/models/schedule/match-result-status.enum';
@@ -10,6 +9,10 @@ import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sp
 import { matchSortingFn } from 'src/app/shared/helpers/sorting-data-accessor.function';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from '../../constants/the-p-league-constants';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 @Component({
 	selector: 'app-session-schedules',
@@ -63,7 +66,7 @@ export class SessionSchedulesComponent implements OnInit {
 	@Input() title = '';
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-	@ViewChild('filterByDatepicker', { static: false }) filterDatepicker: MatDatepicker<moment.Moment>;
+	@ViewChild('filterByDatepicker') filterDatepicker: MatDatepicker<moment.Moment>;
 
 	// #endregion
 

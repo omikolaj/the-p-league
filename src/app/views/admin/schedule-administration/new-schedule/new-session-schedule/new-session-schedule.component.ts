@@ -1,9 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ErrorStateMatcher, MatChipInputEvent } from '@angular/material';
+
 import { MatchDay } from 'src/app/core/models/schedule/match-days.enum';
 import { ActiveSessionInfo } from './../../../../../core/models/schedule/active-session-info.model';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
 	selector: 'app-new-session-schedule',

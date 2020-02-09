@@ -10,6 +10,6 @@ import { GalleryRoutingModule } from './gallery-routing.module';
 
 @NgModule({
 	declarations: [GalleryGridListComponent, AdminControlComponent],
-	imports: [CommonModule, GalleryRoutingModule, SharedModule, CoreModule, FormsModule, DragDropModule]
+	imports: [CommonModule, GalleryRoutingModule, SharedModule, CoreModule, FormsModule]
 })
 export class GalleryModule {}

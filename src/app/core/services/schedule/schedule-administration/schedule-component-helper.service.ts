@@ -1,5 +1,6 @@
+import { MatSelectionListChange } from '@angular/material/list';
 import { Injectable } from '@angular/core';
-import { MatSelectionListChange } from '@angular/material';
+
 import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { TeamSession } from 'src/app/core/models/schedule/team-session.model';
 import { Team } from './../../../models/schedule/team.model';

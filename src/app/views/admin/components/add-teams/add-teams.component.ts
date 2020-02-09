@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { MatExpansionPanel } from '@angular/material';
+
 import { SportTypesLeaguesPairs } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { Team } from 'src/app/core/models/schedule/team.model';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
 	selector: 'app-add-teams',
@@ -22,7 +23,7 @@ export class AddTeamsComponent {
 		this._pairs = value.filter((p) => p.leagues.length !== 0);
 	}
 	@Output() onNewTeam: EventEmitter<Team> = new EventEmitter<Team>();
-	@ViewChild(MatExpansionPanel, { static: false })
+	@ViewChild(MatExpansionPanel)
 	matExpansionPanel: MatExpansionPanel;
 
 	constructor() {}

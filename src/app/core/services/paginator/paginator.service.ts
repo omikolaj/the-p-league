@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GearItem } from '../../models/merchandise/gear-item.model';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Injectable()
 export class PaginatorService {

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
 import { filterOnDateValue, filterOnInputValue, filterOnLeagueID, filterOnTeamID } from 'src/app/shared/helpers/filter-predicate.function';
 import Match from '../../models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from '../../models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from './schedule-administration/schedule-component-helper.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 /**
  * @description This service is responsible for handling actions related

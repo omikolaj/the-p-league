@@ -1,26 +1,31 @@
 import { Injectable } from '@angular/core';
-import { DeviceDetectorService } from 'ngx-device-detector';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class DeviceInfoService {
-	private _mobile: boolean = undefined;
+	private _mobile: boolean = true;
 
 	get mobile(): boolean {
-		if (this._mobile === undefined) {
-			return this.mobileFunction();
-		}
 		return this._mobile;
 	}
 	set mobile(value: boolean) {
 		this._mobile = value;
 	}
-	constructor(private deviceInfo: DeviceDetectorService) {}
-
-	mobileFunction(): boolean {
-		this.mobile = this.deviceInfo.isMobile() || this.deviceInfo.isTablet();
-
-		return this.mobile;
+	constructor(brekpointObserver: BreakpointObserver) {
+		brekpointObserver.observe(['(min-width: 425px)']).subscribe((state: BreakpointState) => {
+			if (state.matches) {
+				this.mobile = false;
+			} else {
+				this.mobile = true;
+			}
+		});
 	}
+
+	// 	mobileFunction(): boolean {
+	// 		this.mobile = this.deviceInfo.isMobile() || this.deviceInfo.isTablet();
+
+	// 		return this.mobile;
+	// 	}
 }
