@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "eslint": "eslint src/**/*.ts --fix",
-    "bundle-report": "webpack-bundle-analyzer dist/the-p-league/stats-es2015.json"
+    "bundle-report": "webpack-bundle-analyzer dist/the-p-league/stats.json"
   },
   "private": true,
   "dependencies": {

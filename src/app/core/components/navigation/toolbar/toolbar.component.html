@@ -19,11 +19,11 @@
 			<div class="nav-items-container" fxLayout="row">
 				<span routerLink="/about" class="branding center-logo">
 					<button mat-button>
-						<img [src]="logo" />
+						<img [src]="logo" alt="The P League logo" />
 					</button>
 				</span>
 
-				<button
+				<a
 					class="nav-button"
 					fxFlexAlign="center"
 					fxHide.xs="true"
@@ -33,10 +33,10 @@
 					[routerLinkActive]="'active-route'"
 				>
 					Schedule
-				</button>
+				</a>
 
 				<ng-container *ngFor="let linkText of headerLinksText">
-					<button
+					<a
 						class="nav-button"
 						fxFlexAlign="center"
 						fxHide.xs="true"
@@ -46,7 +46,7 @@
 						[routerLinkActive]="'active-route'"
 					>
 						{{ linkText }}
-					</button>
+					</a>
 				</ng-container>
 
 				<ng-container *ngIf="this.authService.isLoggedIn$ | async">

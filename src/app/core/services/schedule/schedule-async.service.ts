@@ -21,17 +21,7 @@ export class ScheduleAsyncService extends ScheduleBaseAsyncService {
 	}
 
 	fetchLeaguesSessionSchedules(): Observable<LeagueSessionSchedule[]> {
-		const eTag = localStorage.getItem('eTag');
-		const header = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json'
-			})
-		};
-		if (eTag) {
-			header.headers.append('If-None-Match', eTag);
-		}
-
-		return this.http.get<LeagueSessionSchedule[]>(this.sessionSchedulesUrl, header);
+		return this.http.get<LeagueSessionSchedule[]>(this.sessionSchedulesUrl, this.headers);
 	}
 
 	fetchLeagueByID(leagueID: string): Observable<League> {
