@@ -1,15 +1,14 @@
 <div [routerLink]="'about'" (click)="onSideNavLinkClick()" class="branding">
-  <img [src]="logo_with_title" /> <span class="app-title">{{ appTitle }}</span>
+	<img [src]="logo_with_title" alt="The P League logo" /> <span class="app-title">{{ appTitle }}</span>
 </div>
-<mat-nav-list [@sideNavLink]="sideNavAnimationState">  
+<mat-nav-list [@sideNavLink]="sideNavAnimationState">
+	<a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'/schedules'">Schedule</a>
 
-  <a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'/schedules'">Schedule</a>
+	<ng-container *ngFor="let navText of sidenavListText">
+		<a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'/' + navText | lowercase">{{ navText }}</a>
+	</ng-container>
 
-  <ng-container *ngFor="let navText of sidenavListText">
-    <a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'/' + navText | lowercase">{{ navText }}</a>
-  </ng-container>
-
-  <ng-container *ngIf="isLoggedIn$ | async">
-    <a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'logout'">Logout</a>
-  </ng-container>
+	<ng-container *ngIf="isLoggedIn$ | async">
+		<a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'logout'">Logout</a>
+	</ng-container>
 </mat-nav-list>

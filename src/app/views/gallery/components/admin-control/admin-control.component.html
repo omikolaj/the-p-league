@@ -1,85 +1,87 @@
 <p style="text-align: center;">
-  Admin Dash
+	Admin Dash
 </p>
 
 <div class="accordion-wrapper" [ngClass]="routeAnimationsElements">
-  <mat-accordion #accordion displayMode="flat">
-    <mat-expansion-panel [expanded]="false" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          New
-        </mat-panel-title>
-        <mat-panel-description>
-          Upload Photos
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+	<mat-accordion #accordion displayMode="flat">
+		<mat-expansion-panel [expanded]="false" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					New
+				</mat-panel-title>
+				<mat-panel-description>
+					Upload Photos
+				</mat-panel-description>
+			</mat-expansion-panel-header>
 
-      <ng-container *ngIf="galleryService.newLeaguePictures.length === 0">
-        <p class="empty-images">
-          You don't have any images for upload
-        </p>
-      </ng-container>
+			<ng-container *ngIf="galleryService.newLeaguePictures.length === 0">
+				<p class="empty-images">
+					You don't have any images for upload
+				</p>
+			</ng-container>
 
-      <div #leaguePics *ngIf="galleryService.leaguePicturesPreview$ | async as leaguePictures">
-        <div class="photos-container">
-          <ng-container *ngFor="let leaguePicture of leaguePictures; let i = index">
-            <div class="photo-element">
-              <button style="display: block" mat-raised-button color="warn" (click)="onUndo(leaguePicture)">
-                Undo
-              </button>
-              <h4 class="preview-error" *ngIf="leaguePicture.preview.error">
-                {{ leaguePicture.preview.message }}
-              </h4>
-              <img [src]="leaguePicture.preview.src" alt="" />
-            </div>
-          </ng-container>
-        </div>
-      </div>
+			<div #leaguePics *ngIf="galleryService.leaguePicturesPreview$ | async as leaguePictures">
+				<div class="photos-container">
+					<ng-container *ngFor="let leaguePicture of leaguePictures; let i = index">
+						<div class="photo-element">
+							<button style="display: block" mat-raised-button color="warn" (click)="onUndo(leaguePicture)">
+								Undo
+							</button>
+							<h4 class="preview-error" *ngIf="leaguePicture.preview.error">
+								{{ leaguePicture.preview.message }}
+							</h4>
+							<img [src]="leaguePicture.preview.src" alt="preview image" />
+						</div>
+					</ng-container>
+				</div>
+			</div>
 
-      <mat-action-row>
-        <button mat-raised-button color="primary" (click)="fileUpload.click()">
-          Upload
-        </button>
-        <input #fileUpload appClearElementValue type="file" multiple="multiple" (change)="onImagesSelected($event)"
-          style="display: none" />
-        <button mat-raised-button color="accent" [disabled]="isLoading" (click)="onSave()">
-          Save
-        </button>
-      </mat-action-row>
-    </mat-expansion-panel>
+			<mat-action-row>
+				<button mat-raised-button color="primary" (click)="fileUpload.click()">
+					Upload
+				</button>
+				<input #fileUpload appClearElementValue type="file" multiple="multiple" (change)="onImagesSelected($event)" style="display: none" />
+				<button mat-raised-button color="accent" [disabled]="isLoading" (click)="onSave()">
+					Save
+				</button>
+			</mat-action-row>
+		</mat-expansion-panel>
 
-    <mat-expansion-panel [expanded]="false" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Modify
-        </mat-panel-title>
-        <mat-panel-description>
-          Delete/Rearrange
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+		<mat-expansion-panel [expanded]="false" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					Modify
+				</mat-panel-title>
+				<mat-panel-description>
+					Delete/Rearrange
+				</mat-panel-description>
+			</mat-expansion-panel-header>
 
-      <ng-container *ngIf="galleryImages.length === 0">
-        <p class="empty-images">No images to display</p>
-      </ng-container>
+			<ng-container *ngIf="galleryImages.length === 0">
+				<p class="empty-images">No images to display</p>
+			</ng-container>
 
-      <div class="photos-container" cdkDropListGroup>
-        <div cdkDropList [cdkDropListEnterPredicate]="dropListEnterPredicate" (cdkDropListDropped)="dropListDropped()">
-        </div>
+			<div class="photos-container" cdkDropListGroup>
+				<div cdkDropList [cdkDropListEnterPredicate]="dropListEnterPredicate" (cdkDropListDropped)="dropListDropped()"></div>
 
-        <div cdkDropList *ngFor="let photo of galleryImages; let i = index"
-          [cdkDropListEnterPredicate]="dropListEnterPredicate" (cdkDropListDropped)="dropListDropped($event)">
-          <div cdkDrag class="photo-element" (cdkDragMoved)="dragMoved($event)">
-            <mat-checkbox (change)="onChange($event, i)" color="warn">Flag</mat-checkbox>
-            <img [src]="photo.url" alt="" />
-          </div>
-        </div>
-      </div>
+				<div
+					cdkDropList
+					*ngFor="let photo of galleryImages; let i = index"
+					[cdkDropListEnterPredicate]="dropListEnterPredicate"
+					(cdkDropListDropped)="dropListDropped($event)"
+				>
+					<div cdkDrag class="photo-element" (cdkDragMoved)="dragMoved($event)">
+						<mat-checkbox (change)="onChange($event, i)" color="warn">Flag</mat-checkbox>
+						<img [src]="photo.url" alt="gallery image" />
+					</div>
+				</div>
+			</div>
 
-      <mat-action-row>
-        <button mat-raised-button color="warn" [disabled]="disableDelete() || isLoading" (click)="onDelete()">
-          Delete
-        </button>
-      </mat-action-row>
-    </mat-expansion-panel>
-  </mat-accordion>
+			<mat-action-row>
+				<button mat-raised-button color="warn" [disabled]="disableDelete() || isLoading" (click)="onDelete()">
+					Delete
+				</button>
+			</mat-action-row>
+		</mat-expansion-panel>
+	</mat-accordion>
 </div>

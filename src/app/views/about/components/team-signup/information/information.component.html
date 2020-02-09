@@ -1,38 +1,36 @@
 <div class="info-wrapper">
-  <mat-card class="info-card">
-    <img mat-card-image src="../../../../../../assets/court.jpg" alt="Empty basketball stadium" />
-    <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>{{ teamSignUpForm.name }}</mat-card-title>
-      <mat-card-subtitle>{{ teamSignUpForm.contact.firstName }}
-        {{ teamSignUpForm.contact.lastName }}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="text-wrapper">
-        <h3>Thank you for signing up!</h3>
-        <h5>
-          You will be contacted shortly!
-        </h5>
-        <p>
-          We will call you at {{ teamSignUpForm.contact.phoneNumber }} or e-mail
-          you at {{ teamSignUpForm.contact.email }}. <br />If the information
-          stated, is not accurate, just click "New Submission".
-        </p>
-        <h5>
-          Meanwhile checkout the merchandise or gallery section!
-        </h5>
-      </div>
-    </mat-card-content>
-    <mat-card-actions>
-      <button id="merchandise" mat-raised-button (click)="toMerchandise()">
-        Merchandise
-      </button>
-      <button id="gallery" mat-raised-button (click)="toGallery()">
-        Gallery
-      </button>
-      <button id="new-submission" mat-raised-button (click)="toNewSubmission()">
-        New Submission
-      </button>
-    </mat-card-actions>
-  </mat-card>
+	<mat-card class="info-card">
+		<img mat-card-image src="../../../../../../assets/court.jpg" alt="Empty basketball stadium" />
+		<mat-card-header>
+			<div mat-card-avatar class="example-header-image"></div>
+			<mat-card-title>{{ teamSignUpForm.name }}</mat-card-title>
+			<mat-card-subtitle>{{ teamSignUpForm.contact.firstName }} {{ teamSignUpForm.contact.lastName }}</mat-card-subtitle>
+		</mat-card-header>
+		<mat-card-content>
+			<div class="text-wrapper">
+				<h3>Thank you for signing up!</h3>
+				<h5>
+					You will be contacted shortly!
+				</h5>
+				<p>
+					We will call you at {{ teamSignUpForm.contact.phoneNumber }} or e-mail you at {{ teamSignUpForm.contact.email }}. <br />If the information
+					stated, is not accurate, just click "New Submission".
+				</p>
+				<h5>
+					Meanwhile checkout the merchandise or gallery section!
+				</h5>
+			</div>
+		</mat-card-content>
+		<mat-card-actions>
+			<button id="merchandise" mat-raised-button (click)="toMerchandise()">
+				Merchandise
+			</button>
+			<button id="gallery" mat-raised-button (click)="toGallery()">
+				Gallery
+			</button>
+			<button id="new-submission" mat-raised-button (click)="toNewSubmission()">
+				New Submission
+			</button>
+		</mat-card-actions>
+	</mat-card>
 </div>
