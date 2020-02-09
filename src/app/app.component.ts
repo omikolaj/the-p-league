@@ -7,9 +7,6 @@ import { map, takeUntil } from 'rxjs/operators';
 import { routeAnimations } from './core/animations/route.animations';
 import { EventBusService, Events } from './core/services/event-bus/event-bus.service';
 import { HttpStatusService } from './core/services/http-status/http-status.service';
-//import { faCoffee } from '@fortawesome/free-solid-svg-icons';
-import { faGithub, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
 	selector: 'app-root',
@@ -29,7 +26,7 @@ export class AppComponent implements OnInit {
 	// rootInjector is instantiated which is set inside app.module.ts constructor.
 	loading$ = this.httpStatusService.loading$;
 	title = 'The P League';
-	logo = '../../../../assets/logo.png';
+	logo = 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,w_100/v1581277326/movies-place/logo.png';
 	year = new Date().getFullYear();
 	window: Element;
 	subscription: Subscription;

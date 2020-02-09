@@ -1,57 +1,54 @@
 <div [ngStyle]="{ marginTop: isSticky ? '50px' : '0' }">
+	<div class="background ">
+		<div class="gradient">
+			<div class="container"></div>
+		</div>
 
-  <div class="background " [ngClass]="routeAnimationsElements">
+		<div appIosVH class="gradient-2" [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'">
+			<div class="container">
+				<div style="height: 350px;"></div>
+			</div>
+		</div>
 
-    <div class="gradient">
-      <div class="container"></div>
-    </div>
+		<div cdkScrollable id="arrow-wrapper">
+			<div (click)="onArrowClick()" class="arrow-border">
+				<div class="arrow down"></div>
+				<div class="pulse"></div>
+			</div>
+		</div>
+	</div>
 
-    <div appIosVH class="gradient-2" [ngClass]="deviceInfo.mobile ? 'mobile-img' : 'parallax'">
+	<div style="padding: 0 10px;">
+		<h2 #gearUp class="heading mat-display-2">
+			The P League Collection
+		</h2>
 
-      <div class="container">
-        <div style="height: 350px;"></div>
-      </div>
+		<ng-container *ngIf="this.authService.isLoggedIn$ | async">
+			<div class="admin" *ngIf="isAdmin">
+				<span>As an admin you can modify your inventory here</span>
+				<button mat-raised-button color="accent" type="button" (click)="onAddGearItems()">
+					Upload Gear
+				</button>
+			</div>
+		</ng-container>
 
-    </div>
+		<div class="merchandise-cards">
+			<ng-container *ngIf="gearItems$ | async as gearItems">
+				<ng-container *ngFor="let gearItem of gearItems">
+					<app-merchandise-item [isAdmin]="isAdmin" class="list-item" [gearItem]="gearItem"> </app-merchandise-item>
+				</ng-container>
+			</ng-container>
+		</div>
 
-    <div cdkScrollable id="arrow-wrapper">
-
-      <div (click)="onArrowClick()" class="arrow-border">
-
-        <div class="arrow down"></div>
-        <div class="pulse"></div>
-
-      </div>
-    </div>
-
-  </div>
-
-  <div style="padding: 0 10px;">
-    <h2 #gearUp [ngClass]="routeAnimationsElements" class="heading mat-display-2">
-      The P League Collection
-    </h2>
-
-    <ng-container *ngIf="this.authService.isLoggedIn$ | async">
-      <div class="admin" *ngIf="isAdmin">
-        <span [ngClass]="routeAnimationsElements">As an admin you can modify your inventory here</span>
-        <button mat-raised-button [ngClass]="routeAnimationsElements" color="accent" type="button"
-          (click)="onAddGearItems()">
-          Upload Gear
-        </button>
-      </div>
-    </ng-container>
-
-    <div class="merchandise-cards">
-      <ng-container *ngIf="gearItems$ | async as gearItems">
-        <ng-container *ngFor="let gearItem of gearItems">
-          <app-merchandise-item [isAdmin]="isAdmin" class="list-item" [gearItem]="gearItem">
-          </app-merchandise-item>
-        </ng-container>
-      </ng-container>
-    </div>
-
-    <mat-paginator #paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-      (page)="OnPageChange($event)" (window:resize)="onResize($event)" [showFirstLastButtons]="true">
-    </mat-paginator>
-  </div>
+		<mat-paginator
+			#paginator
+			[length]="length"
+			[pageSize]="pageSize"
+			[pageSizeOptions]="pageSizeOptions"
+			(page)="OnPageChange($event)"
+			(window:resize)="onResize($event)"
+			[showFirstLastButtons]="true"
+		>
+		</mat-paginator>
+	</div>
 </div>

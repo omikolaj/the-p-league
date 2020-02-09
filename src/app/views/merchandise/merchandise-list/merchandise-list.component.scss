@@ -55,14 +55,28 @@ mat-paginator {
 	}
 
 	.parallax {
-		background: url('src/assets/about.jpg');
+		background: url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_10/v1581278138/movies-place/merchandise_welcome.jpg');
+		background: -webkit-image-set(
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_10/v1581278138/movies-place/merchandise_welcome.jpg') 1x,
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_20/v1581278138/movies-place/merchandise_welcome.jpg') 2x,
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_30/v1581278138/movies-place/merchandise_welcome.jpg') 3x,
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_50/v1581278138/movies-place/merchandise_welcome.jpg') 4x
+			)
+			no-repeat center top;
+		background-image: image-set(
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_10/v1581278138/movies-place/merchandise_welcome.jpg') 1x,
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_20/v1581278138/movies-place/merchandise_welcome.jpg') 2x,
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_30/v1581278138/movies-place/merchandise_welcome.jpg') 3x,
+				url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_50/v1581278138/movies-place/merchandise_welcome.jpg') 4x
+			)
+			no-repeat center top;
 		background-size: cover;
 
-		/* Set a specific height */
+		// /* Set a specific height */
 		height: 100vh;
 		height: calc(var(--vh, 1vh) * 100);
 
-		/* Create the parallax scrolling effect */
+		// /* Create the parallax scrolling effect */
 		background-attachment: fixed;
 		background-position: center;
 		background-repeat: no-repeat;

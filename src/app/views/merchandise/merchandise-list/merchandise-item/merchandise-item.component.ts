@@ -28,7 +28,8 @@ export const galleryOptions: NgxGalleryOptions[] = [
 		imageAutoPlayPauseOnHover: true,
 		previewAutoPlay: true,
 		previewAutoPlayPauseOnHover: true,
-		imageBullets: true
+		imageBullets: true,
+		lazyLoading: true
 	},
 	// max-width 800
 	{

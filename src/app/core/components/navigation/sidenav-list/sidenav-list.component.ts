@@ -1,9 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
-import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { SnackBarService, SnackBarEvent } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { subscribeOn } from 'rxjs/operators';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-service.service';
 
 @Component({
 	selector: 'app-sidenav-list',
@@ -26,7 +25,7 @@ export class SidenavListComponent implements OnInit, OnDestroy {
 	@Input() appTitle: string;
 	// logo gets passed in from the toolbar icon that is in the middle.
 	@Input() logo: string;
-	logo_with_title = '../../../../assets/logo_no_title.png';
+	logo_with_title = 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_70,w_48/v1581275472/movies-place/logo_no_title.png';
 	sidenavListText: string[] = ['Merchandise', 'Gallery'];
 	isLoggedIn$ = this.authService.isLoggedIn$;
 	subscription: Subscription;
