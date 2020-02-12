@@ -1,4 +1,4 @@
-import { query, style, sequence, animate, stagger } from '@angular/animations';
+import { animate, query, sequence, stagger, style } from '@angular/animations';
 
 export const ROUTE_ANIMATIONS_ELEMENTS = 'route-animation-elements';
 
@@ -36,7 +36,7 @@ export const routeAnimations = [
 		':enter .' + ROUTE_ANIMATIONS_ELEMENTS,
 		stagger(100, [
 			style({ transform: 'translateY(10%)', opacity: 0 }),
-			animate('.5s ease-in-out', style({ transform: 'translateY(0%)', opacity: 1 }))
+			animate('.3s ease-in-out', style({ transform: 'translateY(0%)', opacity: 1 }))
 		]),
 		{ optional: true }
 	)

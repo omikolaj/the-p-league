@@ -18,7 +18,7 @@ export class ScheduleFacadeService {
 	isMobile = this.deviceInfo.mobile;
 
 	get sessionsMatches(): Match[] {
-		return this.store.selectSnapshot(ScheduleState.getSessionsMatches);
+		return this.store.selectSnapshot<Match[]>(ScheduleState.getSessionsMatches);
 	}
 
 	constructor(private store: Store, private scheduleAsync: ScheduleAsyncService, private deviceInfo: DeviceInfoService) {}

@@ -73,6 +73,7 @@ export class ScheduleState {
 				matches.push(state.entities.matches[m]);
 			});
 		});
+
 		return matches;
 	}
 

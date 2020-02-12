@@ -35,10 +35,13 @@ import { SharedModule } from './shared/shared.module';
 
 		// NGXS Store
 		NgxsModule.forRoot([], {
-			developmentMode: true,
+			developmentMode: !environment.production,
 			selectorOptions: {
 				suppressErrors: false,
 				injectContainerState: false
+			},
+			compatibility: {
+				strictContentSecurityPolicy: true
 			}
 		})
 	],
@@ -64,7 +67,7 @@ import { SharedModule } from './shared/shared.module';
 	bootstrap: [AppComponent]
 })
 export class AppModule {
-	constructor(private injector: Injector) {
+	constructor(injector: Injector) {
 		setRootInjector(injector);
 	}
 }

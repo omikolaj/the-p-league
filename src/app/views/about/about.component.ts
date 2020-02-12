@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes, query, stagger, group, animateChild } from '@angular/animations';
-
-import { ROUTE_ANIMATIONS_ELEMENTS } from '../../core/animations/route.animations';
+import { animate, animateChild, group, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DeviceInfoService } from 'src/app/core/services/device-info/device-info.service';
+import { ROUTE_ANIMATIONS_ELEMENTS } from '../../core/animations/route.animations';
 
 @Component({
 	selector: 'app-about',
@@ -12,7 +11,7 @@ import { DeviceInfoService } from 'src/app/core/services/device-info/device-info
 		trigger('flyInOut', [
 			transition(':enter', [
 				group([
-					query('h1, .center, .info, .animations', [style({ opacity: 0 }), stagger(290, [animate('.3s ease-in-out', style({ opacity: 1 }))])], {
+					query('h1, .center, .info, .animations', [style({ opacity: 0 }), stagger(290, [animate('.5s ease-in-out', style({ opacity: 1 }))])], {
 						optional: true
 					}),
 					query('@fadeInOut', animateChild(), { optional: true })

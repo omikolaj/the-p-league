@@ -77,7 +77,9 @@ mat-paginator {
 		height: calc(var(--vh, 1vh) * 100);
 
 		// /* Create the parallax scrolling effect */
-		background-attachment: fixed;
+		// background-attachment: fixed;
+		transform: translatez(0);
+		-webkit-transform: translatez(0);
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
