@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import produce from 'immer';
 import { SportType } from 'src/app/core/models/schedule/sport-type.model';
@@ -18,6 +19,7 @@ export interface SportTypeStateModel {
 		entities: {}
 	}
 })
+@Injectable()
 export class SportTypeState {
 	constructor() {}
 

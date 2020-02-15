@@ -12,7 +12,9 @@ import { MatchResult } from 'src/app/core/models/schedule/match-result.model';
 import { SportTypesLeaguesPairsWithTeams } from 'src/app/core/models/schedule/sport-types-leagues-pairs.model';
 import { matchSortingFn } from 'src/app/shared/helpers/sorting-data-accessor.function';
 import { BYE_WEEK_DATE_TEXT, VIEW_ALL } from '../../constants/the-p-league-constants';
+import { SnackBarService } from '../snack-bar/snack-bar-service.service';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
+import { SnackBarEvent } from './../snack-bar/snack-bar-service.service';
 
 @Component({
 	selector: 'app-session-schedules',
@@ -76,9 +78,10 @@ export class SessionSchedulesComponent implements OnInit {
 	@Output() filterByDateChanged = new EventEmitter<string>();
 	@Output() filterByInputChanged = new EventEmitter<string>();
 	@Output() matchReported = new EventEmitter<{ result: MatchResult; sessionID: string }>();
+	@Output() filterApplied = new EventEmitter<void>();
 	// #endregion
 
-	constructor(private fb: FormBuilder, private matTableHelper: MatTableComponentHelperService) {}
+	constructor(private fb: FormBuilder, private matTableHelper: MatTableComponentHelperService, private snackBarService: SnackBarService) {}
 
 	ngOnInit(): void {
 		this.initForms();
@@ -90,11 +93,37 @@ export class SessionSchedulesComponent implements OnInit {
 		this.filterByInputChanged.emit(filterValue);
 	}
 
+	filterWasApplied(type: 'league' | 'team' | 'date', value: string): void {
+		let filterOn = '';
+		let target;
+		switch (type) {
+			case 'league':
+				this.pairs.find((p) => (target = p.leagues.find((l) => l.id === value)));
+				if (target) {
+					filterOn = `${target.name}`;
+				}
+				break;
+			case 'team':
+				this.pairs.find((p) => p.leagues.find((l) => (target = l.teams.find((t) => t.id === value))));
+				if (target) {
+					filterOn = `${target.name}`;
+				}
+				break;
+			case 'date':
+				filterOn = value;
+				break;
+			default:
+				break;
+		}
+		this.snackBarService.openSnackBarFromComponent(`Filtered by ${filterOn}`, 'Dismiss', SnackBarEvent.Success);
+	}
+
 	onLeagueSelectionChange(): void {
 		this.matTableHelper.applyMatTableLeagueSelectionFilter(this.dataSource);
 		// When using selection drop down to filter data we want to clear the filter input field
 		this.filterValue.setValue('');
 		this.leagueChanged.emit(this.selectedLeague.value);
+		this.filterWasApplied('league', this.selectedLeague.value);
 	}
 
 	onTeamSelectionChange(): void {
@@ -102,6 +131,7 @@ export class SessionSchedulesComponent implements OnInit {
 		// When using selection drop down to filter data we want to clear the filter input field
 		this.filterValue.setValue('');
 		this.teamChanged.emit(this.selectedTeam.value);
+		this.filterWasApplied('team', this.selectedTeam.value);
 	}
 
 	onDatePickerOpened(): void {
@@ -112,6 +142,9 @@ export class SessionSchedulesComponent implements OnInit {
 	onDateChange(input): void {
 		this.matTableHelper.applyMatTableDateSelectionFilter(this.dataSource);
 		this.filterByDateChanged.emit(moment(input.target.value).isValid() ? moment(input.target.value).format('MM/DD/YYYY') : null);
+		if (moment(input.target.value).isValid()) {
+			this.filterWasApplied('date', moment(input.target.value).format('MM/DD/YYYY'));
+		}
 	}
 
 	onMatchReported(formGroupDirective: FormGroupDirective, match: Match): void {

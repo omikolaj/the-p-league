@@ -1,6 +1,6 @@
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
 import { map, scan } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { EventBusService, Events } from 'src/app/core/services/event-bus/event-b
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { PaginatorService } from 'src/app/core/services/paginator/paginator.service';
 import { Role } from 'src/app/shared/constants/the-p-league-constants';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+
 
 @Component({
 	selector: 'app-merchandise-list',
@@ -49,7 +49,6 @@ export class MerchandiseListComponent implements OnInit, OnDestroy {
 		this.merchandiseService.pageChangeAction
 	]).pipe(
 		map(([gearItems]) => {
-			console.log('gearItems', gearItems);
 			const pagedItems: GearItem[] = this.paginatorService.getPagedItems(
 				[...gearItems],
 				[...this.gearItems],

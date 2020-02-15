@@ -24,7 +24,7 @@
 		</div>
 		<mat-divider></mat-divider>
 		<div class="assign">
-			<button mat-raised-button color="accent">Assign</button>
+			<button mat-raised-button color="accent" [disabled]="!assignTeamsForm.valid">Assign</button>
 		</div>
 	</form>
 </mat-list>

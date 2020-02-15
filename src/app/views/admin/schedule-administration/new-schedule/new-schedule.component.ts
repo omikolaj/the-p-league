@@ -116,7 +116,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		});
 
 		this.assignTeamsForm = this.fb.group({
-			unassignedTeams: this.fb.array(assignTeamControls)
+			unassignedTeams: this.fb.array(assignTeamControls, this.requireOne())
 		});
 	}
 
@@ -248,6 +248,17 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 				return null;
 			}
 			return { timeRequired: { value: 'Please specify a time' } };
+		};
+	}
+
+	private requireOne(): ValidatorFn {
+		return (control: AbstractControl): { [key: string]: any } | null => {
+			const anyAssigned = control['controls'].filter((formGroup: FormGroup) => formGroup.value.leagueID > 0);
+			if (anyAssigned.length > 0) {
+				return null;
+			} else {
+				return { nonSelected: { value: 'Please select a league' } };
+			}
 		};
 	}
 

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { MatSelectionListChange } from '@angular/material/list';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TabTitles } from 'src/app/core/models/admin/tab-titles.model';
@@ -15,9 +17,7 @@ import { SnackBarEvent } from 'src/app/shared/components/snack-bar/snack-bar-ser
 import { Acting } from 'src/app/shared/decorators/acting.decorator';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
 import { VIEW_ALL } from './../../../shared/constants/the-p-league-constants';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSelectionListChange } from '@angular/material/list';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+
 
 @Component({
 	selector: 'app-schedule-administration',

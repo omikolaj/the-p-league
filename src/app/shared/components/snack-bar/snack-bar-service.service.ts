@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { SnackBarComponent } from './snack-bar.component';
-import { MatSnackBarConfig, MatSnackBar } from '@angular/material/snack-bar';
 
 export enum SnackBarEvent {
 	Success,
@@ -16,7 +16,7 @@ export class SnackBarService {
 		panelClass: ['style-success'],
 		horizontalPosition: 'center',
 		verticalPosition: 'bottom',
-		duration: 3000
+		duration: 3000000
 	};
 
 	private errorConfig: MatSnackBarConfig = {

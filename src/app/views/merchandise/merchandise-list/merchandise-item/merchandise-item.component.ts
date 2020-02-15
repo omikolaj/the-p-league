@@ -68,10 +68,6 @@ export class MerchandiseItemComponent {
 		public authService: AuthService
 	) {}
 
-	ngOnInit() {
-		console.log('gearItem', this.gearItem);
-	}
-
 	onEditGearItem(): void {
 		this.router.navigate(
 			[

@@ -49,9 +49,6 @@
 @import '../app/views/gallery/components/admin-control/admin-control.component.scss-theme.scss';
 @import '../app/views/admin/admin-login/admin-login.component.scss-theme.scss';
 
-// import font face directives
-@import './font-styles.scss';
-
 @include angular-material-theme($the-p-league-theme);
 
 @mixin custom-components-theme($theme) {

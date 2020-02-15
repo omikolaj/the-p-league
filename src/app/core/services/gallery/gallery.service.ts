@@ -227,7 +227,6 @@ export class GalleryService implements Resolve<Observable<LeaguePicture[]>> {
 			tap((_) => {
 				this.newLeaguePictures.forEach((leaguePicture: LeaguePicture) => {
 					this.uploadPicture.next(leaguePicture);
-					console.log('LeaguePicture order is: ', leaguePicture.orderId);
 				});
 			}),
 			tap((_) => {

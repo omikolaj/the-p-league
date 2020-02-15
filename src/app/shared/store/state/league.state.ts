@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import produce from 'immer';
 import { League } from 'src/app/core/models/schedule/league.model';
@@ -17,6 +18,7 @@ export interface LeagueStateModel {
 		entities: {}
 	}
 })
+@Injectable()
 export class LeagueState {
 	constructor() {}
 
@@ -123,7 +125,6 @@ export class LeagueState {
 	 */
 	@Action(Leagues.UpdateLeagues)
 	update(ctx: StateContext<LeagueStateModel>, action: Leagues.UpdateLeagues): void {
-		console.log('updating local state');
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				action.updatedLeagues.forEach((updatedLeague) => {

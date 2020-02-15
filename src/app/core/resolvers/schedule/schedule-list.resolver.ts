@@ -28,7 +28,6 @@ export class ScheduleListResolver implements Resolve<LeagueSessionSchedule[]> {
 				]);
 			}),
 			catchError((err) => {
-				console.log('error occured when fetching sessions initial data', err);
 				this.router.navigate(['']);
 				return of([]);
 			})

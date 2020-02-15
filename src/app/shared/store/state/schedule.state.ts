@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { produce } from 'immer';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
@@ -36,6 +37,7 @@ export interface ScheduleStateModel {
 		}
 	}
 })
+@Injectable()
 export class ScheduleState {
 	constructor() {}
 

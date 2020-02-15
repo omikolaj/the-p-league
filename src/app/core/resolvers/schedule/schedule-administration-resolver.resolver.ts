@@ -24,7 +24,6 @@ export class ScheduleAdministrationResolver implements Resolve<SportType[] | [Sp
 	): SportType[] | [SportType[], Team[]] | Observable<SportType[] | [SportType[], Team[]]> | Promise<SportType[] | [SportType[], Team[]]> {
 		return forkJoin([this.scheduleAdminAsync.fetchAllSportTypes(), this.scheduleAdminAsync.fetchUnassignedTeams()]).pipe(
 			tap(([sports, unassignedTeams]) => {
-				console.log('ScheduleAdministrationResolver Ran');
 				const normalizedData = normalize(sports, sportListSchema);
 				this.store.dispatch([
 					new Sports.InitializeSports(normalizedData.entities['sports']),
@@ -34,7 +33,6 @@ export class ScheduleAdministrationResolver implements Resolve<SportType[] | [Sp
 				]);
 			}),
 			catchError((err) => {
-				// TODO handle displaying of the error
 				this.router.navigate(['']);
 				return of([]);
 			})

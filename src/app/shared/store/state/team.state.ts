@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { produce } from 'immer';
 import { Team } from 'src/app/core/models/schedule/team.model';
@@ -17,6 +18,7 @@ export interface TeamStateModel {
 		entities: {}
 	}
 })
+@Injectable()
 export class TeamState {
 	constructor() {}
 
@@ -125,7 +127,6 @@ export class TeamState {
 				});
 			})
 		);
-		console.log('updated selected called', ctx.getState().entities);
 	}
 
 	/**

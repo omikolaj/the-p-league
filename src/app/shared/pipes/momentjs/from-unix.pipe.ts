@@ -8,7 +8,7 @@ import * as moment from 'moment';
 export class FromUnixPipe implements PipeTransform {
 	transform(dateTime: string | number): any {
 		if (typeof dateTime === 'number') {
-			return moment.unix(dateTime).format('MM-DD-YYYY hh:mm A');
+			return moment.unix(dateTime);
 		} else {
 			return dateTime;
 		}
