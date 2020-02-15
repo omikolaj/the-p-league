@@ -16,7 +16,7 @@ export class SnackBarService {
 		panelClass: ['style-success'],
 		horizontalPosition: 'center',
 		verticalPosition: 'bottom',
-		duration: 3000000
+		duration: 3000
 	};
 
 	private errorConfig: MatSnackBarConfig = {

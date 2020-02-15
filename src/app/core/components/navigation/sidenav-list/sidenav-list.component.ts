@@ -13,7 +13,7 @@ import { SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar-s
 			transition('out => in', [
 				query('a', [
 					style({ opacity: 0, transform: 'translateX(-100%)' }),
-					stagger(250, [animate('.3s cubic-bezier(.52,-0.21,.29,1.26)', style({ opacity: 1, transform: 'translateX(0)' }))])
+					stagger(150, [animate('.3s cubic-bezier(.52,-0.21,.29,1.26)', style({ opacity: 1, transform: 'translateX(0)' }))])
 				])
 			])
 		])

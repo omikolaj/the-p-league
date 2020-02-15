@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { NEVER, Observable } from 'rxjs';
-import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ActiveSessionInfo } from 'src/app/core/models/schedule/active-session-info.model';
 import LeagueSessionScheduleDTO from 'src/app/core/models/schedule/classes/league-session-schedule-DTO.model';
 import Match from 'src/app/core/models/schedule/classes/match.model';
@@ -194,9 +194,19 @@ export class ScheduleAdministrationFacade {
 		this.scheduleAdminAsync
 			.addSport(newSportType)
 			.pipe(
-				mergeMap((newSportType) => {
+				tap((newSportType) => this.store.dispatch(new Sports.AddSportType(newSportType))),
+				switchMap((newSportType) => {
 					newLeague.sportTypeID = newSportType.id;
-					return this.scheduleAdminAsync.addLeague(newLeague);
+					return this.scheduleAdminAsync
+						.addLeague(newLeague)
+						.pipe(
+							tap((newLeague) =>
+								this.store.dispatch([
+									new Leagues.AddLeague(newLeague),
+									new Sports.AddLeagueIDsToSportType([{ sportTypeID: newSportType.id, ids: [newLeague.id] }])
+								])
+							)
+						);
 				}),
 				tap(() => this.snackBarService.openSnackBarFromComponent('Sport and league added', 'Dismiss', SnackBarEvent.Success)),
 				catchError((e) => {
@@ -204,7 +214,7 @@ export class ScheduleAdministrationFacade {
 					return NEVER;
 				})
 			)
-			.subscribe((newSportType) => this.store.dispatch(new Sports.AddSportType(newSportType)));
+			.subscribe();
 	}
 
 	/**
