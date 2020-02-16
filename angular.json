@@ -20,7 +20,7 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "src/tsconfig.app.json",
 						"assets": ["src/favicon.ico", "src/assets"],
-						"styles": ["src/styles/styles-app-loading.scss", "src/styles/styles.scss"],
+						"styles": ["src/styles/styles-app-loading.scss", "src/styles/styles.scss", "./node_modules/font-awesome/scss/font-awesome.scss"],
 						"scripts": []
 					},
 					"configurations": {
@@ -63,7 +63,7 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "src/tsconfig.app.json",
 						"assets": ["src/favicon.ico", "src/assets"],
-						"styles": ["src/styles/styles-app-loading.scss", "src/styles/styles.scss"],
+						"styles": ["src/styles/styles-app-loading.scss", "src/styles/styles.scss", "./node_modules/font-awesome/scss/font-awesome.scss"],
 						"scripts": []
 					},
 					"configurations": {
