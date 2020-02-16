@@ -97,7 +97,6 @@ export class SportTypeState {
 	 */
 	@Action(Sports.AddSportType)
 	add(ctx: StateContext<SportTypeStateModel>, action: Sports.AddSportType): void {
-		console.log('adding sport type', action.newSportType);
 		ctx.setState(
 			produce((draft: SportTypeStateModel) => {
 				// no need to check if this item already exists, it will simply be replaced

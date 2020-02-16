@@ -9,6 +9,8 @@
 	</ng-container>
 
 	<ng-container *ngIf="isLoggedIn$ | async">
+		<a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'admin'">Admin Dash</a>
+
 		<a mat-list-item (click)="onSideNavLinkClick()" [routerLink]="'logout'">Logout</a>
 	</ng-container>
 </mat-nav-list>

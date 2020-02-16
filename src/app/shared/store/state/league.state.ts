@@ -85,7 +85,6 @@ export class LeagueState {
 	 */
 	@Action(Leagues.AddLeague)
 	add(ctx: StateContext<LeagueStateModel>, action: Leagues.AddLeague): void {
-		console.log('adding new league', action.newLeague);
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
 				draft.entities[action.newLeague.id] = action.newLeague;

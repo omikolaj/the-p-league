@@ -1,9 +1,9 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MerchandiseDialogComponent } from './merchandise-dialog/merchandise-dialog.component';
 import { MerchandisePreOrderDialogComponent } from './merchandise-pre-order-dialog/merchandise-pre-order-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class MerchandiseDialogService {

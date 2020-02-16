@@ -17,20 +17,23 @@ export const galleryOptions: NgxGalleryOptions[] = [
 		thumbnails: true,
 		previewSwipe: true,
 		imageSwipe: true,
-		imageArrowsAutoHide: true,
-		previewAutoPlayInterval: 4000,
-		imageAutoPlayInterval: 4000,
+		imageArrowsAutoHide: false,
+		imageArrows: true,
 		previewCloseOnClick: true,
 		previewCloseOnEsc: true,
 		previewKeyboardNavigation: true,
 		previewInfinityMove: true,
 		imageInfinityMove: true,
 		previewZoom: true,
-		imageAutoPlay: true,
+		imageAutoPlay: false,
 		imageAutoPlayPauseOnHover: true,
-		previewAutoPlay: true,
+		previewAutoPlay: false,
 		previewAutoPlayPauseOnHover: true,
-		imageBullets: true
+		previewArrowsAutoHide: true,
+		imageBullets: true,
+		previewRotate: true,
+		preview: true,
+		lazyLoading: true
 	},
 	// max-width 800
 	{
@@ -60,7 +63,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
 	// max-width 400
 	{
 		breakpoint: 400,
-		preview: false
+		preview: true
 	}
 ];
 
@@ -77,6 +80,13 @@ export class GalleryGridListComponent implements OnInit {
 	subscription: Subscription;
 	isLoggedIn$ = this.authService.isLoggedIn$;
 	isAdmin = false;
+	defaultImage: LeaguePicture[] = [
+		{
+			small: 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_50,w_512,/v1562950585/movies-place/oynl9gr3yjsm2vkygyfe.jpg',
+			medium: 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_50,/v1562950585/movies-place/oynl9gr3yjsm2vkygyfe.jpg',
+			big: 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_70,/v1562950585/movies-place/oynl9gr3yjsm2vkygyfe.jpg'
+		}
+	];
 
 	galleryImagess$: Observable<LeaguePicture[]> = this.galleryService.leaguePictures$.pipe(
 		catchError(() => {

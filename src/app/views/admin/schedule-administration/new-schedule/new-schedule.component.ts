@@ -33,6 +33,7 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 	isMobile = this.scheduleAdminFacade.isMobile;
 	private unsubscribe$ = new Subject<void>();
 	@Output() generateSchedules = new EventEmitter<string[]>();
+	@Output() onPreviousTabSelected = new EventEmitter<number>();
 
 	/**
 	 * @description this stream is necessary to ensure we are invoking
@@ -499,6 +500,14 @@ export class NewScheduleComponent implements OnInit, OnDestroy {
 		if (teamsLeaguePair) {
 			this.scheduleAdminFacade.deleteTeams(teamsLeaguePair.leagueID, teamsLeaguePair.selectedTeamIDs);
 		}
+	}
+
+	/**
+	 * @description Fired when user selects back button. Event emitter
+	 * value is the index of the page to which user wants to navigate back to
+	 */
+	onBack(): void {
+		this.onPreviousTabSelected.emit(0);
 	}
 
 	// #endregion

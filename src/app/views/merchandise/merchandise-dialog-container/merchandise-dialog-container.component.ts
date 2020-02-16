@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
-import { MerchandiseDialogService } from './merchandise-dialog.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MerchandiseDialogService } from './merchandise-dialog.service';
+
 
 @Component({
 	selector: 'app-merchandise-dialog-container',

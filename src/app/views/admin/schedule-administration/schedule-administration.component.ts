@@ -18,7 +18,6 @@ import { Acting } from 'src/app/shared/decorators/acting.decorator';
 import { MatTableComponentHelperService } from './../../../core/services/schedule/mat-table-component-helper.service';
 import { VIEW_ALL } from './../../../shared/constants/the-p-league-constants';
 
-
 @Component({
 	selector: 'app-schedule-administration',
 	templateUrl: './schedule-administration.component.html',
@@ -30,6 +29,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	sportTypes$: Observable<SportType[]> = this.scheduleAdminFacade.sports$;
 	unassignedTeams$: Observable<Team[]> = this.scheduleAdminFacade.unassignedTeams$;
 	sportLeaguePairs$: Observable<SportTypesLeaguesPairs[]> = this.scheduleAdminFacade.sportTypesLeaguesPairs$;
+	selectedLeagues$: Observable<League[]> = this.scheduleAdminFacade.selectedLeagues$;
 
 	/**
 	 * @description the preview-schedule component consumes this property in the view
@@ -41,7 +41,7 @@ export class ScheduleAdministrationComponent implements OnInit {
 	displayLeagueID = VIEW_ALL;
 	displayTeamID = VIEW_ALL;
 	tabTitle: TabTitles = 'Schedule';
-	nextTab: 0 | 1 | 2 | number;
+	currentTab: 0 | 1 | 2 | number = 0;
 	newSportLeagueForm: FormGroup;
 	newTeamForm: FormGroup;
 	previewDataSource: MatTableDataSource<Match> = new MatTableDataSource();
@@ -65,9 +65,12 @@ export class ScheduleAdministrationComponent implements OnInit {
 
 	// #endregion
 
+	/**
+	 * @description Currently disable all tabs selection.
+	 * This method is only applied on the second and third tab
+	 */
 	checkSelection(): boolean {
-		// TODO implmenet
-		return false;
+		return true;
 	}
 
 	// #region Forms
@@ -189,26 +192,25 @@ export class ScheduleAdministrationComponent implements OnInit {
 	onNewSchedule(): void {
 		// Update tab to 'New Schedule' and navigate to it
 		this.tabTitle = 'New Schedule';
-		this.nextTab = 1;
-		// this.adminComponent = NewScheduleComponent;
+		this.currentTab = 1;
 		this.adminComponent = 'new';
 	}
 
 	onPlayOffsSchedule(): void {
 		this.tabTitle = 'Playoffs';
-		this.nextTab = 1;
+		this.currentTab = 1;
 	}
 
 	onModifySchedule(): void {
 		this.tabTitle = 'Modify';
-		this.nextTab = 1;
+		this.currentTab = 1;
 		// this.adminComponent = ModifyScheduleComponent;
 		this.adminComponent = 'modify';
 	}
 
 	onPreviewSchedule(): void {
 		this.previewDataSource.data = this.scheduleAdminFacade.matchesSnapshot;
-		this.nextTab = 2;
+		this.currentTab = 2;
 	}
 
 	onLeagueChanged(leagueID: string): void {
@@ -219,9 +221,13 @@ export class ScheduleAdministrationComponent implements OnInit {
 		this.displayTeamID = this.matTableHelper.filterOnTeamID(teamID, this.previewDataSource);
 	}
 
+	onPreviousTab(tabIndex: number): void {
+		this.currentTab = tabIndex;
+	}
+
 	// #endregion
 
 	reset(event: MatTabChangeEvent): void {
-		this.nextTab = event.index;
+		this.currentTab = event.index;
 	}
 }

@@ -1,15 +1,43 @@
-import { PortalModule } from '@angular/cdk/portal';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRippleModule, MAT_RIPPLE_GLOBAL_OPTIONS, RippleGlobalOptions } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGithub, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { faPlayCircle, faBasketballBall } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faBasketballBall, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { ActingSpinnerComponent } from './components/acting-spinner/acting-spinner/acting-spinner.component';
 import { GalleryViewerComponent } from './components/gallery-viewer/gallery-viewer.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner/loading-spinner.component';
 import { SessionSchedulesComponent } from './components/session-schedules/session-schedules.component';
 import { SnackBarComponent } from './components/snack-bar/snack-bar.component';
 import { AllowSpacesDirective } from './directives/allow-space/allow-spaces.directive';
@@ -25,36 +53,6 @@ import { GearImageViewPipe } from './pipes/gear-image-view/gear-image-view.pipe'
 import { LogPipe } from './pipes/log/log.pipe';
 import { FromUnixPipe } from './pipes/momentjs/from-unix.pipe';
 import { OrderEnumPipe } from './pipes/order-enum.pipe';
-import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner/loading-spinner.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { RippleGlobalOptions, MAT_RIPPLE_GLOBAL_OPTIONS } from '@angular/material/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatRippleModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatToolbarModule } from '@angular/material/toolbar';
 
 // This is used for controling the Angular ripples effect globally
 // https://material.angular.io/components/ripple/api
@@ -208,6 +206,6 @@ const globalRippleConfig: RippleGlobalOptions = {
 })
 export class SharedModule {
 	constructor(library: FaIconLibrary) {
-		library.addIcons(faGithub, faInstagram, faTwitter, faPlayCircle, faBasketballBall);
+		library.addIcons(faGithub, faInstagram, faTwitter, faPlayCircle, faBasketballBall, faArrowLeft, faArrowRight);
 	}
 }

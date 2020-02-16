@@ -4,6 +4,8 @@ import { NgxGalleryImage } from '@kolkov/ngx-gallery/lib/ngx-gallery-image';
 import { map } from 'rxjs/operators';
 import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
 import { TeamService } from 'src/app/core/services/team/team.service';
+import { Acting } from 'src/app/shared/decorators/acting.decorator';
+import { Loading } from 'src/app/shared/decorators/loading.decorator';
 import { TeamSignUpImages } from '../team-signup-images';
 
 const galleryOptions: NgxGalleryOptions[] = [
@@ -57,6 +59,8 @@ const galleryOptions: NgxGalleryOptions[] = [
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TeamSignupComponent implements OnInit {
+	@Acting() acting$;
+	@Loading() loading$;
 	images: NgxGalleryImage[] = TeamSignUpImages;
 	teamSignUpForm: TeamSignUpForm | {};
 	options = galleryOptions;

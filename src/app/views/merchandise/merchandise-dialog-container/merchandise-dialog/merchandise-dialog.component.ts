@@ -1,12 +1,13 @@
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-
+import { MatChipList } from '@angular/material/chips';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import * as cloneDeep from 'clone-deep';
-import { Subscription } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { of, Subject, Subscription } from 'rxjs';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { GearImage } from 'src/app/core/models/merchandise/gear-image.model';
 import { GearItem } from 'src/app/core/models/merchandise/gear-item.model';
 import { GearSize, gearSizesArray, Size } from 'src/app/core/models/merchandise/gear-size.model';
@@ -14,7 +15,6 @@ import { EventBusService, Events } from 'src/app/core/services/event-bus/event-b
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { GearItemUpload, ROUTER_OUTLET } from 'src/app/shared/constants/the-p-league-constants';
 import { NoSizeErrorStateMatcher } from './NoSizeErrorStateMatcher';
-import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-merchandise-dialog',
@@ -55,6 +55,13 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 	isInStock = true;
 	sizeEnum = Size;
 	isLoading$ = this.merchandiseService.loading$;
+	@ViewChild(MatChipList) matChipList: MatChipList;
+	unsubscribed$ = new Subject<void>();
+
+	testChips = [
+		{ color: 'warn', size: 'M', selected: true },
+		{ color: 'warn', size: 'L', selected: true }
+	];
 
 	constructor(
 		private fb: FormBuilder,
@@ -79,26 +86,30 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 			.map((r) =>
 				r.params
 					.pipe(
+						takeUntil(this.unsubscribed$),
 						switchMap((params) => {
 							this.editMode = params['id'] !== undefined;
-							return this.merchandiseService.findGearItem(+params['id']);
+							if (this.editMode) {
+								return this.merchandiseService.findGearItem(+params['id']);
+							}
+							return of({});
 						}),
 						tap((gearItem: GearItem) => {
 							this.gearItem = cloneDeep(gearItem);
 						})
 					)
-					.subscribe()
+					.subscribe((_) => this.initForm())
 			);
-
-		this.initForm();
 	}
 
 	ngOnDestroy(): void {
 		this.subscription.unsubscribe();
+		this.unsubscribed$.next();
+		this.unsubscribed$.complete();
 	}
 
 	onSubmit(): void {
-		// this.dialogRef.close();
+		this.dialogRef.close();
 		const gearItem: GearItem = this.gearItemObjectForDelivery();
 		if (this.editMode) {
 			this.merchandiseService.updateGearItem(gearItem);
@@ -113,7 +124,7 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 		const gearItemForDelivery: GearItem = {
 			name: this.gearItemForm.value.name,
 			price: this.gearItemForm.value.price,
-			sizes: this.gearItemForm.value.sizes.gearSizesGroup.value.gearSizesArray.map((s) => s.gearSize),
+			sizes: this.gearItemForm['controls'].sizes['controls'].map((formGroup: FormGroup) => formGroup.value),
 			inStock: this.gearItemForm.value.inStock,
 			images: gearItemImages
 		};
@@ -131,11 +142,16 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 
 	// Controls the text that displays next the slide toggle
 	onSlideChange(): void {
-		this.isInStock = !this.isInStock;
+		this.gearItem.inStock = !this.gearItem.inStock;
 	}
 
 	// Re-runs the validations for the sizes control which is mat-chip-list to display error messages
-	onSelectedChipSize(): void {
+	onSelectedChipSize(sizeGroup: FormGroup, sizeIndex: number): void {
+		// const formArray = this.gearItemForm['controls'].sizes as FormArray;
+		// const sizeFormGroup = formArray.at(sizeIndex) as FormGroup;
+		// sizeFormGroup.patchValue({ available: !sizeFormGroup.value.available });
+		sizeGroup.patchValue({ available: !sizeGroup.value.available });
+
 		this.gearItemForm.controls['sizes'].updateValueAndValidity();
 	}
 
@@ -259,40 +275,38 @@ export class MerchandiseDialogComponent implements OnInit, OnDestroy {
 			this.gearItemImages = this.gearItem.images;
 		}
 
-		const sizesForm = [];
-		for (let index = 0; index < this.gearSizes.length; index++) {
-			sizesForm.push(
-				this.fb.group({
-					gearSize: this.fb.control(sizes[index])
-				})
-			);
+		const sizesForm: FormGroup[] = [];
+		for (let index = 0; index < sizes.length; index++) {
+			sizesForm.push(this.initGearSizeForm(sizes[index]));
 		}
 
 		this.gearItemForm = this.fb.group({
 			name: this.fb.control(name, Validators.required),
 			price: this.fb.control(price, Validators.required),
-			sizes: this.fb.control(
-				{
-					gearSizesGroup: this.fb.group({
-						gearSizesArray: this.fb.array(sizesForm)
-					})
-				},
-				this.requireSize()
-			),
+			sizes: this.fb.array(sizesForm, this.requireSize()),
 			inStock: this.fb.control(inStock),
 			images: this.fb.control(images)
+		});
+	}
+
+	initGearSizeForm(gearSize: GearSize): FormGroup {
+		return this.fb.group({
+			id: this.fb.control(gearSize.id),
+			size: this.fb.control(gearSize.size),
+			available: this.fb.control(gearSize.available),
+			color: this.fb.control(gearSize.color)
 		});
 	}
 
 	// Validator for the form control 'sizes'
 	requireSize(): ValidatorFn {
 		return (control: AbstractControl): { [key: string]: any } | null => {
-			const anySelectedSizes = control.value.gearSizesGroup.value.gearSizesArray.filter((gS) => gS.gearSize.available === true);
+			const anySelectedSizes = control.value.filter((size: GearSize) => size.available === true);
 			if (anySelectedSizes.length > 0) {
 				control.markAsTouched();
 				return null;
 			} else {
-				return { invalidSize: { value: anySelectedSizes } };
+				return { invalidSize: { value: 'Please select a size' } };
 			}
 		};
 	}

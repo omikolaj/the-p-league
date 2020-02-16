@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { filterOnDateValue, filterOnInputValue, filterOnLeagueID, filterOnTeamID } from 'src/app/shared/helpers/filter-predicate.function';
 import Match from '../../models/schedule/classes/match.model';
 import { SportTypesLeaguesPairs, SportTypesLeaguesPairsWithTeams } from '../../models/schedule/sport-types-leagues-pairs.model';
 import { ScheduleComponentHelperService } from './schedule-administration/schedule-component-helper.service';
-import { MatTableDataSource } from '@angular/material/table';
 
 /**
  * @description This service is responsible for handling actions related
@@ -105,7 +105,7 @@ export class MatTableComponentHelperService {
 			if (typeof match.dateTime === 'number') {
 				const today = moment(new Date());
 				const matchDateTime = moment.unix(match.dateTime);
-				if (today.diff(matchDateTime, 'days') === 0) {
+				if (matchDateTime.isSame(today, 'day')) {
 					return true;
 				}
 			}

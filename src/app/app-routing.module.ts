@@ -50,7 +50,7 @@ const routes: Routes = [
 	imports: [
 		RouterModule.forRoot(routes, {
 			scrollPositionRestoration: 'enabled',
-			enableTracing: false,
+			enableTracing: true,
 			preloadingStrategy: PreloadAllModules
 		})
 	],

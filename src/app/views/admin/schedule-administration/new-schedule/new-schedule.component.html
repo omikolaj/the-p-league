@@ -1,6 +1,6 @@
 <div>
 	<ng-container *ngIf="leagues$ | async as leagueData">
-		<form [formGroup]="newLeagueSessionsForm" (ngSubmit)="onGenerate(leagueData)">
+		<form [formGroup]="newLeagueSessionsForm" (ngSubmit)="onGenerate(leagueData)" novalidate>
 			<!--------------------------------------------------------------------------------- 
     formArrayName="sessions"
     Description:
@@ -48,7 +48,8 @@
 				</ng-container>
 			</ng-container>
 			<div class="generate-schedule">
-				<button mat-raised-button [disabled]="!newLeagueSessionsForm.valid">Generate</button>
+				<button id="back-btn" mat-raised-button type="button" (click)="onBack()" color="warn">Back</button>
+				<button id="generate-btn" mat-raised-button [disabled]="!newLeagueSessionsForm.valid">Generate</button>
 			</div>
 		</form>
 	</ng-container>

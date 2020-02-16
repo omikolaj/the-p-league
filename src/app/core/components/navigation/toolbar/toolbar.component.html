@@ -50,6 +50,17 @@
 				</ng-container>
 
 				<ng-container *ngIf="this.authService.isLoggedIn$ | async">
+					<a
+						class="nav-button"
+						fxFlexAlign="center"
+						fxHide.xs="true"
+						fxHide.lg="false"
+						mat-button
+						[routerLink]="'admin'"
+						[routerLinkActive]="'active-route'"
+					>
+						Admin Dash
+					</a>
 					<button class="nav-button" fxFlexAlign="center" fxHide.xs="true" fxHide.lg="false" mat-button [routerLink]="'/logout'">
 						Logout
 					</button>

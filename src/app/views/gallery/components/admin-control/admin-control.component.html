@@ -1,7 +1,7 @@
 <p style="text-align: center;">
 	Admin Dash
 </p>
-
+<app-acting-spinner *ngIf="acting$ | async"></app-acting-spinner>
 <div class="accordion-wrapper" [ngClass]="routeAnimationsElements">
 	<mat-accordion #accordion displayMode="flat">
 		<mat-expansion-panel [expanded]="false" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -53,7 +53,7 @@
 					Modify
 				</mat-panel-title>
 				<mat-panel-description>
-					Delete/Rearrange
+					Delete
 				</mat-panel-description>
 			</mat-expansion-panel-header>
 

@@ -61,6 +61,11 @@ export class AuthService {
 		);
 	}
 
+	logoutSession(): void {
+		localStorage.removeItem(LOCAL_STORAGE_ITEM);
+		this.isLoggedInSub.next(false);
+	}
+
 	refreshToken(): Observable<ApplicationToken> {
 		return this.http.get<ApplicationToken>('token/refresh').pipe(
 			map((appToken) => {

@@ -15,21 +15,21 @@ export const galleryOptions: NgxGalleryOptions[] = [
 		thumbnails: false,
 		previewSwipe: true,
 		imageSwipe: true,
-		imageArrowsAutoHide: true,
-		previewAutoPlayInterval: 4000,
-		imageAutoPlayInterval: 4000,
+		imageArrowsAutoHide: false,
 		previewCloseOnClick: true,
 		previewCloseOnEsc: true,
 		previewKeyboardNavigation: true,
 		previewInfinityMove: true,
 		imageInfinityMove: true,
 		previewZoom: true,
-		imageAutoPlay: true,
+		imageAutoPlay: false,
 		imageAutoPlayPauseOnHover: true,
-		previewAutoPlay: true,
+		previewAutoPlay: false,
 		previewAutoPlayPauseOnHover: true,
+		previewArrowsAutoHide: true,
 		imageBullets: true,
-		lazyLoading: true
+		lazyLoading: true,
+		previewRotate: true
 	},
 	// max-width 800
 	{
@@ -44,7 +44,7 @@ export const galleryOptions: NgxGalleryOptions[] = [
 	// max-width 400
 	{
 		breakpoint: 400,
-		preview: false,
+		preview: true,
 		height: '260px'
 	}
 ];

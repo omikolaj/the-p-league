@@ -1,14 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, HostBinding } from '@angular/core';
+import { animate, query, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { TeamSignUpForm } from 'src/app/core/models/team/team-sign-up-form.model';
 import { TeamService } from 'src/app/core/services/team/team.service';
-import { Router } from '@angular/router';
-import { trigger, transition, style, animate, query } from '@angular/animations';
-
-enum GoTo {
-	Merchandise,
-	Gallery,
-	NewSubmission
-}
 
 @Component({
 	selector: 'app-information',
@@ -26,24 +20,22 @@ enum GoTo {
 		])
 	]
 })
-export class InformationComponent implements OnInit {
+export class InformationComponent {
 	@HostBinding('@infoAnimation')
 	public animatePage = true;
 	@Input() teamSignUpForm: TeamSignUpForm;
 
 	constructor(private router: Router, private teamService: TeamService) {}
 
-	ngOnInit() {}
-
-	toMerchandise() {
+	toMerchandise(): void {
 		this.router.navigate(['merchandise']);
 	}
 
-	toGallery() {
+	toGallery(): void {
 		this.router.navigate(['gallery']);
 	}
 
-	toNewSubmission() {
+	toNewSubmission(): void {
 		this.teamService.newSubmission();
 	}
 }

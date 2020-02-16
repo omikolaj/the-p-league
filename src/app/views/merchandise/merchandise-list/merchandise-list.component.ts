@@ -13,7 +13,7 @@ import { EventBusService, Events } from 'src/app/core/services/event-bus/event-b
 import { MerchandiseService } from 'src/app/core/services/merchandise/merchandise.service';
 import { PaginatorService } from 'src/app/core/services/paginator/paginator.service';
 import { Role } from 'src/app/shared/constants/the-p-league-constants';
-
+import { Acting } from 'src/app/shared/decorators/acting.decorator';
 
 @Component({
 	selector: 'app-merchandise-list',
@@ -23,6 +23,7 @@ import { Role } from 'src/app/shared/constants/the-p-league-constants';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MerchandiseListComponent implements OnInit, OnDestroy {
+	@Acting() acting$;
 	@ViewChild('gearUp') merchandiseCards: ElementRef;
 	@ViewChild('paginator', { static: true }) paginator: MatPaginator;
 

@@ -3,6 +3,8 @@
 	<app-gallery-viewer [ngxGalleryOptions]="options" [images]="images"> </app-gallery-viewer>
 </div>
 
+<app-acting-spinner *ngIf="(acting$ | async) || (loading$ | async)"></app-acting-spinner>
+
 <ng-container *ngIf="!(teamSignUpSubmitted$ | async); else info">
 	<app-team-signup-form></app-team-signup-form>
 </ng-container>

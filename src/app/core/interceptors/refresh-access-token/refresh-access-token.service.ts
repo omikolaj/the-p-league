@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth/auth.service';
 	providedIn: 'root'
 })
 export class RefreshAccessTokenInterceptor implements HttpInterceptor {
-	private readonly refreshUrl: string = 'refresh/token';
+	private readonly refreshUrl: string = 'api/token/refresh';
 	private readonly login: string = 'login';
 	private refreshTokenInProgress = false;
 	private refreshTokenSubject: BehaviorSubject<ApplicationToken> = new BehaviorSubject<ApplicationToken>(null);

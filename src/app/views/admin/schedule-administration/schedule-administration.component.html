@@ -1,7 +1,7 @@
 <div class="wrapper">
 	<app-acting-spinner *ngIf="acting$ | async"></app-acting-spinner>
 	<ng-container *ngIf="sportLeaguePairs$ | async as pairs">
-		<mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="nextTab">
+		<mat-tab-group #matGroup (selectedTabChange)="reset($event)" [selectedIndex]="currentTab" [disablePagination]="true" [dynamicHeight]="true">
 			<mat-tab label="League">
 				<div class="schedule-admin">
 					<app-add-sports-leagues
@@ -27,9 +27,11 @@
 						<button mat-raised-button color="accent" (click)="onPlayOffsSchedule()" [disabled]="true">
 							Play Offs
 						</button>
-						<button mat-raised-button color="accent" (click)="onNewSchedule()" [disabled]="checkSelection()">
-							New
-						</button>
+						<ng-container *ngIf="selectedLeagues$ | async as selectedLeagues">
+							<button mat-raised-button color="accent" (click)="onNewSchedule()" [disabled]="selectedLeagues.length < 1">
+								Next
+							</button>
+						</ng-container>
 					</div>
 				</div>
 			</mat-tab>
@@ -40,7 +42,11 @@
 						<app-add-teams [sportLeaguePairs]="pairs" [newTeamForm]="newTeamForm" (onNewTeam)="onNewTeam($event)"></app-add-teams>
 
 						<ng-container [ngSwitch]="adminComponent">
-							<app-new-schedule *ngSwitchCase="'new'" (generateSchedules)="onGeneratedSchedules($event)"></app-new-schedule>
+							<app-new-schedule
+								*ngSwitchCase="'new'"
+								(onPreviousTabSelected)="onPreviousTab($event)"
+								(generateSchedules)="onGeneratedSchedules($event)"
+							></app-new-schedule>
 						</ng-container>
 					</div>
 				</ng-template>
