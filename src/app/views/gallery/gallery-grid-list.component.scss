@@ -11,6 +11,8 @@
 
 .admin {
 	display: block;
+	max-width: 71em;
+	margin: 0 auto;
 	#admin-upload {
 		line-height: 36px !important;
 		border-radius: 4px !important;
@@ -22,6 +24,8 @@
 
 .season-gallery {
 	height: 100%;
+	max-width: 74em;
+	margin: 0 auto;
 	.season-card {
 		margin: 1.5rem auto 1.5rem auto;
 		box-sizing: border-box;
@@ -32,7 +36,7 @@
 		width: 100%;
 
 		.season-header-image {
-			background-image: url('https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_70,w_40/v1581275472/movies-place/logo_no_title.png');
+			background-image: url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_70,w_40/v1581902164/pleague/logo_no_title_xefmbk.png');
 			background-size: cover;
 			margin: 0 0 10px 0;
 		}

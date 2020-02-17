@@ -21,7 +21,7 @@ export class AdminLoginComponent implements OnInit, OnDestroy {
 		changePassword: this.fb.control(false)
 	});
 	changePassword = false;
-	adminLockImgSrc = '../../../../assets/admin_lock.png';
+	adminLockImgSrc = 'https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_90,w_150/v1581902163/pleague/admin_lock_mjsfb6.png';
 	subscription: Subscription;
 	loading = false;
 

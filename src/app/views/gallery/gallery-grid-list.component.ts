@@ -80,11 +80,12 @@ export class GalleryGridListComponent implements OnInit {
 	subscription: Subscription;
 	isLoggedIn$ = this.authService.isLoggedIn$;
 	isAdmin = false;
+
 	defaultImage: LeaguePicture[] = [
 		{
-			small: 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_50,w_512,/v1562950585/movies-place/oynl9gr3yjsm2vkygyfe.jpg',
-			medium: 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_50,/v1562950585/movies-place/oynl9gr3yjsm2vkygyfe.jpg',
-			big: 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,q_70,/v1562950585/movies-place/oynl9gr3yjsm2vkygyfe.jpg'
+			small: 'https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,w_512,/v1581902278/pleague/default_gallery_jdyroz.jpg',
+			medium: 'https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,/v1581902278/pleague/default_gallery_jdyroz.jpg',
+			big: 'https://res.cloudinary.com/dkbelxhih/image/upload/f_auto/v1581902278/pleague/default_gallery_jdyroz.jpg'
 		}
 	];
 

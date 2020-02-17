@@ -30,7 +30,7 @@ const galleryOptions: NgxGalleryOptions[] = [
 		imageAutoPlayPauseOnHover: true,
 		previewAutoPlay: true,
 		previewAutoPlayPauseOnHover: true,
-		imageBullets: false,
+		imageBullets: true,
 		lazyLoading: true,
 		imageDescription: true,
 		imageArrows: true
@@ -48,7 +48,7 @@ const galleryOptions: NgxGalleryOptions[] = [
 	// max-width 400
 	{
 		breakpoint: 400,
-		preview: false
+		preview: true
 	}
 ];
 

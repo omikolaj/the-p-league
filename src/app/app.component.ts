@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
 	// rootInjector is instantiated which is set inside app.module.ts constructor.
 	loading$ = this.httpStatusService.loading$;
 	title = 'The P League';
-	logo = 'https://res.cloudinary.com/dwsvaiiox/image/upload/f_auto,w_100/v1581277326/movies-place/logo.png';
+	logo = 'https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,w_100/v1581902164/pleague/logo_jxlbz6.png';
 	year = new Date().getFullYear();
 	window: Element;
 	subscription: Subscription;

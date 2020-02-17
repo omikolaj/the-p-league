@@ -129,7 +129,8 @@ export class AdminControlComponent implements OnInit, OnDestroy, AfterViewInit {
 			if (mimeType.match(/image\/*/) == null) {
 				uploadPicture.preview.error = true;
 				uploadPicture.preview.message = 'Only images are supported.';
-				uploadPicture.preview.src = '../../../../assets/warning.jpg';
+				uploadPicture.preview.src =
+					'https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_70/v1581902162/pleague/unsupported_file_format_th8g25.png';
 				this.galleryService.uploadPicture.next(uploadPicture);
 				checkIfStillLoading(index);
 				continue;
