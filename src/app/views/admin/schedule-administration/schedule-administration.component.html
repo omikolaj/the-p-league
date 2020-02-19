@@ -9,6 +9,9 @@
 						[newSportLeagueForm]="newSportLeagueForm"
 						(onNewSportLeague)="onNewSportLeague($event)"
 					></app-add-sports-leagues>
+					<ng-container *ngIf="pairs.length < 1">
+						<p class="no-sports"><i>No sports to display</i></p>
+					</ng-container>
 					<!-- loop through all sports and display league administration for each sport each sport contains list of leagues-->
 					<ng-container *ngIf="sportTypes$ | async as types">
 						<ng-container *ngFor="let sport of types">

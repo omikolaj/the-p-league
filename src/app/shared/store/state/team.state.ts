@@ -55,7 +55,8 @@ export class TeamState {
 	initializeTeams(ctx: StateContext<TeamStateModel>, action: Teams.InitializeTeams): void {
 		ctx.setState(
 			produce((draft: TeamStateModel) => {
-				draft.entities = action.teams;
+				// if teams is undefined, we want to make sure we dont assign undefined to draft.entities
+				draft.entities = action.teams || {};
 			})
 		);
 	}

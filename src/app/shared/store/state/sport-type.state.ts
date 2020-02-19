@@ -85,7 +85,7 @@ export class SportTypeState {
 	initializeSports(ctx: StateContext<SportTypeStateModel>, action: Sports.InitializeSports): void {
 		ctx.setState(
 			produce((draft: SportTypeStateModel) => {
-				draft.entities = action.sports;
+				draft.entities = action.sports || {};
 			})
 		);
 	}

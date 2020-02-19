@@ -73,7 +73,7 @@ export class LeagueState {
 	initializeLeagues(ctx: StateContext<LeagueStateModel>, action: Leagues.InitializeLeagues): void {
 		ctx.setState(
 			produce((draft: LeagueStateModel) => {
-				draft.entities = action.leagues;
+				draft.entities = action.leagues || {};
 			})
 		);
 	}
