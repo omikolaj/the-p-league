@@ -55,19 +55,19 @@ mat-paginator {
 	}
 
 	.parallax {
-		background: url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_10/v1581901755/pleague/merchanidse_welcome_grpre3.jpg');
+		background: url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_10/v1581902164/pleague/logo_jxlbz6.png');
 		background: -webkit-image-set(
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_10/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 1x,
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_20/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 2x,
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_30/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 3x,
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 4x
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_10/v1581902164/pleague/logo_jxlbz6.png') 1x,
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_20/v1581902164/pleague/logo_jxlbz6.png') 2x,
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_30/v1581902164/pleague/logo_jxlbz6.png') 3x,
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1581902164/pleague/logo_jxlbz6.png') 4x
 			)
 			no-repeat center top;
 		background-image: image-set(
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_10/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 1x,
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_20/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 2x,
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_30/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 3x,
-				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1581901755/pleague/merchanidse_welcome_grpre3.jpg') 4x
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_10/v1581902164/pleague/logo_jxlbz6.png') 1x,
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_20/v1581902164/pleague/logo_jxlbz6.png') 2x,
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_30/v1581902164/pleague/logo_jxlbz6.png') 3x,
+				url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1581902164/pleague/logo_jxlbz6.png') 4x
 			)
 			no-repeat center top;
 		background-size: cover;
@@ -82,7 +82,7 @@ mat-paginator {
 		-webkit-transform: translatez(0);
 		background-position: center;
 		background-repeat: no-repeat;
-		background-size: cover;
+		background-size: contain;
 	}
 
 	.mobile-img {

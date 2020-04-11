@@ -134,21 +134,21 @@ h1 {
 
 .parallax {
 	min-height: 700px;
-	background: url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1581901826/pleague/about_lge9tt.jpg') no-repeat center top;
+	background: url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1582406660/pleague/about_lge9tt.jpg') no-repeat center bottom;
 	background: -webkit-image-set(
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1581901826/pleague/about_lge9tt.jpg') 1x,
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_70/v1581901826/pleague/about_lge9tt.jpg') 2x,
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_80/v1581901826/pleague/about_lge9tt.jpg') 3x,
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_90/v1581901826/pleague/about_lge9tt.jpg') 4x
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1582406660/pleague/about_lge9tt.jpg') 1x,
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_70/v1582406660/pleague/about_lge9tt.jpg') 2x,
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_80/v1582406660/pleague/about_lge9tt.jpg') 3x,
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_90/v1582406660/pleague/about_lge9tt.jpg') 4x
 		)
-		no-repeat center top;
+		no-repeat center bottom;
 	background-image: image-set(
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1581901826/pleague/about_lge9tt.jpg') 1x,
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_70/v1581901826/pleague/about_lge9tt.jpg') 2x,
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_80/v1581901826/pleague/about_lge9tt.jpg') 3x,
-			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_90/v1581901826/pleague/about_lge9tt.jpg') 4x
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_50/v1582406660/pleague/about_lge9tt.jpg') 1x,
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_70/v1582406660/pleague/about_lge9tt.jpg') 2x,
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_80/v1582406660/pleague/about_lge9tt.jpg') 3x,
+			url('https://res.cloudinary.com/dkbelxhih/image/upload/f_auto,q_90/v1582406660/pleague/about_lge9tt.jpg') 4x
 		)
-		no-repeat center top;
+		no-repeat center bottom;
 	background-size: cover;
 }
 
